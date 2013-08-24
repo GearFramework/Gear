@@ -142,7 +142,9 @@ limit('3, 5')
 Данная запись будет равносильна
 
 ```
-\gear\Core::c('db')->selectCollection('database', 'products')->find(array('category' => 3))->remove();
+\gear\Core::c('db')->selectCollection('database', 'products')
+                   ->find(array('category' => 3))
+                   ->remove();
 ```
 > Это полезно для случаев, когда необходимо, например, сначала вывести на экран выбранные элементы, а потом их удалить
 
