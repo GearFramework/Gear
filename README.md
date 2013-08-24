@@ -26,19 +26,23 @@ PHP Framework (PHP 5.3 or higher)
                |    +- components
                |    +- ... и т.д.
                |
-               +- firstproject
+               +- testProject
                |    |
                |    +- behaviors
                |    +- components
                |    +- ... и т.д.
-               |    +- Firstproject.php
+               |    +- TestProject.php
                |
-               +- secondproject
+               +- otherProject
                |    |
                |    +- behaviors
                |    +- components
                |    +- ... и т.д.
-               |    +- Secondproject.php
+               |    +- OtherProject.php
                |
                +- ... и т.д.
 ```
+Где
+`/usr/share/gear/testProject` и `/usr/share/gear/otherProject` - папки с исходными кодами проектов, расположенных и работающих на данном сервере.
+
+#### Пространство имён
