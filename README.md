@@ -50,6 +50,17 @@ PHP Framework (PHP 5.3 or higher)
 Создание проекта
 ----------------
 
+Все запросы должны проходить через единственный файл index.php, который в общем случае, располагается в `DOCUMENT_ROOT` вашего Apache-сервера (допустим это будет `/var/www`). Помимо index.php рядом могут располагаться конфигурационные файлы `config.production.php` и `config.debug.php`, в зависимости от режима работы приложения.
+В минимальном виде index.php содержит три строчки кода:
+
+```
+<?php
+
+require '/usr/share/gear/gear/Core.php';
+\gear\Core::init(__DIR__, 1);
+\gear\Core::app()->run();
+```
+
 Модули
 ------
 
