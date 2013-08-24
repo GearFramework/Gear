@@ -205,3 +205,10 @@ foreach($cursor as $itemProduct)
 }
 $cursor->remove();
 ```
+Удалить все записи из таблицы можно тремя способами:
+
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->find()->remove();
+\gear\Core::c('db')->selectCollection('database', 'products')->remove();
+\gear\Core::c('db')->selectCollection('database', 'products')->truncate(); // *равносильно `TRUNCATE TABEL \`products\``*
+```
