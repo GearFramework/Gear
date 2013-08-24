@@ -208,7 +208,7 @@ $cursor->remove();
 Удалить все записи из таблицы можно тремя способами:
 
 ```
-// SQL-Запрос DELETE FROM TABLE `products`
+// SQL-Запрос DELETE FROM `products`
 \gear\Core::c('db')->selectCollection('database', 'products')->find()->remove();
 \gear\Core::c('db')->selectCollection('database', 'products')->remove();
 // SQL-Запрос TRUNCATE TABLE `products`
