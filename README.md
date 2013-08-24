@@ -107,6 +107,51 @@ foreach($cursor as $itemProduct)
 ```
 Возможно также указать собственный порядок сортировки, например, когда необходимо в начале вывести элементы категорий `5, 1, 3`, а потом всех остальных:
 ```
-\gear\Core::c('db')->selectCollection('database', 'products')->find()->sort(array('category' => array(5, 1, 3), 'name' => 1));
+\gear\Core::c('db')->selectCollection('database', 'products')
+                   ->find()
+                   ->sort(array('category' => array(5, 1, 3), 'name' => 1));
 ```
+* Выборка определённого количества элементов
+
+Для ограничения количества получаемых элементов используется метод `limit()`, например:
+
+```
+$cursor = \gear\Core::c('db')->selectCollection('database', 'products')
+        ->find(array('category' => 1))
+        ->limit(3);
+foreach($cursor as $itemProduct)
+    echo $itemProduct->name, '<br />';
+```
+В данном случае будет произведена выборка первых трёх элементов. 
+Для выборки элементов начиная с определённого, можно использовать один из вариантов, например для выборки 3-х элементов, начиная с 5-ого:
+
+```
+limit(3, 5);
+limit(array(3, 5));
+limit('3, 5')
+```
+Запись `findOne(array('category' => 1))` равносильна `find(array('category' => 1))->limit(1)->asAssoc()`
  
+* Удаление
+
+Для удаления элементов из таблицы используется метод `remove()`. Данный метод не является отложенным, а выполняется сразу и возвращает количество затронутых записей таблицы. Например, чтобы удалить все элементы из категории `3`:
+
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->remove(array('category' => 3));
+```
+Данная запись будет равносильна
+
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->find(array('category' => 3))->remove();
+```
+Это полезно для случаев, когда необходимо, например, сначала вывести на экран выбранные элементы, а потом их удалить
+
+```
+$cursor = \gear\Core::c('db')->selectCollection('database', 'products')
+        ->find(array('category' => 3))
+foreach($cursor as $itemProduct)
+{
+    echo 'Deleted ', $itemProduct->name, '<br />';
+}
+$cursor->remove();
+```
