@@ -1,7 +1,7 @@
 Gear Framework
 ==============
 
-PHP Framework (PHP 5.3 or higher)
+Open Source PHP Framework (PHP 5.3 or higher)
 
 Установка
 ---------
@@ -50,16 +50,16 @@ PHP Framework (PHP 5.3 or higher)
 Создание проекта
 ----------------
 
-Все запросы должны проходить через единственный файл index.php, который в общем случае, располагается в `DOCUMENT_ROOT` вашего Apache-сервера (допустим это будет `/var/www`). Помимо index.php рядом могут располагаться конфигурационные файлы `config.production.php` и `config.debug.php`, в зависимости от режима работы приложения.
+Все запросы должны проходить через единственный файл index.php, который в общем случае, располагается в `DOCUMENT_ROOT` вашего Apache-сервера (допустим это будет `/var/www`). Помимо index.php рядом могут располагаться конфигурационные файлы `config.production.php` и/или `config.debug.php`, в зависимости от режима работы приложения.
 В минимальном виде index.php содержит три строчки кода:
 
 ```
 <?php
-
 require '/usr/share/gear/gear/Core.php';
 \gear\Core::init(__DIR__, 1);
 \gear\Core::app()->run();
 ```
+Первой строкой подключается ядро фреймворка. Следующей - производится инициализация и конфигурирование вашего приложения. Метод `init()`
 
 Модули
 ------
@@ -180,6 +180,15 @@ limit('3, 5')
         'name' => 'Масло',
     ),
 ));
+```
+Возможна такая запись добавления объекта
+
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->insert(new \gear\library\GModel(array
+(
+    'category' => 1,
+    'name' => 'Сахар',
+)));
 ```
 > При совпадении PRIMARY KEY будет генерироваться исключение
 

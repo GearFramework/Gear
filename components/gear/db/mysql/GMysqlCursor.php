@@ -135,14 +135,46 @@ class GMysqlCursor extends GDbCursor
     public function insert($properties)
     {
         $set = array();
-        $fields = array();
-        foreach($properties as $name => $value)
+        if ($properties instanceof gear\library\GObject)
+            $properties = $properties->props();
+        if (is_array($test = reset($properties)))
         {
-            $fields[] = $this->_escapeOperand($name);
-            $set[] = $this->_escapeValue($value);
+            $tmp = array();
+            $fields = $this->_getFields($test);
+            foreach($properties as $record)
+            {
+                foreach($record as $value)
+                    $tmp[] = $this->_escapeValue($value);
+                $set[] = implode(', ', $tmp);
+            }
+            unset($tmp);
         }
-        $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $set) . ')';
+        else
+        {
+            $fields = $this->_getFields($properties);
+            foreach($properties as $value)
+                $set[] = $this->_escapeValue($value);
+            $set = array(implode(', ', $set));
+        }
+        $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` ' 
+                      . '(' . implode(', ', $fields) . ') VALUES ' 
+                      . '(' . implode('), (', $set) . ')';
         return $this->query()->affected();
+    }
+    
+    /**
+     * Получение списка полей
+     * 
+     * @access public
+     * @param array $record
+     * @return array
+     */
+    protected function _getFields(array $record)
+    {
+        $fields = array();
+        foreach($record as $field => $value)
+            $fields[] = $this->_escapeOperand($field);
+        return $fields;
     }
     
     /**
@@ -161,7 +193,7 @@ class GMysqlCursor extends GDbCursor
         $set = array();
         $fields = array();
         $updates = array();
-        if (is_object($properties))
+        if ($properties instanceof gear\library\GObject)
             $properties = $properties->props();
         foreach($properties as $name => $value)
         {
@@ -196,11 +228,13 @@ class GMysqlCursor extends GDbCursor
      */
     public function update($criteria = null, $properties)
     {
-        $this->_query = 'UPDATE `' . $this->getCollection()->name . '` SET ';
+        if ($properties instanceof gear\library\GObject)
+            $properties = $properties->props();
         $set = array();
         foreach($properties as $name => $value)
             $set[] = $this->_escapeOperand($name) . ' = ' . $this->_escapeValue($value);
-        $this->_query .= implode(', ', $set);
+        $this->_query = 'UPDATE `' . $this->getCollection()->name . '` SET '
+                      . implode(', ', $set);
         if ($criteria)
             $this->_query .= ' WHERE ' . $this->_buildCondition($criteria);
         return $this->query()->affected();
