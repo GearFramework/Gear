@@ -9,13 +9,12 @@ use \gear\library\GException;
  * Класс описывающий приложение
  * 
  * @package Gear Framework
- * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 03.08.2013
  */
-abstract class GApplication extends GModule
+class GApplication extends GModule
 {
     /* Const */
     /* Private */
