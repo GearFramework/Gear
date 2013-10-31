@@ -74,7 +74,7 @@ class GLog extends GPlugin
     public function write($stringLog, array $params = array())
     {
         foreach($params as $name => $value)
-            $stringLog = str_replace(':' . $stringLog, $value, $stringLog);
+            $stringLog = str_replace(':' . $name, $value, $stringLog);
         if ($this->rotate || !$this->filename)
             $this->_processFileName();
         @file_put_contents($this->filename, '[' . date('d/m/Y H:i:s') . '] ' . $stringLog . "\n", FILE_APPEND);
