@@ -441,7 +441,7 @@ class GMysqlCursor extends GDbCursor
      */
     protected function _escapeValue($value)
     {
-        if ($value[0] === ':')
+        if (strlen($value) && $value[0] === ':')
             return strpos($value, '.') ? substr($value, 1) : $this->getOwner()->name . '.' . substr($value, 1);
         else
         if (preg_match('/^[A-Z_]+\(.*\)$/', $value))

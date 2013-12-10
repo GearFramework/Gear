@@ -25,6 +25,17 @@ class GMongo extends \Mongo implements IComponent
     /* Public */
     
     /**
+     * Возвращает true, если компонент может быть перегружен, иначе false
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isOverride()
+    {
+        return isset($this->_properties['override']) && (bool)$this->_properties['override'] === true;
+    }
+
+    /**
      * Метод, который выполняется во время инсталляции компонента.
      * Запускает инициализацию класса (конфигурирование) и возвращает
      * инстанс.
@@ -53,7 +64,7 @@ class GMongo extends \Mongo implements IComponent
      * @throws ComponentException
      * @return void
      */
-    public static function init($config = array()) {}
+    public static function init($config) {}
 
     /**
      * Создаёт и возвращает инстанс класса
@@ -79,6 +90,7 @@ class GMongo extends \Mongo implements IComponent
     public function __construct($props)
     {
         $this->_props = $props;
-        parent::__construct('mongodb://' . $this->_props['host'] . ':' . $this->_props['port']);
+        parent::__construct('mongodb://localhost');
+//        parent::__construct('mongodb://' . $this->_props['host'] . ':' . (isset($this->_props['port']) ? $this->_props['port'] : ''));
     }
 }

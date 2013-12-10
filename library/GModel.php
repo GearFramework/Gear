@@ -19,6 +19,7 @@ class GModel extends GObject
     /* Const */
     /* Private */
     /* Protected */
+    protected $_owner = null;
     /* Public */
     /**
      * Конструктор класса
