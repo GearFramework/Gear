@@ -7,5 +7,10 @@ use \gear\library\GException;
 
 class GAccessElement extends GModel
 {
+    protected $_model = null;
     
+    public function getModel()
+    {
+        return !$this->_model ? $this->_model = $this->getOwner()->byId($this->_properties['model']) : $this->_model;
+    }
 }
