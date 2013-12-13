@@ -178,7 +178,11 @@ class GRequest extends GPlugin
         {
             if (is_null($this->_cliEnviroment))
                 $this->_prepareCli();
-            return isset($this->_cliEnviroment[$name]) ? $this->_filtering($filter, $this->_cliEnviroment[$name], $default) : $default;
+            if (isset($this->_cliEnviroment[$name]))
+                return $filter ? $this->_filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnviroment[$name];
+                
+            else
+                return $default;
         }
         else
             return $default;
@@ -205,7 +209,7 @@ class GRequest extends GPlugin
                     $long[] = substr($value, 2) . ':';
             }
         }
-        $this->_cliEnviromen = getopt($short, $long);        
+        $this->_cliEnviroment = getopt($short, $long);
     }
     
     /**

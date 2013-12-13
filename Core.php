@@ -64,6 +64,7 @@ final class Core
     private static $_modules = array();
     private static $_components = array();
     private static $_runMode = null;
+    private static $_env = null;
     private static $_version = '0.0.1';
     /* Protected */
     /* Public */
@@ -80,7 +81,7 @@ final class Core
     public static function init($config = null, $runMode = self::MODE_DEVELOPMENT)
     {
         self::$_runMode = $runMode;
-        if ($config === null || is_dir($config))
+        if ($config === null || (is_string($config) && is_dir($config)))
         {
             $config = ($config === null ? dirname($_SERVER['SCRIPT_FILENAME']) : $config) . '/config.' 
                     . (self::$_runMode === self::MODE_DEVELOPMENT ? 'debug' : 'production') 
@@ -469,7 +470,7 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function getMode() { return self::$_runMode; }
+    public static function getMode() { return self::$_env ? self::$_env : (self::$_env = php_sapi_name() === 'cli' ? self::CLI : self::HTTP); }
     
     /**
      * Возвращает true если приложение запущено из браузера, иначе false
@@ -478,7 +479,7 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function isHttp() { return self::$_runMode === self::HTTP; }
+    public static function isHttp() { return self::getMode() === self::HTTP; }
     
     /**
      * Возвращает true если приложение запущено из консоли, иначе false
@@ -487,7 +488,7 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function isCli() { return self::$_runMode === self::CLI; }
+    public static function isCli() { return self::setMode() === self::CLI; }
     
     /**
      * Генерация исключения

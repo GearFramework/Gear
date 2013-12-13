@@ -139,6 +139,11 @@ class GAccess extends GDbComponent implements IFactory, \IteratorAggregate
         $this->getConnection()->insert($access->props());
     }
     
+    public function remove($access)
+    {
+        $this->getConnection()->remove(array('id' => is_object($access) ? $access->id : (int)$access));
+    }
+    
     public function setTypes(array $types)
     {
         $this->_types = $types;
