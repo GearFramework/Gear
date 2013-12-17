@@ -26,7 +26,7 @@ final class Core
     const ACCESS_PROTECTED = 1;
     const ACCESS_PUBLIC = 2;
     /* Private */
-    private static $_config = array
+    private static $_config = array         // Текущая конфигурация ядра
     (
         'preloads' => array
         (
@@ -61,11 +61,11 @@ final class Core
         (
         ),
     );
-    private static $_modules = array();
-    private static $_components = array();
-    private static $_runMode = null;
-    private static $_env = null;
-    private static $_version = '0.0.1';
+    private static $_modules = array();     // Подключенные модули
+    private static $_components = array();  // Подключённые компоненты
+    private static $_runMode = null;        // Режим запуска PRODUCTION или DEVELOPMENT
+    private static $_env = null;            // Окружение http или консоль
+    private static $_version = '0.0.1';     // Версия ядра
     /* Protected */
     /* Public */
     
@@ -89,7 +89,7 @@ final class Core
         }
         if (is_string($config))
         {
-            $pathFile = self::resolvePath($config);
+            $pathFile = is_file($config) ? $config : self::resolvePath($config);
             if (!file_exists($pathFile))
                 self::e('Конфигурационный файл ":initFile" не найден', array('initFile' => $config));
             $config = require($pathFile);
@@ -488,7 +488,7 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function isCli() { return self::setMode() === self::CLI; }
+    public static function isCli() { return self::getMode() === self::CLI; }
     
     /**
      * Генерация исключения
