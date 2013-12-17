@@ -49,8 +49,11 @@ final class Core
             ),
             'components' => array
             (
+                // Автозагрузчик классов
                 'loader' => array('class' => '\\gear\\components\\gear\\loader\\GLoader'),
+                // Обработчик ошибок
                 'errorHandler' => array('class' => '\\gear\\components\\gear\\handlers\\GErrorsHandler'),
+                // Обработчик неперехваченных исключений
                 'exceptionHandler' => array('class' => '\\gear\\components\\gear\\handlers\\GExceptionsHandler'),
             ),
         ),
@@ -75,6 +78,7 @@ final class Core
      * @access public
      * @static
      * @param string as path to configuration file|array of configuration $config
+     * @param integer Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION $runMode
      * @throws \Exception
      * @return boolean
      */
@@ -219,7 +223,7 @@ final class Core
      * @access public
      * @static
      * @param string $name
-     * @return object|false
+     * @return null|object
      */
     public static function isModuleInstalled($name)
     {

@@ -2,6 +2,7 @@
 
 namespace gear\library;
 use \gear\Core;
+use \gear\library\GBaseObject;
 use \gear\library\GEvent;
 use \gear\library\GException;
 
@@ -15,7 +16,7 @@ use \gear\library\GException;
  * @version 0.0.1
  * @since 01.08.2013
  */
-class GObject
+class GObject extends GBaseObject
 {
     /* Const */
     /* Private */
@@ -28,7 +29,6 @@ class GObject
             'log' => array('class' => '\\gear\\plugins\\gear\\GLog'),
         ),
     );
-    protected $_properties = array();
     protected $_behaviors = array();
     protected $_plugins = array();
     protected $_events = array();
@@ -46,8 +46,7 @@ class GObject
      */
     protected function __construct(array $properties = array())
     {
-        foreach($properties as $name => $value)
-            $this->$name = $value;
+        parent::__construct($properties);
         $this->event('onConstructed');
     }
     
@@ -223,17 +222,6 @@ class GObject
     }
     
     /**
-     * Возвращает имя класса объекта
-     * 
-     * @access public
-     * @return string
-     */
-    public function __toString()
-    {
-        return get_class($this);
-    }
-    
-    /**
      * Возвращает значение указанного конфигурационного параметра класса
      * 
      * @access public
@@ -253,32 +241,6 @@ class GObject
             return self::$_config[$name];
         else
             return null;
-    }
-    
-    /**
-     * Установка владельца объекта
-     * 
-     * @access public
-     * @param object $owner
-     * @return $this
-     */
-    public function setOwner($owner)
-    {
-        if (!is_object($owner))
-            $this->e('Владелец должен быть объектом');
-        $this->_owner = $owner;
-        return $this;
-    }
-    
-    /**
-     * Получение владельца объекта
-     * 
-     * @acess public
-     * @return object
-     */
-    public function getOwner()
-    {
-        return $this->_owner;
     }
 
     /**
