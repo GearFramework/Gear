@@ -29,7 +29,7 @@ abstract class GDbComponent extends GComponent implements IDbComponent
     public $collectionName = 'table';
     
     /**
-     * Возвращает соединение
+     * Возвращает соединение базой данных
      * 
      * @access public
      * @param boolean $autoSelectDb
@@ -47,7 +47,7 @@ abstract class GDbComponent extends GComponent implements IDbComponent
         if (is_array($connectionName))
         {
             list($module, $component) = $connectionName;
-            $connection = Core::m($module)->$component;
+            $connection = Core::m($module)->с($component);
         }
         if ($connection)
         {
