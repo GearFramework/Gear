@@ -18,6 +18,8 @@ use \gear\library\GException;
 class GRequest extends GPlugin
 {
     /* Const */
+    const GET = 1;
+    const POST = 2;
     /* Private */
     /* Protected */
     protected static $_config = array
@@ -39,6 +41,30 @@ class GRequest extends GPlugin
     {
         return call_user_func_array(array($this, 'request'), func_get_args());
     }
+    
+    /**
+     * Возвращает тип запроса
+     * 
+     * @access public
+     * @return integer
+     */
+    public function is() { return $_SERVER['REQUEST_METHOD'] === 'POST' ? self::POST : self::GET; }
+    
+    /**
+     * Возвращает true, если тип запроса был GET иначе false
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isGet() { return $_SERVER['REQUEST_METHOD'] === 'GET'; }
+    
+    /**
+     * Возвращает true, если тип запроса был POST иначе false
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isPost() { return $_SERVER['REQUEST_METHOD'] === 'POST'; }
     
     /**
      * Установка фильтров
@@ -159,7 +185,7 @@ class GRequest extends GPlugin
                 return $data;
             if (!isset($data[$name])) 
                 return $default;
-            return $filter ? $this->_filtering($filter, $data[$name], $default) : $data[$name];
+            return $filter ? $this->filtering($filter, $data[$name], $default) : $data[$name];
         }
     }
     
@@ -179,7 +205,7 @@ class GRequest extends GPlugin
             if (is_null($this->_cliEnviroment))
                 $this->_prepareCli();
             if (isset($this->_cliEnviroment[$name]))
-                return $filter ? $this->_filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnviroment[$name];
+                return $filter ? $this->filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnviroment[$name];
                 
             else
                 return $default;
@@ -213,15 +239,15 @@ class GRequest extends GPlugin
     }
     
     /**
-     * Фильтрация занчения
+     * Фильтрация значения
      * 
-     * @access protected
+     * @access public
      * @param string $filter
      * @param mixed $value
      * @param mixed $default
      * @return mixed
      */
-    protected function _filtering($filter, $value, $default)
+    public function filtering($filter, $value, $default = null)
     {
         if (is_callable($filter))
             $value = call_user_func($filter, $value, $default);

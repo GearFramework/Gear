@@ -67,7 +67,7 @@ final class Core
     private static $_modules = array();     // Подключенные модули
     private static $_components = array();  // Подключённые компоненты
     private static $_runMode = null;        // Режим запуска PRODUCTION или DEVELOPMENT
-    private static $_env = null;            // Окружение http или консоль
+    private static $_env = null;            // Окружение: http или консоль
     private static $_version = '0.0.1';     // Версия ядра
     /* Protected */
     /* Public */

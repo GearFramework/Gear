@@ -4,7 +4,7 @@ namespace gear\components\gear\process;
 use \gear\Core;
 use \gear\library\GComponent;
 use \gear\library\GException;
-use \gear\components\gear\process\GProcess;
+use \gear\library\GModel;
 
 /** 
  * Компонент обслуживающий процессы
@@ -23,13 +23,12 @@ class GProcessComponent extends GComponent
     /* Protected */
     protected static $_config = array
     (
-        'processFolder' => 'process',
         'defaultProcess' => 'index',
-        'defaultApi' => 'index',
     );
     protected static $_init = false;
+    protected $_request = null;
     protected $_processes = array();
-    protected $_current = null;
+    protected $_currentProcess = null;
     /* Public */
     
     /**
@@ -58,128 +57,72 @@ class GProcessComponent extends GComponent
      * @throws ProcessComponentException
      * @return mixed
      */
-    public function exec($processName = null, $api = null)
+    public function exec($request = array())
     {
-        if (!$processName)
+        $this->_request = $request;
+        if (!isset($this->_request['e']))
         {
             $processName = $this->i('defaultProcess');
             if (!$processName)
                 $this->e('Не указан процесс');
         }
-        $namespace = Core::app()->getNamespace();
-        if (strpos($processName, '/') !== false)
-        {
-            list($namespace, $module, $processName) = explode('/', $processName);
-            if (!$processName)
-                $processName = $module;
-            else
-                $namespace .= '\\modules\\' . $module;
-        }
-        $class = $namespace . '\\' . $this->i('processFolder') . '\\G' . ucfirst($processName);
+        else
+            $processName = $this->_request['e'];
         try
         {
-            $properties = isset($this->processes[$processName]) ? $this->processes[$processName] : array();
-            $this->_current = new $class($properties);
+            if (isset($this->_processes[$processName]['class']))
+            {
+                if (is_array($this->_processes[$processName]))
+                {
+                    list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
+                    $properties['name'] = $processName;
+                    $this->_currentProcess = new $class($properties);
+                }
+                else
+                if ($this->_processes[$processName] instanceof \Closure)
+                {
+                    $this->_currentProcess = $this->_processes[$processName];
+                }
+            }
+            else
+            {
+                $routes = explode('/', $processName);
+                $nums = count($routes);
+                if ($nums == 1)
+                    $class = Core::app()->getNamespace() . '\\process\\G' . ucfirst($processName);
+                else
+                if ($nums == 2)
+                {
+                    if ($processName[0] === '/')
+                        $class = '\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
+                    else
+                        $class = Core::app()->getNamespace() . '\\modules\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
+                }
+                else
+                if ($nums >= 3)
+                    $class = '\\' . $routes[0] . '\\modules\\' . $routes[1] . '\\process\\G' . ucfirst($routes[2]);
+                $this->_currentProcess = new $class(isset($this->_processes[$processName]) ? $this->_processes[$processName] : array());
+            }
+            return call_user_func
+            (
+                $this->_currentProcess instanceof \Closure ? $this->_currentProcess : array($this->_currentProcess, 'entry'), 
+                $request
+            );
         }
         catch(GException $e)
         {
             header('HTTP/1.0 404 Not Found', true, 404);
             exit(404);
         }
-        $apiName = 'api' . (ucfirst($api ? $api : $this->i('defaultApi')));
-        $apiArguments = $this->_prepareArguments($apiName);
-        if ($this->_current->event('onBeforeExec'))
-        {
-            $result = call_user_func_array(array($this->_current, $apiName), $apiArguments);
-            return $this->_current->event('onAfterExec', $result);
-        }
-        return false;
-    }
-    
-    /**
-     * Подготовка аргументов, которые могут потребоваться api-методу
-     * 
-     * @access protected
-     * @param string $apiName
-     * @return array
-     */
-    protected function _prepareArguments($apiName)
-    {
-        $args = $this->getApiArguments($this->_current, $apiName);
-        $apiArguments = array();
-        foreach($args as $argument)
-        {
-            $rule = $this->getArgumentRules($this->_current, $argument, $apiName);
-            $request = $rule && isset($rule['request']) ? $rule['request'] : 'request';
-            $filter = $rule && isset($rule['filter']) ? $rule['filter'] : null;
-            try
-            {
-                $default = $argument->getDefaultValue();
-                $apiArguments[] = Core::app()->request->$request($argument->name, $default, $filter);
-            }
-            catch(\ReflectionException $e)
-            {
-                if (!($arg = Core::app()->request->$request($argument->name, null, $filter)))
-                {
-                    $this->e('Api-метод ":apiName" требует обязательного параметра ":argName"', array
-                    (
-                        ':apiName' => $apiName,
-                        ':argName' => $argument->name
-                    ));
-                }
-                $apiArguments[] = $arg;
-            }
-        }
-        return $apiArguments;
     }
     
     /**
      * Возвращает текущий исполняемый процесс
      * 
      * @access public
-     * @return \gear\components\gear\process\GProcess
+     * @return \gear\models\GProcess
      */
-    public function getProcess() { return $this->_current; }
-    
-    /**
-     * Получение правил поступающих от пользователя данных к процессу
-     * 
-     * @access public
-     * @param \gear\components\gear\process\GProcess $process
-     * @return array
-     */
-    public function getRules(GProcess $process) { return $process->getRules(); }
-
-    /**
-     * Получение списка параметров указанного метода
-     *
-     * @access public
-     * @param GProcess $process
-     * @param string $api
-     * @return array
-     */
-    public function getApiArguments(GProcess $process, $api)
-    {
-        $reflection = new \ReflectionMethod($process, $api);
-        return $reflection->getParameters();
-    }
-    
-    /**
-     * Получение правил для указанного аргумента api-метода процесса
-     * 
-     * @access public
-     * @param GProcess $process
-     * @param \ReflectionParameter $argument
-     * @param null|string $api
-     * @return
-     */
-    public function getArgumentRules(GProcess $process, \ReflectionParameter $argument, $api = null)
-    {
-        $rules = $this->getRules($process);
-        return $api && isset($rules[$api][$argument->name]) 
-               ? $rules[$api][$argument->name] 
-               : (isset($rules[$argument->name]) ? $rules[$argument->name] : null);
-    }
+    public function getProcess() { return $this->_currentProcess; }
 }
 
 /** 

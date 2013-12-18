@@ -17,14 +17,15 @@ require __DIR__ . '/../Core.php';
                         'class' => '\\gear\\components\\gear\\process\\GProcessComponent',
                         'processes' => array
                         (
-                            'application' => array(),
-                            'module' => array(),
-                            'component' => array(),
-                            'plugin'
+                            'application' => array('class' => '\\gear\\builder\\process\\GApplication'),
+                            'module' => array('class' => '\\gear\\builder\\process\\GModule'),
+                            'component' => array('class' => '\\gear\\builder\\process\\GComponent'),
                         ),
                     ),
                 )
             ),
+            '_namespace' => '\\gear\\builder',
         ),
     ),
 ));
+\gear\Core::app()->run();

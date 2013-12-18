@@ -49,14 +49,13 @@ class GApplication extends GModule
      * @access public
      * @return void
      */
-    public function run()
+    public function run($request = null)
     {
         if ($this->event('onBeforeRun'))
         {
             $result = $this->c('process')->exec
             (
-                $this->request->get('e'), 
-                $this->request->get('f')
+                $request ? $request : ($this->request->isPost() ? $this->request->post() : $this->request->get())
             );
             $this->event('onAfterRun', $result);
         }
@@ -87,10 +86,7 @@ class GApplication extends GModule
      * @see Core::getMode()
      * @return integer
      */
-    public function getMode()
-    {
-        return Core::getMode();
-    }
+    public function getMode() { return Core::getMode(); }
     
     /**
      * Возвращает true, если приложение запущено из браузера
@@ -98,10 +94,7 @@ class GApplication extends GModule
      * @access public
      * @return bool
      */
-    public function hasHttp()
-    {
-        return $this->getMode() === Core::HTTP;
-    }
+    public function hasHttp() { return $this->getMode() === Core::HTTP; }
     
     /**
      * Возвращает true, если приложение запущено из консоли
@@ -109,10 +102,7 @@ class GApplication extends GModule
      * @access public
      * @return bool
      */
-    public function hasCli()
-    {
-        return $this->getMode() === Core::CLI;
-    }
+    public function hasCli() { return $this->getMode() === Core::CLI; }
     
     /**
      * Возвращает текущий исполняемый процесс
@@ -120,10 +110,7 @@ class GApplication extends GModule
      * @access public
      * @return object
      */
-    public function getProcess()
-    {
-        return $this->c('process')->getProcess();
-    }
+    public function getProcess() { return $this->c('process')->getProcess(); }
     
     /**
      * Получение текущего URL в режиме Core::HTTP, в режиме Core::CLI 
