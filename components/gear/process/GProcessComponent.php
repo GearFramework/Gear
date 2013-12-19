@@ -26,7 +26,6 @@ class GProcessComponent extends GComponent
         'defaultProcess' => 'index',
     );
     protected static $_init = false;
-    protected $_request = null;
     protected $_processes = array();
     protected $_currentProcess = null;
     /* Public */
@@ -49,27 +48,25 @@ class GProcessComponent extends GComponent
     public function getProcesses() { return $this->_processes; }
     
     /**
-     * Исполнение указанного процесса
+     * Исполнение процесса
      * 
      * @access public
-     * @param string $process
-     * @param string $api
+     * @param mixed $request
      * @throws ProcessComponentException
      * @return mixed
      */
     public function exec($request = array())
     {
-        $this->_request = $request;
-        if (!isset($this->_request['e']))
-        {
-            $processName = $this->i('defaultProcess');
-            if (!$processName)
-                $this->e('Не указан процесс');
-        }
-        else
-            $processName = $this->_request['e'];
         try
         {
+            if (!isset($request['e']))
+            {
+                $processName = $this->i('defaultProcess');
+                if (!$processName)
+                    $this->e('Не указан процесс');
+            }
+            else
+                $processName = $request['e'];
             if (isset($this->_processes[$processName]['class']))
             {
                 if (is_array($this->_processes[$processName]))
@@ -80,9 +77,7 @@ class GProcessComponent extends GComponent
                 }
                 else
                 if ($this->_processes[$processName] instanceof \Closure)
-                {
                     $this->_currentProcess = $this->_processes[$processName];
-                }
             }
             else
             {

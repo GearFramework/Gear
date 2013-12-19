@@ -183,9 +183,33 @@ class GRequest extends GPlugin
         {
             if ($name === null) 
                 return $data;
-            if (!isset($data[$name])) 
-                return $default;
-            return $filter ? $this->filtering($filter, $data[$name], $default) : $data[$name];
+            if (is_string($name))
+            {
+                if (!isset($data[$name])) 
+                    return $default;
+                return $filter ? $this->filtering($filter, $data[$name], $default) : $data[$name];
+            }
+            else
+            if (is_array($name))
+            {
+                if (preg_match('/\D+/', implode('', array_keys($name))))
+                {
+                    $data = $name;
+                    return $this;
+                }
+                else
+                {
+                    $result = array();
+                    foreach($name as $dataName)
+                    {
+                        $result[$dataName] = isset($data[$dataName]) 
+                                             ? ($filter ? $this->filtering($filter, $data[$dataName], $default) : $data[$dataName]) 
+                                             : $default;
+                    }
+                    return $result;
+                }
+            }
+            return $default;
         }
     }
     
