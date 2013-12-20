@@ -23,6 +23,7 @@ class GProcess extends GModel
     protected $_access = Core::ACCESS_PUBLIC;
     protected $_apis = array();
     protected $_currentApi = null;
+    protected $_request = array();
     /* Public */
     public $defaultApi = 'index';
     public $rules = array
@@ -65,6 +66,7 @@ class GProcess extends GModel
     {
         if ($this->event('onBeforeExec', $request))
         {
+            $this->_request = $request;
             $apiName = isset($request['f']) ? $request['f'] : $this->defaultApi;
             $api = $this->getApis($apiName);
             if ($api)
