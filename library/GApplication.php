@@ -142,14 +142,14 @@ class GApplication extends GModule
      * Делает переход на указанный процесс, api-метод с параметрами
      * 
      * @access public
-     * @param string $api
-     * @param null|string $action
+     * @param string $process
+     * @param null|string $api
      * @param string|array $params
      * @return void
      */
-    public function redirect($api, $action = null, $params = array())
+    public function redirect($process, $api = null, $params = array())
     {
-        $url = 'index.php?e=' . $api . ($action ? '&f=' . $action : '');
+        $url = 'index.php?e=' . $process . ($api ? '&f=' . $api : '');
         if (is_array($params))
         {
             foreach($params as $name => $value)
