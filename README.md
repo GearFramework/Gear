@@ -106,15 +106,21 @@ $cursor->asAll();
 ```
 либо при использовании конструкции `foreach(){}`. В последнем случае неявно будет вызываться метод `asAssoc()`. Примеры условий:
 
-```\gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => 1, '$or' => array('id' => 4)))
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => 1, '$or' => array('id' => 4)))
 соответствует SQL-запросу
-SELECT products.* FROM products WHERE products.id = 1 OR products.id = 4```
-```\gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => array('$in' => array(1 ,4)), '$and' => array('category' => 3)))
+SELECT products.* FROM products WHERE products.id = 1 OR products.id = 4
+```
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => array('$in' => array(1 ,4)), '$and' => array('category' => 3)))
 соответствует SQL-запросу
-SELECT products.* FROM products WHERE products.id IN (1, 4) AND products.category = 3```
-```\gear\Core::c('db')->selectCollection('database', 'products')->find((array('id' => 1, array('category' => 1, '$or' => array('category' => 3))))
+SELECT products.* FROM products WHERE products.id IN (1, 4) AND products.category = 3
+```
+```
+\gear\Core::c('db')->selectCollection('database', 'products')->find((array('id' => 1, array('category' => 1, '$or' => array('category' => 3))))
 соответствует SQL-запросу
-SELECT products.* FROM products WHERE products.id = 1 AND (products.category = 1 OR products.category = 2)```
+SELECT products.* FROM products WHERE products.id = 1 AND (products.category = 1 OR products.category = 2)
+```
 
 #### Сортировка
 
