@@ -2,7 +2,7 @@
 
 namespace gear\modules\user\process;
 use \gear\Core;
-use \gear\components\gear\process\GProcess;
+use \gear\models\GProcess;
 
 class GAuth extends GProcess
 {

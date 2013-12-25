@@ -38,6 +38,18 @@ class GMysqlCursor extends GDbCursor
     /* Public */
     
     /**
+     * Возвращает SQL-запрос
+     * 
+     * @access public
+     * @return string
+     */
+    public function __toString()
+    {
+        $query = $this->_query ? $this->_query : $this->buildQuery();
+        return $query;
+    }
+    
+    /**
      * Построение запроса
      * 
      * @access public
@@ -686,18 +698,6 @@ class GMysqlCursor extends GDbCursor
         return $this->_current = $this->asAssoc();
     }
 
-/*    public function query($query = null)
-    {
-        if (!$query)
-            $query = $this->_query ? $this->_query : $this->_build();
-        if (!$this->_explain && $this->getConnection()->isPluginRegistered('trace'))
-            $this->getConnection()->p('trace')->trace($this);
-        $this->_resource = mysqli_query($this->getHandler(), $query);
-        if (!$this->_resource)
-            $this->e(mysqli_error($this->getHandler()) . ' (' . $query . ')');
-        return $this;
-    }*/
-    
     public function reset()
     {
         $this->_count = false;

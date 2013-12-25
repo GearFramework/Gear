@@ -64,7 +64,7 @@ require '/usr/share/gear/gear/Core.php';
 Модули
 ------
 
-Самостоятельная сущность, у которой могут быть свои компоненты, бибилиотеки, шаблоны отображения и т.д. Добавление модулей происходит в конфигурационном файле в разеде `Modules`.
+Самостоятельная сущность, у которой могут быть свои компоненты, бибилиотеки, шаблоны отображения и т.д. Добавление модулей происходит в конфигурационном файле в разеде `modules`.
 
 Компоненты
 ----------
@@ -104,7 +104,17 @@ $cursor->asAssoc();
 $cursor->asObject();
 $cursor->asAll();
 ```
-либо при использовании конструкции `foreach(){}`. В последнем случае неявно будет вызываться метод `asAssoc()`.
+либо при использовании конструкции `foreach(){}`. В последнем случае неявно будет вызываться метод `asAssoc()`. Примеры условий:
+
+```\gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => 1, '$or' => array('id' => 4)))
+соответствует SQL-запросу
+SELECT products.* FROM products WHERE products.id = 1 OR products.id = 4```
+```\gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => array('$in' => array(1 ,4)), '$and' => array('category' => 3)))
+соответствует SQL-запросу
+SELECT products.* FROM products WHERE products.id IN (1, 4) AND products.category = 3```
+```\gear\Core::c('db')->selectCollection('database', 'products')->find((array('id' => 1, array('category' => 1, '$or' => array('category' => 3))))
+соответствует SQL-запросу
+SELECT products.* FROM products WHERE products.id = 1 AND (products.category = 1 OR products.category = 2)```
 
 #### Сортировка
 
