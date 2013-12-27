@@ -66,7 +66,6 @@ require '/usr/share/gear/gear/Core.php';
 1. Первый параметр не указан. В этом случае, метод `\gear\Core::init()` попытается найти конфигурационный файл в папке, где располагается непосредственно `index.php`, в зависимости от режима работы приложения это может быть либо config.debug.php, либо config.production.php, если таковые не найдены, то генерируется исключение `\gear\CoreException`.
 
 2. Непосредственно массив с настройками
-
 ```
 \gear\Core::init(array
 (
@@ -79,14 +78,13 @@ require '/usr/share/gear/gear/Core.php';
 ```
 \gear\Core::init(require('/var/www/config.myproject.php'));
 ```
-3. Путь к папке в которой должны располагаться config.debug.php или/и config.production.php
 
+3. Путь к папке в которой должны располагаться config.debug.php или/и config.production.php
 ```
 \gear\Core::init('/usr/share/gear/myproject/config');
 ```
 
 4. Непосредственно путь и название файла конфигурации. В данном случае возможно использование пространства имён.
-
 ```
 \gear\Core::init('/usr/share/gear/myproject/config/config.test.php');
 /* 
