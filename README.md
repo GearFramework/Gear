@@ -87,10 +87,8 @@ require '/usr/share/gear/gear/Core.php';
 4. Непосредственно путь и название файла конфигурации. В данном случае возможно использование пространства имён.
 ```
 \gear\Core::init('/usr/share/gear/myproject/config/config.test.php');
-
 // пространство имён относительно /usr/share/gear
 \gear\Core::init('\\myproject\\config\\config.test.php');
-
 // пространство имён относительно /usr/share/gear/gear, т.е. файл config.test.php 
 // должен лежать по физическому пути /usr/share/gear/gear/config по той простой причине,
 // что на момент подключения конфигурационного файла объекта приложения ещё не существует
