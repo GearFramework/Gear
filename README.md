@@ -251,17 +251,21 @@ limit('3, 5')
 
 > Порядок использования методов: `find()`, `sort()`, `limit()` и прочих не имеет значения, т.е. запись
 >
-> ``` \gear\Core::c('db')->selectCollection('database', 'products')
-      ->find(array('category' => 1))
-      ->sort(array('name' => -1))
-      ->limit(3); ```
+> ``` 
+ \gear\Core::c('db')->selectCollection('database', 'products')
+  ->find(array('category' => 1))
+  ->sort(array('name' => -1))
+  ->limit(3); 
+  ```
 >
 > равносильна записи
 >
-> ``` \gear\Core::c('db')->selectCollection('database', 'products')
-      ->limit(3)
-      ->sort(array('name' => -1))
-      ->find(array('category' => 1)); ```
+> ``` 
+ \gear\Core::c('db')->selectCollection('database', 'products')
+ ->limit(3)
+ ->sort(array('name' => -1))
+ ->find(array('category' => 1));
+ ```
  
 #### Добавление новых записей
 
