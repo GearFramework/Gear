@@ -88,15 +88,14 @@ require '/usr/share/gear/gear/Core.php';
 ```
 \gear\Core::init('/usr/share/gear/myproject/config/config.test.php');
 
-/* пространство имён относительно /usr/share/gear */
+// пространство имён относительно /usr/share/gear
 \gear\Core::init('\\myproject\\config\\config.test.php');
 
-/*
-    пространство имён относительно /usr/share/gear/gear, т.е. файл config.test.php 
-    должен лежать по физическому пути /usr/share/gear/gear/config по той простой причине,
-    что на момент подключения конфигурационного файла объекта приложения ещё не существует
-*/
-\gear\Core::init('config\\config.test.php');```
+// пространство имён относительно /usr/share/gear/gear, т.е. файл config.test.php 
+// должен лежать по физическому пути /usr/share/gear/gear/config по той простой причине,
+// что на момент подключения конфигурационного файла объекта приложения ещё не существует
+\gear\Core::init('config\\config.test.php');
+```
 
 Полученные таким образом настройки объединяются с тем, которые по-умолчанию уже определны в ядре.
 
