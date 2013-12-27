@@ -247,7 +247,21 @@ limit(3, 5);
 limit(array(3, 5));
 limit('3, 5')
 ```
-Запись `findOne(array('category' => 1))` равносильна `find(array('category' => 1))->limit(1)->asAssoc()`
+Запись `findOne(array('category' => 1))` равносильна `find(array('category' => 1))->limit(1)->asAssoc()`.
+
+> Порядок использования методов: `find()`, `sort()`, `limit()` и прочих не имеет значения, т.е. запись
+>
+> ``` \gear\Core::c('db')->selectCollection('database', 'products')
+      ->find(array('category' => 1))
+      ->sort(array('name' => -1))
+      ->limit(3); ```
+>
+> равносильна записи
+>
+> ``` \gear\Core::c('db')->selectCollection('database', 'products')
+      ->limit(3)
+      ->sort(array('name' => -1))
+      ->find(array('category' => 1)); ```
  
 #### Добавление новых записей
 
