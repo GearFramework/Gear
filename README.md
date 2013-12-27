@@ -87,10 +87,10 @@ require '/usr/share/gear/gear/Core.php';
 4. Непосредственно путь и название файла конфигурации. В данном случае возможно использование пространства имён.
 ```
 \gear\Core::init('/usr/share/gear/myproject/config/config.test.php');
-/* 
-    пространство имён относительно /usr/share/gear 
-*/
+
+/* пространство имён относительно /usr/share/gear */
 \gear\Core::init('\\myproject\\config\\config.test.php');
+
 /*
     пространство имён относительно /usr/share/gear/gear, т.е. файл config.test.php 
     должен лежать по физическому пути /usr/share/gear/gear/config по той простой причине,
@@ -99,6 +99,17 @@ require '/usr/share/gear/gear/Core.php';
 \gear\Core::init('config\\config.test.php');
 ```
 
+Полученные таким образом настройки объединяются с тем, которые по-умолчанию уже определны в ядре.
+
+#### Конфигурирование
+
+В конфигурационном файле, в общем случае, существуют 3 раздела:
+
+1. preloads
+2. modules
+3. components
+
+<b>preloads</b> служит для подключения критически важных библиотек классов, модулей и компонентов, экземляры которых будут созданы на этапе конфигурирования. Данный раздел содержит 3 подраздела: `library`, `modules`, `components`
 
 Модули
 ------
