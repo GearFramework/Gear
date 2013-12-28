@@ -202,6 +202,7 @@ $cursor->asAll();
 ```sql
 SELECT products.* FROM products WHERE products.id = 1 OR products.id = 4
 ```
+---
 ```php
 \gear\Core::c('db')->selectCollection('database', 'products')->find
 (
