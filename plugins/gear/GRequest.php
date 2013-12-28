@@ -56,7 +56,7 @@ class GRequest extends GPlugin
      * @access public
      * @return boolean
      */
-    public function isGet() { return $_SERVER['REQUEST_METHOD'] === 'GET'; }
+    public function isGet() { return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET'; }
     
     /**
      * Возвращает true, если тип запроса был POST иначе false
@@ -64,7 +64,7 @@ class GRequest extends GPlugin
      * @access public
      * @return boolean
      */
-    public function isPost() { return $_SERVER['REQUEST_METHOD'] === 'POST'; }
+    public function isPost() { return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST'; }
     
     /**
      * Установка фильтров
@@ -224,18 +224,21 @@ class GRequest extends GPlugin
      */
     public function cli($name, $default = null, $filter = null)
     {
+        if (is_null($this->_cliEnviroment))
+            $this->_prepareCli();
         if ($name)
         {
-            if (is_null($this->_cliEnviroment))
-                $this->_prepareCli();
+            die();
+            if (!$name)
+                return $this->_cliEnviroment;
+            else
             if (isset($this->_cliEnviroment[$name]))
                 return $filter ? $this->filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnviroment[$name];
-                
             else
                 return $default;
         }
         else
-            return $default;
+            return $this->_cliEnviroment;
     }
     
     /**
