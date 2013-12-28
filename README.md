@@ -57,7 +57,7 @@ Open Source PHP Framework (PHP 5.3 or higher)
 (
     array
     (
-        'modules` => array
+        'modules' => array
         (
             'app' => array
             (
@@ -100,7 +100,84 @@ http://localhost?e=processName
 API-методы
 ----------
 
-В понимании MVC api-методы являются экшенами(actions).
+В понимании MVC api-методы являются экшенами(actions). Api-методы в общем случае являются непосредственно методами класса процесса их название должно начинаться с префикса `api`. В запросе название api-метода передаётся в параметре <b>f</b>
+
+```
+http://localhost?e=processName&f=apiName
+```
+либо в консоли
+```
+/usr/bin/php /var/www/index.php -e processName -f apiName
+```
+При это в классе должен быть реализован метод `public function apiApiName(){}`.
+
+Кроме того, api-метод может быть вынесен в отдельный файл-класс или же быть анонимной функцией, описанной в конфигурационном файле приложения. Все внешние api-методы должны описываться в свойстве процесса - `$_apis`.
+Пример описания внешнего api-метода и его реализация:
+
+Процесс
+```php
+<?php
+
+namespace myproject\process;
+use \gear\Core;
+use \gear\models\GProcess;
+
+class GMyProcess extends GProcess
+{
+    protected $_apis = array
+    (
+        'index' => array('class' => '\\myproject\\api\\GMyIndex'),
+    )
+}
+```
+Api-метод
+```php
+<?php
+
+namespace myproject\api;
+use \gear\Core;
+use \gear\models\GApi;
+
+class GMyIndex extends GApi
+{
+    public function runApi($request = array())
+    { 
+        echo 'Hello world'; 
+    }
+}
+```
+
+Пример реализации через анонимную функцию
+
+Конфигурационный файл
+```php
+<?php
+
+return array
+(
+    'modules' => array
+    (
+        'app' =>
+        (
+            'class' => array
+            (
+                'name' => '\\myproject\\MyProject',
+                'components' => array
+                (
+                    'process' => array
+                    (
+                        'class' => '\\gear\\components\\gear\\process\\GProcessComponent',
+                        'apis' => array
+                        (
+                            'index' => function() { echo 'Hello world'; }
+                        )
+                    ),
+                ),
+            ),
+        )
+    ),
+);
+``` 
 
 Создание проекта
 ----------------

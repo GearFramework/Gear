@@ -28,7 +28,7 @@ class GProcess extends GModel
     public $defaultApi = 'index';
     public $rules = array
     (
-        'apiIndex' => array
+        'index' => array
         (
         )
     );
