@@ -53,7 +53,7 @@ Open Source PHP Framework (PHP 5.3 or higher)
 Все запросы должны проходить через единственный файл index.php, который в общем случае, располагается в `DOCUMENT_ROOT` вашего Apache-сервера (допустим это будет `/var/www`). Помимо index.php рядом могут располагаться конфигурационные файлы `config.production.php` и/или `config.debug.php`, в зависимости от режима работы приложения (config.production.php - настройки приложения для работы в продакшене, config.debug.php - настройки приолжения для работы в режиме разработки и отладки), но также возможно использовать любой иной файл-конфигурации (при инициализации ядра необходимо указать путь к данному файлу).
 В минимальном виде index.php содержит три строчки кода:
 
-```
+```php
 <?php
 require '/usr/share/gear/gear/Core.php';
 \gear\Core::init();
@@ -66,7 +66,7 @@ require '/usr/share/gear/gear/Core.php';
 1. Первый параметр не указан. В этом случае, метод `\gear\Core::init()` попытается найти конфигурационный файл в папке, где располагается непосредственно `index.php`, в зависимости от режима работы приложения это может быть либо config.debug.php, либо config.production.php, если таковые не найдены, то генерируется исключение `\gear\CoreException`.
 
 2. Непосредственно массив с настройками
-```
+```php
 \gear\Core::init(array
 (
     'modules' => array
@@ -75,17 +75,17 @@ require '/usr/share/gear/gear/Core.php';
     ),
 ));
 ```
-```
+```php
 \gear\Core::init(require('/var/www/config.myproject.php'));
 ```
 
 3. Путь к папке в которой должны располагаться config.debug.php или/и config.production.php
-```
+```php
 \gear\Core::init('/usr/share/gear/myproject/config');
 ```
 
 4. Непосредственно путь и название файла конфигурации. В данном случае возможно использование пространства имён.
-```
+```php
 \gear\Core::init('/usr/share/gear/myproject/config/config.test.php');
 // пространство имён относительно /usr/share/gear
 \gear\Core::init('\\myproject\\config\\config.test.php');
@@ -127,7 +127,7 @@ ORM
 
 Дл яполучения доступа к базам данных используются соответствующие компоненты. Для этого, необходимо в конфигурационном файле, в соответствующем разделе `components` включить его описание
 
-```
+```php
 ...
 'components' => array
 (
@@ -144,19 +144,19 @@ ORM
 
 Описать таким образом можно необходимое количество компонентов, если у вас не один, а несколько северов баз данных. После этого в приложении можно будет обратиться к данном компоненту как `\gear\Core::c('db');`. Компонент поддерживает работу с несколькими база данных на одном сервере:
 
-```
+```php
 $database = \gear\Core::c('db')->selectDB('databaseName');
 ```
 
 Для получения конкретных данных, помимо выбора базы данных, необходимо указать рабочую таблицу
 
-```
+```php
 $table = \gear\Core::c('db')->selectDB('databaseName')->selectCollection('tableName');
 ```
 
 Оба эти действия можно объеденить в одно
 
-```
+```php
 $table = \gear\Core::c('db')->selectCollection('databaseName', 'tableName');
 ```
 
@@ -164,14 +164,14 @@ $table = \gear\Core::c('db')->selectCollection('databaseName', 'tableName');
 
 Самая простая выборка, соответствующая SQL-запросу `SELECT * FROM products`:
 
-```
+```php
 $collection = \gear\Core::c('db')->selectCollection('database', 'products');
 foreach($collection as $itemProduct)
     echo $itemProduct->name, '<br />';
 ```
 Условие выборки:
  
-```
+```php
 $cursor = \gear\Core::c('db')->selectCollection('database', 'products')
         ->find(array('category' => 3));
 foreach($cursor as $itemProduct)
@@ -180,7 +180,7 @@ foreach($cursor as $itemProduct)
 
 > Любые `SELECT` запросы являются отложенными до вызова одного из методов полученного курсора:
 
-```
+```php
 $cursor->asRow();
 $cursor->asAssoc();
 $cursor->asObject();
@@ -188,9 +188,11 @@ $cursor->asAll();
 ```
 либо при использовании конструкции `foreach(){}`. В последнем случае неявно будет вызываться метод `asAssoc()`. Примеры условий:
 
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')->find(array('id' => 1, '$or' => array('id' => 4)))
+```
 соответствует SQL-запросу
+```sql
 SELECT products.* FROM products WHERE products.id = 1 OR products.id = 4
 ```
 ```
@@ -206,7 +208,7 @@ SELECT products.* FROM products WHERE products.id = 1 AND (products.category = 1
 
 #### Сортировка
 
-```
+```php
 $cursor = \gear\Core::c('db')->selectCollection('database', 'products')
         ->find(array('category' => 3))
         ->sort(array('name' => 1));
@@ -215,7 +217,7 @@ foreach($cursor as $itemProduct)
 ```
 В данном случае будет произведена сортировка по полю `name` в порядке возрастания, т.е. `ASC`. Для сортировки в порядке убывания `sort(array('name' => -1))`. Сортировка по нескольким полям:
 
-```
+```php
 $cursor = \gear\Core::c('db')->selectCollection('database', 'products')
         ->find()
         ->sort(array('category' => 1, 'name' => 1));
@@ -223,7 +225,7 @@ foreach($cursor as $itemProduct)
     echo $itemProduct->name, '<br />';
 ```
 Возможно также указать собственный порядок сортировки, например, когда необходимо в начале вывести элементы категорий `5, 1, 3`, а потом всех остальных:
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')
                    ->find()
                    ->sort(array('category' => array(5, 1, 3), 'name' => 1));
@@ -232,7 +234,7 @@ foreach($cursor as $itemProduct)
 
 Для ограничения количества получаемых элементов используется метод `limit()`, например:
 
-```
+```php
 $cursor = \gear\Core::c('db')->selectCollection('database', 'products')
         ->find(array('category' => 1))
         ->limit(3);
@@ -242,7 +244,7 @@ foreach($cursor as $itemProduct)
 В данном случае будет произведена выборка первых трёх элементов. 
 Для выборки элементов начиная с определённого, можно использовать один из вариантов, например для выборки 3-х элементов, начиная с 5-ого:
 
-```
+```php
 limit(3, 5);
 limit(array(3, 5));
 limit('3, 5')
@@ -251,7 +253,7 @@ limit('3, 5')
 
 > Порядок использования методов: `find()`, `sort()`, `limit()` и прочих не имеет значения, т.е. запись
 >
-> ``` 
+> ```php 
  \gear\Core::c('db')->selectCollection('database', 'products')
   ->find(array('category' => 1))
   ->sort(array('name' => -1))
@@ -260,7 +262,7 @@ limit('3, 5')
 >
 > равносильна записи
 >
-> ``` 
+> ```php 
  \gear\Core::c('db')->selectCollection('database', 'products')
  ->limit(3)
  ->sort(array('name' => -1))
@@ -275,7 +277,7 @@ limit('3, 5')
 
 Производит простое добавление новой записи в таблицу
 
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')->insert(array
 (
     'category' => 1,
@@ -284,7 +286,7 @@ limit('3, 5')
 ```
 Если необходимо вставить несколько записей, то лучше делать это, не используя цикл, следующим образом:
 
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')->insert(array
 (
     array
@@ -301,7 +303,7 @@ limit('3, 5')
 ```
 Возможна такая запись добавления объекта
 
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')->insert(new \gear\library\GModel(array
 (
     'category' => 1,
@@ -322,19 +324,19 @@ limit('3, 5')
 
 Например, чтобы удалить все элементы из категории `3`:
 
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')->remove(array('category' => 3));
 ```
 Данная запись будет равносильна
 
-```
+```php
 \gear\Core::c('db')->selectCollection('database', 'products')
                    ->find(array('category' => 3))
                    ->remove();
 ```
 Это полезно для случаев, когда необходимо, например, сначала вывести на экран выбранные элементы, а потом их удалить
 
-```
+```php
 $cursor = \gear\Core::c('db')->selectCollection('database', 'products')
         ->find(array('category' => 3))
 foreach($cursor as $itemProduct)
@@ -345,7 +347,7 @@ $cursor->remove();
 ```
 Удалить все записи из таблицы можно тремя способами:
 
-```
+```php
 // SQL-Запрос DELETE FROM `products`
 \gear\Core::c('db')->selectCollection('database', 'products')->find()->remove();
 \gear\Core::c('db')->selectCollection('database', 'products')->remove();
