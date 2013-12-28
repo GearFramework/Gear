@@ -109,7 +109,23 @@ http://localhost?e=processName&f=apiName
 ```
 /usr/bin/php /var/www/index.php -e processName -f apiName
 ```
-При это в классе должен быть реализован метод `public function apiApiName(){}`.
+При это в классе должен быть реализован метод `public function apiApiName(){}`. Пример, запрос `http://localhost?e=myProcess&f=index` требует реализации
+
+```php
+<?php
+
+namespace myproject\process;
+use \gear\Core;
+use \gear\models\GProcess;
+
+class GMyProcess extends GProcess
+{
+    public function apiIndex()
+    {
+        echo 'Hello world';
+    }
+}
+```
 
 Кроме того, api-метод может быть вынесен в отдельный файл-класс или же быть анонимной функцией, описанной в конфигурационном файле приложения. Все внешние api-методы должны описываться в свойстве процесса - `$_apis`.
 Пример описания внешнего api-метода и его реализация:
@@ -140,7 +156,7 @@ use \gear\models\GApi;
 
 class GMyIndex extends GApi
 {
-    public function runApi($request = array())
+    public function runApi()
     { 
         echo 'Hello world'; 
     }

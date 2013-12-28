@@ -33,10 +33,8 @@ abstract class GApi extends GModel
     /**
      * Исполнение api-метода
      * 
-     * @abstract
      * @access public
-     * @param array $request
      * @return mixed
      */
-    abstract public function runApi($request = array());
+    public function runApi() {}
 }
