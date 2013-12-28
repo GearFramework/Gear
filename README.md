@@ -47,6 +47,52 @@ Open Source PHP Framework (PHP 5.3 or higher)
 Пространство имён
 -----------------
 
+Процессы
+--------
+
+В понимании MVC процессы являются контроллерами(controllers). За вызов того или иного процесса отвечает компонент - "Менеджер процессов", описанный в конфигурации класса `gear\library\GApplication` и переопределить который можно в конфигурационном файле приложения, например:
+
+```php
+\gear\Core::init
+(
+    array
+    (
+        'modules` => array
+        (
+            'app' => array
+            (
+                'components' => array
+                (
+                    'process' => array
+                    (
+                        'class' => '\\myproject\\components\\GMyProcessManager',
+                    ),
+                ),
+            ),
+        ),
+    )
+);
+```
+
+По-умолчанию же используется стандартный менеджер процессов `\gear\components\gear\process\GProcessComponent`. Функция менеджера процессов - получить из запроса название процесса, определить его расположение, создать экземпляр класса процесса и запустить его. В запросе название процесса определяется параметром <b>e</b>:
+```
+http://localhost?e=processName
+```
+В зависимости от типа запроса POST или GET, параметр <b>e</b> будет искаться либо в `$_POST` либо в `$_GET`-массиве соответственно. При отсутствии параметра, название процесса будет браться из статического поля `defaultProcess`. Все файлы процессов должны располагаться в папке `process` либо внутри проекта, либо какого-либо модуля.
+Определение класса, т.е. расположения процесса лучше всего показать на примерах:
+
+Для `http://localhost?e=processName` класс `\\currentProject\\process\\GProcessName`
+Для `http://localhost?e=/gear/processName` класс `\\gear\\process\\GProcessName`
+Для `http://localhost?e=/projectName/processName` класс `\\projectName\\process\\GProcessName`
+Для `http://localhost?e=moduleName/processName` класс `\\currentProject\\moduleName\\process\\GProcessName`
+Для `http://localhost?e=/gear/moduleName/processName` класс `\\gear\\moduleName\\process\\GProcessName`
+Для `http://localhost?e=/projectName/moduleName/processName` класс `\\projectName\\moduleName\\process\\GProcessName`
+
+API-методы
+----------
+
+В понимании MVC api-методы являются экшенами(actions).
+
 Создание проекта
 ----------------
 
