@@ -82,10 +82,15 @@ http://localhost?e=processName
 Определение класса, т.е. расположения процесса лучше всего показать на примерах:
 
 Для `http://localhost?e=processName` класс `\\currentProject\\process\\GProcessName`
+
 Для `http://localhost?e=/gear/processName` класс `\\gear\\process\\GProcessName`
+
 Для `http://localhost?e=/projectName/processName` класс `\\projectName\\process\\GProcessName`
+
 Для `http://localhost?e=moduleName/processName` класс `\\currentProject\\moduleName\\process\\GProcessName`
+
 Для `http://localhost?e=/gear/moduleName/processName` класс `\\gear\\moduleName\\process\\GProcessName`
+
 Для `http://localhost?e=/projectName/moduleName/processName` класс `\\projectName\\moduleName\\process\\GProcessName`
 
 API-методы
