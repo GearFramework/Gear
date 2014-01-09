@@ -73,7 +73,7 @@ class GApplication extends GModule
      */
     public function getNamespace()
     {
-        return $this->_namespace ? $this->_namespace : $this->_namespace = basename(dirname(get_class($this)));
+        return $this->_namespace ? $this->_namespace : $this->_namespace = basename(dirname(str_replace('\\', '/', get_class($this))));
     }
 
     /**

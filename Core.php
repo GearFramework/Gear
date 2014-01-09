@@ -263,7 +263,7 @@ final class Core
     {
         if (isset(self::$_modules[$name]))
         {
-            self::$_modules[$name]->event('onUnstall');
+            self::$_modules[$name]->event('onUninstall');
             unset(self::$_modules[$name]);
             return true;
         }
@@ -376,7 +376,7 @@ final class Core
     {
         if (isset(self::$_components[$name]))
         {
-            self::$_components[$name]->event('onUnstall');
+            self::$_components[$name]->event('onUninstall');
             unset(self::$_components[$name]);
             return true;
         }
