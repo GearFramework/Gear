@@ -217,10 +217,10 @@ require '/usr/share/gear/gear/Core.php';
 ```php
 \gear\Core::init(array
 (
-    'modules' => array
-    (
-        'app' => array('class' => '\\myproject\\MyProject'),
-    ),
+        'modules' => array
+        (
+            'app' => array('class' => '\\myproject\\MyProject'),
+        ),
 ));
 ```
 ```php
