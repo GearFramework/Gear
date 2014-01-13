@@ -27,6 +27,9 @@ class GObject
             'view' => array('class' => '\\gear\\plugins\\gear\\GView'),
             'log' => array('class' => '\\gear\\plugins\\gear\\GLog'),
         ),
+        'behaviors' => array
+        (
+        ),
     );
     protected $_properties = array();
     protected $_owner = null;
@@ -296,7 +299,7 @@ class GObject
      */
     public function setBehaviors(array $behaviors)
     {
-        $this->attachBehaviors($behaviors);
+        static::$_config['behaviors'] = array_replace_recursive(static::$_config['behaviors'], $behaviors);
         return $this;
     }
     
@@ -322,7 +325,7 @@ class GObject
      */
     public function isBehavior($name)
     {
-        return isset($this->_behaviors[$name]);
+        return isset($this->_behaviors[$name]) || isset(static::$_config['behaviors'][$name]) || isset(self::$_config['behaviors'][$name]);
     }
     
     /**
@@ -349,11 +352,17 @@ class GObject
      */
     public function attachBehavior($name, $behavior)
     {
+        // $behavior is string of classname (class must be instance of \gear\interfaces\IBehavior)
         if (is_string($behavior))
             $this->_behaviors[$name] = $behavior::attach($this);
         else
-        if ($behavior instanceof Closure)
-            $this->_behaviors[$name] = $behavior;
+        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record (release class::__invoke(), array('classname', 'methodname'))
+        if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
+            $this->_behaviors[$name] = $behavior->setOwner($this);
+        else
+        // $behavior is object instance of \Closure
+        if ($behavior instanceof \Closure)
+            $this->_behaviors[$name] = $behavior->bindTo($this, $this);
         else
             $this->e('Подключаемое поведение ":behaviorName" не является корректным', array('behaviorName' => $name));
         return $this;
@@ -374,13 +383,25 @@ class GObject
     public function b($name)
     {
         $args = func_get_args();
-        $name = array_shift($args);
+        array_shift($args);
         if (!$this->isBehavior($name))
             $this->e('Поведение ":behaviorName" не реализовано', array('behaviorName' => $name));
-        if ($this->_behaviors[$name] instanceof Closure)
-            return call_user_func_array($this->_behaviors[$name], $args);
+        if (isset($this->_behaviors[$name]))
+        {
+            if ($this->_behaviors[$name] instanceof Closure)
+                return call_user_func_array($this->_behaviors[$name], $args);
+            else
+                return $this->_behaviors[$name];
+        }
         else
-            return $this->_behaviors[$name];
+        {
+            $behaviors = $this->getBehaviors();
+            if (!isset($behaviors[$name]))
+                $this->e('Поведение ":behaviorName" не реализовано', array('behaviorName' => $name));
+            $this->attachBehavior($name, $behaviors[$name]);
+            return $this->b('name');
+        }
+            
     }
     
     /**
@@ -392,7 +413,7 @@ class GObject
      */
     public function detachBehavior($name)
     {
-        if ($this->isBehavior($name))
+        if (isset($this->_behaviors[$name]))
             unset($this->_behaviors[$name]);
         return $this;
     }
