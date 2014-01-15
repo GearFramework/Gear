@@ -286,36 +286,6 @@ class GObject
     }
 
     /**
-     * Регистрация поведений объекта
-     * Array
-     * (
-     *      [name] => класс или анонимная функция,
-     *      ...
-     * )
-     * 
-     * @access public
-     * @param array $behaviors
-     * @return $this
-     */
-    public function setBehaviors(array $behaviors)
-    {
-        static::$_config['behaviors'] = array_replace_recursive(static::$_config['behaviors'], $behaviors);
-        return $this;
-    }
-    
-    /**
-     * Получение списка зарегистрированных поведений
-     * 
-     * @access public
-     * @return array
-     */
-    public function getBehaviors()
-    {
-        $behaviors = static::i('behaviors');
-        return $behaviors ? $behaviors : array();
-    }
-    
-    /**
      * Возвращает true если объект имеет поведение с указанным названием, иначе
      * false
      * 
@@ -325,7 +295,7 @@ class GObject
      */
     public function isBehavior($name)
     {
-        return isset($this->_behaviors[$name]) || isset(static::$_config['behaviors'][$name]) || isset(self::$_config['behaviors'][$name]);
+        return isset($this->_behaviors[$name]);
     }
     
     /**
@@ -384,9 +354,7 @@ class GObject
     {
         $args = func_get_args();
         array_shift($args);
-        if (!$this->isBehavior($name))
-            $this->e('Поведение ":behaviorName" не реализовано', array('behaviorName' => $name));
-        if (isset($this->_behaviors[$name]))
+        if ($this->isBehavior($name))
         {
             if ($this->_behaviors[$name] instanceof Closure)
                 return call_user_func_array($this->_behaviors[$name], $args);
@@ -394,14 +362,7 @@ class GObject
                 return $this->_behaviors[$name];
         }
         else
-        {
-            $behaviors = $this->getBehaviors();
-            if (!isset($behaviors[$name]))
-                $this->e('Поведение ":behaviorName" не реализовано', array('behaviorName' => $name));
-            $this->attachBehavior($name, $behaviors[$name]);
-            return $this->b('name');
-        }
-            
+            $this->e('Поведение ":behaviorName" не реализовано', array('behaviorName' => $name));
     }
     
     /**

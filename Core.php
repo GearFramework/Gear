@@ -94,7 +94,10 @@ final class Core
         if (is_string($config))
         {
             $pathFile = is_file($config) ? $config : self::resolvePath($config);
-            if (!file_exists($pathFile))
+            if (is_dir($pathFile))
+                $pathFile = $pathFile . '/config.'. (self::$_runMode === self::MODE_DEVELOPMENT ? 'debug' : 'production') . '.php';
+            else
+            if (!is_file($pathFile))
                 self::e('Конфигурационный файл ":initFile" не найден', array('initFile' => $config));
             $config = require($pathFile);
         }
