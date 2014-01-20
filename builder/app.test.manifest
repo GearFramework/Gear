@@ -1,0 +1,4 @@
+{
+    "documentRoot" : "c:\\usr\\apache24\\htdocs\\test",
+    "folders" : ["api", "behaviors", "components", "library", "logs", "models", "plugins", "process", "views"]
+}

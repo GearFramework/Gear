@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<manifest>
-    <documentRoot>c:\usr\apache24\htdocs</documentRoot>
-    <modules>
-        <module name="app"></module>
-    </modules>
-    <components></components>
-    <template>templates/app.tpl</template>
-</manifest>
+{
+    "documentRoot" : "/var/www",
+    "folders" : ["api", "behaviors", "components", "library", "logs", "models", "plugins", "process", "views"],
+}

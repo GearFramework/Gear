@@ -27,5 +27,9 @@ require __DIR__ . '/../Core.php';
             '_namespace' => '\\gear\\builder',
         ),
     ),
+    'components' => array
+    (
+        'templater' => array('class' => '\\gear\\builder\\components\\GTemplaterComponent'),
+    ),
 ));
 \gear\Core::app()->run();
