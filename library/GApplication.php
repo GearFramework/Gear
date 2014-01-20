@@ -4,6 +4,7 @@ namespace gear\library;
 use \gear\Core;
 use \gear\library\GModule;
 use \gear\library\GException;
+use \gear\library\GEvent;
 
 /** 
  * Класс описывающий приложение
@@ -57,7 +58,7 @@ class GApplication extends GModule
             (
                 $request ? $request : ($this->request->isPost() ? $this->request->post() : $this->request->get())
             );
-            $this->event('onAfterRun', $result);
+            $this->event('onAfterRun', new GEvent($this), $result);
         }
     }
 
