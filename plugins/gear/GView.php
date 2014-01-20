@@ -4,6 +4,7 @@ namespace gear\plugins\gear;
 use \gear\Core;
 use \gear\library\GPlugin;
 use \gear\library\GException;
+use \gear\library\GEvent;
 
 /** 
  * Плагин, отвечающий за отображение представлений
@@ -35,7 +36,7 @@ class GView extends GPlugin
      */
     public function render($view = null, array $arguments = array(), $return = false)
     {
-        $this->event('onBeforeRender');
+        $this->event('onBeforeRender', new GEvent($this));
         if ($view === null)
             $view = $this->getOwner()->getViewPath();
         $viewPath = Core::resolvePath($view);
@@ -65,7 +66,7 @@ class GView extends GPlugin
         }
         else
             require($viewPath);
-        $this->event('onAfterRender', $resultRender);
+        $this->event('onAfterRender', new GEvent($this), $resultRender);
         return $resultRender;
     }
     

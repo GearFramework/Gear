@@ -228,7 +228,6 @@ class GRequest extends GPlugin
             $this->_prepareCli();
         if ($name)
         {
-            die();
             if (!$name)
                 return $this->_cliEnviroment;
             else

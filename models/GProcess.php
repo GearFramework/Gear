@@ -4,6 +4,7 @@ namespace gear\models;
 use \gear\Core;
 use \gear\library\GModel;
 use \gear\library\GException;
+use \gear\library\GEvent;
 
 /** 
  * Класс процессов
@@ -43,7 +44,7 @@ class GProcess extends GModel
      */
     public function entry($request = array())
     {
-        if ($this->event('onBeforeExec', $request))
+        if ($this->event('onBeforeExec', new GEvent($this), $request))
         {
             $this->request = $request;
             $apiName = isset($request['f']) ? $request['f'] : $this->defaultApi;
@@ -68,7 +69,7 @@ class GProcess extends GModel
             }
             $arguments = $this->_prepareArguments($apiName, $request);
             $result = call_user_func_array($this->_currentApi, $arguments);
-            $this->event('onAfterExec', $result);
+            $this->event('onAfterExec', new GEvent($this), $result);
         }
         return false;
     }
