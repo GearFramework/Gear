@@ -52,7 +52,7 @@ class GLoader extends GComponent implements ILoader
         else
             $file = GEAR . '/../' . str_replace('\\', '/', $className) . '.php';
         if (!file_exists($file))
-            $this->e('Библиотека класса ":className" не найдена', array('className' => $className));
+            $this->e('Library of class ":className" not found', array('className' => $className));
         include_once($file);
     }
     
@@ -94,7 +94,7 @@ class GLoader extends GComponent implements ILoader
     public function onInstalled($event)
     {
         if (!($handlerName = $this->i('autoloadHandler')))
-            $this->e('Не указан параметр "autoloadHandler"');
+            $this->e('Not specified "autoloadHandler"');
         spl_autoload_register(array($this, $handlerName));
         return true;
     }

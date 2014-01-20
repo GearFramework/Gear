@@ -20,6 +20,7 @@ class GModel extends GObject
     /* Private */
     /* Protected */
     protected $_owner = null;
+    protected $_pk = 'id';
     /* Public */
     /**
      * Конструктор класса
@@ -41,6 +42,29 @@ class GModel extends GObject
      * @return void
      */
     public function __clone() { parent::__clone(); }
+    
+    /**
+     * Установка названия поля являющимся PRIMARY LEY
+     * 
+     * @access public
+     * @param string $pk
+     * @return void
+     */
+    public function setPk($pk)
+    {
+        $this->_pk = $pk;
+    }
+    
+    /**
+     * Получение названия поля являющимся PRIMARY LEY
+     * 
+     * @access public
+     * @return string
+     */
+    public function getPk()
+    {
+        return $this->_pk;
+    }
 }
 
 /** 

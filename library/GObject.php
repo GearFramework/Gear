@@ -162,7 +162,7 @@ class GObject
             array_unshift($args, $this);
             return call_user_func_array(array($this->_owner, $name), $args);
         }
-        $this->e('Метод ":methodName" не реализован', array('methodName' => $name));
+        $this->e('Method ":methodName" is not exists', array('methodName' => $name));
     }
     
     /**
@@ -176,7 +176,7 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        $this->e('Метод ":methodName" не реализован', array('methodName' => $name));
+        $this->e('Method ":methodName" is not exists', array('methodName' => $name));
     }
     
     /**
@@ -247,7 +247,7 @@ class GObject
     public function setOwner($owner)
     {
         if (!is_object($owner))
-            $this->e('Владелец должен быть объектом');
+            $this->e('Owner must be object');
         $this->_owner = $owner;
         return $this;
     }
@@ -283,6 +283,17 @@ class GObject
             return self::$_config[$name];
         else
             return null;
+    }
+    
+    /**
+     * Возвращает набор поведений, описанных для данного класса
+     * 
+     * @access public
+     * @return array
+     */
+    public function getBehaviors()
+    {
+        return $this->i('behaviors');
     }
 
     /**
@@ -334,7 +345,7 @@ class GObject
         if ($behavior instanceof \Closure)
             $this->_behaviors[$name] = $behavior->bindTo($this, $this);
         else
-            $this->e('Подключаемое поведение ":behaviorName" не является корректным', array('behaviorName' => $name));
+            $this->e('Behavior ":behaviorName" is not correct', array('behaviorName' => $name));
         return $this;
     }
     
@@ -362,7 +373,7 @@ class GObject
                 return $this->_behaviors[$name];
         }
         else
-            $this->e('Поведение ":behaviorName" не реализовано', array('behaviorName' => $name));
+            $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
     }
     
     /**
@@ -453,7 +464,7 @@ class GObject
         if (isset(self::$_config['plugins'][$name]))
             $plugin = self::$_config['plugins'][$name];
         else
-            $this->e('Плагин ":pluginName" не зарегистрирован', array('pluginName' => $name));
+            $this->e('Plugin ":pluginName" is not registered', array('pluginName' => $name));
         $class = $plugin['class'];
         unset($plugin['class']);
         $config = array();
@@ -504,7 +515,7 @@ class GObject
     public function attachEvent($name, $handler)
     {
         if (!is_callable($handler))
-            $this->e('Некорректный обработчик события ":eventName"', array('eventName' => $name));
+            $this->e('Incorrect handler of event ":eventName"', array('eventName' => $name));
         $this->_events[$name][] = $handler;
         return $this;
     }

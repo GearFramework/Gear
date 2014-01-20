@@ -35,27 +35,6 @@ class GProcess extends GModel
     public $name = '';
     
     /**
-     * Установка описания для внешних функций api процесса
-     * 
-     * @access public
-     * @param array as api list $apis
-     * @return void
-     */
-    public function setApis(array $apis) { $this->_apis = $apis; }
-    
-    /**
-     * Получение списка внешних api-функций или одной указанной
-     * 
-     * @access public
-     * @param string $name
-     * @return mixed
-     */
-    public function getApis($name = null)
-    {
-        return !$name ? $this->_apis : (isset($this->_apis[$name]) ? $this->_apis[$name] : null);
-    }
-    
-    /**
      * Точка входа в процесс
      * 
      * @access public
@@ -66,7 +45,7 @@ class GProcess extends GModel
     {
         if ($this->event('onBeforeExec', $request))
         {
-            $this->_request = $request;
+            $this->request = $request;
             $apiName = isset($request['f']) ? $request['f'] : $this->defaultApi;
             $api = $this->getApis($apiName);
             if ($api)
@@ -94,6 +73,50 @@ class GProcess extends GModel
         return false;
     }
 
+    /**
+     * Установка описания для внешних функций api процесса
+     * 
+     * @access public
+     * @param array as api list $apis
+     * @return void
+     */
+    public function setApis(array $apis) { $this->_apis = $apis; }
+    
+    /**
+     * Получение списка внешних api-функций или одной указанной
+     * 
+     * @access public
+     * @param string $name
+     * @return mixed
+     */
+    public function getApis($name = null)
+    {
+        return !$name ? $this->_apis : (isset($this->_apis[$name]) ? $this->_apis[$name] : null);
+    }
+    
+    /**
+     * Установка параметров запроса GET|POST
+     * 
+     * @access public
+     * @param array $request
+     * @return void
+     */
+    public function setRequest(array $request)
+    {
+        $this->_request = $request;
+    }
+    
+    /**
+     * Получение параметров запроса
+     * 
+     * @access public
+     * @return array
+     */
+    public function getRequest()
+    {
+        return $this->_request;
+    }
+    
     /**
      * Подготовка аргументов, которые могут потребоваться api-методу
      * 
