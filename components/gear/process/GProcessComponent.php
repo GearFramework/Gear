@@ -67,18 +67,15 @@ class GProcessComponent extends GComponent
             }
             else
                 $processName = $request['e'];
-            if (isset($this->_processes[$processName]['class']))
+            if (is_array($this->_processes[$processName]) && isset($this->_processes[$processName]['class']))
             {
-                if (is_array($this->_processes[$processName]))
-                {
-                    list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
-                    $properties['name'] = $processName;
-                    $this->_currentProcess = new $class($properties);
-                }
-                else
-                if ($this->_processes[$processName] instanceof \Closure)
-                    $this->_currentProcess = $this->_processes[$processName];
+                list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
+                $properties['name'] = $processName;
+                $this->_currentProcess = new $class($properties);
             }
+            else
+            if (isset($this->_processes[$processName]) && $this->_processes[$processName] instanceof \Closure)
+                $this->_currentProcess = $this->_processes[$processName];
             else
             {
                 $routes = explode('/', $processName);
