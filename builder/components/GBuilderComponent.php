@@ -18,11 +18,11 @@ class GBuilderComponent extends GComponent
     {
         $this->props($global);
         $this->_prepareManifest($manifest);
-        //print_r($this->_properties);
+        print_r($this->_properties);
         return $this->_runScenario();
     }
     
-    public function arg($name)
+    public function param($name)
     {
         return isset($this->_properties[$name]) ? $this->_properties[$name] : null;
     }
@@ -108,8 +108,17 @@ class GBuilderComponent extends GComponent
         $templatePath = $this->_prepareValue($templatePath);
         $filePath = $this->_prepareValue($filePath);
         echo "Create file from template $templatePath to $filePath\n";
-        $content = $this->view->render($templatePath, array(), true);
+        $content = $this->view->render($templatePath, $params, true);
         $content = str_replace('&lt;?php', '<?php', $content);
         file_put_contents($filePath, $content);
+    }
+    
+    public function arrayToString($arr)
+    {
+        $string = "";
+        foreach($arr as $name => $value)
+        {
+        }
+        return $string;
     }
 }

@@ -1,25 +1,25 @@
 <?php return array
 (
-    '%set' => array('documentRoot', '/var/www'),
-    '%set' => array('share', GEAR . '/..'),
-    '%set' => array('appPath', GEAR . '/{:appNs}'),
-    '%set' => array('appProcessPath', GEAR . '/{:appNs}/process'),
-    '%set' => array('appProcessNs', '{:appNs}\\process'),
-    '%set' => array('appViewsPath', GEAR . '/{:appNs}/views'),
+    ':documentRoot' => 'd:/var/www/docs',
+    ':share' => GEAR . '/..',
+    ':appPath' => '{:share}/{:appNs}',
+    ':appProcessPath' => '{:appPath}/process',
+    ':appProcessNs' => '{:appNs}\\process',
+    ':appViewsPath' => '{:appPath}/views',
     '#config' => array
     (
         '#debug' => array
         (
-            '%set' => array('defaultProcessName', 'index'),
-            '%set' => array('defaultProcessClass', array('%getClass', 'index')),
-            '%set' => array('file', '{:documentRoot}/config.debug.php'),
-            'preloads' => array
+            ':defaultProcessName' => 'index',
+            ':defaultProcessClass' => 'GIndex',
+            ':file' => '{:documentRoot}/config.debug.php',
+            ':preloads' => array
             (
                 'library' => array(),
                 'modules' => array(),
                 'components' => array(),
             ),
-            'modules' => array
+            ':modules' => array
             (
                 'app' => array
                 (
@@ -33,14 +33,14 @@
                                 'class' => array
                                 (
                                     'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
-                                    'defaultProcess' => '{:config.debug.defaultProcessName}',
+                                    'defaultProcess' => '{:defaultProcessName}',
                                 )
                             ),
                         ),
                     ),
                 ),
             ),
-            'components' => array
+            ':components' => array
             (
 /*                'db' => array
                 (
@@ -53,16 +53,16 @@
         ),
         '#production' => array
         (
-            '%set' => array('defaultProcessName', 'index'),
-            '%set' => array('defaultProcessClass', array('%getClass', 'index')),
-            '%set' => array('file', '{:documentRoot}/config.debug.php'),
-            'preloads' => array
+            ':defaultProcessName' => 'index',
+            ':defaultProcessClass' => 'GIndex',
+            ':file' => '{:documentRoot}/config.production.php',
+            ':preloads' => array
             (
                 'library' => array(),
                 'modules' => array(),
                 'components' => array(),
             ),
-            'modules' => array
+            ':modules' => array
             (
                 'app' => array
                 (
@@ -76,14 +76,14 @@
                                 'class' => array
                                 (
                                     'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
-                                    'defaultProcess' => '{:config.production.defaultProcessName}',
+                                    'defaultProcess' => '{:defaultProcessName}',
                                 )
                             ),
                         ),
                     ),
                 ),
             ),
-            'components' => array
+            ':components' => array
             (
 /*                'db' => array
                 (
@@ -95,48 +95,24 @@
             ),
         ),
     ),
-    '#scenario' => array
+    ':appUseConfig' => '{#config.debug}',
+    ':scenario' => array
     (
-        '%set' => array('appUseConfig', '{#config.debug}'),
-        '%mkdir' => array('{:appPath}'),
-        '%mkfile' => array
-        (
-            '\\gear\\builder\\templates\\app.php.phtml',
-            '{:appPath}/{:appClass}.php',
-        ),
-        '%mkdir' => array(GEAR . '/{:appNs}/api'),
-        '%mkdir' => array(GEAR . '/{:appNs}/behaviors'),
-        '%mkdir' => array(GEAR . '/{:appNs}/components'),
-        '%mkdir' => array(GEAR . '/{:appNs}/library'),
-        '%mkdir' => array(GEAR . '/{:appNs}/logs'),
-        '%mkdir' => array(GEAR . '/{:appNs}/models'),
-        '%mkdir' => array(GEAR . '/{:appNs}/plugins'),
-        '%mkdir' => array('{:appProcessPath}'),
-        '%mkfile' => array
-        (
-            '\\gear\\builder\\templates\\process.php.phtml',
-            '{:appProcessPath}/{:appUseConfig.defaultProcessClass}.php',
-        ),
-        '%mkdir' => array('{:appViewsPath}'),
-        '%mkfile' => array
-        (
-            '\\gear\\builder\\templates\\views.phtml.phtml',
-            '{:appViewsPath}/{:appUseConfig.defaultProcessName}.php',
-        ),
-        '%mkfile' => array
-        (
-            '\\gear\\builder\\templates\\index.php.phtml',
-            '{:documentRoot}/index.php',
-        ),
-        '%mkfile' => array
-        (
-            '\\gear\\builder\\templates\\config.php.phtml',
-            '{:documentRoot}/{:config.debug.file}',
-        ),
-        '%mkfile' => array
-        (
-            '\\gear\\builder\\templates\\config.php.phtml',
-            '{:documentRoot}/{:config.production.file}',
-        ),
+        array('mkdir', '{:appPath}'),
+        array('mkfile', '\\gear\\builder\\templates\\app.php.phtml', '{:appPath}/{:appClass}.php'),
+        array('mkdir', '{:appPath}/api'),
+        array('mkdir', '{:appPath}/behaviors'),
+        array('mkdir', '{:appPath}/components'),
+        array('mkdir', '{:appPath}/library'),
+        array('mkdir', '{:appPath}/logs'),
+        array('mkdir', '{:appPath}/models'),
+        array('mkdir', '{:appPath}/plugins'),
+        array('mkdir', '{:appProcessPath}'),
+        array('mkfile', '\\gear\\builder\\templates\\process.php.phtml', '{:appProcessPath}/{:appUseConfig.defaultProcessClass}.php'),
+        array('mkdir', '{:appViewsPath}'),
+        array('mkfile', '\\gear\\builder\\templates\\views.phtml.phtml', '{:appViewsPath}/{:appUseConfig.defaultProcessName}.php'),
+        array('mkfile', '\\gear\\builder\\templates\\index.php.phtml', '{:documentRoot}/index.php'),
+        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.debug.file}'),
+        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.production.file}'),
     ),
 );

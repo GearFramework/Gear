@@ -2,4 +2,17 @@
 
 return array
 (
+    'modules' => array
+    (
+<?php 
+$modules = $this->param($config . '.modules');
+foreach($modules as $moduleName => $module)
+{?>
+        '<?php echo $moduleName; ?>' => array
+        (
+            <?php echo $this->render('\\gear\\builder\\templates\\config.modules.phtml', array('module' => $module), true); ?>
+            
+        ),
+<?php } ?>
+    ),
 );

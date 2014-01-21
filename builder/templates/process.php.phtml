@@ -6,7 +6,7 @@ use \gear\library\GEvent;
 use \gear\library\GException;
 use \gear\models\GProcess;
 
-class <?php echo $this->arg('appUseConfig.defaultProcessClass'); ?> extends GProcess
+class <?php echo $this->param('appUseConfig.defaultProcessClass'); ?> extends GProcess
 {
     /* Const */
     /* Private */
@@ -15,6 +15,6 @@ class <?php echo $this->arg('appUseConfig.defaultProcessClass'); ?> extends GPro
     
     public function apiIndex()
     {
-        $this->render('views\\<?php echo $this->arg('appUseConfig.defaultProcessName'); ?>');
+        $this->render('views\\<?php echo $this->param('appUseConfig.defaultProcessName'); ?>');
     }
 }

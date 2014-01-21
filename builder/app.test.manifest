@@ -1,11 +1,11 @@
 <?php return array
 (
-    ':documentRoot' => 'c:/usr/apache24/htdocs/test',
+    ':documentRoot' => 'd:/var/www/docs',
     ':share' => GEAR . '/..',
-    ':appPath' => GEAR . '/{:appNs}',
-    ':appProcessPath' => GEAR . '/{:appNs}/process',
+    ':appPath' => '{:share}/{:appNs}',
+    ':appProcessPath' => '{:appPath}/process',
     ':appProcessNs' => '{:appNs}\\process',
-    ':appViewsPath' => GEAR . '/{:appNs}/views',
+    ':appViewsPath' => '{:appPath}/views',
     '#config' => array
     (
         '#debug' => array
@@ -100,19 +100,19 @@
     (
         array('mkdir', '{:appPath}'),
         array('mkfile', '\\gear\\builder\\templates\\app.php.phtml', '{:appPath}/{:appClass}.php'),
-        array('mkdir', GEAR . '/{:appNs}/api'),
-        array('mkdir', GEAR . '/{:appNs}/behaviors'),
-        array('mkdir', GEAR . '/{:appNs}/components'),
-        array('mkdir', GEAR . '/{:appNs}/library'),
-        array('mkdir', GEAR . '/{:appNs}/logs'),
-        array('mkdir', GEAR . '/{:appNs}/models'),
-        array('mkdir', GEAR . '/{:appNs}/plugins'),
+        array('mkdir', '{:appPath}/api'),
+        array('mkdir', '{:appPath}/behaviors'),
+        array('mkdir', '{:appPath}/components'),
+        array('mkdir', '{:appPath}/library'),
+        array('mkdir', '{:appPath}/logs'),
+        array('mkdir', '{:appPath}/models'),
+        array('mkdir', '{:appPath}/plugins'),
         array('mkdir', '{:appProcessPath}'),
         array('mkfile', '\\gear\\builder\\templates\\process.php.phtml', '{:appProcessPath}/{:appUseConfig.defaultProcessClass}.php'),
         array('mkdir', '{:appViewsPath}'),
         array('mkfile', '\\gear\\builder\\templates\\views.phtml.phtml', '{:appViewsPath}/{:appUseConfig.defaultProcessName}.php'),
         array('mkfile', '\\gear\\builder\\templates\\index.php.phtml', '{:documentRoot}/index.php'),
-        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.debug.file}'),
-        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.production.file}'),
+        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.debug.file}', array('config' => 'config.debug')),
+        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.production.file}', array('config' => 'config.production')),
     ),
 );
