@@ -63,7 +63,7 @@ class GProcessComponent extends GComponent
             {
                 $processName = $this->i('defaultProcess');
                 if (!$processName)
-                    $this->e('Не указан процесс');
+                    $this->e('Unknown process');
             }
             else
                 $processName = $request['e'];
@@ -103,7 +103,10 @@ class GProcessComponent extends GComponent
         }
         catch(GException $e)
         {
-            header('HTTP/1.0 404 Not Found', true, 404);
+            if (Core::app()->hasHttp())
+                header('HTTP/1.0 404 Not Found', true, 404);
+            else
+                echo 'Process not found'.
             exit(404);
         }
     }

@@ -47,7 +47,7 @@ class GView extends GPlugin
         $resultRender = true;
         if ($return)
         {
-            if (Core::c('configurator')->buffer)
+            if (Core::isComponentRegistered('configurator') && Core::c('configurator')->buffer)
             {
                 $temp = ob_get_contents();
                 ob_clean();

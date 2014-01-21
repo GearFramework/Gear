@@ -29,7 +29,12 @@ require __DIR__ . '/../Core.php';
     ),
     'components' => array
     (
-        'templater' => array('class' => '\\gear\\builder\\components\\GBuilderComponent'),
+        'builder' => array('class' => '\\gear\\builder\\components\\GBuilderComponent'),
     ),
 ));
+\gear\Core::app()->onAfterRun = function($event, $result)
+{
+    echo $result ? "+ Application created\n" : "- Error creating application\n"; 
+    return true;
+};
 \gear\Core::app()->run();

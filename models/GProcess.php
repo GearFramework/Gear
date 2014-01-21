@@ -64,12 +64,13 @@ class GProcess extends GModel
             {
                 $api = 'api' . ucfirst($apiName);
                 if (!method_exists($this, $api))
-                    $this->e('Api-метод ":apiName" не реализован в процессе ":processName"', array('apiName' => $apiName, 'processName' => $this->name));
+                    $this->e('Api ":apiName" is not exists in process ":processName"', array('apiName' => $apiName, 'processName' => $this->name));
                 $this->_currentApi = array($this, $api);
             }
             $arguments = $this->_prepareArguments($apiName, $request);
             $result = call_user_func_array($this->_currentApi, $arguments);
             $this->event('onAfterExec', new GEvent($this), $result);
+            return $result;
         }
         return false;
     }
@@ -138,7 +139,7 @@ class GProcess extends GModel
             if ($value === null)
             {
                 if (!$argument->isOptional())
-                    $this->e('Api-метод ":apiName" требует обязательного параметра ":argName"', array
+                    $this->e('Api ":apiName" required parameter ":argName"', array
                     (
                         ':apiName' => $apiName,
                         ':argName' => $argument->name
@@ -204,7 +205,7 @@ class GProcess extends GModel
      * @param integer one from Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC $value
      * @return void
      */
-    public function setAccess($value) { $this->e('Свойство "access" только для чтения'); }
+    public function setAccess($value) { $this->e('"access" is read-only property'); }
     
     /**
      * Возвращает массив правил обработки поступающих данных от пользоваля к

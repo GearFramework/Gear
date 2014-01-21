@@ -1,12 +1,12 @@
 &lt;?php
 
-namespace <?php echo $processNamespace; ?>;
+namespace <?php echo $this->appProcessNs; ?>;
 use \gear\Core;
 use \gear\library\GEvent;
 use \gear\library\GException;
 use \gear\models\GProcess;
 
-class GIndex extends GProcess
+class <?php echo $this->arg('appUseConfig.defaultProcessClass'); ?> extends GProcess
 {
     /* Const */
     /* Private */
@@ -15,6 +15,6 @@ class GIndex extends GProcess
     
     public function apiIndex()
     {
-        $this->render('index');
+        $this->render('views\\<?php echo $this->arg('appUseConfig.defaultProcessName'); ?>');
     }
 }

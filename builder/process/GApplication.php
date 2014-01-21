@@ -17,16 +17,18 @@ class GApplication extends GProcess
     {
         $params = array
         (
-            'name' => (Core::app()->request->get('name') ? $name = Core::app()->request->get('name') : 'Test'),
-            'ns' => strtolower($name),
-            'path' => ($path = dirname(GEAR)),
-            'class' => ucfirst($name),
+            'appName' => (Core::app()->request->get('name') ? $name = Core::app()->request->get('name') : 'Test'),
+            'appNs' => strtolower($name),
+            'appPath' => ($path = dirname(GEAR)),
+            'appClass' => ucfirst($name),
         );
         $manifestFile = $path . str_replace('\\', '/', Core::app()->getNamespace()) . '/app.' . $name . '.manifest';
         if (!file_exists($manifestFile))
             $manifestFile = $path . str_replace('\\', '/', Core::app()->getNamespace()) . '/builder.app.manifest';
-        $manifest = json_decode(file_get_contents($manifestFile));
-        echo "> Create application {$params['name']}\n";
+        $manifest = require $manifestFile;
+        echo "> Create application {$params['appName']}\n";
+        return Core::c('builder')->createApplication($params, $manifest);
+        
         echo "> Application namespace {$params['ns']}\n";
         echo "> Class {$params['ns']}\\{$params['class']}\n";
         $appPath = $params['path'] . '/' . $params['name'];

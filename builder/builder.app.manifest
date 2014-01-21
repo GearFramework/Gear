@@ -1,4 +1,142 @@
-{
-    "documentRoot" : "/var/www",
-    "folders" : ["api", "behaviors", "components", "library", "logs", "models", "plugins", "process", "views"],
-}
+<?php return array
+(
+    '%set' => array('documentRoot', '/var/www'),
+    '%set' => array('share', GEAR . '/..'),
+    '%set' => array('appPath', GEAR . '/{:appNs}'),
+    '%set' => array('appProcessPath', GEAR . '/{:appNs}/process'),
+    '%set' => array('appProcessNs', '{:appNs}\\process'),
+    '%set' => array('appViewsPath', GEAR . '/{:appNs}/views'),
+    '#config' => array
+    (
+        '#debug' => array
+        (
+            '%set' => array('defaultProcessName', 'index'),
+            '%set' => array('defaultProcessClass', array('%getClass', 'index')),
+            '%set' => array('file', '{:documentRoot}/config.debug.php'),
+            'preloads' => array
+            (
+                'library' => array(),
+                'modules' => array(),
+                'components' => array(),
+            ),
+            'modules' => array
+            (
+                'app' => array
+                (
+                    'class' => array
+                    (
+                        'name' => '{:appNs}\\{:appClass}',
+                        'components' => array
+                        (
+                            'process' => array
+                            (
+                                'class' => array
+                                (
+                                    'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
+                                    'defaultProcess' => '{:config.debug.defaultProcessName}',
+                                )
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            'components' => array
+            (
+/*                'db' => array
+                (
+                    'class' => '\\gear\\components\\gear\\db\\mysql\\GMysql',
+                    'host' => 'localhost',
+                    'user' => 'root',
+                    'password' => '',
+                ),*/
+            ),
+        ),
+        '#production' => array
+        (
+            '%set' => array('defaultProcessName', 'index'),
+            '%set' => array('defaultProcessClass', array('%getClass', 'index')),
+            '%set' => array('file', '{:documentRoot}/config.debug.php'),
+            'preloads' => array
+            (
+                'library' => array(),
+                'modules' => array(),
+                'components' => array(),
+            ),
+            'modules' => array
+            (
+                'app' => array
+                (
+                    'class' => array
+                    (
+                        'name' => '{:appNs}\\{:appClass}',
+                        'components' => array
+                        (
+                            'process' => array
+                            (
+                                'class' => array
+                                (
+                                    'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
+                                    'defaultProcess' => '{:config.production.defaultProcessName}',
+                                )
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            'components' => array
+            (
+/*                'db' => array
+                (
+                    'class' => '\\gear\\components\\gear\\db\\mysql\\GMysql',
+                    'host' => 'localhost',
+                    'user' => 'root',
+                    'password' => '',
+                ),*/
+            ),
+        ),
+    ),
+    '#scenario' => array
+    (
+        '%set' => array('appUseConfig', '{#config.debug}'),
+        '%mkdir' => array('{:appPath}'),
+        '%mkfile' => array
+        (
+            '\\gear\\builder\\templates\\app.php.phtml',
+            '{:appPath}/{:appClass}.php',
+        ),
+        '%mkdir' => array(GEAR . '/{:appNs}/api'),
+        '%mkdir' => array(GEAR . '/{:appNs}/behaviors'),
+        '%mkdir' => array(GEAR . '/{:appNs}/components'),
+        '%mkdir' => array(GEAR . '/{:appNs}/library'),
+        '%mkdir' => array(GEAR . '/{:appNs}/logs'),
+        '%mkdir' => array(GEAR . '/{:appNs}/models'),
+        '%mkdir' => array(GEAR . '/{:appNs}/plugins'),
+        '%mkdir' => array('{:appProcessPath}'),
+        '%mkfile' => array
+        (
+            '\\gear\\builder\\templates\\process.php.phtml',
+            '{:appProcessPath}/{:appUseConfig.defaultProcessClass}.php',
+        ),
+        '%mkdir' => array('{:appViewsPath}'),
+        '%mkfile' => array
+        (
+            '\\gear\\builder\\templates\\views.phtml.phtml',
+            '{:appViewsPath}/{:appUseConfig.defaultProcessName}.php',
+        ),
+        '%mkfile' => array
+        (
+            '\\gear\\builder\\templates\\index.php.phtml',
+            '{:documentRoot}/index.php',
+        ),
+        '%mkfile' => array
+        (
+            '\\gear\\builder\\templates\\config.php.phtml',
+            '{:documentRoot}/{:config.debug.file}',
+        ),
+        '%mkfile' => array
+        (
+            '\\gear\\builder\\templates\\config.php.phtml',
+            '{:documentRoot}/{:config.production.file}',
+        ),
+    ),
+);

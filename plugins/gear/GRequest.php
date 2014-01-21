@@ -287,7 +287,7 @@ class GRequest extends GPlugin
                 $value = $this->_filtering($filterItem, $value, $default);
         }
         else
-            $this->e('Неизвестный фильтр');
+            $this->e('Unknown filter');
         return $value;
     }
 }
