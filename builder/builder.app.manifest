@@ -33,7 +33,7 @@
                                 'class' => array
                                 (
                                     'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
-                                    'defaultProcess' => '{:defaultProcessName}',
+                                    'defaultProcess' => '{:config.debug.defaultProcessName}',
                                 )
                             ),
                         ),
@@ -76,7 +76,7 @@
                                 'class' => array
                                 (
                                     'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
-                                    'defaultProcess' => '{:defaultProcessName}',
+                                    'defaultProcess' => '{:config.production.defaultProcessName}',
                                 )
                             ),
                         ),

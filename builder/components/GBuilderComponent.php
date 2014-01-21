@@ -18,7 +18,6 @@ class GBuilderComponent extends GComponent
     {
         $this->props($global);
         $this->_prepareManifest($manifest);
-        print_r($this->_properties);
         return $this->_runScenario();
     }
     
@@ -88,6 +87,19 @@ class GBuilderComponent extends GComponent
         while(preg_match('/\{(\:)([a-zA-Z0-9_\.]+)\}/', $value, $result))
         {
             $propertyName = $section ? $section . '.' . $result[2] : $result[2];
+            if (isset($this->_properties[$propertyName]) && !is_array($this->_properties[$propertyName]))
+                $value = str_replace('{:' . $result[2] . '}', $this->_properties[$propertyName], $value);
+            else
+                $value = str_replace('{:' . $result[2] . '}', '', $value);
+        }
+        return $value;
+    }
+    
+    public function prepareValue($value)
+    {
+        while(preg_match('/\{(\:)([a-zA-Z0-9_\.]+)\}/', $value, $result))
+        {
+            $propertyName = $result[2];
             if (isset($this->_properties[$propertyName]) && !is_array($this->_properties[$propertyName]))
                 $value = str_replace('{:' . $result[2] . '}', $this->_properties[$propertyName], $value);
             else

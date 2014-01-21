@@ -1,18 +1,25 @@
-&lt;?php
-
-return array
-(
-    'modules' => array
-    (
-<?php 
+<?php
+echo "<?php\n\nreturn array\n(\n";
+echo "    'preloads' => array\n    (\n";
+$preloads = $this->param($config . '.preloads');
+foreach($preloads as $preloadName => $preload)
+{
+    echo "        '$preloadName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $preload, 'tab' => 12), true), "        ),\n";
+}
+echo "    ),\n";
+echo "    'modules' => array\n    (\n";
 $modules = $this->param($config . '.modules');
 foreach($modules as $moduleName => $module)
-{?>
-        '<?php echo $moduleName; ?>' => array
-        (
-            <?php echo $this->render('\\gear\\builder\\templates\\config.modules.phtml', array('module' => $module), true); ?>
-            
-        ),
-<?php } ?>
-    ),
-);
+{
+    echo "        '$moduleName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $module, 'tab' => 12), true), "        ),\n";
+}
+echo "    ),\n";
+echo "    'component' => array\n    (\n";
+$components = $this->param($config . '.components');
+foreach($components as $$componentName => $component)
+{
+    echo "        '$moduleName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $component, 'tab' => 12), true), "        ),\n";
+}
+echo "    ),\n";
+echo ");\n"; 
+?>
