@@ -29,7 +29,7 @@ require __DIR__ . '/../Core.php';
     ),
     'components' => array
     (
-        'templater' => array('class' => '\\gear\\builder\\components\\GTemplaterComponent'),
+        'templater' => array('class' => '\\gear\\builder\\components\\GBuilderComponent'),
     ),
 ));
 \gear\Core::app()->run();
