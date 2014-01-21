@@ -111,7 +111,7 @@ class GBuilderComponent extends GComponent
     protected function _mkdir($folder, $mode = 0666)
     {
         $folder = $this->_prepareValue($folder);
-        echo "Create folder $folder\n";
+        echo "+ Create folder $folder\n";
         mkdir($this->_prepareValue($folder), $mode);
     }
     
@@ -119,18 +119,9 @@ class GBuilderComponent extends GComponent
     {
         $templatePath = $this->_prepareValue($templatePath);
         $filePath = $this->_prepareValue($filePath);
-        echo "Create file from template $templatePath to $filePath\n";
+        echo "+ Create file from template $templatePath to $filePath\n";
         $content = $this->view->render($templatePath, $params, true);
         $content = str_replace('&lt;?php', '<?php', $content);
         file_put_contents($filePath, $content);
-    }
-    
-    public function arrayToString($arr)
-    {
-        $string = "";
-        foreach($arr as $name => $value)
-        {
-        }
-        return $string;
     }
 }

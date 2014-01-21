@@ -25,15 +25,15 @@
                 (
                     'class' => array
                     (
-                        'name' => '{:appNs}\\{:appClass}',
+                        'name' => '\\\\{:appNs}\\\\{:appClass}',
                         'components' => array
                         (
                             'process' => array
                             (
                                 'class' => array
                                 (
-                                    'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
-                                    'defaultProcess' => '{:defaultProcessName}',
+                                    'name' => '\\\\gear\\\\components\\\\gear\\\\process\\\\GProcessComponent',
+                                    'defaultProcess' => '{:config.debug.defaultProcessName}',
                                 )
                             ),
                         ),
@@ -44,7 +44,7 @@
             (
 /*                'db' => array
                 (
-                    'class' => '\\gear\\components\\gear\\db\\mysql\\GMysql',
+                    'class' => '\\\\gear\\\\components\\\\gear\\\\db\\\\mysql\\\\GMysql',
                     'host' => 'localhost',
                     'user' => 'root',
                     'password' => '',
@@ -68,15 +68,15 @@
                 (
                     'class' => array
                     (
-                        'name' => '{:appNs}\\{:appClass}',
+                        'name' => '\\\\{:appNs}\\\\{:appClass}',
                         'components' => array
                         (
                             'process' => array
                             (
                                 'class' => array
                                 (
-                                    'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
-                                    'defaultProcess' => '{:defaultProcessName}',
+                                    'name' => '\\\\gear\\\\components\\\\gear\\\\process\\\\GProcessComponent',
+                                    'defaultProcess' => '{:config.production.defaultProcessName}',
                                 )
                             ),
                         ),
@@ -87,7 +87,7 @@
             (
 /*                'db' => array
                 (
-                    'class' => '\\gear\\components\\gear\\db\\mysql\\GMysql',
+                    'class' => '\\\\gear\\\\components\\\\gear\\\\db\\\\mysql\\\\GMysql',
                     'host' => 'localhost',
                     'user' => 'root',
                     'password' => '',
