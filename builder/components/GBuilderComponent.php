@@ -108,7 +108,7 @@ class GBuilderComponent extends GComponent
         return $value;
     }
     
-    protected function _mkdir($folder, $mode = 0666)
+    protected function _mkdir($folder, $mode = 0776)
     {
         $folder = $this->_prepareValue($folder);
         echo "+ Create folder $folder\n";

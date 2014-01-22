@@ -67,7 +67,7 @@ class GProcessComponent extends GComponent
             }
             else
                 $processName = $request['e'];
-            if (is_array($this->_processes[$processName]) && isset($this->_processes[$processName]['class']))
+            if (isset($this->_processes[$processName]) && is_array($this->_processes[$processName]) && isset($this->_processes[$processName]['class']))
             {
                 list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
                 $properties['name'] = $processName;

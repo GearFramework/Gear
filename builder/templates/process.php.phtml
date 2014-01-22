@@ -15,6 +15,6 @@ class <?php echo $this->param('appUseConfig.defaultProcessClass'); ?> extends GP
     
     public function apiIndex()
     {
-        $this->render('views\\<?php echo $this->param('appUseConfig.defaultProcessName'); ?>');
+        $this->view->render('views\\<?php echo $this->param('appUseConfig.defaultProcessName'); ?>');
     }
 }

@@ -1,6 +1,6 @@
 <?php return array
 (
-    ':documentRoot' => 'd:/var/www/docs',
+    ':documentRoot' => '/var/www',
     ':share' => GEAR . '/..',
     ':appPath' => '{:share}/{:appNs}',
     ':appProcessPath' => '{:appPath}/process',
@@ -13,6 +13,7 @@
             ':defaultProcessName' => 'index',
             ':defaultProcessClass' => 'GIndex',
             ':file' => '{:documentRoot}/config.debug.php',
+            ':mode' => 1,
             ':preloads' => array
             (
                 'library' => array(),
@@ -56,6 +57,7 @@
             ':defaultProcessName' => 'index',
             ':defaultProcessClass' => 'GIndex',
             ':file' => '{:documentRoot}/config.production.php',
+            ':mode' => 2,
             ':preloads' => array
             (
                 'library' => array(),
@@ -110,9 +112,9 @@
         array('mkdir', '{:appProcessPath}'),
         array('mkfile', '\\gear\\builder\\templates\\process.php.phtml', '{:appProcessPath}/{:appUseConfig.defaultProcessClass}.php'),
         array('mkdir', '{:appViewsPath}'),
-        array('mkfile', '\\gear\\builder\\templates\\views.phtml.phtml', '{:appViewsPath}/{:appUseConfig.defaultProcessName}.php'),
+        array('mkfile', '\\gear\\builder\\templates\\views.phtml.phtml', '{:appViewsPath}/{:appUseConfig.defaultProcessName}.phtml'),
         array('mkfile', '\\gear\\builder\\templates\\index.php.phtml', '{:documentRoot}/index.php'),
-        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.debug.file}'),
-        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.production.file}'),
+        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.debug.file}', array('config' => 'config.debug')),
+        array('mkfile', '\\gear\\builder\\templates\\config.php.phtml', '{:config.production.file}', array('config' => 'config.production')),
     ),
 );
