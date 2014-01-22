@@ -474,7 +474,7 @@ class GMysqlCursor extends GDbCursor
      */
     public function group($group = null)
     {
-        $this->event('onBeforeCommand', 'group');
+        $this->event('onBeforeCommand', new \gear\library\GEvent($this), 'group');
         if (is_string($group))
             $this->_group[] = $group;
         else
@@ -501,7 +501,7 @@ class GMysqlCursor extends GDbCursor
      */
     public function sort($sort = null)
     {
-        $this->event('onBeforeCommand', 'sort');
+        $this->event('onBeforeCommand', new \gear\library\GEvent($this), 'sort');
         if (is_string($sort))
             $this->_sort[] = $sort;
         else
@@ -535,7 +535,7 @@ class GMysqlCursor extends GDbCursor
      */
     public function limit($top = null)
     {
-        $this->event('onBeforeCommand', 'limit');
+        $this->event('onBeforeCommand', new \gear\library\GEvent($this), 'limit');
         if (!func_num_args())
             $this->_limit = null;
         else
@@ -597,7 +597,7 @@ class GMysqlCursor extends GDbCursor
         }
         else
         {
-            $this->event('onBeforeCommand', 'count');
+            $this->event('onBeforeCommand', new \gear\library\GEvent($this), 'count');
             if (is_array($field))
                 list($field, $alias) = each($field);
             $this->_count = 'COUNT(' . ($field ? $this->_escapeOperand($field) : '*') . ')' . (isset($alias) ? ' AS `' . $alias . '`' : '');

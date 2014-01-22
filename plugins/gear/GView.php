@@ -36,7 +36,7 @@ class GView extends GPlugin
      */
     public function render($view = null, array $arguments = array(), $return = false)
     {
-        $this->event('onBeforeRender', new GEvent($this));
+        $this->event('onBeforeRender');
         if ($view === null)
             $view = $this->getOwner()->getViewPath();
         $viewPath = Core::resolvePath($view);

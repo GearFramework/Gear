@@ -45,7 +45,7 @@ abstract class GIdentity extends GPlugin implements IIdentity
     {
         $this->event('onBeforeIdentity');
         $result = $this->_identity();
-        $this->event('onAfterIdentity', $result);
+        $this->event('onAfterIdentity', new \gear\library\GEvent($this), $result);
         return $result;
     }
     

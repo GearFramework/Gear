@@ -132,7 +132,7 @@ class GExceptionsHandler extends GComponent
     public function onInstalled($event)
     {
         if (!($handlerName = $this->i('handler')))
-            $this->e('Не указан параметр "handler"');
+            $this->e('Not specified "handler"');
         set_exception_handler(array($this, $handlerName));
         return true;
     }
