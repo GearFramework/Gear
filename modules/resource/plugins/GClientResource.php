@@ -19,6 +19,6 @@ class GClientResource extends GPlugin
             $hash = $this->cache($file);
         else
             $hash = $this->getHash($file);
-        return '?e=gear/resource/get&resource=' . $hash . '&wrap=client';
+        return '?e=gear/resource/get&resource=' . $hash;
     }
 }

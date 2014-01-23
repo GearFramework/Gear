@@ -19,6 +19,10 @@ class GResource extends GModule
             (
                 'class' => '\\gear\\modules\\resource\\plugins\\GClientResource'
             ),
+            'cache' => array
+            (
+                'class' => '\\gear\\modules\\resource\\plugins\\GResourceCache',
+            )
         ),
         'cachePath' => 'temp',
         'storages' => array
