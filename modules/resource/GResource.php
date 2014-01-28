@@ -49,7 +49,8 @@ class GResource extends GModule
     
     public function inCache($file)
     {
-        return file_exists(Core::resolvePath($this->i('cachePath') . '/' . (preg_match('/^[a-f0-9]{32}$/', $file) ? $file : $this->getHash($file))));
+        return $this->cache->isset($this->getHash($file));
+//        return file_exists(Core::resolvePath($this->i('cachePath') . '/' . (preg_match('/^[a-f0-9]{32}$/', $file) ? $file : $this->getHash($file))));
     }
     
     public function getHash($file)
