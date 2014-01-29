@@ -76,6 +76,19 @@ class GResourceCache extends GCache
     }
     
     /**
+     * Проверка на наличие в кэше значения под указанным ключём
+     * 
+     * @abstract
+     * @access public
+     * @param string $key
+     * @return boolean
+     */
+    public function exists($key)
+    {
+        return file_exists($file = Core::resolvePath($this->store . '/' . $key)) ? $file : false;
+    }
+    
+    /**
      * Удаление информации о ресурсе из файлового кэша
      * 
      * @abstract
@@ -100,18 +113,5 @@ class GResourceCache extends GCache
         $path = Core::resolvePath($this->store);
         foreach(scandir($path) as $file)
             @unlink($path . '/' . $file);
-    }
-    
-    /**
-     * Проверка на наличие в кэше значения под указанным ключём
-     * 
-     * @abstract
-     * @access public
-     * @param string $key
-     * @return boolean
-     */
-    public function exists($key)
-    {
-        return file_exists($file = Core::resolvePath($this->store . '/' . $key)) ? $file : false;
     }
 }
