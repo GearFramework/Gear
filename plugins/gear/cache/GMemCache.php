@@ -3,6 +3,7 @@
 namespace gear\plugins\gear\cache;
 use gear\Core;
 use gear\library\cache\GCache;
+use gear\library\GModel;
 
 /** 
  * Плагин для Memcache
@@ -18,7 +19,34 @@ class GMemCache extends GCache
     /* Const */
     /* Private */
     /* Protected */
+    protected $_servers = null;
     /* Public */
+    public $defaultHost = '127.0.0.1';
+    public $defaultPort = 11211;
+    
+    /**
+     * Установка списка серверов
+     * 
+     * @access public
+     * @param array $servers
+     * @return void
+     */
+    public function addServers($servers)
+    {
+        foreach($servers as $server)
+            $this->_servers[] = new GModel($server);
+    }
+    
+    /**
+     * Возвращает список серверов
+     * 
+     * @access public
+     * @return array
+     */
+    public function getServers()
+    {
+        return $this->_servers;
+    }
     
     /**
      * Добавление значения в кэш
@@ -94,5 +122,25 @@ class GMemCache extends GCache
      */
     public function clear()
     {
+    }
+    
+    /**
+     * Обработчик события конструктора класса
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function onConstructed()
+    {
+        parent::onConstructed();
+        $this->_cache = new \Memcache();
+        if ($this->_servers)
+        {
+            foreach($this->_servers as $server)
+                $this->_cache->addServer($server->host, $server->port);
+        }
+        else
+            $this->_cache->addServer($this->defaultHost, $this->defaultPort);
+        return true;
     }
 }
