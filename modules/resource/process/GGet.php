@@ -13,8 +13,9 @@ class GGet extends GProcess
     /* Protected */
     /* Public */
     
-    public function apiIndex($resource)
+    public function apiIndex($resource, $contentType)
     {
-        
+        header('Content-Type: ' . Core::m('resources')->getContentType($contentType));
+        echo Core::m('resources')->get($resource, $contentType);
     }
 }

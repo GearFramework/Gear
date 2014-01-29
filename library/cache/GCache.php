@@ -1,11 +1,21 @@
 <?php
 
-namespace \gear\library\cache;
+namespace gear\library\cache;
 use \gear\Core;
-use \gear\library\GObject;
+use \gear\library\GPlugin;
 use \gear\library\GException;
 
-abstract class GCache extends GObject
+/** 
+ * Кэш 
+ * 
+ * @package Gear Framework
+ * @abstract
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis 2013
+ * @version 0.0.1
+ * @since 28.01.2014
+ */
+abstract class GCache extends GPlugin
 {
     /* Const */
     /* Private */

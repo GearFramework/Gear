@@ -15,9 +15,13 @@ class GResource extends GModule
     (
         'plugins' => array
         (
-            'client' => array
+            'js' => array
             (
-                'class' => '\\gear\\modules\\resource\\plugins\\GClientResource'
+                'class' => '\\gear\\modules\\resource\\plugins\\GJsResource'
+            ),
+            'css' => array
+            (
+                'class' => '\\gear\\modules\\resource\\plugins\\GCssResource'
             ),
             'cache' => array
             (
@@ -25,42 +29,42 @@ class GResource extends GModule
             )
         ),
         'cachePath' => 'temp',
-        'storages' => array
-        (
-            'resources'
-        ),
         'salt' => 'Rui43VbthF#',
     );
     /* Public */
-    public $storages = array();
+    public $storage = 'resources';
     
-    public function getResource($file, $wrapper = 'client', $render = false)
+    public function publicate($file, $wrapper = null, $render = false)
     {
-        return $this->p($wrapper)->getResource($file, $render);
+        if (!$wrapper)
+            $wrapper = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        return $this->p($wrapper)->publicate($file, $render);
     }
     
-    public function cache($file)
+    public function get($hash, $wrapper)
+    {
+        return $this->p($wrapper)->get($hash);
+    }
+    
+    public function getContentType($wrapper)
+    {
+        return $this->p($wrapper)->getContentType();
+    }
+    
+    public function cache($file, array $params = array())
     {
         $hash = $this->getHash($file);
-        $tempPath = Core::resolvePath($this->i('cachePath') . '/' . $hash);
-        file_put_contents($tempPath, $file);
-        return $hash;
+        $params['resource'] = $file;
+        return $this->cache->set($hash, $params) ? $hash : null;
     }
     
-    public function inCache($file)
+    public function inCache($hash)
     {
-        return $this->cache->isset($this->getHash($file));
-//        return file_exists(Core::resolvePath($this->i('cachePath') . '/' . (preg_match('/^[a-f0-9]{32}$/', $file) ? $file : $this->getHash($file))));
+        return $this->cache->exists($hash);
     }
     
     public function getHash($file)
     {
         return md5($file . $this->i('salt'));
-    }
-    
-    public function getPath($file)
-    {
-        $tempPath = Core::resolvePath($this->i('cachePath') . '/' . $this->getHash($file));
-        return file_exists($tempPath) ? file_get_contents($tempPath) : null;
     }
 }
