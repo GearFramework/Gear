@@ -21,6 +21,15 @@ class GResourceCache extends GCache
     /* Public */
     public $store = 'temp\resources';
     
+    /**
+     * Добавление информции о новом ресурсе в файловый кэш
+     * 
+     * @access public
+     * @param string $key
+     * @param mixed $value
+     * @param integer $expire
+     * @return boolean
+     */
     public function add($key, $value, $expire = 30)
     {
         if ($this->exists($key))
@@ -28,12 +37,32 @@ class GResourceCache extends GCache
         return @file_put_contents($file, is_array($value) || is_object($value) ? serialize($value) : $value);
     }
     
+    /**
+     * Добавление информции о новом ресурсе или обновление существующего в 
+     * файловом кэше
+     * 
+     * @access public
+     * @param string $key
+     * @param mixed $value
+     * @param integer $expire
+     * @return boolean
+     */
     public function set($key, $value, $expire = 30)
     {
         $file = Core::resolvePath($this->store . '/' . $key);
         return @file_put_contents($file, is_array($value) || is_object($value) ? serialize($value) : $value);
     }
     
+    /**
+     * Получение информации о ресурсе из кэша
+     * 
+     * @abstract
+     * @access public
+     * @param string $key
+     * @param mixed $value
+     * @param integer $expire
+     * @return boolean
+     */
     public function get($key, $unserialize = false)
     {
         if ($file = $this->exists($key))
@@ -46,11 +75,26 @@ class GResourceCache extends GCache
         return null;
     }
     
+    /**
+     * Удаление информации о ресурсе из файлового кэша
+     * 
+     * @abstract
+     * @access public
+     * @param string $key
+     * @return boolean
+     */
     public function remove($key)
     {
         return ($file = $this->exists($key)) ? @unlink($file) : false;
     }
     
+    /**
+     * Очистка кэша
+     * 
+     * @abstract
+     * @access public
+     * @return boolean
+     */
     public function clear()
     {
         $path = Core::resolvePath($this->store);
@@ -58,13 +102,16 @@ class GResourceCache extends GCache
             @unlink($path . '/' . $file);
     }
     
+    /**
+     * Проверка на наличие в кэше значения под указанным ключём
+     * 
+     * @abstract
+     * @access public
+     * @param string $key
+     * @return boolean
+     */
     public function exists($key)
     {
         return file_exists($file = Core::resolvePath($this->store . '/' . $key)) ? $file : false;
-    }
-    
-    public function onConstructed()
-    {
-        parent::onConstructed();
     }
 }

@@ -6,6 +6,16 @@ use \gear\library\GPlugin;
 use \gear\library\GEvent;
 use \gear\library\GException;
 
+/** 
+ * Каркас для ресурсов типа javascript, css 
+ * 
+ * @package Gear Framework
+ * @abstract
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis 2013
+ * @version 0.0.1
+ * @since 28.01.2014
+ */
 abstract class GClientResource extends GPlugin
 {
     /* Const */
@@ -14,13 +24,28 @@ abstract class GClientResource extends GPlugin
     /* Public */
     public $resources = null;
     
+    /**
+     * Получение реалтного пути к файлу-ресурсу
+     * 
+     * @access public
+     * @param string $file
+     * @return void
+     */
     public function resolvePath($file)
     {
         if ($file[0] !== '\\')
             $file = $this->getOwner()->storage . '\\' . ($this->resources ? $this->resources . '\\' : '') . $file;
-        $file = Core::resolvePath($file);
+        return Core::resolvePath($file);
     }
     
+    /**
+     * Публикация ресурса
+     * 
+     * @access public
+     * @param string $file
+     * @param boolean $render
+     * @return string as url
+     */
     public function publicate($file, $render = false)
     {
         $file = $this->resolvePath($file);
@@ -30,6 +55,13 @@ abstract class GClientResource extends GPlugin
         return $hash ? '?e=gear/resource/get&resource=' . $hash . '&contentType=' . $this->resources : '';
     }
     
+    /**
+     * Получение содержимого ресурса
+     * 
+     * @access public
+     * @param string $hash
+     * @return string
+     */
     public function get($hash)
     {
         if ($this->inCache($hash))
@@ -45,5 +77,12 @@ abstract class GClientResource extends GPlugin
         return null;
     }
     
+    /**
+     * Получение mime-тип ресурса
+     * 
+     * @abstract
+     * @access public
+     * @return void
+     */
     abstract public function getContentType();
 }
