@@ -1,10 +1,10 @@
 <?php
 
 namespace gear\library;
-use \gear\Core;
-use \gear\library\GModule;
-use \gear\library\GException;
-use \gear\library\GEvent;
+use gear\Core;
+use gear\library\GModule;
+use gear\library\GException;
+use gear\library\GEvent;
 
 /** 
  * Класс описывающий приложение

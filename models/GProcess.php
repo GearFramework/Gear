@@ -1,10 +1,10 @@
 <?php
 
 namespace gear\models;
-use \gear\Core;
-use \gear\library\GModel;
-use \gear\library\GException;
-use \gear\library\GEvent;
+use gear\Core;
+use gear\library\GModel;
+use gear\library\GException;
+use gear\library\GEvent;
 
 /** 
  * Класс процессов

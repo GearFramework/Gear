@@ -2,8 +2,8 @@
 
 namespace gear\models;
 
-use \gear\Core;
-use \gear\library\GModel;
+use gear\Core;
+use gear\library\GModel;
 
 /** 
  * Api-метод

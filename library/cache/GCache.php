@@ -1,9 +1,9 @@
 <?php
 
 namespace gear\library\cache;
-use \gear\Core;
-use \gear\library\GPlugin;
-use \gear\library\GException;
+use gear\Core;
+use gear\library\GPlugin;
+use gear\library\GException;
 
 /** 
  * Кэш 

@@ -437,7 +437,7 @@ final class Core
     public static function resolvePath($path)
     {
         $resolved = null;
-        if (self::isComponentInstalled('loader'))
+        if (self::isComponentInstalled('loader') && method_exists(Core::c('loader'), 'resolvePath'))
             $resolved = Core::c('loader')->resolvePath($path);
         else
         {
