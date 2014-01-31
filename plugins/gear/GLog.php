@@ -21,13 +21,10 @@ class GLog extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_properties = array
-    (
-        'log' => 'logs\\log-%Y-%m-%d.log',
-        'filename' => null,
-        'rotate' => false,
-    );
     /* Public */
+    public $log = 'logs\log-%Y-%m-%d.log';
+    public $filename = null;
+    public $rotate = false;
     
     /**
      * Вызов метода write()

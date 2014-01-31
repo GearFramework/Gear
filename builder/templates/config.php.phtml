@@ -2,23 +2,32 @@
 echo "<?php\n\nreturn array\n(\n";
 echo "    'preloads' => array\n    (\n";
 $preloads = $this->param($config . '.preloads');
-foreach($preloads as $preloadName => $preload)
+if (is_array($preloads))
 {
-    echo "        '$preloadName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $preload, 'tab' => 12), true), "        ),\n";
+    foreach($preloads as $preloadName => $preload)
+    {
+        echo "        '$preloadName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $preload, 'tab' => 12), true), "        ),\n";
+    }
 }
 echo "    ),\n";
 echo "    'modules' => array\n    (\n";
 $modules = $this->param($config . '.modules');
-foreach($modules as $moduleName => $module)
+if (is_array($modules))
 {
-    echo "        '$moduleName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $module, 'tab' => 12), true), "        ),\n";
+    foreach($modules as $moduleName => $module)
+    {
+        echo "        '$moduleName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $module, 'tab' => 12), true), "        ),\n";
+    }
 }
 echo "    ),\n";
 echo "    'components' => array\n    (\n";
 $components = $this->param($config . '.components');
-foreach($components as $$componentName => $component)
+if (is_array($components))
 {
-    echo "        '$componentName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $component, 'tab' => 12), true), "        ),\n";
+    foreach($components as $$componentName => $component)
+    {
+        echo "        '$componentName' => array\n        (\n", $this->render('\\gear\\builder\\templates\\config.arr.phtml', array('array' => $component, 'tab' => 12), true), "        ),\n";
+    }
 }
 echo "    ),\n";
 echo ");\n"; 
