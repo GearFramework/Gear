@@ -118,6 +118,20 @@ class GProcessComponent extends GComponent
      * @return \gear\models\GProcess
      */
     public function getProcess() { return $this->_currentProcess; }
+    
+    /**
+     * Установка текущего процесса
+     * 
+     * @access public
+     * @return void
+     */
+    public function setProcess($process)
+    {
+        if ($process instanceof \gear\interfaces\IProcess || is_callable($process))
+            $this->_currentProcess = $process;
+        else
+            $this->e('Invalid process');
+    }
 }
 
 /** 
