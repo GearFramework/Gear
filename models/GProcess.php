@@ -15,7 +15,7 @@ use gear\library\GEvent;
  * @version 0.0.1
  * @since 03.08.2013
  */
-class GProcess extends GModel
+class GProcess extends GModel implements \gear\interfaces\IProcess
 {
     /* Const */
     /* Private */
@@ -36,11 +36,22 @@ class GProcess extends GModel
     public $name = '';
     
     /**
+     * Неявный вызов entry()
+     * 
+     * @access public
+     * @return mixed
+     */
+    public function __invoke()
+    {
+        return call_user_func_array(array($this, 'entry'), func_get_args());
+    }
+    
+    /**
      * Точка входа в процесс
      * 
      * @access public
      * @param array $request
-     * @return
+     * @return mixed
      */
     public function entry($request = array())
     {

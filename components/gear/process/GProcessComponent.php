@@ -31,23 +31,6 @@ class GProcessComponent extends GComponent
     /* Public */
     
     /**
-     * Установка описания процессов
-     * 
-     * @access public
-     * @param array $processes
-     * @return void
-     */
-    public function setProcesses(array $processes) { $this->_processes = $processes; }
-    
-    /**
-     * Получение описания процессов
-     * 
-     * @access public
-     * @return array
-     */
-    public function getProcesses() { return $this->_processes; }
-    
-    /**
      * Исполнение процесса
      * 
      * @access public
@@ -57,6 +40,34 @@ class GProcessComponent extends GComponent
      */
     public function exec($request = array())
     {
+        try
+        {
+            if (!$this->_currentProcess)
+            {
+                $args = func_get_args();
+                $nums = func_num_args();
+                if (!$nums)
+                    $request = Core::app()->request->request();
+                else
+                if ($nums >= 1)
+                {
+                    if (is_callable($args[0]))
+                    {
+                        $request = isset($args[1]) && is_array($args[1]) ? $args[1] : Core::app()->request->request();
+                        $this->_currentProcess = $args;
+                    }
+                    else
+                    {
+                        $request = $args[0];
+                        $this->_currentProcess = $this->_prepareProcess($request);
+                    }
+                }
+            }
+        }
+        catch(GException $e)
+        {
+            
+        }
         try
         {
             if (!isset($request['e']))
@@ -111,13 +122,70 @@ class GProcessComponent extends GComponent
         }
     }
     
+    private function _prepareProcess($request)
+    {
+        $process = null;
+        if (!isset($request['e']))
+        {
+            $processName = $this->i('defaultProcess');
+            if (!$processName)
+                $this->e('Unknown process');
+        }
+        else
+            $processName = $request['e'];
+        $processes = $this->getProcesses();
+        if (isset($processes[$processName]))
+        {
+            if (is_callable($processes[$processName]))
+                $process = $processes[$processName];
+            else
+            if (is_array($processes[$processName]))
+            {
+                if (isset($processes[$processName]['class']))
+                    list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
+                else 
+                {
+                    $properties = $processes[$processName];
+                    $class = $this->_prepareProcessClass($processName);
+                }
+                $properties['name'] = $processName;
+            }
+            else
+            {
+                $class = $this->_prepareProcessClass($processName);
+                $properties = array('name' => $processName);
+            }
+            $process = new $class($properties);
+        }
+        else
+        {
+            $class = $this->_prepareProcessClass($processName);
+            $process = new $class(array('name' => $processName));
+        }
+        return $process;
+    }
+    
+    private function _prepareProcessClass($processName)
+    {
+        
+    }
+    
     /**
-     * Возвращает текущий исполняемый процесс
+     * Установка описания процессов
      * 
      * @access public
-     * @return \gear\models\GProcess
+     * @param array $processes
+     * @return void
      */
-    public function getProcess() { return $this->_currentProcess; }
+    public function setProcesses(array $processes) { $this->_processes = $processes; }
+    
+    /**
+     * Получение описания процессов
+     * 
+     * @access public
+     * @return array
+     */
+    public function getProcesses() { return $this->_processes; }
     
     /**
      * Установка текущего процесса
@@ -132,6 +200,14 @@ class GProcessComponent extends GComponent
         else
             $this->e('Invalid process');
     }
+    
+    /**
+     * Возвращает текущий исполняемый процесс
+     * 
+     * @access public
+     * @return \gear\models\GProcess
+     */
+    public function getProcess() { return $this->_currentProcess; }
 }
 
 /** 
