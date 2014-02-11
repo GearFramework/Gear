@@ -20,19 +20,13 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_instance = null;
     protected $_access = Core::ACCESS_PUBLIC;
     protected $_apis = array();
     protected $_currentApi = null;
     protected $_request = array();
     /* Public */
     public $defaultApi = 'index';
-    public $rules = array
-    (
-        'index' => array
-        (
-        )
-    );
+    public $rules = array();
     public $name = '';
     
     /**

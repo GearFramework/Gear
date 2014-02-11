@@ -343,7 +343,7 @@ class GObject
         else
         // $behavior is object instance of \Closure
         if ($behavior instanceof \Closure)
-            $this->_behaviors[$name] = $behavior->bindTo($this, $this);
+            $this->_behaviors[$name] = method_exists($behavior, 'bindTo') ? $behavior->bindTo($this, $this) : $behavior;
         else
             $this->e('Behavior ":behaviorName" is not correct', array('behaviorName' => $name));
         return $this;
@@ -441,7 +441,9 @@ class GObject
         if (!isset($this->_plugins[$name]))
         {
             list($class, $config, $properties) = $this->getPluginRecord($name);
-            $this->_plugins[$name] = !class_exists($class, false) ? $class::install($config, $properties, $this) : $class::it($properties, $this);
+            $this->_plugins[$name] = !class_exists($class, false) 
+                                     ? $class::install($config, $properties, $this) 
+                                     : $class::it($properties, $this);
         }
         return $this->_plugins[$name];
     }

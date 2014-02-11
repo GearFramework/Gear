@@ -54,7 +54,7 @@ class GProcessComponent extends GComponent
                     if (is_callable($args[0]))
                     {
                         $request = isset($args[1]) && is_array($args[1]) ? $args[1] : Core::app()->request->request();
-                        $this->_currentProcess = $args;
+                        $this->_currentProcess = $args[0];
                     }
                     else
                     {
@@ -62,49 +62,6 @@ class GProcessComponent extends GComponent
                         $this->_currentProcess = $this->_prepareProcess($request);
                     }
                 }
-            }
-        }
-        catch(GException $e)
-        {
-            
-        }
-        try
-        {
-            if (!isset($request['e']))
-            {
-                $processName = $this->i('defaultProcess');
-                if (!$processName)
-                    $this->e('Unknown process');
-            }
-            else
-                $processName = $request['e'];
-            if (isset($this->_processes[$processName]) && is_array($this->_processes[$processName]) && isset($this->_processes[$processName]['class']))
-            {
-                list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
-                $properties['name'] = $processName;
-                $this->_currentProcess = new $class($properties);
-            }
-            else
-            if (isset($this->_processes[$processName]) && $this->_processes[$processName] instanceof \Closure)
-                $this->_currentProcess = $this->_processes[$processName];
-            else
-            {
-                $routes = explode('/', $processName);
-                $nums = count($routes);
-                if ($nums == 1)
-                    $class = Core::app()->getNamespace() . '\\process\\G' . ucfirst($processName);
-                else
-                if ($nums == 2)
-                {
-                    if ($processName[0] === '/')
-                        $class = '\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
-                    else
-                        $class = Core::app()->getNamespace() . '\\modules\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
-                }
-                else
-                if ($nums >= 3)
-                    $class = '\\' . $routes[0] . '\\modules\\' . $routes[1] . '\\process\\G' . ucfirst($routes[2]);
-                $this->_currentProcess = new $class(isset($this->_processes[$processName]) ? $this->_processes[$processName] : array());
             }
             return call_user_func
             (
@@ -136,38 +93,54 @@ class GProcessComponent extends GComponent
         $processes = $this->getProcesses();
         if (isset($processes[$processName]))
         {
-            if (is_callable($processes[$processName]))
+            if ($processes[$processName] instanceof \Closure)
                 $process = $processes[$processName];
             else
             if (is_array($processes[$processName]))
             {
                 if (isset($processes[$processName]['class']))
-                    list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
-                else 
                 {
-                    $properties = $processes[$processName];
-                    $class = $this->_prepareProcessClass($processName);
+                    list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
+                    $properties['name'] = $processName;
                 }
-                $properties['name'] = $processName;
+                else
+                {
+                    $class = $this->_prepareProcessClass($processName);
+                    $properties = array_merge($processes[$processName], array('name' => $processName));
+                }
             }
             else
             {
                 $class = $this->_prepareProcessClass($processName);
-                $properties = array('name' => $processName);
+                $properties = array('name' => $processName, 'params' => $processes[$processName]);
             }
-            $process = new $class($properties);
         }
         else
         {
             $class = $this->_prepareProcessClass($processName);
-            $process = new $class(array('name' => $processName));
+            $properties = array('name' => $processName);
         }
-        return $process;
+        return $process ? $process : new $class($properties);
     }
     
     private function _prepareProcessClass($processName)
     {
-        
+        $routes = explode('/', $processName);
+        $nums = count($routes);
+        if ($nums == 1)
+            $class = Core::app()->getNamespace() . '\\process\\G' . ucfirst($processName);
+        else
+        if ($nums == 2)
+        {
+            if ($processName[0] === '/')
+                $class = '\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
+            else
+                $class = Core::app()->getNamespace() . '\\modules\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
+        }
+        else
+        if ($nums >= 3)
+            $class = '\\' . $routes[0] . '\\modules\\' . $routes[1] . '\\process\\G' . ucfirst($routes[2]);
+        return $class;
     }
     
     /**
