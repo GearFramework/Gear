@@ -42,25 +42,22 @@ class GProcessComponent extends GComponent
     {
         try
         {
-            if (!$this->_currentProcess)
+            $args = func_get_args();
+            $nums = func_num_args();
+            if (!$nums)
+                $request = Core::app()->request->request();
+            else
+            if ($nums >= 1)
             {
-                $args = func_get_args();
-                $nums = func_num_args();
-                if (!$nums)
-                    $request = Core::app()->request->request();
-                else
-                if ($nums >= 1)
+                if (is_callable($args[0]))
                 {
-                    if (is_callable($args[0]))
-                    {
-                        $request = isset($args[1]) && is_array($args[1]) ? $args[1] : Core::app()->request->request();
-                        $this->_currentProcess = $args[0];
-                    }
-                    else
-                    {
-                        $request = $args[0];
-                        $this->_currentProcess = $this->_prepareProcess($request);
-                    }
+                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : Core::app()->request->request();
+                    $this->_currentProcess = $args[0];
+                }
+                else
+                {
+                    $request = $args[0];
+                    $this->_currentProcess = $this->_prepareProcess($request);
                 }
             }
             return call_user_func
