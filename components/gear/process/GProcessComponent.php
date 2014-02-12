@@ -35,7 +35,7 @@ class GProcessComponent extends GComponent
      * 
      * @access public
      * @param mixed $request
-     * @throws ProcessComponentException
+     * @throws ProcessComponentException 
      * @return mixed
      */
     public function exec($request = array())
