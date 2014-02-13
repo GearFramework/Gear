@@ -45,18 +45,18 @@ class GProcessComponent extends GComponent
             $args = func_get_args();
             $nums = func_num_args();
             if (!$nums)
-                $request = Core::app()->request->request();
+                $this->_currentProcess = $this->_prepareProcess(array());
             else
             if ($nums >= 1)
             {
-                if (is_callable($args[0]))
+                if ($args[0] instanceof \gear\interfaces\IProcess || $args[0] instanceof \Closure)
                 {
-                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : Core::app()->request->request();
+                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : array();
                     $this->_currentProcess = $args[0];
                 }
                 else
                 {
-                    $request = $args[0];
+                    $request = is_array($args[0]) ? $args[0] : array();
                     $this->_currentProcess = $this->_prepareProcess($request);
                 }
             }
