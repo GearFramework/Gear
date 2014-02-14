@@ -176,7 +176,7 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
         }
         else
         if ($api instanceof \Closure)
-            $reflection = new ReflectionFunction($api);
+            $reflection = new \ReflectionFunction($api);
         return $reflection->getParameters();
     }
     

@@ -24,7 +24,7 @@ class GRequest extends GPlugin
     /* Protected */
     protected static $_config = array
     (
-        'dependency' => '\\gear\\library\\GApplication',
+        'dependency' => '\gear\library\GApplication',
     );
     protected static $_init = false;
     protected $_cliEnviroment = null;

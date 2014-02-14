@@ -1,10 +1,10 @@
 <?php
 
 namespace gear\components\gear\process;
-use \gear\Core;
-use \gear\library\GComponent;
-use \gear\library\GException;
-use \gear\library\GModel;
+use gear\Core;
+use gear\library\GComponent;
+use gear\library\GException;
+use gear\library\GModel;
 
 /** 
  * Компонент обслуживающий процессы
@@ -68,6 +68,7 @@ class GProcessComponent extends GComponent
         }
         catch(GException $e)
         {
+            echo $e->getMessage();
             if (Core::app()->hasHttp())
                 header('HTTP/1.0 404 Not Found', true, 404);
             else
@@ -76,6 +77,13 @@ class GProcessComponent extends GComponent
         }
     }
     
+    /**
+     * Получение процесса исходя из запроса пользователя
+     * 
+     * @access privvate
+     * @param array $request
+     * @return \gear\models\GProcess
+     */
     private function _prepareProcess($request)
     {
         $process = null;
@@ -120,6 +128,13 @@ class GProcessComponent extends GComponent
         return $process ? $process : new $class($properties);
     }
     
+    /**
+     * Получение имя класса процесса
+     * 
+     * @access private
+     * @param string $processName
+     * @return string
+     */
     private function _prepareProcessClass($processName)
     {
         $routes = explode('/', $processName);
