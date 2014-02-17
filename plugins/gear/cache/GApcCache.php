@@ -93,7 +93,6 @@ class GApcCache extends GCache
     /**
      * Проверка на наличие в кэше значения под указанным ключём
      * 
-     * @abstract
      * @access public
      * @param string|array $key
      * @return boolean
@@ -106,7 +105,6 @@ class GApcCache extends GCache
     /**
      * Удаление значения из кэша
      * 
-     * @abstract
      * @access public
      * @param string|array $key
      * @return boolean
@@ -126,7 +124,6 @@ class GApcCache extends GCache
     /**
      * Очистка кэша
      * 
-     * @abstract
      * @access public
      * @return boolean
      */

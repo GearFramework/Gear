@@ -68,7 +68,7 @@ class GProcessComponent extends GComponent
         }
         catch(GException $e)
         {
-            echo $e->getMessage();
+            $this->event('onProcessNotFound', $e, $request);
             if (Core::app()->hasHttp())
                 header('HTTP/1.0 404 Not Found', true, 404);
             else
@@ -82,9 +82,9 @@ class GProcessComponent extends GComponent
      * 
      * @access privvate
      * @param array $request
-     * @return \gear\models\GProcess
+     * @return object of \gear\interfaces\IProcess or \Closure
      */
-    private function _prepareProcess($request)
+    private function _prepareProcess(array $request)
     {
         $process = null;
         if (!isset($request['e']))

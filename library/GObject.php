@@ -529,11 +529,11 @@ class GObject
      * @param string $name
      * @return mxied
      */
-    public function event($name, \gear\library\GEvent $event = null)
+    public function event($name, $event = null)
     {
         $args = func_get_args();
         array_shift($args);
-        $args[0] = is_null($event) ? new GEvent($this) : $event;
+        $args[0] = is_null($event) || !($event instanceof \gear\library\GEvent) ? new GEvent($this) : $event;
         $result = method_exists($this, $name) ? call_user_func_array(array($this, $name), $args) : true;
         if (isset($this->_events[$name]) && $result)
         {

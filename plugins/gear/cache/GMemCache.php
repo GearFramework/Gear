@@ -20,6 +20,8 @@ class GMemCache extends GCache
     /* Private */
     /* Protected */
     protected $_servers = null;
+    protected $_serializer = 'serialize';
+    protected $_unserializer = 'unserialize';
     /* Public */
     public $defaultHost = '127.0.0.1';
     public $defaultPort = 11211;
@@ -125,22 +127,31 @@ class GMemCache extends GCache
         if (is_array($key))
         {
             $result = array();
-            foreach($key as $k => $us)
+            foreach($key as $k => $uns)
             {
-                $value = $us === true || is_callable($us) ? $this->_cache->get($k) : $this->_cache->get($us);
-                if (!is_bool($us) && !is_callable($us))
+                if (is_bool($uns) || is_callable($uns))
+                    $keyName = $k;
+                else
                 {
-                    $k = $us;
+                    $keyName = $uns;
                     $us = $unserialize;
                 }
-                if ($value = $this->_cache->get($k))
-                    $result[] = $us === true ? unserialize($value) : (is_callable($us) ? $us($value) : $value);
+                if ($value = $this->_cache->get($keyName))
+                {
+                    if ($uns === true)
+                        $result[] = call_user_func($this->_unserializer, $value);
+                    else
+                    if (is_callable($uns))
+                        $result[] = $uns($value);
+                    else
+                        $result[] = $value;
+                }
             }
             return $result;
         }
         $value = $this->_cache->get($key);
         if ($value && $unserialize)
-            $value = $unserialize === true ? unserialize($value) : (is_callable($unserialize) ? $unserialize($value) : $value);
+            $value = !$unserialize ? $value : (is_callable($unserialize) ? $unserialize($value) : call_user_func($this->_unserializer, $value));
         return $value;
     }
     
