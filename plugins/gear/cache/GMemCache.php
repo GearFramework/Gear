@@ -76,17 +76,30 @@ class GMemCache extends GCache
      * @param integer $expire
      * @return boolean
      */
-    public function add($key, $value = null, $expire = 30)
+    public function add($key, $value = null, $expire = 30, $serializer = false)
     {
         if (is_array($key))
         {
-            if ($value !== null)
-                $expire = (int)$value;
+            $args = func_get_args();
+            $expire = isset($args[1]) ? (int)$args[1] : 30;
+            if (isset($args[2]))
+                $serializer = is_callable($args[2]) ? $args[2] : ($args[2] === true ? $this->_serializer : false);
+            else
+                $serializer = false;
             $size = $result = count($key);
             foreach($key as $k => $v)
+            {
+                if ($serializer)
+                    $v = $serializer($v);
                 $result = $this->_cache->add($k, $v, 0, $expire ? time() + $expire : 0) ? $result - 1 : $result;
+            }
             return !$result ? true : ($size === $result ? false : $result);
         }
+        if ($serializer === true)
+            $value = call_user_func($this->_serializer, $value);
+        else
+        if (is_callable($serializer))
+            $value = $serializer($value);
         return $this->_cache->add($key, $value, 0, $expire ? time() + $expire : 0);
     }
     
@@ -98,19 +111,33 @@ class GMemCache extends GCache
      * @param string|array $key array as array(key => value, key => value, ...)
      * @param mixed $value as $expire when $key is array
      * @param integer $expire
+     * @param boolean|callable $serializer
      * @return boolean
      */
-    public function set($key, $value, $expire = 30)
+    public function set($key, $value = null, $expire = 30, $serializer = false)
     {
         if (is_array($key))
         {
-            if ($value !== null)
-                $expire = (int)$value;
+            $args = func_get_args();
+            $expire = isset($args[1]) ? (int)$args[1] : 30;
+            if (isset($args[2]))
+                $serializer = is_callable($args[2]) ? $args[2] : ($args[2] === true ? $this->_serializer : false);
+            else
+                $serializer = false;
             $size = $result = count($key);
             foreach($key as $k => $v)
+            {
+                if ($serializer)
+                    $v = $serializer($v);
                 $result = $this->_cache->set($k, $v, 0, $expire ? time() + $expire : 0) ? $result - 1 : $result;
+            }
             return !$result ? true : ($size === $result ? false : $result);
         }
+        if ($serializer === true)
+            $value = call_user_func($this->_serializer, $value);
+        else
+        if (is_callable($serializer))
+            $value = $serializer($value);
         return $this->_cache->set($key, $value, 0, $expire ? time() + $expire : 0);
     }
     
@@ -122,7 +149,7 @@ class GMemCache extends GCache
      * @param boolean|closure $unserialize
      * @return mixed
      */
-    public function get($key, $unserialize = false)
+    public function get($key, $unserializer = false)
     {
         if (is_array($key))
         {
@@ -134,7 +161,7 @@ class GMemCache extends GCache
                 else
                 {
                     $keyName = $uns;
-                    $us = $unserialize;
+                    $us = $unserializer;
                 }
                 if ($value = $this->_cache->get($keyName))
                 {
@@ -150,8 +177,8 @@ class GMemCache extends GCache
             return $result;
         }
         $value = $this->_cache->get($key);
-        if ($value && $unserialize)
-            $value = !$unserialize ? $value : (is_callable($unserialize) ? $unserialize($value) : call_user_func($this->_unserializer, $value));
+        if ($value && $unserializer)
+            $value = !$unserializer ? $value : (is_callable($unserializer) ? $unserializer($value) : call_user_func($this->_unserializer, $value));
         return $value;
     }
     
