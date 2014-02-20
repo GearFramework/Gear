@@ -80,11 +80,11 @@ class GProcessComponent extends GComponent
     /**
      * Получение процесса исходя из запроса пользователя
      * 
-     * @access privvate
+     * @access protected
      * @param array $request
      * @return object of \gear\interfaces\IProcess or \Closure
      */
-    private function _prepareProcess(array $request)
+    protected function _prepareProcess(array $request)
     {
         $process = null;
         if (!isset($request['e']))
@@ -131,11 +131,11 @@ class GProcessComponent extends GComponent
     /**
      * Получение имя класса процесса
      * 
-     * @access private
+     * @access protected
      * @param string $processName
      * @return string
      */
-    private function _prepareProcessClass($processName)
+    protected function _prepareProcessClass($processName)
     {
         $routes = explode('/', $processName);
         $nums = count($routes);

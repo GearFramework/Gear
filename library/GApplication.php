@@ -28,17 +28,16 @@ class GApplication extends GModule
             (
                 'class' => array
                 (
-                    'name' => '\\gear\\components\\gear\\process\\GProcessComponent',
+                    'name' => '\gear\components\gear\process\GProcessComponent',
                     'defaultProcess' => 'index',
-                    'defaultApi' => 'index',
                 ),
             ),
         ),
         'plugins' => array
         (
-            'request' => array('class' => '\\gear\\plugins\\gear\\GRequest'),
-            'enveroment' => array('class' => '\\gear\\plugins\\gear\\GEnveroment'),
-            'log' => array('class' => '\\gear\\plugins\\gear\\GLog'),
+            'request' => array('class' => '\gear\plugins\gear\GRequest'),
+            'enveroment' => array('class' => '\gear\plugins\gear\GEnveroment'),
+            'log' => array('class' => '\gear\plugins\gear\GLog'),
         ),
     );
     protected $_namespace = null;
@@ -59,16 +58,6 @@ class GApplication extends GModule
                 $args = array($this->request->isPost() ? $this->request->post() : $this->request->get());
             else
                 $args = func_get_args();
-/*                
-            if (is_array($process))
-                $request = $process;
-            else
-            if (!$request)
-                $request = $this->request->isPost() ? $this->request->post() : $this->request->get();
-            if ($process instanceof \gear\interfaces\IProcess || $process instanceof \Closure)
-                $result = $this->c('process')->exec($process, $request);
-            else
-                $result = $this->c('process')->exec($request);*/
             $result = call_user_func_array(array($this->c('process'), 'exec'), $args);
             $this->event('onAfterRun', new GEvent($this), $result);
         }
