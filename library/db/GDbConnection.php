@@ -86,8 +86,8 @@ abstract class GDbConnection extends GComponent implements \Iterator
             return $this->_current = $this->_items[$name];
         else
         {
-            $class = $this->i('classItem');
-            return $this->_current = $this->_items[$name] = new $class(array('owner' => $this, 'name' => $name));
+            list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
+            return $this->_current = $this->_items[$name] = new $class(array_merge($properties, array('owner' => $this, 'name' => $name)));
         }
     }
     

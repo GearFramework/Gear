@@ -21,7 +21,10 @@ class GMysqlCollection extends GDbCollection
     /* Protected */
     protected static $_config = array
     (
-        'classItem' => '\\gear\\components\\gear\\db\\mysql\\GMysqlCursor',
+        'classItem' => array
+        (
+            'class' => '\\gear\\components\\gear\\db\\mysql\\GMysqlCursor',
+        ),
     );
     /* Public */
     

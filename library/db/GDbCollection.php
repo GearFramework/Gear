@@ -46,8 +46,9 @@ abstract class GDbCollection extends GModel implements \Iterator
             if (is_callable($p))
                 return call_user_func_array($p, $args);
         }
-        $class = $this->i('classItem');
-        $this->_current = new $class(array('owner' => $this));
+        list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
+        $properties['owner'] = $this;
+        $this->_current = new $class($properties);
         return call_user_func_array(array($this->_current, $name), $args);
     }
     
@@ -82,8 +83,9 @@ abstract class GDbCollection extends GModel implements \Iterator
     {
         if (!$this->_current)
         {
-            $class = $this->i('classItem');
-            $this->_current = new $class(array('owner' => $this));
+            list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
+            $properties['owner'] = $this;
+            $this->_current = new $class($properties);
         }
         return $this->_current->find()->rewind();
     }

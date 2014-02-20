@@ -21,7 +21,10 @@ class GMysqlDatabase extends GDbDatabase
     /* Protected */
     protected static $_config = array
     (
-        'classItem' => '\\gear\\components\\gear\\db\\mysql\\GMysqlCollection',
+        'classItem' => array
+        (
+            'class' => '\\gear\\components\\gear\\db\\mysql\\GMysqlCollection',
+        ),
     );
     protected $_items = array();
     protected $_current = null;

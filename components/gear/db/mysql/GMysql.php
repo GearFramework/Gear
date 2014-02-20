@@ -23,7 +23,10 @@ class GMysql extends GDbConnection
     protected static $_config = array
     (
         'autoConnect' => true,
-        'classItem' => '\\gear\\components\\gear\\db\\mysql\\GMysqlDatabase',
+        'classItem' => array
+        (
+            'class' => '\\gear\\components\\gear\\db\\mysql\\GMysqlDatabase',
+        ),
         'plugins' => array
         (
             'trace' => array
