@@ -21,11 +21,9 @@ class GProcessComponent extends GComponent
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'defaultProcess' => 'index',
-    );
+    protected static $_config = array();
     protected static $_init = false;
+    protected $_defaultProcess = 'index';
     protected $_processes = array();
     protected $_currentProcess = null;
     /* Public */
@@ -89,7 +87,7 @@ class GProcessComponent extends GComponent
         $process = null;
         if (!isset($request['e']))
         {
-            $processName = $this->i('defaultProcess');
+            $processName = $this->defaultProcess;
             if (!$processName)
                 $this->e('Unknown process');
         }
@@ -193,6 +191,23 @@ class GProcessComponent extends GComponent
      * @return \gear\models\GProcess
      */
     public function getProcess() { return $this->_currentProcess; }
+    
+    /**
+     * Установка названия процесса, исполняемого по-умолчанию
+     * 
+     * @access public
+     * @param string $processName
+     * @return void
+     */
+    public function setDefaultProcess($processName) { $this->_defaultProcess = $processName; }
+    
+    /**
+     * Получение названия процесса, исполняемого по-умолчанию
+     * 
+     * @access public
+     * @return string
+     */
+    public function getDefaultProcess() { return $processName; }
 }
 
 /** 
