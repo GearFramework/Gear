@@ -68,9 +68,12 @@ class GProcessComponent extends GComponent
         {
             $this->event('onProcessNotFound', $e, $request);
             if (Core::app()->hasHttp())
+            {
                 header('HTTP/1.0 404 Not Found', true, 404);
+                echo $e->getMessage();
+            }
             else
-                echo 'Process not found'.
+                echo $e->getMessage();
             exit(404);
         }
     }
@@ -87,7 +90,7 @@ class GProcessComponent extends GComponent
         $process = null;
         if (!isset($request['e']))
         {
-            $processName = $this->defaultProcess;
+            $processName = $this->getDefaultProcess();
             if (!$processName)
                 $this->e('Unknown process');
         }
@@ -138,18 +141,18 @@ class GProcessComponent extends GComponent
         $routes = explode('/', $processName);
         $nums = count($routes);
         if ($nums == 1)
-            $class = Core::app()->getNamespace() . '\\process\\G' . ucfirst($processName);
+            $class = Core::app()->getNamespace() . '\process\G' . ucfirst($processName);
         else
         if ($nums == 2)
         {
             if ($processName[0] === '/')
-                $class = '\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
+                $class = '\\' . $routes[0] . '\process\G' . ucfirst($routes[1]);
             else
-                $class = Core::app()->getNamespace() . '\\modules\\' . $routes[0] . '\\process\\G' . ucfirst($routes[1]);
+                $class = Core::app()->getNamespace() . '\modules\\' . $routes[0] . '\process\G' . ucfirst($routes[1]);
         }
         else
         if ($nums >= 3)
-            $class = '\\' . $routes[0] . '\\modules\\' . $routes[1] . '\\process\\G' . ucfirst($routes[2]);
+            $class = '\\' . $routes[0] . '\modules\\' . $routes[1] . '\process\G' . ucfirst($routes[2]);
         return $class;
     }
     
@@ -207,7 +210,7 @@ class GProcessComponent extends GComponent
      * @access public
      * @return string
      */
-    public function getDefaultProcess() { return $processName; }
+    public function getDefaultProcess() { return $this->_defaultProcess; }
 }
 
 /** 
