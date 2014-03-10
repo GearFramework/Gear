@@ -52,7 +52,9 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
         if ($this->event('onBeforeExec', new GEvent($this), $request))
         {
             $this->request = $request;
-            $apiName = isset($request['f']) ? $request['f'] : $this->defaultApi;
+            $apiName = Core::app()->request->get('f');
+            if (!$apiName)
+                $apiName = $this->defaultApi;
             $api = $this->getApis($apiName);
             if ($api)
             {

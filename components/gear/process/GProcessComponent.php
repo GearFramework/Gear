@@ -88,14 +88,13 @@ class GProcessComponent extends GComponent
     protected function _prepareProcess(array $request)
     {
         $process = null;
-        if (!isset($request['e']))
+        $processName = Core::app()->request->get('e');
+        if (!$processName)
         {
             $processName = $this->getDefaultProcess();
             if (!$processName)
                 $this->e('Unknown process');
         }
-        else
-            $processName = $request['e'];
         $processes = $this->getProcesses();
         if (isset($processes[$processName]))
         {
