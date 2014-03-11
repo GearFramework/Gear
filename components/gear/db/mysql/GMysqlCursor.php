@@ -70,7 +70,7 @@ class GMysqlCursor extends GDbCursor
             $this->_query .= 'ORDER BY ' . implode(', ', $this->_sort) . ' ';
         if (!empty($this->_limit))
             $this->_query .= 'LIMIT ' . $this->_limit;
-        $this->event('onAfterBuild');
+        $this->event('onAfterBuild', new \gear\library\GEvent(), $this->_query);
         return $this->_query;
     }
     
