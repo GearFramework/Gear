@@ -283,6 +283,20 @@ class GMysqlCursor extends GDbCursor
     }
 
     /**
+     * Подключение таблицы
+     * 
+     * @access public
+     * @param string|object $collection
+     * @param null|array $criterial
+     * @return $this
+     */
+    public function inner($collection, $criterial = null)
+    {
+        $this->_joins[] = 'INNER JOIN ' . (is_object($collection) ? $collection->name : $collection) . ' ON ' . $this->_buildCondition($criterial);
+        return $this;
+    }
+
+    /**
      * Левое подключение таблицы
      * 
      * @access public
