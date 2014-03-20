@@ -12,7 +12,7 @@ use \gear\interfaces\IComponent;
  * @package Gear Framework
  * @abstract
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
+ * @copyright Kukushkin Denis 2013 
  * @version 0.0.1
  * @since 01.08.2013
  */
