@@ -45,7 +45,7 @@ abstract class GPlugin extends GComponent implements IPlugin
         else
             static::e
             (
-                'Владелец плагина должен быть экземпляром класса ":ownerClass"', 
+                'Owner has been instanced of ":ownerClass"', 
                 array('ownerClass' => $dependency)
             );
     }
@@ -107,7 +107,7 @@ abstract class GPlugin extends GComponent implements IPlugin
         if (preg_match('/^on[A-Z]/', $name))
             return ($result = $this->event($name)) ? $this->_owner->event($name) : $result;
         else
-            return isset($this->_properties[$name]) ? $this->_properties[$name] : $this->getOwner()->$name;
+            return array_key_exists($name, $this->_properties) ? $this->_properties[$name] : $this->getOwner()->$name;
     }
     
     /**

@@ -57,7 +57,7 @@ abstract class GComponent extends GObject implements IComponent
         if (is_string($config))
             $config = require(Core::resolvePath($config));
         if (!is_array($config))
-            static::e('Некорректная конфигурация');
+            static::e('Incorrect configuration');
         static::$_config = array_replace_recursive(static::$_config, $config);
     }
     

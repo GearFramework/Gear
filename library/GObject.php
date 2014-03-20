@@ -176,7 +176,7 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        $this->e('Method ":methodName" is not exists', array('methodName' => $name));
+        static::e('Method ":methodName" is not exists', array('methodName' => $name));
     }
     
     /**
@@ -426,7 +426,7 @@ class GObject
      */
     public function isPluginRegistered($name)
     {
-        return isset(static::$_config['plugins'][$name]) || isset(self::$_config['plugins'][$name]);
+        return isset(static::$_config['plugins'][$name]) || isset(self::$_config['plugins'][$name]) || isset($this->_plugins[$name]);
     }
     
     /**
