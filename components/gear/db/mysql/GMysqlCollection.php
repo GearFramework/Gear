@@ -83,6 +83,16 @@ class GMysqlCollection extends GDbCollection
         $this->event('onBeforeRewind');
         return $this->_current->rewind();
     }
+    
+    public function setLastInsertId($lastInsertId)
+    {
+        $this->_lastInsertId = $lastInsertId;
+    }
+    
+    public function getLastInsertId()
+    {
+        return $this->_lastInsertId;
+    }
 }
 
 /** 

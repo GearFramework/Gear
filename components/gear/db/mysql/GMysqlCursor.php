@@ -147,7 +147,7 @@ class GMysqlCursor extends GDbCursor
     public function insert($properties)
     {
         $set = array();
-        if ($properties instanceof gear\library\GObject)
+        if ($properties instanceof \gear\library\GObject)
             $properties = $properties->props();
         if (is_array($test = reset($properties)))
         {
@@ -171,7 +171,10 @@ class GMysqlCursor extends GDbCursor
         $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` ' 
                       . '(' . implode(', ', $fields) . ') VALUES ' 
                       . '(' . implode('), (', $set) . ')';
-        return $this->query()->affected();
+        $result = $this->query()->affected();
+        if ($result)
+            $this->getCollection()->lastInsertId = $this->lastInsertId();
+        return $result;
     }
     
     /**

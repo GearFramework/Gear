@@ -21,6 +21,7 @@ abstract class GDbCollection extends GModel implements \Iterator
     /* Private */
     /* Protected */
     protected $_current = null;
+    protected $_lastInsertId = 0;
     /* Public */
     
     public function __call($name, $args)
