@@ -125,7 +125,7 @@ class GMysqlCursor extends GDbCursor
                 foreach($fields as $name => $alias)
                 {
                     if (is_numeric($name))
-                        $this->_fields[] = strpos($name, '.') ? $name : $this->_select . '.`' . $alias . '`';
+                        $this->_fields[] = strpos($alias, '.') ? $alias : $this->_select . '.`' . $alias . '`';
                     else
                         $this->_fields[] = (strpos($name, '.') ? $name : $this->_select . '.' . $name) . ' AS `' . $alias . '`';
                 }
