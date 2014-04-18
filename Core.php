@@ -211,9 +211,9 @@ final class Core
      */
     public static function registerModule($name, array $module)
     {
-        if ($module = self::isModuleRegistered($name))
+        if ($existModule = self::isModuleRegistered($name))
         {
-            if (!isset($module['override']) || !$module['override'])
+            if (!isset($existModule['override']) || !$existModule['override'])
                 self::e('Модуль ":moduleName" не может быть перегружен', array('moduleName' => $name));
         }
         self::$_config['modules'][$name] = $module;
