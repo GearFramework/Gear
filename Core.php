@@ -272,6 +272,27 @@ final class Core
         }
         return false;
     }
+    
+    /**
+     * Возвращает список модулей
+     * 
+     * @access public
+     * @static
+     * @param bool $instances
+     * @return array
+     */
+    public static function getModules($instances = false)
+    {
+        $modules = array();
+        if (!$instances)
+        {
+            if (isset(self::$_config['preloads']['modules']))
+                $modules = array_keys(self::$_config['preloads']['modules']);
+            if (isset(self::$_config['modules']))
+                $modules = array_merge($modules, array_keys(self::$_config['modules']));
+        }
+        return $modules;
+    }
 
     /**
      * Получение компонента
@@ -420,8 +441,8 @@ final class Core
             $config = $class;
             $class = $config['name'];
             unset($config['name']);
-            if (isset($config['__configFile']))
-                $config = $config['__configFile'];
+            if (isset($config['#config']))
+                $config = $config['#config'];
         }
         return array($class, $config, $properties);
     }
