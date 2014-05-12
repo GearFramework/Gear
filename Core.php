@@ -3,6 +3,7 @@
 namespace gear;
 
 defined('GEAR') or define('GEAR', __DIR__);
+defined('DEBUG') or define('DEBUG', false);
 
 /**
  * Ядро Gear Framework
@@ -49,6 +50,11 @@ final class Core
             ),
             'components' => array
             (
+                'syslog' => array
+                (
+                    'class' => '\gear\components\gear\syslog\GSyslog',
+                    'enable' => DEBUG,
+                ),
                 // Автозагрузчик классов
                 'loader' => array('class' => '\\gear\\components\\gear\\loader\\GLoader'),
                 // Обработчик ошибок
@@ -159,6 +165,21 @@ final class Core
     public static function app()
     {
         return self::m('app');
+    }
+    
+    /**
+     * Вызов компонента реализцющего системное протоколирование
+     * Производит протоколирование оперций в случае, если такой компонент
+     * установлен и константа DEBUG установлена в TRUE
+     * 
+     * @access public
+     * @static
+     * @return void
+     */
+    public function syslog()
+    {
+        if (self::isComponentInstalled('syslog') && DEBUG)
+            call_user_func_array(self::c('syslog'), func_get_args());
     }
     
     /**
