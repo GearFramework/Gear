@@ -5,9 +5,9 @@ use \gear\Core;
 use \gear\library\db\GDbCursor;
 use \gear\library\GException;
 
-/** 
+/**
  * Курсор
- * 
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
@@ -36,10 +36,10 @@ class GMysqlCursor extends GDbCursor
     protected $_sort = array();
     protected $_limit = null;
     /* Public */
-    
+
     /**
      * Возвращает SQL-запрос
-     * 
+     *
      * @access public
      * @return string
      */
@@ -48,10 +48,10 @@ class GMysqlCursor extends GDbCursor
         $query = $this->_query ? $this->_query : $this->buildQuery();
         return $query;
     }
-    
+
     /**
      * Построение запроса
-     * 
+     *
      * @access public
      * @see \gear\library\db\GDbCursor::buildQuery()
      * @return string
@@ -59,8 +59,8 @@ class GMysqlCursor extends GDbCursor
     public function buildQuery()
     {
         $this->event('onBeforeBuild');
-        $this->_query = ($this->_hasExplain ? 'EXPLAIN ' : '') 
-                      . 'SELECT ' . ($this->_hasCount ? $this->_hasCount : (count($this->_fields) ? implode(', ', $this->_fields) : '*')) . ' ' 
+        $this->_query = ($this->_hasExplain ? 'EXPLAIN ' : '')
+                      . 'SELECT ' . ($this->_hasCount ? $this->_hasCount : (count($this->_fields) ? implode(', ', $this->_fields) : '*')) . ' '
                       . 'FROM `' . ($this->_select ? $this->_select : $this->getCollection()->name) . '` ';
         if (count($this->_joins))
             $this->_query .= implode(' ', $this->_joins) . ' ';
@@ -73,10 +73,10 @@ class GMysqlCursor extends GDbCursor
         $this->event('onAfterBuild', new \gear\library\GEvent($this), $this->_query);
         return $this->_query;
     }
-    
+
     /**
      * Выполнение указанного запроса
-     * 
+     *
      * @access public
      * @param string $query
      * @return $this
@@ -88,10 +88,10 @@ class GMysqlCursor extends GDbCursor
             $this->e($this->error(), array('query' => $query));
         return $this;
     }
-    
+
     /**
      * Возвращает текст ошибки
-     * 
+     *
      * @access public
      * @return string
      */
@@ -103,7 +103,7 @@ class GMysqlCursor extends GDbCursor
     /**
      * Формирует поисковый запроса поиска элементов по указанному
      * критерию
-     * 
+     *
      * @access public
      * @param null|array $criteria
      * @param null|string|array $fields
@@ -139,7 +139,7 @@ class GMysqlCursor extends GDbCursor
      * Добавление в коллекцию новой записи
      * Возвращает количество затронутых строк
      * В случае совпадения PRIMARY KEY генерируется исключение
-     * 
+     *
      * @access public
      * @param mixed $properties
      * @return integer
@@ -168,18 +168,18 @@ class GMysqlCursor extends GDbCursor
                 $set[] = $this->_escapeValue($value);
             $set = array(implode(', ', $set));
         }
-        $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` ' 
-                      . '(' . implode(', ', $fields) . ') VALUES ' 
+        $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` '
+                      . '(' . implode(', ', $fields) . ') VALUES '
                       . '(' . implode('), (', $set) . ')';
         $result = $this->query()->affected();
         if ($result)
             $this->getCollection()->lastInsertId = $this->lastInsertId();
         return $result;
     }
-    
+
     /**
      * Получение списка полей
-     * 
+     *
      * @access public
      * @param array $record
      * @return array
@@ -191,14 +191,14 @@ class GMysqlCursor extends GDbCursor
             $fields[] = $this->_escapeOperand($field);
         return $fields;
     }
-    
+
     /**
      * Добавление в коллекцию новой записи. В случае совпадения
      * PRIMARY KEY происходит обновление указанных в $updates полей
      * записи
      * Возвращает колчество затронутых полей
      *
-     * @access public 
+     * @access public
      * @param array|object $properties
      * @param null|array of name properties $updates
      * @return integer
@@ -232,10 +232,10 @@ class GMysqlCursor extends GDbCursor
         $this->_query .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
         return $this->query()->affected();
     }
-    
+
     /**
      * Обновление указанных полей для записей, соответствующих критерию
-     * 
+     *
      * @access public
      * @param null|array $criteria
      * @param array|object $properties
@@ -254,11 +254,11 @@ class GMysqlCursor extends GDbCursor
             $this->_query .= ' WHERE ' . $this->_buildCondition($criteria);
         return $this->query()->affected();
     }
-    
+
     /**
      * Удаление записей, соответствующих критерию, либо найденных
      * в результате последнего выполненного SELECT-запроса
-     * 
+     *
      * @access public
      * @param null|array $criteria
      * @return integer
@@ -270,10 +270,10 @@ class GMysqlCursor extends GDbCursor
             $this->_query .= ' WHERE ' . $this->_buildCondition($criteria);
         return $this->query()->affected();
     }
-    
+
     /**
      * Подключение таблицы
-     * 
+     *
      * @access public
      * @param string|object $collection
      * @param null|array $criterial
@@ -287,7 +287,7 @@ class GMysqlCursor extends GDbCursor
 
     /**
      * Подключение таблицы
-     * 
+     *
      * @access public
      * @param string|object $collection
      * @param null|array $criterial
@@ -301,7 +301,7 @@ class GMysqlCursor extends GDbCursor
 
     /**
      * Левое подключение таблицы
-     * 
+     *
      * @access public
      * @param string|object $collection
      * @param null|array $criterial
@@ -315,7 +315,7 @@ class GMysqlCursor extends GDbCursor
 
     /**
      * Правое подключение таблицы
-     * 
+     *
      * @access public
      * @param string|object $collection
      * @param null|array $criterial
@@ -329,7 +329,7 @@ class GMysqlCursor extends GDbCursor
 
     /**
      * Установка критерия поиска
-     * 
+     *
      * @access public
      * @param null|array $criteria
      * @return $this
@@ -344,7 +344,7 @@ class GMysqlCursor extends GDbCursor
 
     /**
      * Построение условного выражения согласно полученного критерия
-     * 
+     *
      * @access protected
      * @param array $criteria
      * @param null|string $logic
@@ -430,10 +430,10 @@ class GMysqlCursor extends GDbCursor
         }
         return implode(' ', $condition);
     }
-    
+
     /**
      * Экранирование спецсимволов и обрамление кавычками
-     * 
+     *
      * @access public
      * @param mixed $value
      * @return string
@@ -442,10 +442,10 @@ class GMysqlCursor extends GDbCursor
     {
         return "'" . mysqli_real_escape_string($this->getHandler(), $value) . "'";
     }
-    
+
     /**
      * Обработка левого операнда
-     * 
+     *
      * @access protected
      * @param string $value
      * @return string
@@ -460,17 +460,17 @@ class GMysqlCursor extends GDbCursor
         else
             return strpos($value, '.') ? $value : $this->getOwner()->name . '.' . $value;
     }
-    
+
     /**
      * Обработка правого операнда
-     * 
+     *
      * @access protected
      * @param string $value
      * @return string
      */
     protected function _escapeValue($value)
     {
-        if (strlen($value) && $value[0] === ':')
+        if (strlen($value) && $value{0} === ':')
             return strpos($value, '.') ? substr($value, 1) : $this->getOwner()->name . '.' . substr($value, 1);
         else
         if (preg_match('/^[A-Z_]+\(.*\)$/', $value))
@@ -484,7 +484,7 @@ class GMysqlCursor extends GDbCursor
 
     /**
      * Установка группировки результатов запроса
-     * 
+     *
      * @access public
      * @param null|string|array $group
      * @return $this
@@ -502,16 +502,16 @@ class GMysqlCursor extends GDbCursor
                 if (is_numeric($field))
                     $this->_group[] = strpos($order, '.') ? $order : $this->_select . '.`' . $order . '`';
                 else
-                    $this->_group[] = (strpos($field, '.') ? $field : $this->_select . '.`' . $field . '`') 
+                    $this->_group[] = (strpos($field, '.') ? $field : $this->_select . '.`' . $field . '`')
                                     . ' ' . ((int)$order === 1 ? 'ASC' : 'DESC');
             }
         }
         return $this;
     }
-    
+
     /**
      * Установка сортировки результатов запроса
-     * 
+     *
      * @access public
      * @param null|string|array $sort
      * @return $this
@@ -542,10 +542,10 @@ class GMysqlCursor extends GDbCursor
         }
         return $this;
     }
-    
+
     /**
      * Установка позиции и количества возвращаемых записей
-     * 
+     *
      * @access public
      * @param mixed $top
      * @return $this
@@ -563,10 +563,10 @@ class GMysqlCursor extends GDbCursor
             $this->_limit = implode(', ', func_get_args());
         return $this;
     }
-    
+
     /**
      * Получение значения AUTOINCREMENT поля после выполненного INSERT запроса
-     * 
+     *
      * @access public
      * @return integer
      */
@@ -580,11 +580,11 @@ class GMysqlCursor extends GDbCursor
         }
         return $this->_lastInsertId;
     }
-    
+
     /**
      * Возвращает количество строк, затронутых последним выполненным запросом
      * INSERT, UPDATE, DELETE
-     * 
+     *
      * @abstract
      * @access public
      * @return integer
@@ -599,7 +599,7 @@ class GMysqlCursor extends GDbCursor
     /**
      * Получение количества выбранных строк в результате выполнения запроса,
      * либо добавляет COUNT() внутрь SELECT запроса
-     * 
+     *
      * @access public
      * @param null|string|array $field
      * @return integer
@@ -623,10 +623,10 @@ class GMysqlCursor extends GDbCursor
             return $count;
         }
     }
-    
+
     /**
      * Возвращает информацию о выполняемом запросе в виде массива
-     * 
+     *
      * @access public
      * @return array
      */
@@ -636,11 +636,11 @@ class GMysqlCursor extends GDbCursor
             $this->_buildQuery();
         return preg_match('/^SELECT/', $this->_query) ? $this->runQuery('EXPLAIN ' . $this->_query)->asAll() : null;
     }
-    
+
     /**
      * Возвращает следующую запись из результатов запроса в виде
      * обычного индексного массива
-     * 
+     *
      * @access public
      * @return array
      */
@@ -650,11 +650,11 @@ class GMysqlCursor extends GDbCursor
             $this->query();
         return mysqli_fetch_row($this->_resource);
     }
-    
+
     /**
      * Возвращает следующую запись из результатов запроса в виде
      * ассоциативного массива
-     * 
+     *
      * @access public
      * @return array
      */
@@ -664,11 +664,11 @@ class GMysqlCursor extends GDbCursor
             $this->query();
         return mysqli_fetch_assoc($this->_resource);
     }
-    
+
     /**
      * Возвращает следующую запись из результатов запроса в виде объекта
      * указанного класса
-     * 
+     *
      * @access public
      * @param string $class
      * @return object
@@ -683,18 +683,18 @@ class GMysqlCursor extends GDbCursor
             $object = is_array($class) && is_callable($class) ? call_user_func($class, $properties) : new $class($properties);
         return $object;
     }
-    
+
     /**
-     * Возвращает массив всех записей найденных в результате исполнения 
+     * Возвращает массив всех записей найденных в результате исполнения
      * запроса. Каждый элемент массива является ассоциативным массивом
      * получченным из mysqli_fetch_assoc()
-     * 
+     *
      * @access public
      * @return array
      */
     public function asAll()
     {
-        if (!is_object($this->_resource)) 
+        if (!is_object($this->_resource))
             $this->query();
         mysqli_data_seek($this->_resource, 0);
         $items = array();
@@ -702,10 +702,10 @@ class GMysqlCursor extends GDbCursor
            $items[] = $row;
         return $items;
     }
-    
+
     /**
      * Перемотка в начало списка результата
-     * 
+     *
      * @access public
      * @return array
      */
@@ -728,13 +728,13 @@ class GMysqlCursor extends GDbCursor
         $this->_query = null;
         $this->_resource = null;
     }
-    
+
     public function onBeforeFind()
     {
         $this->reset();
         return true;
     }
-    
+
     public function onBeforeCommand($event, $command = null)
     {
         $this->_query = null;
@@ -750,9 +750,9 @@ class GMysqlCursor extends GDbCursor
     }
 }
 
-/** 
+/**
  * Класс исключений курсора
- * 
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
