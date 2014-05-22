@@ -2,9 +2,9 @@
 
 namespace gear\library;
 
-/** 
+/**
  * Класс исключений
- * 
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
@@ -18,7 +18,7 @@ class GException extends \Exception
     /* Protected */
     protected $_args = array();
     /* Public */
-    
+
     /**
      * Конструктор исключения
      * $args = Array
@@ -27,7 +27,7 @@ class GException extends \Exception
      *      [argName2] => value2,
      *      ...
      * )
-     * 
+     *
      * @access public
      * @param string $message
      * @param array $args
@@ -42,10 +42,10 @@ class GException extends \Exception
         }
         parent::__construct($message);
     }
-    
+
     /**
      * Установка аргумента исключения
-     * 
+     *
      * @access public
      * @param string $name
      * @param mixed $value
@@ -55,10 +55,10 @@ class GException extends \Exception
     {
         $this->_args[$name] = $value;
     }
-    
+
     /**
      * Доступ к аргументам исключения
-     * 
+     *
      * @access public
      * @param string $name
      * @return mixed
@@ -66,5 +66,16 @@ class GException extends \Exception
     public function __get($name)
     {
         return isset($this->_args[$name]) ? $this->_args[$name] : null;
+    }
+
+    /**
+     * Возвращает массив аргументов
+     *
+     * @access public
+     * @return array
+     */
+    public function args()
+    {
+        return $this->_args;
     }
 }
