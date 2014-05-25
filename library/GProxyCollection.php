@@ -5,6 +5,16 @@ use \gear\Core;
 use \gear\library\GCollection;
 use \gear\library\GException;
 
+/** 
+ * 
+ * 
+ *  
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis 2013
+ * @version 0.0.1
+ * @since 23.08.2013
+ */
 class GProxyCollection extends GCollection
 {
     /* Const */
@@ -13,7 +23,14 @@ class GProxyCollection extends GCollection
     protected $_source = null;
     /* Public */
     
-    public function attach($source)
+    /**
+     * Подключение источника данных
+     * 
+     * @access public
+     * @param object $source
+     * @return $this
+     */
+    public function attach(\Iterator $source)
     {
         $this->_source = $source;
         return $this;

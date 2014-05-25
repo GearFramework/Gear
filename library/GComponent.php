@@ -22,7 +22,6 @@ abstract class GComponent extends GObject implements IComponent
     /* Private */
     /* Protected */
     protected static $_config = array();
-    protected $_owner = null;
     /* Public */
     
     /**

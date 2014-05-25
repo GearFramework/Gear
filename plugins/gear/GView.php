@@ -36,12 +36,15 @@ class GView extends GPlugin
      */
     public function render($view = null, array $arguments = array(), $return = false)
     {
-        $this->event('onBeforeRender');
-        if ($view === null)
-            $view = $this->getOwner()->getViewPath();
+        if (!$view)
+            $view = $this->getOwner()->viewPath;
+        else
+        if (!preg_match('/[\/|\\\\]/', $view))
+            $view = $this->getOwner()->viewPath . '\\' . $view; 
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
             $viewPath .= '.phtml';
+        $this->event('onBeforeRender', new GEvent($this), $viewPath, $arguments);
         $this->_arguments = $arguments;
         extract($arguments);
         $resultRender = true;

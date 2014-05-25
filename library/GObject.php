@@ -37,8 +37,8 @@ class GObject
     protected $_plugins = array();
     protected $_events = array();
     protected $_preloads = array();
+    protected $_viewPath = 'views';
     /* Public */
-    public $viewPath = 'views';
     
     /**
      * Конструктор класса
@@ -261,6 +261,29 @@ class GObject
     public function getOwner()
     {
         return $this->_owner;
+    }
+
+    /**
+     * Взовращает путь к шаблонам отображения объекта
+     * 
+     * @access public
+     * @return string
+     */
+    public function getViewPath()
+    {
+        return $this->_viewPath;
+    }
+    
+    /**
+     * Установка пути к шаблонам отображения объекта
+     * 
+     * @access public
+     * @param string $path
+     * @return void
+     */
+    public function setViewPath($path)
+    {
+        $this->_viewPath = $path;
     }
 
     /**
@@ -695,11 +718,6 @@ class GObject
                 return $this;
             }
         }
-    }
-
-    public function getViewPath()
-    {
-        return $this->viewPath;
     }
 
     /**
