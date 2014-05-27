@@ -5,9 +5,9 @@ use \gear\Core;
 use \gear\library\GObject;
 use \gear\library\GException;
 
-/** 
- * Базовый класс моделей 
- * 
+/**
+ * Базовый класс моделей
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
@@ -19,33 +19,29 @@ class GModel extends GObject
     /* Const */
     /* Private */
     /* Protected */
-    protected $_owner = null;
     protected $_pk = 'id';
     /* Public */
     /**
      * Конструктор класса
      * Принимает ассоциативный массив свойств объекта и их значений
-     * 
+     *
      * @access public
      * @param array $properties
      * @return void
      */
-    public function __construct(array $properties = array())
-    {
-        parent::__construct($properties);
-    }
-    
+    public function __construct(array $properties = array()) { parent::__construct($properties); }
+
     /**
      * Клонирование
-     * 
+     *
      * @access public
      * @return void
      */
     public function __clone() { parent::__clone(); }
-    
+
     /**
      * Установка названия поля являющимся PRIMARY LEY
-     * 
+     *
      * @access public
      * @param string $pk
      * @return void
@@ -54,10 +50,10 @@ class GModel extends GObject
     {
         $this->_pk = $pk;
     }
-    
+
     /**
      * Получение названия поля являющимся PRIMARY LEY
-     * 
+     *
      * @access public
      * @return string
      */
@@ -67,9 +63,9 @@ class GModel extends GObject
     }
 }
 
-/** 
- * Исключения базовой модели 
- * 
+/**
+ * Исключения базовой модели
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013

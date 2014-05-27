@@ -6,9 +6,9 @@ use \gear\library\GComponent;
 use \gear\library\GException;
 use \gear\interfaces\IDbComponent;
 
-/** 
+/**
  * Класс компонентов, работающих с базами данных
- * 
+ *
  * @package Gear Framework
  * @abstract
  * @author Kukushkin Denis
@@ -23,14 +23,14 @@ abstract class GDbComponent extends GComponent implements IDbComponent
     /* Protected */
     protected static $_config = array();
     protected static $_init = false;
+    protected $_connectionName = 'connection';
+    protected $_dbName = 'database';
+    protected $_collectionName = 'table';
     /* Public */
-    public $connectionName = 'connection';
-    public $dbName = 'database';
-    public $collectionName = 'table';
-    
+
     /**
      * Возвращает соединение базой данных
-     * 
+     *
      * @access public
      * @param boolean $autoSelectDb
      * @param boolean $autoSelectCollection
@@ -62,36 +62,63 @@ abstract class GDbComponent extends GComponent implements IDbComponent
         else
             $this->e('Компонент базы данных не найден');
     }
-    
+
+    /**
+     * Установка названия соединения с сервером баз данных
+     *
+     * @access public
+     * @param string $connectionName
+     * @return void
+     */
+    public function setConnectionName($connectionName) { $this->_connectionName = $connectionName; }
+
     /**
      * Возвращает название компонента, выполняющего соединение с сервером базы
      * данных
-     * 
+     *
      * @access public
      * @return string
      */
-    public function getConnectionName() { return $this->connectionName; }
+    public function getConnectionName() { return $this->_connectionName; }
+
+    /**
+     * Установка названия базы данных
+     *
+     * @access public
+     * @param string $dbName
+     * @return void
+     */
+    public function setDbName($dbName) { $this->_dbName = $dbName; }
 
     /**
      * Возвращает название базы данных
-     * 
+     *
      * @access public
      * @return string
      */
-    public function getDbName() { return $this->dbName; }
+    public function getDbName() { return $this->_dbName; }
+
+    /**
+     * Установка названия таблицы
+     *
+     * @access public
+     * @param string $collectionName
+     * @return void
+     */
+    public function setCollectionName($collectionName) { $this->_collectionName = $collectionName; }
 
     /**
      * Возвращает название таблицы
-     * 
+     *
      * @access public
      * @return string
      */
-    public function getCollectionName() { return $this->collectionName; }
+    public function getCollectionName() { return $this->_collectionName; }
 }
 
-/** 
+/**
  * Исключения компонента
- * 
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013

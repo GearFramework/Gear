@@ -7,9 +7,9 @@ use \gear\library\GComponent;
 use \gear\library\GException;
 use \gear\interfaces\IPlugin;
 
-/** 
+/**
  * Класс описывающий плагин
- * 
+ *
  * @package Gear Framework
  * @abstract
  * @author Kukushkin Denis
@@ -25,12 +25,12 @@ abstract class GPlugin extends GComponent implements IPlugin
     protected static $_config = array();
     protected static $_init = false;
     /* Public */
-    
+
     /**
      * Метод, который выполняется во время инсталляции плагина.
      * Запускает инициализацию класса (конфигурирование) и возвращает
      * инстанс.
-     * 
+     *
      * @access public
      * @static
      * @param array|string as path to file $config
@@ -40,19 +40,13 @@ abstract class GPlugin extends GComponent implements IPlugin
      */
     public static function install($config = array(), array $properties = array(), $owner = null)
     {
-        if (static::checkDependency($owner))
-            return parent::install($config, $properties, $owner);
-        else
-            static::e
-            (
-                'Owner has been instanced of ":ownerClass"', 
-                array('ownerClass' => $dependency)
-            );
+        static::checkDependency($owner);
+        return parent::install($config, $properties, $owner);
     }
-    
+
     /**
      * Проверка зависимости класса владельца
-     * 
+     *
      * @access public
      * @static
      * @param object $owner
@@ -61,7 +55,14 @@ abstract class GPlugin extends GComponent implements IPlugin
     public static function checkDependency($owner)
     {
         $dependencyClass = static::i('dependency');
-        return !$dependencyClass || ($dependencyClass && $owner instanceof $dependencyClass);
+        if (!(!$dependencyClass || ($dependencyClass && $owner instanceof $dependencyClass)))
+        {
+            static::e
+            (
+                'Owner has been instanced of ":ownerClass"',
+                array('ownerClass' => $dependency)
+            );
+        }
     }
 
     /**
@@ -69,7 +70,7 @@ abstract class GPlugin extends GComponent implements IPlugin
      * Если название свойства начинается на "on", то вызывает метод
      * установки обработчика указанного в $name события
      * Устанавливает значение для собственного свойства
-     * 
+     *
      * @access public
      * @param string $name
      * @param mixed $value
@@ -86,14 +87,14 @@ abstract class GPlugin extends GComponent implements IPlugin
         else
             $this->_properties[$name] = $value;
     }
-    
+
     /**
      * Если у свойства есть геттер, то вызвывает его.
      * Если название свойства начинается на "on", то вызывает
      * собтвенные обработчики события и своего владельца.
      * Если свойство присутствует в $_properties, то возвращает его значение,
      * иначе перенаправляет на владельца
-     * 
+     *
      * @access public
      * @param string $name
      * @return mixed
@@ -109,12 +110,12 @@ abstract class GPlugin extends GComponent implements IPlugin
         else
             return array_key_exists($name, $this->_properties) ? $this->_properties[$name] : $this->getOwner()->$name;
     }
-    
+
     /**
-     * Вызывает обработчиков события как самого плагина, так и владельца, 
-     * если название метода начинается на "on", иначе перенаправляет 
+     * Вызывает обработчиков события как самого плагина, так и владельца,
+     * если название метода начинается на "on", иначе перенаправляет
      * вызов метода на своего владельца
-     * 
+     *
      * @access public
      * @param string $name
      * @param array $args
@@ -130,34 +131,35 @@ abstract class GPlugin extends GComponent implements IPlugin
         }
         return call_user_func_array(array($this->getOwner(), $name), $args);
     }
-    
+
+    /**
+     * Вызов плагина владельца
+     *
+     * @access public
+     * @param string $name
+     * @return object
+     */
     public function p($name)
     {
         return $this->getOwner()->p($name);
-    }
-    
-    
-    public function getViewPath()
-    {
-        return $this->getOwner()->getViewPath();
     }
 
     /**
      * Обработчик события onConstructed, вызываемого после создания
      * экземпляра плагина
-     * 
+     *
      * @access public
      * @return void
      */
-    public function onConstructed()
+    public function eventConstructed()
     {
-        return true;
+        return $this->event('onConstructed');
     }
 }
 
 /**
  * Класс Исключений плагина
- * 
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
