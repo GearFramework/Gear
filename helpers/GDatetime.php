@@ -124,7 +124,7 @@ class GDatetime
         if (!is_numeric($time))
             $time = strtotime($time);
         $class = self::$localePath . '\\' . self::$locale;
-        $defaultTokens = array('d', 'j', 'N', 'S', 'w', 'W', 'm', 'n', 't', 'L', 'o', 'Y', 'y', 'a', 'A', 'B', 'g', 'G', 'h', 'H', 'i', 's', 'u');
+        $defaultTokens = array('a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'w', 'W', 'y', 'Y', 'z', 'Z');
         $natural = (int)$natural ? 1 : 0;
         $result = '';
         foreach(preg_split('//', $format, 0, PREG_SPLIT_NO_EMPTY) as $token)
