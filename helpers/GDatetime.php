@@ -109,6 +109,11 @@ class GDatetime
         return $format ? self::_calculate(strtotime($time), $format, $natural) : strtotime($time);
     }
 
+    public static function format($time, $format, $natural = false)
+    {
+        return self::_calculate($time, $format, $natural);
+    }
+
     /**
      * Форматирование даты по указанному шаблону
      *
