@@ -29,6 +29,8 @@ class GDate extends GModel
     public function setDatetime($datetime)
     {
         $this->_datetime = $datetime;
+        $this->_timestamp = strtotime($this->_datetime);
+        $this->_fillDate();
     }
 
     public function getDatetime()
@@ -48,6 +50,8 @@ class GDate extends GModel
     public function setTimestamp($timestamp)
     {
         $this->_timestamp = (int)$timestamp;
+        $this->datetime = $this->format($this->format);
+        $this->_fillDate();
     }
 
     public function getTimestamp()
@@ -55,6 +59,16 @@ class GDate extends GModel
         if (!$this->_timestamp)
             $this->_timestamp = $this->datetime ? strtotime($this->datetime) : time();
         return $this->_timestamp;
+    }
+    
+    private function _fillDate()
+    {
+        $this->_day = date('d', $this->_timestamp);
+        $this->_month = date('m', $this->_timestamp);
+        $this->_year = date('Y', $this->_timestamp);
+        $this->_hour = date('H', $this->_timestamp);
+        $this->_minute = date('i', $this->_timestamp);
+        $this->_second = date('s', $this->_timestamp);
     }
 
     public function setDay($day)
@@ -81,6 +95,10 @@ class GDate extends GModel
     public function setFormat($format) { $this->_format = $format; }
 
     public function getFormat($format) { return $this->_format; }
+    
+    public function setNatural($natural) { $this->_natural = $natural; }
+    
+    public function getNatural() { return $this->_natural; }
 
     public function format($format)
     {
