@@ -77,6 +77,9 @@ class ru_RU
 
     public static function getFullMonths($time, $natural)
     {
-        return self::$_data['month']['full'];
+        $months = array();
+        foreach(self::$_data['month']['full'] as $month)
+            $months[] = $month[0];
+        return $months;
     }
 }
