@@ -15,8 +15,8 @@ class ru_RU
         ),
         'week' => array
         (
-            'short' => array(0 => 'Вс', 1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб'),
-            'full' => array(0 => 'Воскресение', 1 => 'Понедельник', 2 => 'Вторник', 3 => 'Среда', 4 => 'Четверг', 5 => 'Пятница', 6 => 'Суббота'),
+            'short' => array(1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб', 7 => 'Вс'),
+            'full' => array(1 => 'Понедельник', 2 => 'Вторник', 3 => 'Среда', 4 => 'Четверг', 5 => 'Пятница', 6 => 'Суббота', 7 => 'Воскресение'),
         ),
     );
     /* Protected */
@@ -36,12 +36,18 @@ class ru_RU
 
     public static function getShortWeek($time)
     {
-        return self::$_data['week']['short'][(int)date('w', $time)];
+        $dw = (int)date('w', $time);
+        if (!$dw)
+            $dw = 7;
+        return self::$_data['week']['short'][$dw];
     }
 
     public static function getFullWeek($time)
     {
-        return self::$_data['week']['full'][(int)date('w', $time)];
+        $dw = (int)date('w', $time);
+        if (!$dw)
+            $dw = 7;
+        return self::$_data['week']['full'][$dw];
     }
 
     public static function getShortMonth($time)
@@ -52,5 +58,25 @@ class ru_RU
     public static function getFullMonth($time, $natural)
     {
         return self::$_data['month']['full'][(int)date('n', $time)][$natural];
+    }
+
+    public static function getShortWeeks()
+    {
+        return self::$_data['week']['short'];
+    }
+
+    public static function getFullWeeks()
+    {
+        return self::$_data['week']['full'];
+    }
+
+    public static function getShortMonths()
+    {
+        return self::$_data['month']['short'];
+    }
+
+    public static function getFullMonths($time, $natural)
+    {
+        return self::$_data['month']['full'];
     }
 }

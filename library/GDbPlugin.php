@@ -80,7 +80,7 @@ abstract class GDbPlugin extends GPlugin implements IDbPlugin
      * @access public
      * @return string
      */
-    public function getConnectionName() { return $this->connectionName; }
+    public function getConnectionName() { return $this->_connectionName; }
 
     /**
      * Установка названия базы данных
@@ -97,7 +97,7 @@ abstract class GDbPlugin extends GPlugin implements IDbPlugin
      * @access public
      * @return string
      */
-    public function getDbName() { return $this->dbName; }
+    public function getDbName() { return $this->_dbName; }
 
     /**
      * Установка названия таблицы
@@ -114,7 +114,7 @@ abstract class GDbPlugin extends GPlugin implements IDbPlugin
      * @access public
      * @return string
      */
-    public function getCollectionName() { return $this->collectionName; }
+    public function getCollectionName() { return $this->_collectionName; }
 }
 
 /**

@@ -1,12 +1,15 @@
 <?php
 
-namespace \gear\models;
+namespace gear\models;
 use gear\Core;
 use gear\library\GModel;
 
 class GDate extends GModel
 {
     /* Const */
+    const SECONDS_PER_MINUTE = 60;
+    const SECONDS_PER_HOUR = 3600;
+    const SECONDS_PER_DAY = 86400;
     /* Private */
     /* Protected */
     protected $_datetime = null;
@@ -19,48 +22,217 @@ class GDate extends GModel
     protected $_second = 0;
     protected $_format = 'Y-m-d H:i:s';
     protected $_natural = false;
+    protected $_value = null;
     /* Public */
 
-    public function __toString()
-    {
-        return \gear\helpers\GDatetime::format($this->datetime ? $this->datetime : time(), $this->format, $this->_natural);
-    }
+    /**
+     * Форматирование даты
+     *
+     * @access public
+     * @return string
+     */
+    public function __toString() { return $this->format($this->format); }
 
+    /**
+     * Установка даты и времени в формате, понимаемом функцией strtotime()
+     *
+     * @access public
+     * @param string $datetime
+     * @return $this
+     */
     public function setDatetime($datetime)
     {
         $this->_datetime = $datetime;
         $this->_timestamp = strtotime($this->_datetime);
-        $this->_fillDate();
+        return $this->_fillDate();
     }
 
+    /**
+     * Получение даты и времени в формате, понимаемом функцией strtotime()
+     *
+     * @access public
+     * @return string
+     */
     public function getDatetime()
     {
         if (!$this->_datetime)
-        {
-            $this->_datetime = \gear\helpers\GDatetime::format
-            (
-                $this->timestamp ? $this->timestamp : time(),
-                $this->format,
-                $this->_natural
-            );
-        }
+            $this->_datetime = date('Y-m-d H:i:s', $this->_timestamp);
         return $this->_datetime;
     }
 
+    /**
+     * Установка временной метки UNIX
+     *
+     * @access public
+     * @param integer $timestamp
+     * @return $this
+     */
     public function setTimestamp($timestamp)
     {
-        $this->_timestamp = (int)$timestamp;
-        $this->datetime = $this->format($this->format);
-        $this->_fillDate();
+        $this->_timestamp = $timestamp;
+        $this->datetime = date('Y-m-d H:i:s', $this->_timestamp);
+        return $this->_fillDate();
     }
 
+    /**
+     * Получение временной метки UNIX
+     *
+     * @access public
+     * @return integer
+     */
     public function getTimestamp()
     {
         if (!$this->_timestamp)
             $this->_timestamp = $this->datetime ? strtotime($this->datetime) : time();
         return $this->_timestamp;
     }
-    
+
+    public function setDay($day)
+    {
+        $this->_day = $day;
+        return $this->_changeDate();
+    }
+
+    public function getDay() { return $this->_day; }
+
+    public function addDays($days)
+    {
+        $this->timestamp = $this->_timestamp + $days * self::SECONDS_PER_DAY;
+        return $this;
+    }
+
+    public function subDays($days)
+    {
+        $this->timestamp = $this->_timestamp - $days * self::SECONDS_PER_DAY;
+        return $this;
+    }
+
+    public function setMonth($month)
+    {
+        $this->_month = $month;
+        return $this->_changeDate();
+    }
+
+    public function getMonth() { return $this->_month; }
+
+    public function setYear($year)
+    {
+        $this->_year = $year;
+        return $this->_changeDate();
+    }
+
+    public function getYear() { return $this->_year; }
+
+    public function addYears($years)
+    {
+        $this->year = $this->year + $years;
+        return $this;
+    }
+
+    public function subYears($years)
+    {
+        $this->year = $this->year - $years;
+        return $this;
+    }
+
+    public function setHour($hour)
+    {
+        $this->_hour = $hour;
+        return $this->_changeDate();
+    }
+
+    public function getHour() { return $this->_hour; }
+
+    public function addHours($hours)
+    {
+        $this->timestamp = $this->_timestamp + $hours * self::SECONDS_PER_HOUR;
+        return $this;
+    }
+
+    public function subHours($hours)
+    {
+        $this->timestamp = $this->_timestamp - $hours * self::SECONDS_PER_HOUR;
+        return $this;
+    }
+
+    public function setMinute($minute)
+    {
+        $this->_minute = $minute;
+        return $this->_changeDate();
+    }
+
+    public function getMinute() { return $this->_minute; }
+
+    public function addMinutes($minutes)
+    {
+        $this->timestamp = $this->_timestamp + $minutes * self::SECONDS_PER_MINUTE;
+        return $this;
+    }
+
+    public function subMinutes($minutes)
+    {
+        $this->timestamp = $this->_timestamp - $minutes * self::SECONDS_PER_MINUTE;
+        return $this;
+    }
+
+    public function setSecond($second)
+    {
+        $this->_second = $second;
+        return $this->_changeDate();
+    }
+
+    public function getSecond() { return $this->_second; }
+
+    public function addSeconds($seconds)
+    {
+        $this->timestamp = $this->timestamp + $seconds;
+        return $this;
+    }
+
+    public function subSeconds($seconds)
+    {
+        $this->timestamp = $this->timestamp - $seconds;
+        return $this;
+    }
+
+    public function setFormat($format)
+    {
+        $this->_format = $format;
+        return $this;
+    }
+
+    public function getFormat() { return $this->_format; }
+
+    public function setNatural($natural)
+    {
+        $this->_natural = $natural;
+        return $this;
+    }
+
+    public function getNatural() { return $this->_natural; }
+
+    public function format($format)
+    {
+        return $this->_value = \gear\helpers\GDatetime::format($this->timestamp ? $this->timestamp : time(), $format, $this->_natural);
+    }
+
+    public function getWeeks()
+    {
+        return \gear\helpers\GDatetime::getWeeks();
+    }
+
+    public function onConstructed()
+    {
+        parent::onConstructed();
+        if ($this->_datetime)
+            $this->timestamp = strtotime($this->datetime);
+        else
+        if ($this->_timestamp)
+            $this->datetime =  $this->format($this->timestamp, $this->format);
+        else
+            $this->timestamp = time();
+    }
+
     private function _fillDate()
     {
         $this->_day = date('d', $this->_timestamp);
@@ -69,51 +241,14 @@ class GDate extends GModel
         $this->_hour = date('H', $this->_timestamp);
         $this->_minute = date('i', $this->_timestamp);
         $this->_second = date('s', $this->_timestamp);
+        $this->_value = null;
+        return $this;
     }
 
-    public function setDay($day)
+    private function _changeDate()
     {
-        $this->_day = $day;
-    }
-
-    public function getDay()
-    {
-        return $day;
-    }
-
-    public function setMonth($month)
-    {
-        if ($this->datetime || $this->timestamp)
-        $this->_month = $month;
-    }
-
-    public function getMonth()
-    {
-        return $this->_month;
-    }
-
-    public function setFormat($format) { $this->_format = $format; }
-
-    public function getFormat($format) { return $this->_format; }
-    
-    public function setNatural($natural) { $this->_natural = $natural; }
-    
-    public function getNatural() { return $this->_natural; }
-
-    public function format($format)
-    {
-        return \gear\helpers\GDatetime::format($this->datetime ? $this->datetime : time(), $format, $this->_natural);
-    }
-
-    public function onConstructed()
-    {
-        parent::onConstructed();
-        if ($this->datetime)
-            $this->timestamp = strtotime($this->datetime);
-        else
-        if ($this->timestamp)
-            $this->datetime =  $this->format($this->timestamp, $this->format);
-        else
-            $this->e('Need specify the date');
+        $this->_timestamp = mktime($this->hour, $this->minute, $this->second, $this->month, $this->day, $this->year);
+        $this->_datetime = date('Y-m-d H:i:s', $this->_timestamp);
+        return $this;
     }
 }

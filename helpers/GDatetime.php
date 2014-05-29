@@ -1,6 +1,6 @@
 <?php
 
-namespace \gear\helpers;
+namespace gear\helpers;
 use gear\Core;
 use gear\library\GException;
 
@@ -112,6 +112,12 @@ class GDatetime
     public static function format($time, $format, $natural = false)
     {
         return self::_calculate($time, $format, $natural);
+    }
+
+    public static function getWeeks()
+    {
+        $class = self::$localePath . '\\' . self::$locale;
+        return $class::getFullWeeks();
     }
 
     /**
