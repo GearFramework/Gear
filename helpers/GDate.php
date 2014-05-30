@@ -87,33 +87,89 @@ class GDate extends GModel
         return $this->_timestamp;
     }
 
+    /**
+     * Установка числа
+     *
+     * @access public
+     * @param integer $day
+     * @return $this
+     */
     public function setDay($day)
     {
         $this->_day = $day;
         return $this->_changeDate();
     }
 
+    /**
+     * Возвращает число
+     *
+     * @access public
+     * @return integer
+     */
     public function getDay() { return $this->_day; }
 
+    /**
+     * Добавление к текущей дате указанное число дней и возвращает новую
+     * дату
+     *
+     * @access public
+     * @param integer $days кол-во дней, которые необходимо прибавить
+     * @return $this
+     */
     public function addDays($days)
     {
         $this->timestamp = $this->_timestamp + $days * self::SECONDS_PER_DAY;
         return $this;
     }
 
+    /**
+     * Вычитает из текущей даты указанное число дней и возвращает новую
+     * дату
+     *
+     * @access public
+     * @param integer $days кол-во дней, которые необходимо вычесть
+     * @return $this
+     */
     public function subDays($days)
     {
         $this->timestamp = $this->_timestamp - $days * self::SECONDS_PER_DAY;
         return $this;
     }
 
+    /**
+     * Установка месяца
+     *
+     * @access public
+     * @param integer $month
+     * @return $this
+     */
     public function setMonth($month)
     {
         $this->_month = $month;
         return $this->_changeDate();
     }
 
+    /**
+     * Получение месяца
+     *
+     * @access public
+     * @return integer
+     */
     public function getMonth() { return $this->_month; }
+
+    public function addMonths($months)
+    {
+        $time = strtotime('+' . (int)$months . ' month', $this->_timestamp);
+        $this->timestamp = $time;
+        return $this;
+    }
+
+    public function subMonths($months)
+    {
+        $time = strtotime('-' . (int)$months . ' month', $this->_timestamp);
+        $this->timestamp = $time;
+        return $this;
+    }
 
     public function setYear($year)
     {
@@ -205,15 +261,20 @@ class GDate extends GModel
 
     public function setNatural($natural)
     {
-        $this->_natural = $natural;
+        $this->_natural = (boolean)$natural;
         return $this;
     }
 
     public function getNatural() { return $this->_natural; }
 
-    public function format($format)
+    public function format($format = null)
     {
-        return $this->_value = \gear\helpers\GDatetime::format($this->timestamp ? $this->timestamp : time(), $format, $this->_natural);
+        return $this->_value = \gear\helpers\GDatetime::format($this->timestamp, $format ? $format : $this->format, $this->natural);
+    }
+
+    public function firstDayOfWeek()
+    {
+        return \gear\helpers\GDatetime::firstDayOfWeek($this->timestamp);
     }
 
     public function getWeeks()

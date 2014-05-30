@@ -21,7 +21,7 @@ class ru_RU
     );
     /* Protected */
     /* Public */
-    public static $registerTokens = array('D', 'l', 'M', 'F');
+    public static $registerTokens = array('D', 'l', 'M', 'F', 'w');
 
     public static function getTokenValue($token, $time, $natural)
     {
@@ -31,6 +31,7 @@ class ru_RU
             case 'l' : return self::getFulltWeek($time);
             case 'M' : return self::getShortMonth($time);
             case 'F' : return self::getFullMonth($time);
+            case 'w' : return ($dayOfWeek = date($token, $time)) ? $dayOfWeek : 7;
         }
     }
 
@@ -81,5 +82,11 @@ class ru_RU
         foreach(self::$_data['month']['full'] as $month)
             $months[] = $month[0];
         return $months;
+    }
+
+    public static function getNumberDayOfWeek($time)
+    {
+        $dayOfWeek = date('w', $time);
+        return $dayOfWeek ? $dayOfWeek : 7;
     }
 }

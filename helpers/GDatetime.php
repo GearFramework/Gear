@@ -120,6 +120,14 @@ class GDatetime
         return $class::getFullWeeks();
     }
 
+    public static function firstDayOfWeek($time)
+    {
+        if (!is_numeric($time))
+            $time = strtotime($time);
+        $class = self::$localePath . '\\' . self::$locale;
+        $number = $class::getNumberDayOfWeek($time);
+    }
+
     /**
      * Форматирование даты по указанному шаблону
      *
@@ -135,7 +143,7 @@ class GDatetime
         if (!is_numeric($time))
             $time = strtotime($time);
         $class = self::$localePath . '\\' . self::$locale;
-        $defaultTokens = array('a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'w', 'W', 'y', 'Y', 'z', 'Z');
+        $defaultTokens = array('a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'W', 'y', 'Y', 'z', 'Z');
         $natural = (int)$natural ? 1 : 0;
         $result = '';
         foreach(preg_split('//', $format, 0, PREG_SPLIT_NO_EMPTY) as $token)
