@@ -33,17 +33,17 @@ final class Core
         (
             'library' => array
             (
-                '\\gear\\library\\GException',
-                '\\gear\\library\\GEvent',
-                '\\gear\\CoreException',
-                '\\gear\\interfaces\\IModule',
-                '\\gear\\interfaces\\IComponent',
-                '\\gear\\interfaces\\IPlugin',
-                '\\gear\\library\\GObject',
-                '\\gear\\library\\GModule',
-                '\\gear\\library\\GComponent',
-                '\\gear\\library\\GPlugin',
-                '\\gear\\interfaces\\ILoader',
+                '\gear\library\GException',
+                '\gear\library\GEvent',
+                '\gear\CoreException',
+                '\gear\interfaces\IModule',
+                '\gear\interfaces\IComponent',
+                '\gear\interfaces\IPlugin',
+                '\gear\library\GObject',
+                '\gear\library\GModule',
+                '\gear\library\GComponent',
+                '\gear\library\GPlugin',
+                '\gear\interfaces\ILoader',
             ),
             'modules' => array
             (
@@ -56,11 +56,11 @@ final class Core
                     'enable' => DEBUG,
                 ),
                 // Автозагрузчик классов
-                'loader' => array('class' => '\\gear\\components\\gear\\loader\\GLoader'),
+                'loader' => array('class' => '\gear\components\gear\loader\GLoader'),
                 // Обработчик ошибок
-                'errorHandler' => array('class' => '\\gear\\components\\gear\\handlers\\GErrorsHandler'),
+                'errorHandler' => array('class' => '\gear\components\gear\handlers\GErrorsHandler'),
                 // Обработчик неперехваченных исключений
-                'exceptionHandler' => array('class' => '\\gear\\components\\gear\\handlers\\GExceptionsHandler'),
+                'exceptionHandler' => array('class' => '\gear\components\gear\handlers\GExceptionsHandler'),
             ),
         ),
         'modules' => array

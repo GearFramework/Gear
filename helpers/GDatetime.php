@@ -19,9 +19,6 @@ class GDatetime
     /* Private */
     /* Protected */
     /* Public */
-    public static $format = 'Y-m-d H:i:s';
-    public static $locale = 'ru_RU';
-    public static $localePath = '\gear\helpers\datetime';
 
     /**
      * Получение текущей даты с форматированием по указанному шаблону

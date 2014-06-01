@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\models;
+namespace gear\helpers;
 use gear\Core;
 use gear\library\GModel;
 
@@ -14,12 +14,6 @@ class GDate extends GModel
     /* Protected */
     protected $_datetime = null;
     protected $_timestamp = 0;
-    protected $_day = 0;
-    protected $_month = 0;
-    protected $_year = 0;
-    protected $_hour = 0;
-    protected $_minute = 0;
-    protected $_second = 0;
     protected $_format = 'Y-m-d H:i:s';
     protected $_natural = false;
     protected $_value = null;
@@ -88,175 +82,24 @@ class GDate extends GModel
     }
 
     /**
-     * Установка числа
-     *
+     * Установка формата вывода даты
+     * 
      * @access public
-     * @param integer $day
+     * @param string $format
      * @return $this
      */
-    public function setDay($day)
-    {
-        $this->_day = $day;
-        return $this->_changeDate();
-    }
-
-    /**
-     * Возвращает число
-     *
-     * @access public
-     * @return integer
-     */
-    public function getDay() { return $this->_day; }
-
-    /**
-     * Добавление к текущей дате указанное число дней и возвращает новую
-     * дату
-     *
-     * @access public
-     * @param integer $days кол-во дней, которые необходимо прибавить
-     * @return $this
-     */
-    public function addDays($days)
-    {
-        $this->timestamp = $this->_timestamp + $days * self::SECONDS_PER_DAY;
-        return $this;
-    }
-
-    /**
-     * Вычитает из текущей даты указанное число дней и возвращает новую
-     * дату
-     *
-     * @access public
-     * @param integer $days кол-во дней, которые необходимо вычесть
-     * @return $this
-     */
-    public function subDays($days)
-    {
-        $this->timestamp = $this->_timestamp - $days * self::SECONDS_PER_DAY;
-        return $this;
-    }
-
-    /**
-     * Установка месяца
-     *
-     * @access public
-     * @param integer $month
-     * @return $this
-     */
-    public function setMonth($month)
-    {
-        $this->_month = $month;
-        return $this->_changeDate();
-    }
-
-    /**
-     * Получение месяца
-     *
-     * @access public
-     * @return integer
-     */
-    public function getMonth() { return $this->_month; }
-
-    public function addMonths($months)
-    {
-        $time = strtotime('+' . (int)$months . ' month', $this->_timestamp);
-        $this->timestamp = $time;
-        return $this;
-    }
-
-    public function subMonths($months)
-    {
-        $time = strtotime('-' . (int)$months . ' month', $this->_timestamp);
-        $this->timestamp = $time;
-        return $this;
-    }
-
-    public function setYear($year)
-    {
-        $this->_year = $year;
-        return $this->_changeDate();
-    }
-
-    public function getYear() { return $this->_year; }
-
-    public function addYears($years)
-    {
-        $this->year = $this->year + $years;
-        return $this;
-    }
-
-    public function subYears($years)
-    {
-        $this->year = $this->year - $years;
-        return $this;
-    }
-
-    public function setHour($hour)
-    {
-        $this->_hour = $hour;
-        return $this->_changeDate();
-    }
-
-    public function getHour() { return $this->_hour; }
-
-    public function addHours($hours)
-    {
-        $this->timestamp = $this->_timestamp + $hours * self::SECONDS_PER_HOUR;
-        return $this;
-    }
-
-    public function subHours($hours)
-    {
-        $this->timestamp = $this->_timestamp - $hours * self::SECONDS_PER_HOUR;
-        return $this;
-    }
-
-    public function setMinute($minute)
-    {
-        $this->_minute = $minute;
-        return $this->_changeDate();
-    }
-
-    public function getMinute() { return $this->_minute; }
-
-    public function addMinutes($minutes)
-    {
-        $this->timestamp = $this->_timestamp + $minutes * self::SECONDS_PER_MINUTE;
-        return $this;
-    }
-
-    public function subMinutes($minutes)
-    {
-        $this->timestamp = $this->_timestamp - $minutes * self::SECONDS_PER_MINUTE;
-        return $this;
-    }
-
-    public function setSecond($second)
-    {
-        $this->_second = $second;
-        return $this->_changeDate();
-    }
-
-    public function getSecond() { return $this->_second; }
-
-    public function addSeconds($seconds)
-    {
-        $this->timestamp = $this->timestamp + $seconds;
-        return $this;
-    }
-
-    public function subSeconds($seconds)
-    {
-        $this->timestamp = $this->timestamp - $seconds;
-        return $this;
-    }
-
     public function setFormat($format)
     {
         $this->_format = $format;
         return $this;
     }
 
+    /**
+     * Возвращает формат вывода даты
+     * 
+     * @access public
+     * @return string
+     */
     public function getFormat() { return $this->_format; }
 
     public function setNatural($natural)
@@ -267,19 +110,17 @@ class GDate extends GModel
 
     public function getNatural() { return $this->_natural; }
 
-    public function format($format = null)
+    /**
+     * Возвращает отформатированную по шаблону дату
+     * 
+     * @access public
+     * @param string $format
+     * @param bool $natural
+     * @return
+     */
+    public function format($format = null, $natural = false)
     {
-        return $this->_value = \gear\helpers\GDatetime::format($this->timestamp, $format ? $format : $this->format, $this->natural);
-    }
-
-    public function firstDayOfWeek()
-    {
-        return \gear\helpers\GDatetime::firstDayOfWeek($this->timestamp);
-    }
-
-    public function getWeeks()
-    {
-        return \gear\helpers\GDatetime::getWeeks();
+        return $this->_value = $this->_calculate($format ? $format : $this->format, $natural);
     }
 
     public function onConstructed()
@@ -292,6 +133,37 @@ class GDate extends GModel
             $this->datetime =  $this->format($this->timestamp, $this->format);
         else
             $this->timestamp = time();
+    }
+
+    /**
+     * Форматирование даты по указанному шаблону
+     *
+     * @access private
+     * @static
+     * @param integer|string $time
+     * @param string $format
+     * @param bool $natural
+     * @return string
+     */
+    private function _calculate($format, $natural)
+    {
+        if (!is_numeric($time))
+            $time = strtotime($time);
+        $class = $this->_localeNamespace . '\\' . $this->_locale;
+        $defaultTokens = array('a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'W', 'y', 'Y', 'z', 'Z');
+        $natural = (int)$natural ? 1 : 0;
+        $result = '';
+        foreach(preg_split('//', $format, 0, PREG_SPLIT_NO_EMPTY) as $token)
+        {
+            if (in_array($token, $class::$registerTokens, true))
+                $result .= $class::getTokenValue($token, $time, $natural);
+            else
+            if (in_array($token, $defaultTokens, true))
+                $result .= date($token, $time);
+            else
+                $result .= $token;
+        }
+        return $result;
     }
 
     private function _fillDate()

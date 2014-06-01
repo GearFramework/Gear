@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\helpers\datetime;
+namespace gear\helpers\locales;
 
 class ru_RU
 {
