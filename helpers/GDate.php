@@ -38,7 +38,8 @@ class GDate extends GModel
     {
         $this->_datetime = $datetime;
         $this->_timestamp = strtotime($this->_datetime);
-        return $this->_fillDate();
+        return $this;
+        //return $this->_fillDate();
     }
 
     /**
@@ -65,7 +66,8 @@ class GDate extends GModel
     {
         $this->_timestamp = $timestamp;
         $this->datetime = date('Y-m-d H:i:s', $this->_timestamp);
-        return $this->_fillDate();
+        return $this;
+//        return $this->_fillDate();
     }
 
     /**
@@ -79,6 +81,97 @@ class GDate extends GModel
         if (!$this->_timestamp)
             $this->_timestamp = $this->datetime ? strtotime($this->datetime) : time();
         return $this->_timestamp;
+    }
+    
+    /**
+     * Возвращает день
+     * 
+     * @access public
+     * @return integer
+     */
+    public function getDay()
+    {
+        return $this->owner->getDay($this);
+    }
+    
+    /**
+     * Возвращает месяц
+     * 
+     * Значения для $mode
+     * 
+     * 1 - возращает порядковый номер месяца
+     * 2 - возвращает полное название месяца
+     * 3 - возвращает сокращённое название месяца
+     * 
+     * @access public
+     * @param integer $mode
+     * @return integer
+     */
+    public function getMonth($mode = 1)
+    {
+        return $this->owner->getMonth($this, $mode);
+    }
+    
+    /**
+     * Возвращает год
+     * 
+     * @access public
+     * @return integer
+     */
+    public function getYear()
+    {
+        return $this->owner->getYear($this);
+    }
+    
+    /**
+     * Возвращает час
+     * 
+     * @access public
+     * @return integer
+     */
+    public function getHour()
+    {
+        return $this->owner->getHour($this);
+    }
+    
+    /**
+     * Возвращает минуты
+     * 
+     * @access public
+     * @return integer
+     */
+    public function getMinute()
+    {
+        return $this->owner->getMinute($this);
+    }
+    
+    /**
+     * Возвращает секунды
+     * 
+     * @access public
+     * @return integer
+     */
+    public function getSecond()
+    {
+        return $this->owner->getSecond($this);
+    }
+    
+    /**
+     * Возвращает день недели
+     * 
+     * Значения для $mode
+     * 
+     * 1 - возращает порядковый номер дня недели
+     * 2 - возвращает полное название дня недели
+     * 3 - возвращает сокращённое название дня недели
+     * 
+     * @access public
+     * @param integer $mode
+     * @return integer
+     */
+    public function getDayOfWeek($mode = 1)
+    {
+        return $this->owner->getDayOfWeek($this, $mode);
     }
 
     /**
@@ -147,23 +240,28 @@ class GDate extends GModel
      */
     private function _calculate($format, $natural)
     {
-        if (!is_numeric($time))
-            $time = strtotime($time);
-        $class = $this->_localeNamespace . '\\' . $this->_locale;
-        $defaultTokens = array('a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'W', 'y', 'Y', 'z', 'Z');
-        $natural = (int)$natural ? 1 : 0;
-        $result = '';
-        foreach(preg_split('//', $format, 0, PREG_SPLIT_NO_EMPTY) as $token)
+        try
         {
-            if (in_array($token, $class::$registerTokens, true))
-                $result .= $class::getTokenValue($token, $time, $natural);
-            else
-            if (in_array($token, $defaultTokens, true))
-                $result .= date($token, $time);
-            else
-                $result .= $token;
+            $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
+            $defaultTokens = array('a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'W', 'y', 'Y', 'z', 'Z');
+            $natural = (int)$natural ? 1 : 0;
+            $result = '';
+            foreach(preg_split('//', $format, 0, PREG_SPLIT_NO_EMPTY) as $token)
+            {
+                if (in_array($token, $class::$registerTokens, true))
+                    $result .= $class::getTokenValue($token, $this->timestamp, $natural);
+                else
+                if (in_array($token, $defaultTokens, true))
+                    $result .= date($token, $this->timestamp);
+                else
+                    $result .= $token;
+            }
+            return $result;
         }
-        return $result;
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
 
     private function _fillDate()
@@ -175,13 +273,6 @@ class GDate extends GModel
         $this->_minute = date('i', $this->_timestamp);
         $this->_second = date('s', $this->_timestamp);
         $this->_value = null;
-        return $this;
-    }
-
-    private function _changeDate()
-    {
-        $this->_timestamp = mktime($this->hour, $this->minute, $this->second, $this->month, $this->day, $this->year);
-        $this->_datetime = date('Y-m-d H:i:s', $this->_timestamp);
         return $this;
     }
 }

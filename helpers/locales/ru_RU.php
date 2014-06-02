@@ -28,9 +28,9 @@ class ru_RU
         switch($token)
         {
             case 'D' : return self::getShortWeek($time);
-            case 'l' : return self::getFulltWeek($time);
+            case 'l' : return self::getFullWeek($time);
             case 'M' : return self::getShortMonth($time);
-            case 'F' : return self::getFullMonth($time);
+            case 'F' : return self::getFullMonth($time, $natural);
             case 'w' : return ($dayOfWeek = date($token, $time)) ? $dayOfWeek : 7;
         }
     }
@@ -56,7 +56,7 @@ class ru_RU
         return self::$_data['month']['short'][(int)date('n', $time)];
     }
 
-    public static function getFullMonth($time, $natural)
+    public static function getFullMonth($time, $natural = 0)
     {
         return self::$_data['month']['full'][(int)date('n', $time)][$natural];
     }
@@ -89,4 +89,18 @@ class ru_RU
         $dayOfWeek = date('w', $time);
         return $dayOfWeek ? $dayOfWeek : 7;
     }
+    
+    public static function getFirstNumberDayOfWeek() { return 1; }
+    
+    public static function getLastNumberDayOfWeek() { return 7; }
+
+    public static function getNumbersDayOfWeek() { return range(1, 7); }
+    
+    public static function getFirstDayOfYear() { return 1; }
+    
+    public static function getLastDayOfYear() { return 31; }
+    
+    public static function getFirstMonthOfYear() { return 1; }
+    
+    public static function getLastMonthOfYear() { return 12; }
 }
