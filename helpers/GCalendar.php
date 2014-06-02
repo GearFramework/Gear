@@ -29,6 +29,8 @@ class GCalendar extends GObject
     protected $_current = null;
     protected $_locale = 'ru_RU';
     protected $_localeNamespace = '\gear\helpers\locales';
+    protected $_format = 'Y-m-d H:i:s';
+    protected $_natural = false;
     /* Public */
     
     /**
@@ -813,8 +815,21 @@ class GCalendar extends GObject
         return $dates;
     }
     
+    /**
+     * Возвращает массив дат, ограниченный начальной датой $from и конечной $to,
+     * включая эти даты
+     * 
+     * @access public
+     * @param integer|string|object $from
+     * @param integer|string|object $to
+     * @return array of objects
+     */
     public function getRangeDates($from, $to)
     {
+        if (!is_object($from))
+            $from = $this->getDate($from);
+        if (!is_object($to))
+            $to = $this->getDate($to);
         $countDays = $to->getNumberOfDay() - $from->getNumberOfDay();
         $dates = array($from);
         $date = $from;
@@ -839,6 +854,50 @@ class GCalendar extends GObject
      * @return string
      */
     public function getLocale() { return $this->_locale; }
+
+    /**
+     * Установка формата вывода даты
+     * 
+     * @access public
+     * @param string $format
+     * @return $this
+     */
+    public function setFormat($format)
+    {
+        $this->_format = $format;
+        return $this;
+    }
+
+    /**
+     * Возвращает формат вывода даты
+     * 
+     * @access public
+     * @return string
+     */
+    public function getFormat() { return $this->_format; }
+
+    /**
+     * Установка или снятие флага использования падежного окончания, при 
+     * форматированном выводе полного названия месяца
+     *
+     * @access public 
+     * @param mixed $natural
+     * @return $this
+     */
+    public function setNatural($natural)
+    {
+        $this->_natural = (boolean)$natural;
+        return $this;
+    }
+
+    /**
+     * Получение значения флага использования падежного окончания, при 
+     * форматированном выводе полного названия месяца
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function getNatural() { return $this->_natural; }
 
     /**
      * Обработчик события onConstructed, заполняет текущую дату

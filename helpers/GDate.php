@@ -12,10 +12,13 @@ class GDate extends GModel
     const SECONDS_PER_DAY = 86400;
     /* Private */
     /* Protected */
+    protected static $_config = array
+    (
+        'format' => 'Y-m-d H:i:s',
+        'natural' => false,
+    );
     protected $_datetime = null;
     protected $_timestamp = 0;
-    protected $_format = 'Y-m-d H:i:s';
-    protected $_natural = false;
     protected $_value = null;
     /* Public */
 
@@ -39,7 +42,6 @@ class GDate extends GModel
         $this->_datetime = $datetime;
         $this->_timestamp = strtotime($this->_datetime);
         return $this;
-        //return $this->_fillDate();
     }
 
     /**
@@ -67,7 +69,6 @@ class GDate extends GModel
         $this->_timestamp = $timestamp;
         $this->datetime = date('Y-m-d H:i:s', $this->_timestamp);
         return $this;
-//        return $this->_fillDate();
     }
 
     /**
@@ -183,7 +184,7 @@ class GDate extends GModel
      */
     public function setFormat($format)
     {
-        $this->_format = $format;
+        $this->owner->format = $format;
         return $this;
     }
 
@@ -193,15 +194,30 @@ class GDate extends GModel
      * @access public
      * @return string
      */
-    public function getFormat() { return $this->_format; }
+    public function getFormat() { return $this->owner->format; }
 
+    /**
+     * Установка или снятие флага использования падежного окончания, при 
+     * форматированном выводе полного названия месяца
+     *
+     * @access public 
+     * @param mixed $natural
+     * @return $this
+     */
     public function setNatural($natural)
     {
-        $this->_natural = (boolean)$natural;
+        $this->owner->natural = (boolean)$natural;
         return $this;
     }
 
-    public function getNatural() { return $this->_natural; }
+    /**
+     * Получение значения флага использования падежного окончания, при 
+     * форматированном выводе полного названия месяца
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function getNatural() { return $this->owner->natural; }
 
     /**
      * Возвращает отформатированную по шаблону дату
@@ -211,9 +227,9 @@ class GDate extends GModel
      * @param bool $natural
      * @return
      */
-    public function format($format = null, $natural = false)
+    public function format($format = null, $natural = null)
     {
-        return $this->_value = $this->_calculate($format ? $format : $this->format, $natural);
+        return $this->_value = $this->_calculate($format ? $format : $this->format, $natural !== null ? $natural : $this->natural);
     }
 
     public function onConstructed()
@@ -232,7 +248,6 @@ class GDate extends GModel
      * Форматирование даты по указанному шаблону
      *
      * @access private
-     * @static
      * @param integer|string $time
      * @param string $format
      * @param bool $natural
@@ -262,17 +277,5 @@ class GDate extends GModel
         {
             return $e->getMessage();
         }
-    }
-
-    private function _fillDate()
-    {
-        $this->_day = date('d', $this->_timestamp);
-        $this->_month = date('m', $this->_timestamp);
-        $this->_year = date('Y', $this->_timestamp);
-        $this->_hour = date('H', $this->_timestamp);
-        $this->_minute = date('i', $this->_timestamp);
-        $this->_second = date('s', $this->_timestamp);
-        $this->_value = null;
-        return $this;
     }
 }

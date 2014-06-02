@@ -294,18 +294,23 @@ class GObject
      * @param string $name
      * @return mixed
      */
-    public static function i($name = null)
+    public static function i($name = null, $value = null)
     {
         if (is_null($name))
             return static::$_config;
         else
-        if (isset(static::$_config[$name]))
-            return static::$_config[$name];
+        if (is_null($value))
+        {
+            if (isset(static::$_config[$name]))
+                return static::$_config[$name];
+            else
+            if (isset(self::$_config[$name]))
+                return self::$_config[$name];
+            else
+                return null;
+        }
         else
-        if (isset(self::$_config[$name]))
-            return self::$_config[$name];
-        else
-            return null;
+            static::$_config[$name] = $value;
     }
     
     /**
