@@ -12,11 +12,6 @@ class GDate extends GModel
     const SECONDS_PER_DAY = 86400;
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'format' => 'Y-m-d H:i:s',
-        'natural' => false,
-    );
     protected $_datetime = null;
     protected $_timestamp = 0;
     protected $_value = null;
@@ -197,6 +192,17 @@ class GDate extends GModel
      * @return boolean
      */
     public function getNatural() { return $this->owner->natural; }
+    
+    /**
+     * Возвращает номер квартала
+     * 
+     * @access public
+     * @return integer
+     */
+    public function getQuarter()
+    {
+        return $this->owner->getQuarter($this);
+    }
 
     /**
      * Возвращает отформатированную по шаблону дату
@@ -209,6 +215,17 @@ class GDate extends GModel
     public function format($format = null, $natural = null)
     {
         return $this->_value = $this->_calculate($format ? $format : $this->format, $natural !== null ? $natural : $this->natural);
+    }
+    
+    /**
+     * Возвращает отоформатированную дату в "человекпонятном стиле"
+     * 
+     * @access public
+     * @return string
+     */
+    public function human()
+    {
+        $diff = $this->compare($this->now());
     }
 
     public function onConstructed()

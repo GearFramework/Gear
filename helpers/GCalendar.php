@@ -882,6 +882,18 @@ class GCalendar extends GObject
      * @return boolean
      */
     public function getNatural() { return $this->_natural; }
+    
+    /**
+     * Возвращает номер квартала
+     * 
+     * @access public
+     * @param null|object $date
+     * @return integer
+     */
+    public function getQuarter($date = null)
+    {
+        return ceil($date ? $date->month : $this->_current->month / 3);
+    }
 
     /**
      * Возвращает true если дата соответствует високосному году, иначе false
@@ -890,7 +902,7 @@ class GCalendar extends GObject
      * @param integer|string|object $date
      * @return boolean
      */
-    public static function isLeap($date = null)
+    public function isLeap($date = null)
     {
         if (!$date)
             $date = $this->_current;
@@ -898,6 +910,71 @@ class GCalendar extends GObject
         if (!is_object($date) && !is_numeric($date))
             $date = strtotime($date);
         return (bool)date('L', is_object($date) ? $date->timestamp : $date);
+    }
+    
+    /**
+     * Сравнивает две даты. Метод возвращает разницу в секундах
+     * 0 - если даты равны
+     * отрицательное значение (количество секунд) если date1 меньше date2
+     * положительное значение (количество секунд) если date1 больше date2
+     * 
+     * @access public
+     * @param integer|string|object $date1
+     * @param integer|string|object $date2
+     * @param integer $mode
+     * @return integer
+     */
+    public function compare($date1, $date2, $mode = 1)
+    {
+        if (!is_object($date1))
+            $date1 = $this->getDate($date1);
+        if (!is_object($date2))
+            $date2 = $this->getDate($date2);
+        switch($mode)
+        {
+            case 2 : return $this->compareDate($date1, $date2);
+            case 3 : return $this->compareTime($date1, $date2);
+            case 1 : 
+            default : return $date1->timestamp - $date2->timestamp;
+        }
+    }
+    
+    /**
+     * Сравнение только по дате без учёта времени
+     * 
+     * @access public
+     * @param integer|string|object $date1
+     * @param integer|string|object $date2
+     * @return integer
+     */
+    public function compareDate($date1, $date2)
+    {
+        if (!is_object($date1))
+            $date1 = $this->getDate($date1);
+        if (!is_object($date2))
+            $date2 = $this->getDate($date2);
+        $date1 = $this->getDate($date1->format('Y-m-d'));
+        $date2 = $this->getDate($date2->format('Y-m-d'));
+        return $date1->timestamp - $date2->timestamp;
+    }
+
+    /**
+     * Сравнение только по времени
+     * 
+     * @access public
+     * @param integer|string|object $date1
+     * @param integer|string|object $date2
+     * @return integer
+     */
+    public function compareTime($date1, $date2)
+    {
+        if (!is_object($date1))
+            $date1 = $this->getDate($date1);
+        if (!is_object($date2))
+            $date2 = $this->getDate($date2);
+        $seconds1 = $date1->hour * self::SECONDS_PER_HOUR + $date1->minute * self::SECONDS_PER_MINUTE + $date1->second;
+        $seconds2 = $date2->hour * self::SECONDS_PER_HOUR + $date2->minute * self::SECONDS_PER_MINUTE + $date2->second;
+        return $seconds1 - $seconds2; 
     }
 
     /**
@@ -930,12 +1007,12 @@ class GCalendar extends GObject
     {
         $timestamp = mktime
         (
-            $hour ? $hour : date('G', $date ? $date->timestamp : $this->_current->timestamp), 
-            $minute ? $minute : date('i', $date ? $date->timestamp : $this->_current->timestamp), 
-            $second ? $second : date('s', $date ? $date->timestamp : $this->_current->timestamp), 
-            $month ? $month : date('n', $date ? $date->timestamp : $this->_current->timestamp), 
-            $day ? $day : date('j', $date ? $date->timestamp : $this->_current->timestamp), 
-            $year ? $year : date('Y', $date ? $date->timestamp : $this->_current->timestamp)
+            $hour !== null ? $hour : date('G', $date ? $date->timestamp : $this->_current->timestamp), 
+            $minute !== null ? $minute : date('i', $date ? $date->timestamp : $this->_current->timestamp), 
+            $second !== null ? $second : date('s', $date ? $date->timestamp : $this->_current->timestamp), 
+            $month !== null ? $month : date('n', $date ? $date->timestamp : $this->_current->timestamp), 
+            $day !== null ? $day : date('j', $date ? $date->timestamp : $this->_current->timestamp), 
+            $year !== null ? $year : date('Y', $date ? $date->timestamp : $this->_current->timestamp)
         );
         return $timestamp;
     }
