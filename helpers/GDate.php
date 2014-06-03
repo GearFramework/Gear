@@ -90,10 +90,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getDay()
-    {
-        return $this->owner->getDay($this);
-    }
+    public function getDay() { return $this->owner->getDay($this); }
     
     /**
      * Возвращает месяц
@@ -108,10 +105,7 @@ class GDate extends GModel
      * @param integer $mode
      * @return integer
      */
-    public function getMonth($mode = 1)
-    {
-        return $this->owner->getMonth($this, $mode);
-    }
+    public function getMonth($mode = 1) { return $this->owner->getMonth($this, $mode); }
     
     /**
      * Возвращает год
@@ -119,10 +113,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getYear()
-    {
-        return $this->owner->getYear($this);
-    }
+    public function getYear() { return $this->owner->getYear($this); }
     
     /**
      * Возвращает час
@@ -130,10 +121,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getHour()
-    {
-        return $this->owner->getHour($this);
-    }
+    public function getHour() { return $this->owner->getHour($this); }
     
     /**
      * Возвращает минуты
@@ -141,10 +129,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getMinute()
-    {
-        return $this->owner->getMinute($this);
-    }
+    public function getMinute() { return $this->owner->getMinute($this); }
     
     /**
      * Возвращает секунды
@@ -152,10 +137,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getSecond()
-    {
-        return $this->owner->getSecond($this);
-    }
+    public function getSecond() { return $this->owner->getSecond($this); }
     
     /**
      * Возвращает день недели
@@ -170,10 +152,7 @@ class GDate extends GModel
      * @param integer $mode
      * @return integer
      */
-    public function getDayOfWeek($mode = 1)
-    {
-        return $this->owner->getDayOfWeek($this, $mode);
-    }
+    public function getDayOfWeek($mode = 1) { return $this->owner->getDayOfWeek($this, $mode); }
 
     /**
      * Установка формата вывода даты
