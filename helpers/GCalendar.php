@@ -823,6 +823,12 @@ class GCalendar extends GObject
         return $dates;
     }
     
+    public function setLocaleNamespace($localeNamespace)
+    {
+        $this->_localeNamespace = $localeNamespace;
+        return $this;
+    }
+    
     /**
      * Возвращает namespace локалей
      * 
@@ -830,6 +836,12 @@ class GCalendar extends GObject
      * @return string
      */
     public function getLocaleNamespace() { return $this->_localeNamespace; }
+    
+    public function setLocale($locale)
+    {
+        $this->_locale = $locale;
+        return $this;
+    }
     
     /**
      * возвращает текущую локаль
@@ -953,9 +965,7 @@ class GCalendar extends GObject
             $date1 = $this->getDate($date1);
         if (!is_object($date2))
             $date2 = $this->getDate($date2);
-        $date1 = $this->getDate($date1->format('Y-m-d'));
-        $date2 = $this->getDate($date2->format('Y-m-d'));
-        return $date1->timestamp - $date2->timestamp;
+        return strtotime($date1->format('Y-m-d')) - strtotime($date2->format('Y-m-d'));
     }
 
     /**

@@ -223,9 +223,26 @@ class GDate extends GModel
      * @access public
      * @return string
      */
-    public function human()
+    public function human($short = false)
     {
-        $diff = $this->compare($this->now());
+        $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
+        $dateNow = $this->now(); 
+        $diff = $this->compareDate($dateNow);
+        if (!$diff)
+        {
+            $diff = $this->compare($dateNow);
+            if ($diff >= -20 && $diff <= 20)
+                return $class::getHuman($diff, $class::NOW, (int)$short);
+            else
+            if  ($diff >= -50 && $diff < 0)
+                return $class::getHuman($diff, $class::LESS_MIN_PAST, (int)$short);
+            else
+            if  ($diff >= -70 && $diff < -50)
+                return $class::getHuman($diff, $class::ONE_MIN_PAST, (int)$short);
+            else
+            if  ($diff > -3600 && $diff < -70)
+                return $class::getHuman($diff, $class::MIN_PAST, (int)$short);
+        }
     }
 
     public function onConstructed()

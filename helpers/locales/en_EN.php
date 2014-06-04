@@ -11,7 +11,7 @@ namespace gear\helpers\locales;
  * @version 0.0.1
  * @since 27.05.2014
  */
-class ru_RU
+class en_EN
 {
     /* Const */
     const NOW = 0;
@@ -21,7 +21,7 @@ class ru_RU
     /* Private */
     private static $_human = array
     (
-        self::NOW => array('сейчас', 'сейчас'),
+        self::NOW => array('now', 'now'),
         self::LESS_MIN_PAST => array('меньше минуты назад', '%d сек.'),
         self::ONE_MIN_PAST => array('минуту назад', '1 мин.'),
         self::MIN_PAST => array('%d %s назад', '1 мин.', array('минуту', 'минуты', 'минут')),
@@ -30,18 +30,18 @@ class ru_RU
     (
         'month' => array
         (
-            'short' => array(1 => 'Янв', 2 => 'Фев', 3 => 'Мрт', 4 => 'Апр', 5 => 'Май', 6 => 'Июн', 7 => 'Июл', 8 => 'Авг', 9 => 'Сен', 10 => 'Окт', 11 => 'Ноя', 12 => 'Дек'),
-            'full' => array(1 => array('Январь', 'Января'), 2 => array('Февраль', 'Февраля'), 3 => array('Март', 'Марта'), 4 => array('Апрель', 'Апреля'), 5 => array('Май', 'Мая'), 6 => array('Июнь', 'Июня'), 7 => array('Июль', 'Июля'), 8 => array('Август', 'Августа'), 9 => array('Сентябрь', 'Сентября'), 10 => array('Октябрь', 'Октября'), 11 => array('Ноябрь', 'Ноября'), 12 => array('Декабрь', 'Декабря')),
+            'short' => array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sen', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'),
+            'full' => array(1 => array('January', 'January'), 2 => array('February', 'February'), 3 => array('March', 'March'), 4 => array('April', 'April'), 5 => array('May', 'May'), 6 => array('Juny', 'Juny'), 7 => array('July', 'July'), 8 => array('August', 'August'), 9 => array('September', 'September'), 10 => array('October', 'October'), 11 => array('November', 'November'), 12 => array('December', 'December')),
         ),
         'week' => array
         (
-            'short' => array(1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб', 7 => 'Вс'),
-            'full' => array(1 => 'Понедельник', 2 => 'Вторник', 3 => 'Среда', 4 => 'Четверг', 5 => 'Пятница', 6 => 'Суббота', 7 => 'Воскресение'),
+            'short' => array(0 => 'Su', 1 => 'Mo', 2 => 'Tu', 3 => 'We', 4 => 'Th', 5 => 'Fr', 6 => 'Sa'),
+            'full' => array(0 => 'Sunday', 1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday'),
         ),
     );
     /* Protected */
     /* Public */
-    public static $registerTokens = array('D', 'l', 'M', 'F', 'w');
+    public static $registerTokens = array('d', 'D', 'j', 'l', 'M', 'F', 'w');
 
     public static function getTokenValue($token, $time, $natural)
     {
@@ -52,31 +52,20 @@ class ru_RU
             case 'M' : return self::getShortMonth($time);
             case 'F' : return self::getFullMonth($time, $natural);
             case 'w' : return ($dayOfWeek = date($token, $time)) ? $dayOfWeek : 7;
+            case 'd' : return date(($natural ? 'jS' : 'd'), $time);
+            case 'j' : return date('j' . ($natural ? 'S' : ''), $time);
         }
-    }
-    
-    public static function getHuman($seconds, $mode, $short)
-    {
-        if (isset(self::$_human[$mode][$short][2]))
-        {
-            
-        }
-        return sprintf(self::$_human[$mode][$short], abs($seconds));
     }
 
     public static function getShortWeek($time)
     {
         $dw = (int)date('w', $time);
-        if (!$dw)
-            $dw = 7;
         return self::$_data['week']['short'][$dw];
     }
 
     public static function getFullWeek($time)
     {
         $dw = (int)date('w', $time);
-        if (!$dw)
-            $dw = 7;
         return self::$_data['week']['full'][$dw];
     }
 
@@ -115,15 +104,14 @@ class ru_RU
 
     public static function getNumberDayOfWeek($time)
     {
-        $dayOfWeek = date('w', $time);
-        return $dayOfWeek ? $dayOfWeek : 7;
+        return date('w', $time);
     }
     
-    public static function getFirstNumberDayOfWeek() { return 1; }
+    public static function getFirstNumberDayOfWeek() { return 0; }
     
-    public static function getLastNumberDayOfWeek() { return 7; }
+    public static function getLastNumberDayOfWeek() { return 6; }
 
-    public static function getNumbersDayOfWeek() { return range(1, 7); }
+    public static function getNumbersDayOfWeek() { return range(0, 6); }
     
     public static function getFirstDayOfYear() { return 1; }
     
