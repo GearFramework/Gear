@@ -823,6 +823,13 @@ class GCalendar extends GObject
         return $dates;
     }
     
+    /**
+     * Установка пространства имён локалей
+     * 
+     * @access public 
+     * @param string $localeNamespace
+     * @return $this
+     */
     public function setLocaleNamespace($localeNamespace)
     {
         $this->_localeNamespace = $localeNamespace;
@@ -837,6 +844,13 @@ class GCalendar extends GObject
      */
     public function getLocaleNamespace() { return $this->_localeNamespace; }
     
+    /**
+     * Установка текушей локали
+     * 
+     * @access public
+     * @param string $locale
+     * @return $this
+     */
     public function setLocale($locale)
     {
         $this->_locale = $locale;
@@ -922,6 +936,18 @@ class GCalendar extends GObject
         if (!is_object($date) && !is_numeric($date))
             $date = strtotime($date);
         return (bool)date('L', is_object($date) ? $date->timestamp : $date);
+    }
+    
+    /**
+     * Возвращает true, если указанный год високосный, иначе false
+     * 
+     * @access public
+     * @param string $year
+     * @return boolean
+     */
+    public function isLeapYear($year)
+    {
+        return (bool)$year % 4;
     }
     
     /**

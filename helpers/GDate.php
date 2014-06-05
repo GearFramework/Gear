@@ -227,22 +227,19 @@ class GDate extends GModel
     {
         $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
         $dateNow = $this->now(); 
-        $diff = $this->compareDate($dateNow);
-        if (!$diff)
-        {
-            $diff = $this->compare($dateNow);
-            if ($diff >= -20 && $diff <= 20)
-                return $class::getHuman($diff, $class::NOW, (int)$short);
-            else
-            if  ($diff >= -50 && $diff < 0)
-                return $class::getHuman($diff, $class::LESS_MIN_PAST, (int)$short);
-            else
-            if  ($diff >= -70 && $diff < -50)
-                return $class::getHuman($diff, $class::ONE_MIN_PAST, (int)$short);
-            else
-            if  ($diff > -3600 && $diff < -70)
-                return $class::getHuman($diff, $class::MIN_PAST, (int)$short);
-        }
+    }
+    
+    /**
+     * Вычисление разницы между датами
+     * 
+     * @access public
+     * @param integer|string|object $date
+     * @return string
+     */
+    public function diff($date)
+    {
+        if (!is_object($date))
+            $date = $this->owner->getDate($date);
     }
 
     public function onConstructed()
