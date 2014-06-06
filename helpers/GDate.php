@@ -236,55 +236,36 @@ class GDate extends GModel
      * @param integer|string|object $date
      * @return string
      */
-    public function diff($date)
+    public function diff($date, $format = '%y')
     {
         if (!is_object($date))
             $date = $this->owner->getDate($date);
         $less = $more = $this;
         if ($this->timestamp < $date->timestamp)
             $more = $date;
-        $years = $more->year - $less->year;
-        if ($less->month > $more->month)
-        {
-            -- $years;
-            $months = 12 - $less->month + $more->month;
-        }
         else
-            $months = $more->month - $less->month;
-        if ($less->day > $more->day)
+            $less = $date;
+        $diff = array($more->year - $less->year, 0, 0, 0, 0, 0);
+        $subs = function($index, &$diff) use (&$subs)
         {
-            -- $months;
-            if ($months < 0) { -- $years; $months = 0; }
-            $count = $more->getCountDaysInMonth();
-            $days = $count - $less->day + $more->day;
-        }
-        else
-            $days = $more->day - $less->day;
-        if ($less->hour > $more->hour)
+            if ($diff[$index])
+                -- $diff[$index];
+            else
+            if ($index)
+                $subs($index - 1, $diff);
+        };
+        $set = function($index, &$diff, $value, $sub = false) use (&$subs)
         {
-            -- $days;
-            if ($days < 0) { -- $months; $days = 0; }
-            $hours = 24 - $less->hour + $more->hour;
-        }
-        else
-            $hours = $more->hour - $less->hour;
-        if ($less->minute > $more->minute)
-        {
-            -- $hours;
-            if ($hours < 0) { -- $days; $hours = 0; }
-            $minutes = 60 - $less->minute + $more->minute;
-        }
-        else
-            $minutes = $more->minute - $less->minute;
-        if ($less->second > $more->second)
-        {
-            -- $minutes;
-            if ($minutes < 0) { -- $hours; $minutes = 0; }
-            $seconds = 60 - $less->second + $more->second;
-        }
-        else
-            $seconds = $more->second - $less->second;
-        return array($years, $months, $days, $hours, $minutes, $seconds);
+            $diff[$index] = $value;
+            if ($sub)
+                $subs($index - 1, $diff);
+        };
+        $less->month > $more->month ? $set(1, $diff, 12 - $less->month + $more->month, true) : $set(1, $diff, $more->month - $less->month, false);
+        $less->day > $more->day ? $set(2, $diff, $less->getCountDaysInMonth() - $less->day + $more->day, true) : $set(3, $diff, $more->day - $less->day, false);
+        $less->hour > $more->hour ? $set(3, $diff, 24 - $less->hour + $more->hour, true) : $set(3, $diff, $more->hour - $less->hour, false);
+        $less->minute > $more->minute ? $set(4, $diff, 60 - $less->minute + $more->minute, true) : $set(4, $diff, $more->minute - $less->minute, false);
+        $less->second > $more->second ? $set(5, $diff,60 - $less->second + $more->second, true) : $set(5, $diff, $more->second - $less->second, false);
+        return $diff;
     }
 
     public function onConstructed()
