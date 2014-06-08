@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\helpers\locales;
+use gear\helpers\locales\GLocale;
 
 /**
  * Русская локаль
@@ -11,7 +12,7 @@ namespace gear\helpers\locales;
  * @version 0.0.1
  * @since 27.05.2014
  */
-class ru_RU
+class ru_RU extends GLocale
 {
     /* Const */
     const NOW = 0;
@@ -19,14 +20,26 @@ class ru_RU
     const ONE_MIN_PAST = 2;
     const MIN_PAST = 3;
     /* Private */
-    private static $_human = array
+    protected static $_human = array
     (
         self::NOW => array('сейчас', 'сейчас'),
         self::LESS_MIN_PAST => array('меньше минуты назад', '%d сек.'),
         self::ONE_MIN_PAST => array('минуту назад', '1 мин.'),
         self::MIN_PAST => array('%d %s назад', '1 мин.', array('минуту', 'минуты', 'минут')),
     );
-    private static $_data = array
+    protected static $_words = array
+    (
+        'diff' => array
+        (
+            'y' => array('год', 'года', 'лет'),
+            'm' => array('месяц', 'месяца', 'месяцев'),
+            'd' => array('день', 'дня', 'дней'),
+            'h' => array('час', 'часа', 'часов'),
+            'i' => array('минуту', 'минуты', 'минут'),
+            's' => array('секунду', 'секунды', 'секунд'),
+        ),
+    );
+    protected static $_data = array
     (
         'month' => array
         (
@@ -42,94 +55,125 @@ class ru_RU
     /* Protected */
     /* Public */
     public static $registerTokens = array('D', 'l', 'M', 'F', 'w');
+    
+    /**
+     * Склонение числительных годов, месяцев, дней, часов, минут, секунд
+     * 
+     * @access public
+     * @static
+     * @param integer $value
+     * @param string $mode любое из: diff
+     * @param string $token любое из: y, m, d, h, i, s
+     * @return string
+     */
+    public static function getDecline($value, $mode, $token)
+    {
+        $keys = array(2, 0, 1, 1, 1, 2);
+        $mod = $value % 100;
+        $key = ($mod > 7 && $mod < 20) ? 2: $keys[min($mod % 10, 5)];
+        return static::$_words[$mode][$token][$key];
+    }
 
-    public static function getTokenValue($token, $time, $natural)
+    /**
+     * Получение локализованных значений элементов шаблона даты
+     * 
+     * @access public
+     * @static
+     * @param string $token
+     * @param integer $timestamp
+     * @param boolean $natural
+     * @return string
+     */
+    public static function getTokenValue($token, $timestamp, $natural)
     {
         switch($token)
         {
-            case 'D' : return self::getShortWeek($time);
-            case 'l' : return self::getFullWeek($time);
-            case 'M' : return self::getShortMonth($time);
-            case 'F' : return self::getFullMonth($time, $natural);
-            case 'w' : return ($dayOfWeek = date($token, $time)) ? $dayOfWeek : 7;
+            case 'D' : return static::getShortWeek($timestamp);
+            case 'l' : return static::getFullWeek($timestamp);
+            case 'M' : return static::getShortMonth($timestamp);
+            case 'F' : return static::getFullMonth($timestamp, $natural);
+            case 'w' : return ($dayOfWeek = date($token, $timestamp)) ? $dayOfWeek : 7;
         }
     }
     
     public static function getHuman($seconds, $mode, $short)
     {
-        if (isset(self::$_human[$mode][$short][2]))
+        if (isset(static::$_human[$mode][$short][2]))
         {
             
         }
-        return sprintf(self::$_human[$mode][$short], abs($seconds));
+        return sprintf(static::$_human[$mode][$short], abs($seconds));
     }
 
-    public static function getShortWeek($time)
+    /**
+     * Возвращает короткое название дня недели для указанной даты
+     * 
+     * @access public
+     * @static
+     * @param integer $timestamp
+     * @return string
+     */
+    public static function getShortWeek($timestamp)
     {
-        $dw = (int)date('w', $time);
+        $dw = (int)date('w', $timestamp);
         if (!$dw)
             $dw = 7;
-        return self::$_data['week']['short'][$dw];
+        return static::$_data['week']['short'][$dw];
     }
 
-    public static function getFullWeek($time)
+    /**
+     * Возвращает полное название дня недели для указанной даты
+     * 
+     * @access public
+     * @static
+     * @param integer $timestamp
+     * @return string
+     */
+    public static function getFullWeek($timestamp)
     {
-        $dw = (int)date('w', $time);
+        $dw = (int)date('w', $timestamp);
         if (!$dw)
             $dw = 7;
-        return self::$_data['week']['full'][$dw];
+        return static::$_data['week']['full'][$dw];
     }
 
-    public static function getShortMonth($time)
+    /**
+     * Возвращает номер дня недели
+     * 
+     * @access public
+     * @static
+     * @return array
+     */
+    public static function getNumberDayOfWeek($timestamp)
     {
-        return self::$_data['month']['short'][(int)date('n', $time)];
-    }
-
-    public static function getFullMonth($time, $natural = 0)
-    {
-        return self::$_data['month']['full'][(int)date('n', $time)][$natural];
-    }
-
-    public static function getShortWeeks()
-    {
-        return self::$_data['week']['short'];
-    }
-
-    public static function getFullWeeks()
-    {
-        return self::$_data['week']['full'];
-    }
-
-    public static function getShortMonths()
-    {
-        return self::$_data['month']['short'];
-    }
-
-    public static function getFullMonths($time, $natural)
-    {
-        $months = array();
-        foreach(self::$_data['month']['full'] as $month)
-            $months[] = $month[0];
-        return $months;
-    }
-
-    public static function getNumberDayOfWeek($time)
-    {
-        $dayOfWeek = date('w', $time);
+        $dayOfWeek = date('w', $timestamp);
         return $dayOfWeek ? $dayOfWeek : 7;
     }
     
+    /**
+     * Возвращает номер первого дня недели
+     * 
+     * @access public
+     * @static
+     * @return integer
+     */
     public static function getFirstNumberDayOfWeek() { return 1; }
     
+    /**
+     * Возвращает номер последнего дня недели
+     * 
+     * @access public
+     * @static
+     * @return integer
+     */
     public static function getLastNumberDayOfWeek() { return 7; }
 
+    /**
+     * Возвращает массив номеров дней недели
+     * 
+     * @access public
+     * @static
+     * @return integer
+     */
     public static function getNumbersDayOfWeek() { return range(1, 7); }
-    
-    public static function getFirstDayOfYear() { return 1; }
-    
-    public static function getLastDayOfYear() { return 31; }
-    
-    public static function getFirstMonthOfYear() { return 1; }
-    
-    public static function getLastMonthOfYear() { return 12; }
 }

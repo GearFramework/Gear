@@ -225,7 +225,10 @@ class GCalendar extends GObject
      */
     public function getDate($date) 
     {
-        return $date ? $this->setDate($date) : $this->_current; 
+        if ($date)
+            return $this->factory(array('timestamp' => !is_numeric($date) ? strtotime($date) : $date));
+        else
+            return $this->_current; 
     }
 
     /**
@@ -381,7 +384,7 @@ class GCalendar extends GObject
     public function addYears($date = null, $years = 0)
     {
         $timestamp = $date ? $date->timestamp : $this->_current->timestamp;
-        return $this->factory(array('timestamp' => $timestamp + (date('L', $timestamp) ? 366 : 365) * self::SECONDS_PER_DAY));
+        return $this->factory(array('timestamp' => $timestamp + $this->getCountDaysInYear($date) * $years * self::SECONDS_PER_DAY));
     }
 
     /**
@@ -395,7 +398,7 @@ class GCalendar extends GObject
     public function subYears($date = null, $years = 0)
     {
         $timestamp = $date ? $date->timestamp : $this->_current->timestamp;
-        return $this->factory(array('timestamp' => $timestamp - (date('L', $timestamp) ? 366 : 365) * self::SECONDS_PER_DAY));
+        return $this->factory(array('timestamp' => $timestamp - $this->getCountDaysInYear($date) * $years * self::SECONDS_PER_DAY));
     }
 
     /**
@@ -794,32 +797,28 @@ class GCalendar extends GObject
      * @param integer|string|object $to
      * @return array of objects
      */
-    public function getRangeDates($from, $to, $revert = false)
+    public function getRangeDates($from, $to, $step = '1 days', $revert = false)
     {
-        if (!is_object($from))
-            $from = $this->getDate($from);
-        if (!is_object($to))
-            $to = $this->getDate($to);
-        if ($from->timestamp > $to->timstamp)
-        {
-            $countDays =  $from->getNumberOfDay() - $to->getNumberOfDay();
-            $dates = array($from);
-            $date = $from;
-            for($day = $countDays - 1; $day >= 2; -- $day)
-                $dates[] = $date = $date->previousDay();
-            $dates[] = $to;
-        }
+        if (!is_object($from)) $from = $this->getDate($from);
+        if (!is_object($to)) $to = $this->getDate($to);
+        if (preg_match('/^(\d+)\s(\w+)$/', $step, $founds))
+            $operation = array($this, !$revert ? 'add' . ucfirst($founds[2]) . 's' : 'sub' . ucfirst($founds[2]) . 's', $founds[1]);
         else
+            $operation = array($this, !$revert ? 'addDays' : 'subDays', array($from, 1));
+        $stop = false;
+        $dates = array($from);
+        $date = $from;
+        while(!$stop)
         {
-            $countDays = $to->getNumberOfDay() - $from->getNumberOfDay();
-            $dates = array($from);
-            $date = $from;
-            for($day = 2; $day < $countDays; ++ $day)
-                $dates[] = $date = $date->nextDay();
-            $dates[] = $to;
+            $date = call_user_func(array($operation[0], $operation[1]), $date, $operation[2]);
+            if ($date->timestamp < $to->timestamp)
+                $dates[] = $date;
+            else
+            {
+                $dates[] = $to;
+                $stop = true;
+            }
         }
-        if ($revert)
-            krsort($dates);
         return $dates;
     }
     

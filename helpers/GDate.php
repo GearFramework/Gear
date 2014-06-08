@@ -236,7 +236,7 @@ class GDate extends GModel
      * @param integer|string|object $date
      * @return string
      */
-    public function diff($date, $format = '%y')
+    public function diff($date, $format = 'y m d h i s')
     {
         if (!is_object($date))
             $date = $this->owner->getDate($date);
@@ -265,7 +265,17 @@ class GDate extends GModel
         $less->hour > $more->hour ? $set(3, $diff, 24 - $less->hour + $more->hour, true) : $set(3, $diff, $more->hour - $less->hour, false);
         $less->minute > $more->minute ? $set(4, $diff, 60 - $less->minute + $more->minute, true) : $set(4, $diff, $more->minute - $less->minute, false);
         $less->second > $more->second ? $set(5, $diff,60 - $less->second + $more->second, true) : $set(5, $diff, $more->second - $less->second, false);
-        return $diff;
+        $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
+        $tokens = array('y', 'm', 'd', 'h', 'i', 's');
+        if ($format)
+        {
+            $resultDiff = '';
+            foreach(preg_split('//', $format, 0, PREG_SPLIT_NO_EMPTY) as $token)
+                $resultDiff .= ($index = array_search($token, $tokens)) !== false ? $diff[$index] . ' ' . $class::getDecline($diff[$index], 'diff', $token) : $token;
+            return $resultDiff;
+        }
+        else
+            return array_combine($tokens, $diff);
     }
 
     public function onConstructed()
