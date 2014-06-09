@@ -59,18 +59,38 @@ class GString extends GObject implements \Countable
         return $this;
     }
     
+    /**
+     * Переводит строку в нижний регистр
+     * 
+     * @access public
+     * @return $this
+     */
     public function toLower()
     {
         $this->_value = mb_strtolower($this->_value, $this->_encoding);
         return $this;
     }
     
+    /**
+     * Переводит строку в верхний регистр
+     * 
+     * @access public
+     * @return $this
+     */
     public function toUpper()
     {
         $this->_value = mb_strtoupper($this->_value, $this->_encoding);
         return $this;
     }
     
+    /**
+     * Возвращает подстроку
+     * 
+     * @access public
+     * @param integer $position
+     * @param integer $length
+     * @return object
+     */
     public function substr($position, $length = 0)
     {
         return new self(array
@@ -79,7 +99,44 @@ class GString extends GObject implements \Countable
             'encoding' => $this->_encoding
         ));
     }
+    
+    public function pad($pad, $length, $type = STR_PAD_RIGHT)
+    {
+        
+    }
+    
+    public function trim($chars = null)
+    {
+        
+    }
+    
+    public function rtrim($chars = null)
+    {
+        
+    }
+    
+    public function ltrim($chars = null)
+    {
+        
+    }
+    
+    public function search($pattern)
+    {
+        
+    }
+    
+    public function replace($pattern, $replace)
+    {
+        
+    }
 
+    /**
+     * Возвращает строку преобразованную в другую кодировку
+     * 
+     * @access public
+     * @param string $encode
+     * @return object
+     */
     public function conv($encode) 
     { 
         return new self(array
@@ -87,6 +144,12 @@ class GString extends GObject implements \Countable
             'value' => iconv($this->_encoding, $encode, $this->_value), 
             'encoding' => $this->_encoding
         )); 
+    }
+    
+    public function isEmpty($ignoreSpaces = false)
+    {
+        $string = !$ignoreSpaces ? $this->_value : trim($this->_value);
+        return empty($string); 
     }
     
     public function onConstructed()
