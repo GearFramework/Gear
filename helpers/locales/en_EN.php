@@ -3,7 +3,7 @@
 namespace gear\helpers\locales;
 
 /**
- * Русская локаль
+ * Английская локаль
  * 
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -21,10 +21,6 @@ class en_EN
     /* Private */
     private static $_human = array
     (
-        self::NOW => array('now', 'now'),
-        self::LESS_MIN_PAST => array('меньше минуты назад', '%d сек.'),
-        self::ONE_MIN_PAST => array('минуту назад', '1 мин.'),
-        self::MIN_PAST => array('%d %s назад', '1 мин.', array('минуту', 'минуты', 'минут')),
     );
     private static $_data = array
     (
@@ -43,6 +39,16 @@ class en_EN
     /* Public */
     public static $registerTokens = array('d', 'D', 'j', 'l', 'M', 'F', 'w');
 
+    /**
+     * Получение локализованных значений элементов шаблона даты
+     * 
+     * @access public
+     * @static
+     * @param string $token
+     * @param integer $timestamp
+     * @param boolean $natural
+     * @return string
+     */
     public static function getTokenValue($token, $time, $natural)
     {
         switch($token)
@@ -56,68 +62,4 @@ class en_EN
             case 'j' : return date('j' . ($natural ? 'S' : ''), $time);
         }
     }
-
-    public static function getShortWeek($time)
-    {
-        $dw = (int)date('w', $time);
-        return self::$_data['week']['short'][$dw];
-    }
-
-    public static function getFullWeek($time)
-    {
-        $dw = (int)date('w', $time);
-        return self::$_data['week']['full'][$dw];
-    }
-
-    public static function getShortMonth($time)
-    {
-        return self::$_data['month']['short'][(int)date('n', $time)];
-    }
-
-    public static function getFullMonth($time, $natural = 0)
-    {
-        return self::$_data['month']['full'][(int)date('n', $time)][$natural];
-    }
-
-    public static function getShortWeeks()
-    {
-        return self::$_data['week']['short'];
-    }
-
-    public static function getFullWeeks()
-    {
-        return self::$_data['week']['full'];
-    }
-
-    public static function getShortMonths()
-    {
-        return self::$_data['month']['short'];
-    }
-
-    public static function getFullMonths($time, $natural)
-    {
-        $months = array();
-        foreach(self::$_data['month']['full'] as $month)
-            $months[] = $month[0];
-        return $months;
-    }
-
-    public static function getNumberDayOfWeek($time)
-    {
-        return date('w', $time);
-    }
-    
-    public static function getFirstNumberDayOfWeek() { return 0; }
-    
-    public static function getLastNumberDayOfWeek() { return 6; }
-
-    public static function getNumbersDayOfWeek() { return range(0, 6); }
-    
-    public static function getFirstDayOfYear() { return 1; }
-    
-    public static function getLastDayOfYear() { return 31; }
-    
-    public static function getFirstMonthOfYear() { return 1; }
-    
-    public static function getLastMonthOfYear() { return 12; }
 }

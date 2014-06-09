@@ -238,33 +238,7 @@ class GDate extends GModel
      */
     public function diff($date, $format = 'y m d h i s')
     {
-        if (!is_object($date))
-            $date = $this->owner->getDate($date);
-        $less = $more = $this;
-        if ($this->timestamp < $date->timestamp)
-            $more = $date;
-        else
-            $less = $date;
-        $diff = array($more->year - $less->year, 0, 0, 0, 0, 0);
-        $subs = function($index, &$diff) use (&$subs)
-        {
-            if ($diff[$index])
-                -- $diff[$index];
-            else
-            if ($index)
-                $subs($index - 1, $diff);
-        };
-        $set = function($index, &$diff, $value, $sub = false) use (&$subs)
-        {
-            $diff[$index] = $value;
-            if ($sub)
-                $subs($index - 1, $diff);
-        };
-        $less->month > $more->month ? $set(1, $diff, 12 - $less->month + $more->month, true) : $set(1, $diff, $more->month - $less->month, false);
-        $less->day > $more->day ? $set(2, $diff, $less->getCountDaysInMonth() - $less->day + $more->day, true) : $set(2, $diff, $more->day - $less->day, false);
-        $less->hour > $more->hour ? $set(3, $diff, 24 - $less->hour + $more->hour, true) : $set(3, $diff, $more->hour - $less->hour, false);
-        $less->minute > $more->minute ? $set(4, $diff, 60 - $less->minute + $more->minute, true) : $set(4, $diff, $more->minute - $less->minute, false);
-        $less->second > $more->second ? $set(5, $diff,60 - $less->second + $more->second, true) : $set(5, $diff, $more->second - $less->second, false);
+        $diff = $this->owner->diff($this, $date);
         $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
         $tokens = array('y', 'm', 'd', 'h', 'i', 's');
         if ($format)

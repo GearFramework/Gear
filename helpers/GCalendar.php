@@ -95,7 +95,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextDay(\gear\library\GObject $date = null) { return $this->addDays($date, 1); }
+    public function nextDay($date = null) { return $this->addDays($date, 1); }
     
     /**
      * Предыдущий день, относительно указанного в параметре
@@ -104,7 +104,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousDay(\gear\library\GObject $date = null) { return $this->subDays($date, 1); }
+    public function previousDay($date = null) { return $this->subDays($date, 1); }
     
     /**
      * Следующий месяц
@@ -113,7 +113,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextMonth(\gear\library\GObject $date = null) { return $this->addMonths($date, 1); }
+    public function nextMonth($date = null) { return $this->addMonths($date, 1); }
     
     /**
      * Предыдущий месяц
@@ -122,7 +122,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousMonth(\gear\library\GObject $date = null) { return $this->subMonths($date, 1); }
+    public function previousMonth($date = null) { return $this->subMonths($date, 1); }
     
     /**
      * Следующий год
@@ -131,7 +131,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextYear(\gear\library\GObject $date = null) { return $this->addYears($date, 1); }
+    public function nextYear($date = null) { return $this->addYears($date, 1); }
     
     /**
      * Предыдущий год
@@ -140,7 +140,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousYear(\gear\library\GObject $date = null) { return $this->subYears($date, 1); }
+    public function previousYear($date = null) { return $this->subYears($date, 1); }
     
     /**
      * Следующий час
@@ -149,7 +149,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextHour(\gear\library\GObject $date = null) { return $this->addHours($date, 1); }
+    public function nextHour($date = null) { return $this->addHours($date, 1); }
     
     /**
      * Предыдущий час
@@ -158,7 +158,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousHour(\gear\library\GObject $date = null) { return $this->subHours($date, 1); }
+    public function previousHour($date = null) { return $this->subHours($date, 1); }
     
     /**
      * Следующая минута
@@ -167,7 +167,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextMinute(\gear\library\GObject $date = null) { return $this->addMinutes($date, 1); }
+    public function nextMinute($date = null) { return $this->addMinutes($date, 1); }
     
     /**
      * Предыдущая минута
@@ -176,7 +176,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousMinute(\gear\library\GObject $date = null) { return $this->subMinutes($date, 1); }
+    public function previousMinute($date = null) { return $this->subMinutes($date, 1); }
     
     /**
      * Следующая секунда
@@ -185,7 +185,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextSecond(\gear\library\GObject $date = null) { return $this->addSeconds($date, 1); }
+    public function nextSecond($date = null) { return $this->addSeconds($date, 1); }
     
     /**
      * Предыдущая секунда
@@ -194,7 +194,25 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousSecond(\gear\library\GObject $date = null) { return $this->subSeconds($date, 1); }
+    public function previousSecond($date = null) { return $this->subSeconds($date, 1); }
+    
+    /**
+     * Следующая неделя
+     * 
+     * @access public
+     * @param null|integer|string|object $date
+     * @return object
+     */
+    public function nextWeek($date = null) { return $this->addDays($date, 7); }
+
+    /**
+     * Предыдущая неделя
+     * 
+     * @access public
+     * @param null|integer|string|object $date
+     * @return object
+     */
+    public function previousWeek($date = null) { return $this->subDays($date, 7); }
 
     /**
      * Установка текущей даты календаря
@@ -549,6 +567,32 @@ class GCalendar extends GObject
     }
     
     /**
+     * Прибавляет к дате указанное количество недель
+     * 
+     * @access public
+     * @param null|object $date
+     * @param integer $weeks
+     * @return object
+     */
+    public function addWeeks($date = null, $weeks = 0)
+    {
+        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $weeks * 7 * self::SECONDS_PER_DAY));
+    }
+    
+    /**
+     * Вычитает из даты указанное количество недель
+     * 
+     * @access public
+     * @param null|object $date
+     * @param integer $weeks
+     * @return object
+     */
+    public function subWeeks($date = null, $weeks = 0)
+    {
+        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $weeks * 7 * self::SECONDS_PER_DAY));
+    }
+    
+    /**
      * Возвращает день недели указанной даты
      * 
      * Значения для $mode
@@ -797,21 +841,23 @@ class GCalendar extends GObject
      * @param integer|string|object $to
      * @return array of objects
      */
-    public function getRangeDates($from, $to, $step = '1 days', $revert = false)
+    public function getRangeDates($from, $to, $step = '1 day', $revert = false)
     {
         if (!is_object($from)) $from = $this->getDate($from);
         if (!is_object($to)) $to = $this->getDate($to);
-        if (preg_match('/^(\d+)\s(\w+)$/', $step, $founds))
-            $operation = array($this, !$revert ? 'add' . ucfirst($founds[2]) . 's' : 'sub' . ucfirst($founds[2]) . 's', $founds[1]);
+        $operation = $from->timestamp <= $to->timestamp ? 'add' : 'sub';
+        if ($step && preg_match('/^(\d+)\s(\w+)$/', $step, $founds))
+            $method = array($this, $operation . ucfirst($founds[2]) . 's', $founds[1]);
         else
-            $operation = array($this, !$revert ? 'addDays' : 'subDays', array($from, 1));
+            $method = array($this, $operation . 'Days', 1);
         $stop = false;
         $dates = array($from);
         $date = $from;
         while(!$stop)
         {
-            $date = call_user_func(array($operation[0], $operation[1]), $date, $operation[2]);
-            if ($date->timestamp < $to->timestamp)
+            $date = call_user_func(array($method[0], $method[1]), $date, $method[2]);
+            if (($from->timestamp <= $to->timestamp && $date->timestamp < $to->timestamp) ||
+                ($from->timestamp > $to->timestamp && $date->timestamp > $to->timestamp))
                 $dates[] = $date;
             else
             {
@@ -819,7 +865,48 @@ class GCalendar extends GObject
                 $stop = true;
             }
         }
+        if ($revert)
+            krsort($dates);
         return $dates;
+    }
+    
+    /**
+     * Вычисление разницы между датами
+     * 
+     * @access public
+     * @param integer|string|object $dateOne
+     * @param integer|string|object $dateTwo
+     * @return string
+     */
+    public function diff($dateOne, $dateTwo)
+    {
+        if (!is_object($dateOne))
+            $dateOne = $this->getDate($dateOne);
+        if (!is_object($dateTwo))
+            $dateTwo = $this->getDate($dateTwo);
+        $less = $more = $dateOne;
+        $dateOne->timestamp < $dateTwo->timestamp ? $more = $dateTwo : $less = $dateTwo;
+        $diff = array($more->year - $less->year, 0, 0, 0, 0, 0);
+        $subs = function($index, &$diff) use (&$subs)
+        {
+            if ($diff[$index])
+                -- $diff[$index];
+            else
+            if ($index)
+                $subs($index - 1, $diff);
+        };
+        $set = function($index, &$diff, $value, $sub = false) use (&$subs)
+        {
+            $diff[$index] = $value;
+            if ($sub)
+                $subs($index - 1, $diff);
+        };
+        $less->month > $more->month ? $set(1, $diff, 12 - $less->month + $more->month, true) : $set(1, $diff, $more->month - $less->month, false);
+        $less->day > $more->day ? $set(2, $diff, $less->getCountDaysInMonth() - $less->day + $more->day, true) : $set(2, $diff, $more->day - $less->day, false);
+        $less->hour > $more->hour ? $set(3, $diff, 24 - $less->hour + $more->hour, true) : $set(3, $diff, $more->hour - $less->hour, false);
+        $less->minute > $more->minute ? $set(4, $diff, 60 - $less->minute + $more->minute, true) : $set(4, $diff, $more->minute - $less->minute, false);
+        $less->second > $more->second ? $set(5, $diff,60 - $less->second + $more->second, true) : $set(5, $diff, $more->second - $less->second, false);
+        return $diff;
     }
     
     /**
