@@ -9,13 +9,13 @@ use \gear\library\GException;
  * Плагин для работы данных о среде окружения приложения.
  *  
  * @package Gear Framework
- * @plugin Enveroment
+ * @plugin Environment
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 03.08.2013
  */
-class GEnveroment extends GPlugin
+class GEnvironment extends GPlugin
 {
     /* Const */
     /* Private */

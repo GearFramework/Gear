@@ -36,7 +36,7 @@ class GApplication extends GModule
         'plugins' => array
         (
             'request' => array('class' => '\gear\plugins\gear\GRequest'),
-            'enveroment' => array('class' => '\gear\plugins\gear\GEnveroment'),
+            'environment' => array('class' => '\gear\plugins\gear\GEnvironment'),
             'log' => array('class' => '\gear\plugins\gear\GLog'),
         ),
     );
