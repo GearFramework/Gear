@@ -25,6 +25,7 @@ class GEnvironment extends GPlugin
         'dependency' => '\\gear\\library\\GApplication',
     );
     protected static $_init = false;
+    protected $_trustedProxies = array();
     /* Public */
     
     /**
@@ -106,6 +107,51 @@ class GEnvironment extends GPlugin
         }        
     }
     
+    /**
+     * Устанавливает список доверенных proxy
+     * 
+     * @access public
+     * @param array $trustedProxies
+     * @return $this
+     */
+    public function setTrustedProxies(array $trustedProxies)
+    {
+        $this->_trustedProxies = $trustedProxies;
+        return $this;
+    }
+    
+    /**
+     * Возвращает массив доверенных proxy
+     * 
+     * @access public
+     * @return array
+     */
+    public function getTrustedProxies() { return $this->_trustedProxies; }
+    
+    /**
+     * Возвращает ip-адрес клиента
+     * 
+     * @access public
+     * @return string
+     */
+    public function getRemoteAddress()
+    {
+        $ip = '';
+        if (isset($_SERVER['REMOTE_ADDR']))
+        {
+            $trust = in_array($_SERVER['REMOTE_ADDR'], $this->_trustedProxies, true);
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $trust)
+                list($ip) = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'], 1);
+            else
+            if (isset($_SERVER['HTTP_CLIENT_IP']) && $trust)
+                list($ip) = explode(',', $_SERVER['HTTP_CLIENT_IP'], 1);
+            else
+                $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = trim($ip);
+        }
+        return $ip;
+    }    
+
     /**
      * Проверяет загружено ли указанное PHP-расширение. При запуске метода
      * без параметров возвращает массив всех загруженных расширений
