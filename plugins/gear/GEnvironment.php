@@ -209,7 +209,7 @@ class GEnvironment extends GPlugin
  * @version 0.0.1
  * @since 03.08.2013
  */
-class EnveromentException extends GException 
+class EnvironmentException extends GException 
 {
     /* Const */
     /* Private */
