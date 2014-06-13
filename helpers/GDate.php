@@ -218,15 +218,15 @@ class GDate extends GModel
     }
     
     /**
-     * Возвращает отоформатированную дату в "человекпонятном стиле"
+     * Возвращает разницу между указанной датой и текущей в 
+     * "человекопонятном стиле"
      * 
      * @access public
      * @return string
      */
-    public function human($short = false)
+    public function humanDiff($date = null)
     {
-        $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
-        $dateNow = $this->now(); 
+        return $this->owner->humanDiff($this, $date);
     }
     
     /**

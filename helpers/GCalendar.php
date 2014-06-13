@@ -241,7 +241,7 @@ class GCalendar extends GObject
      * @param null|integer|string $date
      * @return object
      */
-    public function getDate($date) 
+    public function getDate($date = null) 
     {
         if ($date)
             return $this->factory(array('timestamp' => !is_numeric($date) ? strtotime($date) : $date));
@@ -907,6 +907,51 @@ class GCalendar extends GObject
         $less->minute > $more->minute ? $set(4, $diff, 60 - $less->minute + $more->minute, true) : $set(4, $diff, $more->minute - $less->minute, false);
         $less->second > $more->second ? $set(5, $diff,60 - $less->second + $more->second, true) : $set(5, $diff, $more->second - $less->second, false);
         return $diff;
+    }
+    
+    /**
+     * Возвращает разницу между указанной датой и текущей в 
+     * "человекопонятном стиле"
+     * 
+     * @access public
+     * @return string
+     */
+    public function humanDiff($dateOne, $dateTwo = null)
+    {
+        $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
+        if (!$dateTwo)
+            $dateTwo = $this->getDate();
+        $mul = $dateOne->timestamp < $dateTwo->timestamp ? -1 : 1;
+        $diff = $this->diff($dateOne, $dateTwo);
+        $result = '';
+        if ($diff[0] > 0)
+            return $class::getHumanDecline($diff[0] * $mul, 'diff', 'y');
+        else
+        if ($diff[1] > 0)
+            return $class::getHumanDecline($diff[1] * $mul, 'diff', 'm');
+        else
+        if ($diff[2] > 0)
+        {
+            if ($diff[2] < 7)
+                return $class::getHumanDecline($diff[2] * $mul, 'diff', 'd');
+            else
+                return $class::getHumanDecline((int)($diff[2] / 7) * $mul, 'diff', 'w');
+        }
+        else
+        if ($diff[3] > 0)
+            return $class::getHumanDecline($diff[3] * $mul, 'diff', 'h');
+        else
+        if ($diff[4] > 0)
+            return $class::getHumanDecline($diff[4] * $mul, 'diff', 'i');
+        else
+        if ($diff[5] > 0)
+        {
+            if (($diff[5] > 50 && $diff[5] <= 59) || 
+                ($diff[5] < -50 && $diff[5] >= -59))
+                return $class::getHumanDecline(1 * $mul, 'diff', 'i');
+            else
+                return $class::getHumanDecline($diff[5] * $mul, 'diff', 's');
+        }
     }
     
     /**

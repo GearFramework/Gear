@@ -22,10 +22,9 @@ class ru_RU extends GLocale
     /* Private */
     protected static $_human = array
     (
-        self::NOW => array('сейчас', 'сейчас'),
-        self::LESS_MIN_PAST => array('меньше минуты назад', '%d сек.'),
-        self::ONE_MIN_PAST => array('минуту назад', '1 мин.'),
-        self::MIN_PAST => array('%d %s назад', '1 мин.', array('минуту', 'минуты', 'минут')),
+        'now' => array('сейчас'),
+        'past' => array('назад', '%s назад', '%d %s назад'),
+        'future' => array('через', 'через %s', 'через %d %s'),
     );
     protected static $_words = array
     (
@@ -37,6 +36,7 @@ class ru_RU extends GLocale
             'h' => array('час', 'часа', 'часов'),
             'i' => array('минуту', 'минуты', 'минут'),
             's' => array('секунду', 'секунды', 'секунд'),
+            'w' => array('неделю', 'недели', 'недель'),
         ),
     );
     protected static $_data = array
@@ -72,6 +72,24 @@ class ru_RU extends GLocale
         $mod = $value % 100;
         $key = ($mod > 7 && $mod < 20) ? 2: $keys[min($mod % 10, 5)];
         return static::$_words[$mode][$token][$key];
+    }
+    
+    public static function getHumanDecline($value, $mode, $token)
+    {
+        $decline = self::getDecline(abs($value), $mode, $token);
+        if ($value == 1)
+            return sprintf(static::$_human['future'][1], $decline);
+        else
+        if ($value > 1)
+            return sprintf(static::$_human['future'][2], $value, $decline);
+        else
+        if ($value == -1)
+            return sprintf(static::$_human['past'][1], $decline);
+        else
+        if ($value < -1)
+            return sprintf(static::$_human['past'][2], abs($value), $decline);
+        else
+            return static::$_human['now'][0];
     }
 
     /**
