@@ -401,8 +401,10 @@ class GCalendar extends GObject
      */
     public function addYears($date = null, $years = 0)
     {
-        $timestamp = $date ? $date->timestamp : $this->_current->timestamp;
-        return $this->factory(array('timestamp' => $timestamp + $this->getCountDaysInYear($date) * $years * self::SECONDS_PER_DAY));
+        if (!$date)
+            $date = $this->_current;
+        $date = $date->setYear($date->year + $years);
+        return $this->factory(array('timestamp' => $date->timestamp));
     }
 
     /**
@@ -415,8 +417,10 @@ class GCalendar extends GObject
      */
     public function subYears($date = null, $years = 0)
     {
-        $timestamp = $date ? $date->timestamp : $this->_current->timestamp;
-        return $this->factory(array('timestamp' => $timestamp - $this->getCountDaysInYear($date) * $years * self::SECONDS_PER_DAY));
+        if (!$date)
+            $date = $this->_current;
+        $date = $date->setYear($date->year - $years);
+        return $this->factory(array('timestamp' => $date->timestamp));
     }
 
     /**
