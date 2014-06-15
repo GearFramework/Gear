@@ -18,7 +18,10 @@ class GAuth extends GProcess
     
     public function apiLogin()
     {
-        die(json_encode(array('error' => Core::m('user')->identity()->isValid() ? 0 : 1)));
+        if (Core::m('user')->identity()->isValid())
+            die(json_encode(array('error' => 0)));
+        else
+            die(json_encode(array('error' => 1, 'content' => 'Неверное имя пользователя или пароль')));
     }
     
     public function apiLogout()

@@ -228,8 +228,8 @@ class GMysqlCursor extends GDbCursor
                 $value = $this->_escapeValue($properties[$name]);
                 $updates[] = $name . '=' . $value;
             }
+            $this->_query .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
         }
-        $this->_query .= 'ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
         return $this->query()->affected();
     }
 
