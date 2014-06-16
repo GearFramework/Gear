@@ -51,13 +51,13 @@ class GApplication extends GModule
      */
     public function run($process = null, $request = null)
     {
-        if ($this->event('onBeforeRun'))
-        {
+        $args = func_get_args();
+        if (!func_num_args())
+            $args = array($this->request->isPost() ? $this->request->post() : $this->request->get());
+        else
             $args = func_get_args();
-            if (!func_num_args())
-                $args = array($this->request->isPost() ? $this->request->post() : $this->request->get());
-            else
-                $args = func_get_args();
+        if ($this->event('onBeforeRun', $args))
+        {
             $result = call_user_func_array(array($this->c('process'), 'exec'), $args);
             $this->event('onAfterRun', new GEvent($this), $result);
         }
