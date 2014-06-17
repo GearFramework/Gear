@@ -22,61 +22,29 @@ abstract class GClientResource extends GPlugin
     /* Private */
     /* Protected */
     /* Public */
-    public $resources = null;
+    public $temp = 'temp/resources';
     
     /**
-     * Получение реалтного пути к файлу-ресурсу
+     * Публикация ресурса (ввиде ссылки). Параметр $render установленный в true
+     * позволяет провести предварительный рендеринг ресурса в шаблонизаторе,
+     * таким образом ресурс может быть динамическим и содержать php-код 
      * 
      * @access public
-     * @param string $file
-     * @return void
-     */
-    public function resolvePath($file)
-    {
-        if ($file[0] !== '\\')
-            $file = $this->getOwner()->storage . '\\' . ($this->resources ? $this->resources . '\\' : '') . $file;
-        return Core::resolvePath($file);
-    }
-    
-    /**
-     * Публикация ресурса
-     * 
-     * @access public
-     * @param string $file
+     * @param string $resource
      * @param boolean $render
-     * @return string as url
+     * @return string
      */
-    public function publicate($file, $render = false)
-    {
-        $file = $this->resolvePath($file);
-        $hash = $this->getHash($file);
-        if (!$this->inCache($hash))
-            $hash = $this->cache($file, array('render' => $render));
-        return $hash ? '?e=gear/resource/get&resource=' . $hash . '&contentType=' . $this->resources : '';
-    }
+    abstract public function publicate($file, $render = false);
     
     /**
-     * Получение содержимого ресурса
+     * Возвращает контент ресурса
      * 
      * @access public
      * @param string $hash
      * @return string
      */
-    public function get($hash)
-    {
-        if ($this->inCache($hash))
-        {
-            $resource = $this->getOwner()->cache->get($hash, true);
-            if (is_array($resource))
-            {
-                return $resource['render'] 
-                       ? $this->view->render($resource['resource'], array(), true)
-                       : file_get_contents($resource['resource']);
-            }
-        }
-        return null;
-    }
-    
+    abstract public function get($hash);
+        
     /**
      * Получение mime-тип ресурса
      * 
