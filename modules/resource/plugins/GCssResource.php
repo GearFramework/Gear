@@ -18,6 +18,7 @@ class GCssResource extends GClientResource
     /* Const */
     /* Private */
     /* Protected */
+    protected $_mappingFolder = 'css';
     /* Public */
     public $html = "<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\" /\n";
     public $url = '?e=gear/resource/get&f=client&hash=ccs:%s';
@@ -31,9 +32,9 @@ class GCssResource extends GClientResource
      * @param string $hash
      * @return string
      */
-    private function _getHtml($hash)
+    private function _getHtml($hash, $url = null)
     {
-        return sprintf($this->html, $this->getContentType(), sprintf($this->url, $hash));
+        return sprintf($this->html, $this->getContentType(), sprintf($url ? $url : $this->url, $hash));
     }
     
     /**
@@ -54,18 +55,29 @@ class GCssResource extends GClientResource
         $hash = $this->getHash($resourcePath);
         if ($render)
             $content = $this->owner->view->render($resourcePath, array(), true);
-        if ($this->useCache)
+        if ($mapping)
         {
-            if (!$this->cache->exists($hash) || $render)
-                $this->cache->add($hash, $render ? $content : file_get_contents($resourcePath));
+            $file = Core::app()->env->DOCUMENT_ROOT . '/' . $this->mappingFolder . '/' . $hash . '.css';
+            if (!file_exists($file) || $render)
+                file_put_contents($file, $render ? $content : file_get_contents($resourcePath));
+            $url = $this->mappingFolder . '/' . $hash . '.js';
         }
         else
         {
-            $file = Core::resolvePath($this->temp . '\\' . $hash . '.css');
-            if (!file_exists($file) || $render)
-                file_put_contents($file, $render ? $content : file_get_contents($resourcePath));
+            if ($this->useCache)
+            {
+                if (!$this->cache->exists($hash) || $render)
+                    $this->cache->add($hash, $render ? $content : file_get_contents($resourcePath));
+            }
+            else
+            {
+                $file = Core::resolvePath($this->temp . '\\' . $hash . '.css');
+                if (!file_exists($file) || $render)
+                    file_put_contents($file, $render ? $content : file_get_contents($resourcePath));
+            }
+            $url = $this->url;
         }
-        return $this->_getHtml($hash);
+        return $this->_getHtml($hash, $url);
     }
     
     /**
