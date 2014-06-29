@@ -83,7 +83,8 @@ class GMysqlCursor extends GDbCursor
      */
     public function runQuery($query)
     {
-        $this->_resource = mysqli_query($this->getHandler(), $query);
+        $this->_query = $query;
+        $this->_resource = mysqli_query($this->getHandler(), $this->_query);
         if (!$this->_resource)
             $this->e($this->error(), array('query' => $query));
         return $this;

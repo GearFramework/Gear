@@ -48,6 +48,7 @@ class GMysql extends GDbConnection
     );
     protected $_current = null;
     /* Public */
+    public $charset = 'UTF8';
     
     /**
      * Подключение к серверу MySQL
@@ -58,6 +59,7 @@ class GMysql extends GDbConnection
     public function connect()
     {
         $this->_handler = mysqli_connect($this->host, $this->username, $this->password);
+        $this->event('onAfterConnection');
         return $this;
     }
     
@@ -92,6 +94,11 @@ class GMysql extends GDbConnection
         }
         $this->event('onAfterRewind');
         return $this->_current = reset($this->_items);
+    }
+    
+    public function onAfterConnection($event)
+    {
+        mysqli_query($this->_handler, 'SET NAMES ' . $this->charset);
     }
 }
 
