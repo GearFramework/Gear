@@ -108,6 +108,14 @@ abstract class GModule extends GObject implements IModule
     {
         return isset(static::$_config['components'][$name]) ? static::$_config['components'][$name] : false;
     }
+    
+    public function registerComponent($name, array $component)
+    {
+//        if (isset(static::$_config['components'][$name]))
+            static::$_config['components'][$name] = $component;
+//        else
+//            $this->e('Component ":componentName" already registered', array('componentName' => $name));
+    }
 
     /**
      * Возвращает true, если модуль может быть перегружен, иначе false
