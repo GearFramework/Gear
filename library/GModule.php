@@ -109,18 +109,18 @@ abstract class GModule extends GObject implements IModule
         return isset(static::$_config['components'][$name]) ? static::$_config['components'][$name] : false;
     }
     
-<<<<<<< HEAD
+    /**
+     * Регистрация компонента
+     * 
+     * @access public
+     * @param string $name
+     * @param array $component
+     * @return $this
+     */
     public function registerComponent($name, $component)
     {
         static::$_config['components'][$name] = $component;
-=======
-    public function registerComponent($name, array $component)
-    {
-//        if (isset(static::$_config['components'][$name]))
-            static::$_config['components'][$name] = $component;
-//        else
-//            $this->e('Component ":componentName" already registered', array('componentName' => $name));
->>>>>>> remotes/origin/master
+        return $this;
     }
 
     /**
