@@ -82,9 +82,10 @@ abstract class GModule extends GObject implements IModule
      * 
      * @access public
      * @param string $name
+     * @param boolean $instance
      * @return GComponent
      */
-    public function c($name)
+    public function c($name, $instance = false)
     {
         if (!isset($this->_components[$name]))
         {
@@ -93,7 +94,7 @@ abstract class GModule extends GObject implements IModule
             list($class, $config, $properties) = Core::getRecords($component);
             $this->_components[$name] = $class::install($config, $properties, $this);
         }
-        return $this->_components[$name];
+        return $instance ? clone $this->_components[$name] : $this->_components[$name];
     }
     
     /**
