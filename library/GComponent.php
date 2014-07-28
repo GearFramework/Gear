@@ -24,6 +24,8 @@ abstract class GComponent extends GObject implements IComponent
     protected static $_config = array();
     /* Public */
     
+    public function __clone() {}
+    
     /**
      * Установка компонента
      * 
