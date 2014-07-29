@@ -129,7 +129,7 @@ final class Core
         {
             $pathFile = self::resolvePath($library) . '.php';
             if (!file_exists($pathFile))
-                self::e('Файл библиотеки ":pathFile" не найден', array('pathFile' => $pathFile));
+                self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
             require($pathFile);
         }
         /* Подгрузка и установка модулей */
@@ -138,7 +138,7 @@ final class Core
             list($class, $config, $properties) = self::getRecords($module);
             $pathFile = self::resolvePath($class) . '.php';
             if (!file_exists($pathFile))
-                self::e('Файл класса модуля ":moduleName" не найден', array('moduleName' => $name));
+                self::e('File ":moduleName" not found', array('moduleName' => $name));
             require($pathFile);
             self::$_modules[$name] = $class::install($config, $properties);
         }
@@ -148,7 +148,7 @@ final class Core
             list($class, $config, $properties) = self::getRecords($component);
             $pathFile = self::resolvePath($class) . '.php';
             if (!file_exists($pathFile))
-                self::e('Файл класса компонента ":componentName" не найден', array('componentName' => $name));
+                self::e('File ":componentName" not found', array('componentName' => $name));
             require($pathFile);
             self::$_components[$name] = $class::install($config, $properties);
         }
@@ -195,7 +195,7 @@ final class Core
         if (!isset(self::$_modules[$name]))
         {
             if (!($module = self::isModuleRegistered($name)))
-                self::e('Модуль ":moduleName" не зарегистрирован', array('moduleName' => $name));
+                self::e('Module ":moduleName" is not registered', array('moduleName' => $name));
             self::installModule($name, $module);
         }
         return self::$_modules[$name];
@@ -235,7 +235,7 @@ final class Core
         if ($existModule = self::isModuleRegistered($name))
         {
             if (!isset($existModule['override']) || !$existModule['override'])
-                self::e('Модуль ":moduleName" не может быть перегружен', array('moduleName' => $name));
+                self::e('Module ":moduleName" can not be overloaded', array('moduleName' => $name));
         }
         self::$_config['modules'][$name] = $module;
         return true;
@@ -269,7 +269,7 @@ final class Core
         if (isset(self::$_modules[$name]))
         {
             if (!self::$_modules[$name]->hasOverride())
-                self::e('Модуль ":moduleName" не может быть перегружен', array('moduleName' => $name));
+                self::e('Module ":moduleName" can not be overloaded', array('moduleName' => $name));
             self::uninstallModule($name);
         }
         return self::$_modules[$name] = self::_processElement($module, $owner);
@@ -328,7 +328,7 @@ final class Core
         if (!isset(self::$_components[$name]))
         {
             if (!($component = self::isComponentRegistered($name)))
-                self::e('Компонент ":componentName" не зарегистрирован', array('componentName' => $name));
+                self::e('Component ":componentName" is not registered', array('componentName' => $name));
             self::installComponent($name, $component);
             return self::$_components[$name];
         }
@@ -369,7 +369,7 @@ final class Core
         if ($c = self::isComponentRegistered($name))
         {
             if (!isset($c['override']) || !$c['override'])
-                self::e('Компонент ":componentName" не может быть перегружен', array('componentName' => $name));
+                self::e('Component ":componentName" can not be overloaded', array('componentName' => $name));
         }
         self::$_config['components'][$name] = $component;
         return true;
@@ -403,7 +403,7 @@ final class Core
         if (isset(self::$_components[$name]))
         {
             if (!self::$_components[$name]->hasOverride())
-                self::e('Компонент ":componentName" не может быть перегружен', array('componentName' => $name));
+                self::e('Component ":componentName" can not be overloaded', array('componentName' => $name));
             self::uninstallComponent($name);
         }
         return self::$_components[$name] = self::_processElement($component, $owner);
