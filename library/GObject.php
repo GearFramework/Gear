@@ -33,6 +33,7 @@ class GObject
     );
     protected $_properties = array();
     protected $_owner = null;
+    protected $_access = Core::ACCESS_PROTECTED;
     protected $_behaviors = array();
     protected $_plugins = array();
     protected $_events = array();
@@ -284,7 +285,16 @@ class GObject
     public function setViewPath($path)
     {
         $this->_viewPath = $path;
+        return $this;
     }
+    
+    public function setAccess($access)
+    {
+        $this->_access = $access;
+        return $this;
+    }
+    
+    public function getAccess() { return $this->_access; }
 
     /**
      * Возвращает значение указанного конфигурационного параметра класса
@@ -365,13 +375,13 @@ class GObject
         if (is_string($behavior))
             $this->_behaviors[$name] = $behavior::attach($this);
         else
-        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record (release class::__invoke(), array('classname', 'methodname'))
-        if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
-            $this->_behaviors[$name] = $behavior->setOwner($this);
-        else
         // $behavior is object instance of \Closure
         if ($behavior instanceof \Closure)
             $this->_behaviors[$name] = method_exists($behavior, 'bindTo') ? $behavior->bindTo($this, $this) : $behavior;
+        else
+        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record (release class::__invoke(), array('classname', 'methodname'))
+        if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
+            $this->_behaviors[$name] = $behavior->setOwner($this);
         else
             $this->e('Behavior ":behaviorName" is not correct', array('behaviorName' => $name));
         return $this;
@@ -395,7 +405,7 @@ class GObject
         array_shift($args);
         if ($this->isBehavior($name))
         {
-            if ($this->_behaviors[$name] instanceof Closure)
+            if ($this->_behaviors[$name] instanceof \Closure)
                 return call_user_func_array($this->_behaviors[$name], $args);
             else
                 return $this->_behaviors[$name];
@@ -561,7 +571,11 @@ class GObject
     {
         $args = func_get_args();
         array_shift($args);
-        $args[0] = is_null($event) || !($event instanceof \gear\library\GEvent) ? new GEvent($this) : $event;
+        if (is_null($event) || !($event instanceof \gear\library\GEvent))
+        {
+            $event = new GEvent($this);
+            array_unshift($args, $event);
+        }
         $result = method_exists($this, $name) ? call_user_func_array(array($this, $name), $args) : true;
         if (isset($this->_events[$name]) && $result)
         {

@@ -36,6 +36,21 @@ class GProxyCollection extends GCollection
         return $this;
     }
     
+    public function factory($properties)
+    {
+        try
+        {
+            $object = $this->getOwner()->factory($properties);
+            if (!$object)
+                $this->e('Invalid factory');
+            return $object;
+        }
+        catch(\Exception $e)
+        {
+            return $this->next();
+        }
+    }
+    
     /**
      * Установка указателя на начало массива
      *
@@ -45,7 +60,7 @@ class GProxyCollection extends GCollection
     public function rewind()
     {
         $properties = $this->_source->rewind();
-        return $properties ? $this->getOwner()->factory($properties) : null;
+        return $properties ? $this->factory($properties) : null;
     }
 
     /**
@@ -57,7 +72,7 @@ class GProxyCollection extends GCollection
     public function current()
     {
         $properties = $this->_source->current();
-        return $properties ? $this->getOwner()->factory($properties) : null;
+        return $properties ? $this->factory($properties) : null;
     }
 
     /**
@@ -80,7 +95,7 @@ class GProxyCollection extends GCollection
     public function next()
     {
         $properties = $this->_source->next();
-        return $properties ? $this->getOwner()->factory($properties) : null;
+        return $properties ? $this->factory($properties) : null;
     }
 
     /**
