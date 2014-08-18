@@ -44,8 +44,7 @@ class GProxyCollection extends GCollection
      */
     public function rewind()
     {
-        $properties = $this->_source->rewind();
-        return $properties ? $this->getOwner()->factory($properties) : null;
+        $this->_source->rewind();
     }
 
     /**
@@ -79,8 +78,7 @@ class GProxyCollection extends GCollection
      */
     public function next()
     {
-        $properties = $this->_source->next();
-        return $properties ? $this->getOwner()->factory($properties) : null;
+        $this->_source->next();
     }
 
     /**
