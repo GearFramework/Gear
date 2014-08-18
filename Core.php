@@ -330,9 +330,13 @@ final class Core
             if (!($component = self::isComponentRegistered($name)))
                 self::e('Component ":componentName" is not registered', array('componentName' => $name));
             self::installComponent($name, $component);
-            return self::$_components[$name];
         }
-        return $instance ? clone self::$_components[$name] : self::$_components[$name];
+        if ($instance)
+        {
+            $component = clone self::$_components[$name];
+            return is_object($instance) ? $component->setOwner($instance) : $component;
+        } 
+        return self::$_components[$name];
     }
     
     /**
