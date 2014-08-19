@@ -263,6 +263,14 @@ class GObject
     {
         return $this->_owner;
     }
+    
+    public function setAccess($access)
+    {
+        $this->_properties['access'] = $this->_access = $access;
+        return $this;
+    }
+    
+    public function getAccess() { return $this->_access; }
 
     /**
      * Взовращает путь к шаблонам отображения объекта
@@ -287,14 +295,6 @@ class GObject
         $this->_viewPath = $path;
         return $this;
     }
-    
-    public function setAccess($access)
-    {
-        $this->_access = $access;
-        return $this;
-    }
-    
-    public function getAccess() { return $this->_access; }
 
     /**
      * Возвращает значение указанного конфигурационного параметра класса
