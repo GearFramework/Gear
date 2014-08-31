@@ -20,8 +20,8 @@ class GCssResource extends GClientResource
     /* Protected */
     protected $_mappingFolder = 'css';
     /* Public */
-    public $html = "<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\" /\n";
-    public $url = '?e=gear/resource/get&f=client&hash=ccs:%s';
+    public $html = "<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\" \>\n";
+    public $url = '?e=gear/resource/get&f=client&hash=css:%s';
     public $path = 'css'; 
     public $temp = 'temp/resources/css';
     
@@ -34,7 +34,7 @@ class GCssResource extends GClientResource
      */
     private function _getHtml($hash, $url = null)
     {
-        return sprintf($this->html, $this->getContentType(), sprintf($url ? $url : $this->url, $hash));
+        return sprintf($this->html, sprintf($url ? $url : $this->url, $hash));
     }
     
     /**
@@ -47,7 +47,7 @@ class GCssResource extends GClientResource
      * @param boolean $render
      * @return string
      */
-    public function publicate($resource, $render = false)
+    public function publicate($resource, $render = false, $mapping = false)
     {
         if (!preg_match('/[\/|\\\\]/', $resource))
             $resource = $this->resourcesPath . '\\' . $this->path . '\\' . $resource; 
@@ -60,7 +60,7 @@ class GCssResource extends GClientResource
             $file = Core::app()->env->DOCUMENT_ROOT . '/' . $this->mappingFolder . '/' . $hash . '.css';
             if (!file_exists($file) || $render)
                 file_put_contents($file, $render ? $content : file_get_contents($resourcePath));
-            $url = $this->mappingFolder . '/' . $hash . '.js';
+            $url = $this->mappingFolder . '/' . $hash . '.css';
         }
         else
         {
