@@ -12,7 +12,7 @@ defined('DEBUG') or define('DEBUG', false);
  * @final
  * @author Denisk Kukushkin
  * @copyright Denisk Kukushkin 2013
- * @version 0.0.1
+ * @version 0.1.0
  * @since 01.08.2013
  * @license MIT
  */
@@ -69,6 +69,9 @@ final class Core
         'components' => array
         (
         ),
+        'args' => array
+        (
+        ),
     );
     private static $_modules = array();     // Подключенные модули
     private static $_components = array();  // Подключённые компоненты
@@ -94,8 +97,7 @@ final class Core
         if ($config === null || (is_string($config) && is_dir($config)))
         {
             $config = ($config === null ? dirname($_SERVER['SCRIPT_FILENAME']) : $config) . '/config.' 
-                    . (self::$_runMode === self::MODE_DEVELOPMENT ? 'debug' : 'production') 
-                    . '.php';
+                    . (self::$_runMode === self::MODE_DEVELOPMENT ? 'debug' : 'production') . '.php';
         }
         if (is_string($config))
         {
@@ -176,10 +178,27 @@ final class Core
      * @static
      * @return void
      */
-    public function syslog()
+    public static function syslog()
     {
         if (self::isComponentInstalled('syslog') && DEBUG)
             call_user_func_array(self::c('syslog'), func_get_args());
+    }
+    
+    /**
+     * Получение или установка значения для глобального аргумента
+     * 
+     * @access public
+     * @static
+     * @param string $name
+     * @param mixed $value
+     * @return mixed
+     */
+    public static function arg($name, $value = null)
+    {
+        if ($value === null)
+            return isset(self::$_config['args'][$name]) ? self::$_config['args'][$name] : null;
+        self::$_config['args'][$name] = $value;
+        return $value;
     }
     
     /**
@@ -467,7 +486,18 @@ final class Core
             $class = $config['name'];
             unset($config['name']);
             if (isset($config['#config']))
-                $config = $config['#config'];
+                $config = self::resolvePath($config['#config']);
+        }
+        if (isset($properties['#import']))
+        {
+            if (is_array($properties['#import']))
+            {
+                foreach($properties['#import'] as $nameArg)
+                    $properties = array_merge($properties, self::arg($properties['#import']));
+            }
+            else
+                $properties = array_merge($properties, self::arg($properties['#import']));
+            unset($properties['#import']);
         }
         return array($class, $config, $properties);
     }
@@ -496,8 +526,7 @@ final class Core
                 $resolved = GEAR . '/..' . str_replace('\\', '/', $path);
             else
             {
-                $resolved = GEAR . '/..' 
-                          . (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/')
+                $resolved = GEAR . '/..' . (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/')
                           . str_replace('\\', '/', $path);
             }
         }
