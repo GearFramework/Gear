@@ -181,6 +181,11 @@ class GProcessComponent extends GComponent
      */
     public function appendProcesses(array $processes) { $this->_processes = array_merge($this->_processes, $processes); }
     
+    public function addProcess($name, $process)
+    {
+        $this->_processes[$name] = $process;
+    }
+    
     /**
      * Установка текущего процесса
      * 

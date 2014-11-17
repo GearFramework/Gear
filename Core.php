@@ -27,12 +27,12 @@ final class Core
     const ACCESS_PROTECTED = 1;
     const ACCESS_PUBLIC = 2;
     /* Private */
-    private static $_config = array         // Текущая конфигурация ядра
-    (
-        'preloads' => array
-        (
-            'library' => array
-            (
+    private static $_config =           // Текущая конфигурация ядра
+    [         
+        'preloads' => 
+        [
+            'library' => 
+            [
                 '\gear\library\GException',
                 '\gear\library\GEvent',
                 '\gear\CoreException',
@@ -44,42 +44,44 @@ final class Core
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
-            ),
-            'modules' => array
-            (
-            ),
-            'components' => array
-            (
-                'syslog' => array
-                (
-                    'class' => '\gear\components\gear\syslog\GSyslog',
-                    'enable' => DEBUG,
-                ),
+            ],
+            'modules' => [],
+            'components' =>
+            [
+                'syslog' => ['class' => '\gear\components\gear\syslog\GSyslog'],
                 // Автозагрузчик классов
-                'loader' => array('class' => '\gear\components\gear\loader\GLoader'),
+                'loader' => ['class' => '\gear\components\gear\loader\GLoader'],
                 // Обработчик ошибок
-                'errorHandler' => array('class' => '\gear\components\gear\handlers\GErrorsHandler'),
+                'errorHandler' => ['class' => '\gear\components\gear\handlers\GErrorsHandler'],
                 // Обработчик неперехваченных исключений
-                'exceptionHandler' => array('class' => '\gear\components\gear\handlers\GExceptionsHandler'),
-            ),
-        ),
-        'modules' => array
-        (
-        ),
-        'components' => array
-        (
-        ),
-        'args' => array
-        (
-        ),
-    );
-    private static $_modules = array();     // Подключенные модули
-    private static $_components = array();  // Подключённые компоненты
-    private static $_runMode = null;        // Режим запуска PRODUCTION или DEVELOPMENT
-    private static $_env = null;            // Окружение: http или консоль
-    private static $_version = '0.0.1';     // Версия ядра
+                'exceptionHandler' => ['class' => '\gear\components\gear\handlers\GExceptionsHandler'],
+            ],
+        ],
+        'modules' => [],
+        'components' => [],
+        'params' => ['baseDir' => GEAR],
+    ];
+    private static $_modules = [];      // Подключенные модули
+    private static $_components = [];   // Подключённые компоненты
+    private static $_events = [];       // Обработчики событий
+    private static $_coreMode = null;   // Режим запуска PRODUCTION или DEVELOPMENT
+    private static $_runMode = null;    // Окружение: http или консоль
+    private static $_version = '0.0.1'; // Версия ядра
     /* Protected */
     /* Public */
+    
+    public static function __callStatic($name, $args)
+    {
+        if (self::isModuleRegistered($name))
+            return self::m($name);
+        if (self::isComponentRegistered($name))
+            return self::c($name, count($args) ? $args[0] : false);
+        array_unshift($args, $name);
+        return call_user_func_array(array(__CLASS__, 'params'), $args);
+            
+    }
+    
+    public static function getConfig() { return self::$_config; }
     
     /**
      * Инициализация ядра
@@ -87,30 +89,25 @@ final class Core
      * @access public
      * @static
      * @param string as path to configuration file|array of configuration $config
-     * @param integer Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION $runMode
+     * @param integer Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION $coreMode
      * @throws \Exception
      * @return boolean
      */
-    public static function init($config = null, $runMode = self::MODE_DEVELOPMENT)
+    public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        self::$_runMode = $runMode;
-        if ($config === null || (is_string($config) && is_dir($config)))
+        $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
+        self::$_coreMode = $coreMode;
+        if ($config === null)
+            $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
+        if (is_string)
         {
-            $config = ($config === null ? dirname($_SERVER['SCRIPT_FILENAME']) : $config) . '/config.' 
-                    . (self::$_runMode === self::MODE_DEVELOPMENT ? 'debug' : 'production') . '.php';
-        }
-        if (is_string($config))
-        {
-            $pathFile = is_file($config) ? $config : self::resolvePath($config);
-            if (is_dir($pathFile))
-                $pathFile = $pathFile . '/config.'. (self::$_runMode === self::MODE_DEVELOPMENT ? 'debug' : 'production') . '.php';
-            else
-            if (!is_file($pathFile))
-                self::e('Конфигурационный файл ":initFile" не найден', array('initFile' => $config));
-            $config = require($pathFile);
+            $fileConfig = self::resolvePath($config);
+            if (is_dir($fileConfig))
+                $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
+            $config = is_file($fileConfig) ? require($fileConfig) : null;
         }
         if (!is_array($config))
-            self::e('Указанная конфигурация не является корректной');
+            $config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]];
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         return true;
@@ -180,7 +177,7 @@ final class Core
      */
     public static function syslog()
     {
-        if (self::isComponentInstalled('syslog') && DEBUG)
+        if (self::isComponentInstalled('syslog'))
             call_user_func_array(self::c('syslog'), func_get_args());
     }
     
@@ -193,11 +190,11 @@ final class Core
      * @param mixed $value
      * @return mixed
      */
-    public static function arg($name, $value = null)
+    public static function params($name, $value = null)
     {
         if ($value === null)
-            return isset(self::$_config['args'][$name]) ? self::$_config['args'][$name] : null;
-        self::$_config['args'][$name] = $value;
+            return isset(self::$_config['params'][$name]) ? self::$_config['params'][$name] : null;
+        self::$_config['params'][$name] = $value;
         return $value;
     }
     
@@ -466,6 +463,16 @@ final class Core
         return $class::install($config, $properties, $owner);
     }
     
+    public static function event($name)
+    {
+        if (isset(self::$_events[$name]))
+        {
+            $args = func_get_args();
+            array_shift($args);
+            call_user_func_array(self::$_events[$name], $args);
+        }
+    }
+    
     /**
      * Получение значений класса, конфигурации и свойств из
      * специально сформированной структуры
@@ -534,25 +541,13 @@ final class Core
     }
     
     /**
-     * Возвращает версию ядра фреймворка
-     * 
-     * @access public
-     * @static
-     * @return string
-     */
-    public static function getVersion()
-    {
-        return self::$_version;
-    }
-    
-    /**
      * Возвращает режим запуска приложения
      * 
      * @access public
      * @static
      * @return boolean
      */
-    public static function getMode() { return self::$_env ? self::$_env : (self::$_env = php_sapi_name() === 'cli' ? self::CLI : self::HTTP); }
+    public static function getMode() { return self::$_runMode ? self::$_runMode : (self::$_runMode = php_sapi_name() === 'cli' ? self::CLI : self::HTTP); }
     
     /**
      * Возвращает true если приложение запущено из браузера, иначе false
@@ -571,6 +566,18 @@ final class Core
      * @return boolean
      */
     public static function isCli() { return self::getMode() === self::CLI; }
+    
+    /**
+     * Возвращает версию ядра фреймворка
+     * 
+     * @access public
+     * @static
+     * @return string
+     */
+    public static function getVersion()
+    {
+        return self::$_version;
+    }
     
     /**
      * Генерация исключения
