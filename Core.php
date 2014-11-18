@@ -123,6 +123,14 @@ final class Core
      */
     private static function _preloads()
     {
+        foreach(foreach(self::$_config['preloads'] as $section as $preloads)
+        {
+            
+            switch($section)
+            {
+                case 'library'
+            }
+        }
         /* Подгрузка библиотек */
         foreach(self::$_config['preloads']['library'] as $library)
         {
@@ -152,6 +160,14 @@ final class Core
             self::$_components[$name] = $class::install($config, $properties);
         }
         return true;
+    }
+    
+    public static function includeLibrary($library)
+    {
+        $fileLibrary = self::resolvePath($library);
+        if (file_exists($fileLibrary))
+            self::e('Library :fileLibrary not found', array('fileLibrary' => $fileLibrary));
+        require $fileLibrary;
     }
     
     /**
