@@ -12,7 +12,7 @@ defined('DEBUG') or define('DEBUG', false);
  * @final
  * @author Denisk Kukushkin
  * @copyright Denisk Kukushkin 2013
- * @version 0.1.0
+ * @version 1.0.0
  * @since 01.08.2013
  * @license MIT
  */
