@@ -14,7 +14,7 @@ use \gear\interfaces\IPlugin;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 0.1.0
  * @since 01.08.2013
  */
 abstract class GPlugin extends GComponent implements IPlugin
@@ -56,13 +56,7 @@ abstract class GPlugin extends GComponent implements IPlugin
     {
         $dependencyClass = static::i('dependency');
         if (!(!$dependencyClass || ($dependencyClass && $owner instanceof $dependencyClass)))
-        {
-            static::e
-            (
-                'Owner has been instanced of ":ownerClass"',
-                array('ownerClass' => $dependency)
-            );
-        }
+            static::e('Owner has been instanced of ":ownerClass"', ['ownerClass' => $dependency]);
     }
 
     /**

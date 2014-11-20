@@ -12,7 +12,7 @@ use \gear\library\GException;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 0.1.0
  * @since 01.08.2013
  */
 class GObject
@@ -22,22 +22,20 @@ class GObject
     /* Protected */
     protected static $_config = array
     (
-        'plugins' => array
-        (
-            'view' => array('class' => '\\gear\\plugins\\gear\\GView'),
-            'log' => array('class' => '\\gear\\plugins\\gear\\GLog'),
-        ),
-        'behaviors' => array
-        (
-        ),
+        'plugins' => 
+        [
+            'view' => ['class' => '\gear\plugins\gear\GView'],
+            'log' => ['class' => '\gear\plugins\gear\GLog'],
+        ],
+        'behaviors' => [],
     );
-    protected $_properties = array();
+    protected $_properties = [];
     protected $_owner = null;
-    protected $_access = Core::ACCESS_PROTECTED;
-    protected $_behaviors = array();
-    protected $_plugins = array();
-    protected $_events = array();
-    protected $_preloads = array();
+    protected $_access = Core::ACCESS_PUBLIC;
+    protected $_behaviors = [];
+    protected $_plugins = [];
+    protected $_events = [];
+    protected $_preloads = [];
     protected $_viewPath = 'views';
     /* Public */
     
@@ -49,7 +47,7 @@ class GObject
      * @param array $properties
      * @return void
      */
-    protected function __construct(array $properties = array())
+    protected function __construct(array $properties = [])
     {
         foreach($properties as $name => $value)
             $this->$name = $value;
