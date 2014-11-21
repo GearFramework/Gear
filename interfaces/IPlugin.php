@@ -8,7 +8,7 @@ namespace gear\interfaces;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
  */
 interface IPlugin extends IComponent

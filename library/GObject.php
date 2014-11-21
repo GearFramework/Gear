@@ -12,7 +12,7 @@ use \gear\library\GException;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.1.0
+ * @version 1.0.0
  * @since 01.08.2013
  */
 class GObject
@@ -96,6 +96,9 @@ class GObject
         if (preg_match('/^on[A-Z]/', $name))
             $this->attachEvent($name, $value);
         else
+        if ($value instanceof \gear\interfaces\IPlugin)
+            $this->installPlugin($name, $value);
+        else
         if (is_callable($value))
             $this->attachBehavior($name, $value);
         else
@@ -133,6 +136,12 @@ class GObject
             return isset($this->_properties[$name]) ? $this->_properties[$name] : null;
     }
     
+    /**
+     * @access public
+     * @param string $name
+     * @param array $args
+     * @return mixed
+     */
     public function __call($name, $args)
     {
         if (preg_match('/^on[A-Z]/', $name))
@@ -140,16 +149,8 @@ class GObject
             array_unshift($args, $name);
             return call_user_func_array(array($this, 'event'), $args);
         }
-        if (isset($this->_behaviors[$name]) && is_callable($this->_behaviors[$name]))
-            return call_user_func_array($this->_behaviors[$name], $args);
-        else
-        {
-            foreach($this->_behaviors as $b)
-            {
-                if (method_exists($b, $name))
-                    return call_user_func_array(array($b, $name), $args);
-            }
-        }
+        if ($this->isBehavior($name))
+            return call_user_func_array([$this, 'b'], array_merge([$name], $args));
         if ($this->isPluginRegistered($name))
         {
             $p = $this->p($name);
@@ -175,7 +176,7 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        static::e('Method ":methodName" is not exists', array('methodName' => $name));
+        static::e('Static method ":methodName" is not exists', array('methodName' => $name));
     }
     
     /**
@@ -231,10 +232,7 @@ class GObject
      * @access public
      * @return string
      */
-    public function __toString()
-    {
-        return get_class($this);
-    }
+    public function __toString() { return get_class($this); }
 
     /**
      * Установка владельца объекта
@@ -257,18 +255,48 @@ class GObject
      * @acess public
      * @return object
      */
-    public function getOwner()
-    {
-        return $this->_owner;
-    }
+    public function getOwner() { return $this->_owner; }
     
+    /**
+     * Установка уровня доступа к объекту.
+     * По-умолчанию метод принимает одно из значений: 
+     * Core::ACCESS_PUBLIC = 2 - публичный 
+     * Core::ACCESS_PROTECTED = 1 - защищённый и требует проверки прав доступа
+     * Core::ACCESS_PRIVATE = 0 - доступ закрыт для всех кроме владельца $this->_owner
+     * 
+     * @access public
+     * @param integer $access
+     * @return $this
+     * @see \gear\Core
+     */
     public function setAccess($access)
     {
         $this->_properties['access'] = $this->_access = $access;
         return $this;
     }
     
+    /**
+     * Возвращает уровень доступа к объекту
+     * По-умолчанию метод принимает одно из значений: 
+     * Core::ACCESS_PUBLIC|Core::ACCESS_PROTECTED|Core::ACCESS_PRIVATE
+     * 
+     * @access public
+     * @return integer
+     */
     public function getAccess() { return $this->_access; }
+    
+    /**
+     * Установка пути к шаблонам отображения объекта
+     * 
+     * @access public
+     * @param string $path
+     * @return void
+     */
+    public function setViewPath($path)
+    {
+        $this->_viewPath = $path;
+        return $this;
+    }
 
     /**
      * Взовращает путь к шаблонам отображения объекта
@@ -282,16 +310,29 @@ class GObject
     }
     
     /**
-     * Установка пути к шаблонам отображения объекта
+     * Установка списка плагинов, которые необходимо инстанцировать
+     * вместе с созданием объета. Экземпляры плагинов потом будут создаваться
+     * в том порядке, в котором они расположены в списке
      * 
      * @access public
-     * @param string $path
+     * @param array $preloads
      * @return void
      */
-    public function setViewPath($path)
+    public function setPreloads(array $preloads)
     {
-        $this->_viewPath = $path;
-        return $this;
+        $this->_preloads = $preloads;
+    }
+    
+    /**
+     * Получение списка плагинов, требующих инстанцирования одновременно
+     * с созданием объекта
+     * 
+     * @access public
+     * @return array
+     */
+    public function getPreloads()
+    {
+        return $this->_preloads;
     }
 
     /**
@@ -399,17 +440,11 @@ class GObject
      */
     public function b($name)
     {
+        if (!$this->isBehavior($name))
+            $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
         $args = func_get_args();
         array_shift($args);
-        if ($this->isBehavior($name))
-        {
-            if ($this->_behaviors[$name] instanceof \Closure)
-                return call_user_func_array($this->_behaviors[$name], $args);
-            else
-                return $this->_behaviors[$name];
-        }
-        else
-            $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
+        call_user_func_array($this->_behaviors[$name], $args)
     }
     
     /**
@@ -424,32 +459,6 @@ class GObject
         if (isset($this->_behaviors[$name]))
             unset($this->_behaviors[$name]);
         return $this;
-    }
-    
-    /**
-     * Установка списка плагинов, которые необходимо инстанцировать
-     * вместе с созданием объета. Экземпляры плагинов потом будут создаваться
-     * в том порядке, в котором они расположены в списке
-     * 
-     * @access public
-     * @param array $preloads
-     * @return void
-     */
-    public function setPreloads(array $preloads)
-    {
-        $this->_preloads = $preloads;
-    }
-    
-    /**
-     * Получение списка плагинов, требующих инстанцирования одновременно
-     * с созданием объекта
-     * 
-     * @access public
-     * @return array
-     */
-    public function getPreloads()
-    {
-        return $this->_preloads;
     }
     
     /**
@@ -502,17 +511,17 @@ class GObject
         if (isset(self::$_config['plugins'][$name]))
             $plugin = self::$_config['plugins'][$name];
         else
-            $this->e('Plugin ":pluginName" is not registered', array('pluginName' => $name));
+            $this->e('Plugin ":pluginName" is not registered', ['pluginName' => $name]);
         $class = $plugin['class'];
         unset($plugin['class']);
-        $config = array();
+        $config = [];
         if (is_array($class))
         {
             $config = $class;
             $class = $config['name'];
             unset($config['name']);
         }
-        return array($class, $config, $plugin);
+        return [$class, $config, $plugin];
     }
     
     /**
@@ -574,7 +583,7 @@ class GObject
             $event = new GEvent($this);
             array_unshift($args, $event);
         }
-        $result = method_exists($this, $name) ? call_user_func_array(array($this, $name), $args) : true;
+        $result = method_exists($this, $name) ? call_user_func_array([$this, $name], $args) : true;
         if (isset($this->_events[$name]) && $result)
         {
             foreach($this->_events[$name] as $handler)
@@ -662,11 +671,7 @@ class GObject
     {
         $countArgs = func_num_args();
         if (!$countArgs)
-        {
-            return $this instanceof \gear\interfaces\ISchema
-                   ? $this->getSchemaValues()
-                   : $this->_properties;
-        }
+            return $this instanceof \gear\interfaces\ISchema ? $this->getSchemaValues() : $this->_properties;
         else
         if ($countArgs === 1)
         {
@@ -684,7 +689,7 @@ class GObject
                 }
                 else
                 {
-                    $requestProps = array();
+                    $requestProps = [];
                     foreach($name as $propName => $propValue)
                     {
                         if (is_numeric($propName))
@@ -746,7 +751,7 @@ class GObject
      * @param integer $type
      * @return void
      */
-    public static function e($message, array $params = array(), $type = 0)
+    public static function e($message, array $params = [], $type = 0)
     {
         $class = get_called_class();
         $classException = $class . 'Exception';
@@ -786,10 +791,21 @@ class GObject
      */
     public function onConstructed()
     {
-        foreach($this->getPreloads() as $pluginName)
-            $this->p($pluginName);
+        $this->_preloading();
         $this->attachBehaviors($this->getBehaviors());
         return true;
+    }
+    
+    /**
+     * Презагрузка зависимых компонентов объекта
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function _preloading()
+    {
+        foreach($this->getPreloads('plugins') as $pluginName)
+            $this->p($pluginName);
     }
 }
 

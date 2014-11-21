@@ -66,7 +66,7 @@ final class Core
     private static $_events = [];       // Обработчики событий
     private static $_coreMode = null;   // Режим запуска PRODUCTION или DEVELOPMENT
     private static $_runMode = null;    // Окружение: http или консоль
-    private static $_version = '0.0.1'; // Версия ядра
+    private static $_version = '1.0.0'; // Версия ядра
     /* Protected */
     /* Public */
     
@@ -123,14 +123,14 @@ final class Core
      */
     private static function _preloads()
     {
-        foreach(foreach(self::$_config['preloads'] as $section as $preloads)
+/*        foreach(foreach(self::$_config['preloads'] as $section as $preloads)
         {
             
             switch($section)
             {
                 case 'library'
             }
-        }
+        }*/
         /* Подгрузка библиотек */
         foreach(self::$_config['preloads']['library'] as $library)
         {
