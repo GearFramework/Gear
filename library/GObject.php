@@ -444,7 +444,7 @@ class GObject
             $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
         $args = func_get_args();
         array_shift($args);
-        call_user_func_array($this->_behaviors[$name], $args)
+        call_user_func_array($this->_behaviors[$name], $args);
     }
     
     /**

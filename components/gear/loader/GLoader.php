@@ -52,7 +52,7 @@ class GLoader extends GComponent implements ILoader
         else
             $file = GEAR . '/../' . str_replace('\\', '/', $className) . '.php';
         if (!file_exists($file))
-            $this->e('Library of class ":className" not found', array('className' => $className));
+            $this->e('Library ":library" of class ":className" not found', array('library' => $file, 'className' => $className));
         include_once($file);
     }
     
