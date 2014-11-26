@@ -13,7 +13,7 @@ use gear\library\GObject;
  * @version 1.0.0
  * @since 21.11.2014
  */
-class GHtml extends GObject
+class GHtml
 {
     /* Const */
     const IS_TAG = 1;
@@ -22,7 +22,8 @@ class GHtml extends GObject
     const IS_PARAMS = 4;
     const IS_PARAMNAME = 5;
     const IS_PARAMVALUE = 6;
-    const IS_ESCAPE = 7;
+    const IS_ENDPARAM = 7;
+    const IS_ESCAPE = 8;
     const IS_END = 10;
     /* Private */
     private static $_tagMuliValues = ['select'];
@@ -50,7 +51,13 @@ class GHtml extends GObject
             foreach($res[self::IS_CLASS] as $className)
                 $args[1]['class'][] = $className;
         }
-        return call_user_func_array([__CLASS__, $name], $args);
+        if (method_exists(get_called_class(), $name))
+            return call_user_func_array([get_called_class(), $name], $args);
+        else
+        {
+            array_unshift($args, $name);
+            return call_user_func_array([get_called_class(), 'element'], $args);
+        }
     } 
     
     protected static function _prepareSelector($selector, &$return, $offset = 0, $state = self::IS_TAG)
@@ -83,7 +90,7 @@ class GHtml extends GObject
             }
             else
             if ($selector[$offset] === ']')
-                $state = self::IS_END;
+                $state = self::IS_PARAMS;
             else
             if (($selector[$offset] === '=' && $state === self::IS_PARAMNAME) || 
                 ($selector[$offset] === '"' && $state === self::IS_PARAMVALUE)) {}
@@ -119,16 +126,20 @@ class GHtml extends GObject
         }
 	}
     
-    public static function div($content, $attributes = [], $styles = [])
+    protected static function _prepareArguments($attributes, $styles)
     {
         foreach($attributes as $name => &$value)
-        {
-            if (is_array($value))
-                $value = $name . '="' . implode(' ', $value) . '"';
-            else
-                $value = $name . '="' . htmlspecialchars($value) . '"';
-        }
+            $value = $name . '="' . (is_array($value) ? implode(' ', $value) : htmlspecialchars($value)) . '"';
         unset($value);
-        echo '<div' . (!empty($attributes) ? ' ' . implode(' ', $attributes) : '') . '>' . $content . '</div>';
+        foreach($styles as $name => &$value)
+            $value = $name . ': ' . htmlspecialchars($value) . ';';
+        unset($value);
+        return [$attributes, $styles];
+    }
+    
+    public static function element($tag, $content, $attributes = [], $styles = [])
+    {
+        list($attributes, $styles) = static::_prepareArguments($attributes, $styles);
+        echo '<' . $tag . (!empty($attributes) ? ' ' . implode(' ', $attributes) : '') . (!empty($styles) ? ' style="' . implode(' ', $styles) . '"' : '') . '>' . $content . '</div>';
     }
 }

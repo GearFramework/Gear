@@ -489,6 +489,11 @@ final class Core
         }
     }
     
+    public static function attachEvents($eventName, $handler)
+    {
+        self::$_events[$eventName][] = $handler; 
+    }
+    
     /**
      * Получение значений класса, конфигурации и свойств из
      * специально сформированной структуры
