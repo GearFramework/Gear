@@ -21,8 +21,8 @@ abstract class GModule extends GObject implements IModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array();
-    protected $_components = array();
+    protected static $_config = [];
+    protected $_components = [];
     /* Public */
     
     /**

@@ -11,7 +11,7 @@ use \gear\library\GException;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 01.08.2013
  */
 class GModel extends GObject
@@ -21,6 +21,7 @@ class GModel extends GObject
     /* Protected */
     protected $_pk = 'id';
     /* Public */
+    
     /**
      * Конструктор класса
      * Принимает ассоциативный массив свойств объекта и их значений
@@ -44,11 +45,12 @@ class GModel extends GObject
      *
      * @access public
      * @param string $pk
-     * @return void
+     * @return $this
      */
     public function setPk($pk)
     {
         $this->_pk = $pk;
+        return $this;
     }
 
     /**
@@ -57,10 +59,7 @@ class GModel extends GObject
      * @access public
      * @return string
      */
-    public function getPk()
-    {
-        return $this->_pk;
-    }
+    public function getPk() { return $this->_pk; }
 }
 
 /**
@@ -69,7 +68,7 @@ class GModel extends GObject
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 01.08.2013
  */
 class ModelException extends GException
