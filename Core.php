@@ -99,7 +99,7 @@ final class Core
         self::$_coreMode = $coreMode;
         if ($config === null)
             $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
-        if (is_string)
+        if (is_string($config))
         {
             $fileConfig = self::resolvePath($config);
             if (is_dir($fileConfig))
@@ -123,41 +123,32 @@ final class Core
      */
     private static function _preloads()
     {
-/*        foreach(foreach(self::$_config['preloads'] as $section as $preloads)
+        foreach(self::$_config['preloads'] as $section => $preloads)
         {
-            
-            switch($section)
+            foreach($preloads as $preloadName => $preload)
             {
-                case 'library'
+                switch($section)
+                {
+                    case 'library' :
+                    {
+                        $pathFile = self::resolvePath($preload) . '.php';
+                        if (!file_exists($pathFile))
+                            self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
+                        require($pathFile);
+                        break;
+                    }
+                    case 'modules' :
+                    case 'components' :
+                    {
+                        list($class, $config, $properties) = self::getRecords($preload);
+                        $pathFile = self::resolvePath($class) . '.php';
+                        if (!file_exists($pathFile))
+                            self::e('File ":preloadName" not found', array('preloadName' => $preloadName));
+                        require($pathFile);
+                        self::${'_' . $section}[$preloadName] = $class::install($config, $properties);
+                    }
+                }
             }
-        }*/
-        /* Подгрузка библиотек */
-        foreach(self::$_config['preloads']['library'] as $library)
-        {
-            $pathFile = self::resolvePath($library) . '.php';
-            if (!file_exists($pathFile))
-                self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
-            require($pathFile);
-        }
-        /* Подгрузка и установка модулей */
-        foreach(self::$_config['preloads']['modules'] as $name => $module)
-        {
-            list($class, $config, $properties) = self::getRecords($module);
-            $pathFile = self::resolvePath($class) . '.php';
-            if (!file_exists($pathFile))
-                self::e('File ":moduleName" not found', array('moduleName' => $name));
-            require($pathFile);
-            self::$_modules[$name] = $class::install($config, $properties);
-        }
-        /* Подгрузка и установка компонентов */
-        foreach(self::$_config['preloads']['components'] as $name => $component)
-        {
-            list($class, $config, $properties) = self::getRecords($component);
-            $pathFile = self::resolvePath($class) . '.php';
-            if (!file_exists($pathFile))
-                self::e('File ":componentName" not found', array('componentName' => $name));
-            require($pathFile);
-            self::$_components[$name] = $class::install($config, $properties);
         }
         return true;
     }
@@ -479,19 +470,50 @@ final class Core
         return $class::install($config, $properties, $owner);
     }
     
-    public static function event($name)
+    /**
+     * генерация события
+     * 
+     * @access public
+     * @static
+     * @param string $name
+     * @param object $event
+     * @return void
+     */
+    public static function event($name, $event)
     {
+        $result = false;
         if (isset(self::$_events[$name]))
         {
             $args = func_get_args();
             array_shift($args);
-            call_user_func_array(self::$_events[$name], $args);
+            if (!$event)
+                $args[0] = new \gear\library\GEvent(null);
+            foreach(self::$_events[$name] as $handler)
+            {
+                $result = call_user_func_array($handler, $args);
+                if ($result instanceof \gear\library\GEvent && 
+                    $result->stopPropagation === true)
+                    break;
+            }
         }
+        return $result;
     }
     
+    /**
+     * Добавление обработчика события
+     * 
+     * @access public
+     * @static
+     * @param string $eventName
+     * @param mixed $handler callable value
+     * @return boolean
+     */
     public static function attachEvents($eventName, $handler)
     {
-        self::$_events[$eventName][] = $handler; 
+        if (!is_callable($handler))
+            self::e('Invalid handler of event ":eventName"', ['eventName' => $eventName]);
+        self::$_events[$eventName][] = $handler;
+        return true;
     }
     
     /**
@@ -568,7 +590,10 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function getMode() { return self::$_runMode ? self::$_runMode : (self::$_runMode = php_sapi_name() === 'cli' ? self::CLI : self::HTTP); }
+    public static function getMode() 
+    { 
+        return self::$_runMode ? self::$_runMode : (self::$_runMode = php_sapi_name() === 'cli' ? self::CLI : self::HTTP); 
+    }
     
     /**
      * Возвращает true если приложение запущено из браузера, иначе false
@@ -610,7 +635,7 @@ final class Core
      * @throws \Exception|\gear\CoreException
      * @return void
      */
-    public static function e($message, array $params = array())
+    public static function e($message, array $params = [])
     {
         if (!class_exists('\gear\CoreException', false))
         {

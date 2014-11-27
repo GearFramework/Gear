@@ -162,7 +162,7 @@ class GObject
             array_unshift($args, $this);
             return call_user_func_array(array($this->_owner, $name), $args);
         }
-        $this->e('Method ":methodName" is not exists', array('methodName' => $name));
+        $this->e('Method ":methodName" is not exists', ['methodName' => $name]);
     }
     
     /**
@@ -176,7 +176,7 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        static::e('Static method ":methodName" is not exists', array('methodName' => $name));
+        static::e('Static method ":methodName" is not exists', ['methodName' => $name]);
     }
     
     /**
@@ -422,7 +422,7 @@ class GObject
         if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
             $this->_behaviors[$name] = $behavior->setOwner($this);
         else
-            $this->e('Behavior ":behaviorName" is not correct', array('behaviorName' => $name));
+            $this->e('Behavior ":behaviorName" is not correct', ['behaviorName' => $name]);
         return $this;
     }
     
@@ -441,7 +441,7 @@ class GObject
     public function b($name)
     {
         if (!$this->isBehavior($name))
-            $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
+            $this->e('Behavior ":behaviorName" is not exists', ['behaviorName' => $name]);
         $args = func_get_args();
         array_shift($args);
         call_user_func_array($this->_behaviors[$name], $args);
@@ -562,7 +562,7 @@ class GObject
     public function attachEvent($name, $handler)
     {
         if (!is_callable($handler))
-            $this->e('Incorrect handler of event ":eventName"', array('eventName' => $name));
+            $this->e('Incorrect handler of event ":eventName"', ['eventName' => $name]);
         $this->_events[$name][] = $handler;
         return $this;
     }

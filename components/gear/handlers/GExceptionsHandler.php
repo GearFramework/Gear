@@ -57,7 +57,7 @@ class GExceptionsHandler extends GComponent
     {
         try
         {
-            if (Core::isHttp())
+            if (Core::isHttp() && !empty(ob_get_status()))
                 ob_end_clean();
             $this->view->render
             (
