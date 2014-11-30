@@ -20,5 +20,5 @@ interface IFactory
      * @param array $properties
      * @return object
      */
-    public function factory(array $properties = array());
+    public function factory(array $properties = []);
 }
