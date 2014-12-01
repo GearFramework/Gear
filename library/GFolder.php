@@ -4,20 +4,14 @@ namespace gear\library;
 use gear\Core;
 use gear\library\GFileSystem;
 use gear\library\GException;
-use gear\interfaces\IFactory;
 
-class GFolder extends GFileSystem implements \Iterator, IFactory
+class GFolder extends GFileSystem implements \Iterator
 {
     /* Const */
     /* Private */
     /* Protected */
     protected $_current = null;
     protected $_filter = '*';
-    protected $_factoryItem = 
-    [
-        'file' => ['class' => '\gear\library\GFile'],
-        'folder' => ['class' => '\gear\library\GFolder'],
-    ]
     /* Public */
     
     public function setFilter($filter)
@@ -46,18 +40,6 @@ class GFolder extends GFileSystem implements \Iterator, IFactory
     }
     
     public function valid() { return is_object($this->_current); }
-    
-    public function factory(array $properties = [])
-    {
-        if (isset($properties['path']))
-        {
-            $type = is_dir($properties['path']) ? 'folder' : 'file';
-            $properties = array_merge($this->_factoryItem[$type], $properties);
-            list($class, $config, $properties) = Core::getRecords($properties);
-            return new $class($properties);
-        }
-        $this->e('Invalid item');
-    }
     
     public function open() { $this->_handler = opendir($this->path); }
     
