@@ -2,10 +2,20 @@
 
 namespace gear\library;
 use gear\Core;
-use gear\library\GObject;
+use gear\library\GModel;
 use gear\library\GException;
 
-abstract class GIo extends GObject
+/**
+ * Абстрактный класс ввода/вывода
+ * 
+ * @package Gear Framework
+ * @abstract
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis
+ * @version 1.0.0
+ * @since 30.11.2014
+ */
+abstract class GIo extends GModel
 {
     /* Const */
     const UNKNOWN = 0;
@@ -29,18 +39,71 @@ abstract class GIo extends GObject
         self::LINK => 'link',
         self::FILE => 'file',
         self::SOCKET => 'socket',
-    ]
+    ];
     /* Public */
+    
+    /**
+     * Закрывает ввод/вывод при уничтожении объекта
+     * 
+     * @access public
+     * @return void
+     */
+    public function __destruct()
+    {
+        if ($this->isOpened())
+            $this->close();
+    }
+    
+    /**
+     * Возвращает true если ввод/ввывод открыт
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isOpened() { return $this->_handler ? true : false; }
 
+    /**
+     * Открытие ввода/вывода
+     * 
+     * @access public
+     * @return void
+     */
     abstract public function open();
 
+    /**
+     * Чтение
+     * 
+     * @access public
+     * @return void
+     */
     abstract public function read();
 
+    /**
+     * Запись
+     * 
+     * @access public
+     * @return void
+     */
     abstract public function write();
 
+    /**
+     * Закрытие ввода/вывода
+     * 
+     * @access public
+     * @return void
+     */
     abstract public function close();
 }
 
+/**
+ * Исключения операций ввода/вывода
+ * 
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis
+ * @version 1.0.0
+ * @since 30.11.2014
+ */
 class IoException extends GException
 {
     /* Const */

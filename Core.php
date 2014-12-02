@@ -59,7 +59,7 @@ final class Core
         ],
         'modules' => [],
         'components' => [],
-        'params' => ['baseDir' => GEAR],
+        'params' => ['baseDir' => GEAR, 'locale' => 'ru_RU'],
     ];
     private static $_modules = [];      // Подключенные модули
     private static $_components = [];   // Подключённые компоненты

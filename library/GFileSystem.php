@@ -24,9 +24,9 @@ abstract class GFileSystem extends GIo implements IFactory
     protected $_factoryItem = 
     [
         'file' => ['class' => '\gear\library\GFile'],
-        'folder' => ['class' => '\gear\library\GFolder'],
+        'dir' => ['class' => '\gear\library\GFolder'],
         'link' => ['class' => '\gear\library\GLink'],
-    ]
+    ];
     /* Public */
     
     /**
@@ -49,7 +49,7 @@ abstract class GFileSystem extends GIo implements IFactory
     {
         if (isset($properties['path']))
         {
-            $type = $this->type();
+            $type = filetype($properties['path']);
             $properties = array_merge($this->_factoryItem[$type], $properties);
             list($class, $config, $properties) = Core::getRecords($properties);
             return new $class($properties);
@@ -71,6 +71,14 @@ abstract class GFileSystem extends GIo implements IFactory
      * @access public
      * @return string
      */
+    public function getBasename() { return $this->basename(); }
+    
+    /**
+     * Возвращает имя элемента файловой системы (имя+расширение)
+     * 
+     * @access public
+     * @return string
+     */
     public function basename() { return basename($this->path); }
     
     /**
@@ -79,7 +87,24 @@ abstract class GFileSystem extends GIo implements IFactory
      * @access public
      * @return string
      */
+    public function getName() { return $this->name(); }
+    
+    /**
+     * Возвращает имя элемента файловой системы без расширения
+     * 
+     * @access public
+     * @return string
+     */
     public function name() { return pathinfo($this->path, PATHINFO_FILENAME); }
+    
+    /**
+     * Возвращает расширение элемента файловой системы
+     * 
+     * @access public
+     * @return string
+     * @see \gear\library\GFileSystem::ext();
+     */
+    public function getExtension() { return $this->extension(); }
     
     /**
      * Возвращает расширение элемента файловой системы
@@ -104,12 +129,29 @@ abstract class GFileSystem extends GIo implements IFactory
      * @access public
      * @return object
      */
+    public function getDirname() { return $this->dirname(); }
+    
+    /**
+     * Возвращает объект GFolder в котором находится текущий элемент
+     * 
+     * @access public
+     * @return object
+     */
     public function dirname() {  return dirname($this->path); }
     
     /**
      * Возвращает экземпляр класса GFodler
      * 
-     * @return
+     * @access public
+     * @return object
+     */
+    public function getDir() { return $this->dir(); }
+    
+    /**
+     * Возвращает экземпляр класса GFodler
+     * 
+     * @access public
+     * @return object
      */
     public function dir() { return $this->factory(['path' => $this->dirname()]); }
     
@@ -183,19 +225,56 @@ abstract class GFileSystem extends GIo implements IFactory
     /**
      * Возвращает размер элемента
      * 
+     * @access public
+     * @return integer
+     */
+    public function size($format = null, $force = '') 
+    {
+        $size = $this->getSize();
+        return $format ? $this->_formatSize($format, $size, $force) : $size; 
+    }
+    
+    /**
+     * Форматирует значение размера элемента'
+     * 
+     * @access public
+     * @param string $format
+     * @param integer $size
+     * @return void
+     */
+    protected function _formatSize($format, $bytes, $force)
+    {
+        $force = strtoupper($force);
+        $defaultFormat = '%01d %s';
+        if (!$format) 
+            $format = '%01d %s';
+        $bytes = max(0, (int) $bytes);
+        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        $power = array_search($force, $units);
+        if ($power === false) $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
+        return sprintf($format, $bytes / pow(1024, $power), $units[$power]);
+    
+        $filesizename = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        $i = floor(log($size, 1024));
+        return $size ? round($size/pow(1024, $i), 2) . $filesizename[$i] : '0 ' . $filesizename[0];            
+    }
+
+    /**
+     * Возвращает размер элемента в байтах
+     * 
      * @abstract
      * @access public
      * @return integer
      */
-    abstract public function size();
-
+    abstract public function getSize();
+    
     /**
      * Копирует текущий элемент в указанное место
      * 
      * @abstract
      * @access public
      * @param string|object $dest
-     * @return integer
+     * @return object
      */
     abstract public function copy($dest);
     
@@ -205,7 +284,7 @@ abstract class GFileSystem extends GIo implements IFactory
      * @abstract
      * @access public
      * @param string|object $dest
-     * @return integer
+     * @return object
      */
     abstract public function rename($dest);
     
@@ -214,7 +293,7 @@ abstract class GFileSystem extends GIo implements IFactory
      * 
      * @abstract
      * @access public
-     * @return void
+     * @return null
      */
     abstract public function remove();
 }

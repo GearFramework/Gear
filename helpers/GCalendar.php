@@ -52,7 +52,7 @@ class GCalendar extends GObject
     public function factory(array $properties, $class = null)
     {
         list($class, $config, $defaultProperties) = Core::getRecords($this->_factoryItem);
-        return new $class(array_merge($defaultProperties, $properties, array('owner' => $this)));
+        return new $class(array_merge($defaultProperties, $properties, ['owner' => $this]));
     }
     
     /**
@@ -63,7 +63,7 @@ class GCalendar extends GObject
      */
     public function now()
     {
-        return $this->factory(array('timestamp' => time()));
+        return $this->factory(['timestamp' => time()]);
     }
     
     /**
@@ -74,7 +74,7 @@ class GCalendar extends GObject
      */
     public function tomorrow()
     {
-        return $this->factory(array('timestamp' => strtotime('+1 day')));
+        return $this->factory(['timestamp' => strtotime('+1 day')]);
     }
     
     /**
@@ -85,7 +85,7 @@ class GCalendar extends GObject
      */
     public function yesterday()
     {
-        return $this->factory(array('timestamp' => strtotime('-1 day')));
+        return $this->factory(['timestamp' => strtotime('-1 day')]);
     }
 
     /**
@@ -230,7 +230,7 @@ class GCalendar extends GObject
     {
         if (!is_object($date) && !is_numeric($date))
             $date = strtotime($date);
-        return $this->_current = is_object($date) ? $date : $this->factory(array('timestamp' => $date));
+        return $this->_current = is_object($date) ? $date : $this->factory(['timestamp' => $date]);
     }
     
     /**
@@ -244,7 +244,7 @@ class GCalendar extends GObject
     public function getDate($date = null) 
     {
         if ($date)
-            return $this->factory(array('timestamp' => !is_numeric($date) ? strtotime($date) : $date));
+            return $this->factory(['timestamp' => !is_numeric($date) ? strtotime($date) : $date]);
         else
             return $this->_current; 
     }
@@ -283,7 +283,7 @@ class GCalendar extends GObject
      */
     public function addDays($date = null, $days = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $days * self::SECONDS_PER_DAY));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $days * self::SECONDS_PER_DAY]);
     }
 
     /**
@@ -297,7 +297,7 @@ class GCalendar extends GObject
      */
     public function subDays($date = null, $days)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $days * self::SECONDS_PER_DAY));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $days * self::SECONDS_PER_DAY]);
     }
 
     /**
@@ -350,7 +350,7 @@ class GCalendar extends GObject
      */
     public function addMonths($date = null, $months = 0)
     {
-        return $this->factory(array('timestamp' => strtotime('+' . (int)$months . ' month', $date ? $date->timestamp : $this->_current->timestamp)));
+        return $this->factory(['timestamp' => strtotime('+' . (int)$months . ' month', $date ? $date->timestamp : $this->_current->timestamp)]);
     }
 
     /**
@@ -363,7 +363,7 @@ class GCalendar extends GObject
      */
     public function subMonths($date = null, $months = 0)
     {
-        return $this->factory(array('timestamp' => strtotime('-' . (int)$months . ' month', $date ? $date->timestamp : $this->_current->timestamp)));
+        return $this->factory(['timestamp' => strtotime('-' . (int)$months . ' month', $date ? $date->timestamp : $this->_current->timestamp)]);
     }
 
     /**
@@ -404,7 +404,7 @@ class GCalendar extends GObject
         if (!$date)
             $date = $this->_current;
         $date = $date->setYear($date->year + $years);
-        return $this->factory(array('timestamp' => $date->timestamp));
+        return $this->factory(['timestamp' => $date->timestamp]);
     }
 
     /**
@@ -420,7 +420,7 @@ class GCalendar extends GObject
         if (!$date)
             $date = $this->_current;
         $date = $date->setYear($date->year - $years);
-        return $this->factory(array('timestamp' => $date->timestamp));
+        return $this->factory(['timestamp' => $date->timestamp]);
     }
 
     /**
@@ -456,7 +456,7 @@ class GCalendar extends GObject
      */
     public function addHours($date = null, $hours = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $hours * self::SECONDS_PER_HOUR));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $hours * self::SECONDS_PER_HOUR]);
     }
 
     /**
@@ -469,7 +469,7 @@ class GCalendar extends GObject
      */
     public function subHours($date = null, $hours = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $hours * self::SECONDS_PER_HOUR));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $hours * self::SECONDS_PER_HOUR]);
     }
 
     /**
@@ -505,7 +505,7 @@ class GCalendar extends GObject
      */
     public function addMinutes($date = null, $minutes = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $minutes * self::SECONDS_PER_MINUTE));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $minutes * self::SECONDS_PER_MINUTE]);
     }
 
     /**
@@ -518,7 +518,7 @@ class GCalendar extends GObject
      */
     public function subMinutes($date = null, $minutes = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $minutes * self::SECONDS_PER_MINUTE));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $minutes * self::SECONDS_PER_MINUTE]);
     }
 
     /**
@@ -554,7 +554,7 @@ class GCalendar extends GObject
      */
     public function addSeconds($date = null, $seconds = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $seconds));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $seconds]);
     }
 
     /**
@@ -567,7 +567,7 @@ class GCalendar extends GObject
      */
     public function subSeconds($date = null, $seconds = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $seconds));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $seconds]);
     }
     
     /**
@@ -580,7 +580,7 @@ class GCalendar extends GObject
      */
     public function addWeeks($date = null, $weeks = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $weeks * 7 * self::SECONDS_PER_DAY));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $weeks * 7 * self::SECONDS_PER_DAY]);
     }
     
     /**
@@ -593,7 +593,7 @@ class GCalendar extends GObject
      */
     public function subWeeks($date = null, $weeks = 0)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $weeks * 7 * self::SECONDS_PER_DAY));
+        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $weeks * 7 * self::SECONDS_PER_DAY]);
     }
     
     /**
@@ -697,7 +697,7 @@ class GCalendar extends GObject
         $firstDayOfweek = (int)$class::getFirstNumberDayOfWeek();
         $dayOfWeek = (int)$class::getNumberDayOfWeek($timestamp);
         if ($firstDayOfweek >= $dayOfWeek)
-            return $date ? $date : $this->factory(array('timestamp' => $timestamp));
+            return $date ? $date : $this->factory(['timestamp' => $timestamp]);
         else
         if ($firstDayOfweek < $dayOfWeek)
             return $this->subDays($date, $dayOfWeek - $firstDayOfweek);
@@ -718,7 +718,7 @@ class GCalendar extends GObject
         $lastDayOfweek = (int)$class::getLastNumberDayOfWeek();
         $dayOfWeek = (int)$class::getNumberDayOfWeek($timestamp);
         if ($lastDayOfweek <= $dayOfWeek)
-            return $date ? $date : $this->factory(array('timestamp' => $timestamp));
+            return $date ? $date : $this->factory(['timestamp' => $timestamp]);
         else
         if ($lastDayOfweek > $dayOfWeek)
             return $this->addDays($date, $lastDayOfweek - $dayOfWeek);
@@ -734,7 +734,7 @@ class GCalendar extends GObject
      */
     public function getFirstDateOfMonth($date = null)
     {
-        return $this->factory(array('timestamp' => $this->_createDate($date ? $date : $this->_current, null, null, null, null, 1)));
+        return $this->factory(['timestamp' => $this->_createDate($date ? $date : $this->_current, null, null, null, null, 1)]);
     }
     
     /**
@@ -748,7 +748,7 @@ class GCalendar extends GObject
     {
         if (!$date)
             $date = $this->_current;
-        return $this->factory(array('timestamp' => $this->_createDate($date, null, null, null, null, date('t', $date->timestamp))));
+        return $this->factory(['timestamp' => $this->_createDate($date, null, null, null, null, date('t', $date->timestamp))]);
     }
     
     /**
@@ -793,7 +793,7 @@ class GCalendar extends GObject
     public function getDatesOfWeek($date = null)
     {
         $date = $this->getFirstDateOfWeek($date);
-        $dates = array();
+        $dates = [];
         foreach($this->getDaysOfWeek($date) as $day)
         {
             $dates[] = $date;
@@ -812,7 +812,7 @@ class GCalendar extends GObject
     public function getDatesOfMonth($date = null)
     {
         $date = $this->getFirstDateOfMonth($date);
-        $dates = array($date);
+        $dates = [$date];
         $countDays = $this->getCountDaysInMonth($date);
         for($day = 2; $day <= $countDays; ++ $day)
             $dates[] = $date = $date->addDays(1);
@@ -829,7 +829,7 @@ class GCalendar extends GObject
     public function getDatesOfYear($date = null)
     {
         $date = $this->getFirstDateOfYear($date);
-        $dates = array($date);
+        $dates = [$date];
         $countDays = $this->getCountDaysInYear($date);
         for($day = 2; $day <= $countDays; ++ $day)
             $dates[] = $date = $date->addDays(1);
@@ -851,15 +851,15 @@ class GCalendar extends GObject
         if (!is_object($to)) $to = $this->getDate($to);
         $operation = $from->timestamp <= $to->timestamp ? 'add' : 'sub';
         if ($step && preg_match('/^(\d+)\s(\w+)$/', $step, $founds))
-            $method = array($this, $operation . ucfirst($founds[2]) . 's', $founds[1]);
+            $method = [$this, $operation . ucfirst($founds[2]) . 's', $founds[1]];
         else
-            $method = array($this, $operation . 'Days', 1);
+            $method = [$this, $operation . 'Days', 1];
         $stop = false;
-        $dates = array($from);
+        $dates = [$from];
         $date = $from;
         while(!$stop)
         {
-            $date = call_user_func(array($method[0], $method[1]), $date, $method[2]);
+            $date = call_user_func([$method[0], $method[1]), $date, $method[2]];
             if (($from->timestamp <= $to->timestamp && $date->timestamp < $to->timestamp) ||
                 ($from->timestamp > $to->timestamp && $date->timestamp > $to->timestamp))
                 $dates[] = $date;
@@ -890,7 +890,7 @@ class GCalendar extends GObject
             $dateTwo = $this->getDate($dateTwo);
         $less = $more = $dateOne;
         $dateOne->timestamp < $dateTwo->timestamp ? $more = $dateTwo : $less = $dateTwo;
-        $diff = array($more->year - $less->year, 0, 0, 0, 0, 0);
+        $diff = [$more->year - $less->year, 0, 0, 0, 0, 0];
         $subs = function($index, &$diff) use (&$subs)
         {
             if ($diff[$index])

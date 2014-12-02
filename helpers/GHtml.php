@@ -140,6 +140,6 @@ class GHtml
     public static function element($tag, $content, $attributes = [], $styles = [])
     {
         list($attributes, $styles) = static::_prepareArguments($attributes, $styles);
-        echo '<' . $tag . (!empty($attributes) ? ' ' . implode(' ', $attributes) : '') . (!empty($styles) ? ' style="' . implode(' ', $styles) . '"' : '') . '>' . $content . '</div>';
+        echo '<' . $tag . (!empty($attributes) ? ' ' . implode(' ', $attributes) : '') . (!empty($styles) ? ' style="' . implode(' ', $styles) . '"' : '') . '>' . $content . '</' . $tag . '>';
     }
 }

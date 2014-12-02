@@ -8,7 +8,7 @@ namespace gear\helpers\locales;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 27.05.2014
  */
 class en_EN
@@ -19,25 +19,24 @@ class en_EN
     const ONE_MIN_PAST = 2;
     const MIN_PAST = 3;
     /* Private */
-    private static $_human = array
-    (
-    );
-    private static $_data = array
-    (
-        'month' => array
-        (
-            'short' => array(1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sen', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'),
-            'full' => array(1 => array('January', 'January'), 2 => array('February', 'February'), 3 => array('March', 'March'), 4 => array('April', 'April'), 5 => array('May', 'May'), 6 => array('Juny', 'Juny'), 7 => array('July', 'July'), 8 => array('August', 'August'), 9 => array('September', 'September'), 10 => array('October', 'October'), 11 => array('November', 'November'), 12 => array('December', 'December')),
-        ),
-        'week' => array
-        (
-            'short' => array(0 => 'Su', 1 => 'Mo', 2 => 'Tu', 3 => 'We', 4 => 'Th', 5 => 'Fr', 6 => 'Sa'),
-            'full' => array(0 => 'Sunday', 1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday'),
-        ),
-    );
     /* Protected */
+    protected static $_human = [];
+    protected static $_data = 
+    [
+        'month' => 
+        [
+            'short' => [1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sen', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'],
+            'full' => [1 => ['January', 'January'], 2 => ['February', 'February'], 3 => ['March', 'March'], 4 => ['April', 'April'], 5 => ['May', 'May'], 6 => ['Juny', 'Juny'], 7 => ['July', 'July'], 8 => ['August', 'August'], 9 => ['September', 'September'], 10 => ['October', 'October'], 11 => ['November', 'November'], 12 => ['December', 'December']],
+        ],
+        'week' =>
+        [
+            'short' => [0 => 'Su', 1 => 'Mo', 2 => 'Tu', 3 => 'We', 4 => 'Th', 5 => 'Fr', 6 => 'Sa'],
+            'full' => [0 => 'Sunday', 1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday'],
+        ],
+    ];
+    protected static $_sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
     /* Public */
-    public static $registerTokens = array('d', 'D', 'j', 'l', 'M', 'F', 'w');
+    public static $registerTokens = ['d', 'D', 'j', 'l', 'M', 'F', 'w'];
 
     /**
      * Получение локализованных значений элементов шаблона даты

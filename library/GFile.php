@@ -6,7 +6,7 @@ use gear\library\GFileSystem;
 use gear\library\GException;
 
 /**
- * Обычный файл
+ * Файл
  * 
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -22,22 +22,108 @@ class GFile extends GFileSystem
     /* Public */
     
     /**
-     * Возвращает размер элемента
+     * Открытие файла
      * 
-     * @abstract
+     * @access public
+     * @param string $mode
+     * @param boolean $useIncludePath
+     * @param null|resource $context
+     * @return $this
+     */
+    public function open($mode = 'r', $useIncludePath = false, $context = null)
+    {
+        if ($this->_handler)
+            $this->close();
+        $this->_handler = @fopen($mode, $useIncludePath, $context);
+        if (!$this->_handler)
+            $this->e('Cannot open file :fileName', ['fileName' => $this->path]);
+        return $this;
+    }
+    
+    /**
+     * Чтение из файла
+     * 
+     * @access public
+     * @param null|integer $length
+     * @return mixed
+     */
+    public function read($length = null)
+    {
+        if (!$this->_handler)
+            $this->open();
+        return fread($this->_handler, $length);
+    }
+    
+    /**
+     * Запись в файл
+     * 
+     * @access public
+     * @param integer|string|object $data
+     * @return 
+     */
+    public function write($data = '')
+    {
+        if (!$this->_handler)
+            $this->open('a+');
+        if (is_array($data) || is_object($data))
+            $data = serialize($data);
+        return fwrite($this->_handler, $data);
+    }
+    
+    /**
+     * Закрытие файла
+     * 
+     * @access public
+     * @return $this
+     */
+    public function close()
+    {
+        if ($this->_handler)
+            fclose($this->_handler);
+        return $this;
+    }
+    
+    /**
+     * Возвращает размер элемента в байтах
+     * 
      * @access public
      * @return integer
      */
-    public function size($format = null) 
-    { 
-        if ($format)
-        {
-            $filesizename = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-            return $size
-            ? round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i]
-            : '0 ' . $filesizename[0];            
-        }
-        return filesize($this->path); 
+    public function getSize() { return (int)filesize($this->path()); }
+    
+    /**
+     * Копирует файл в указанное место
+     * 
+     * @access public
+     * @param string|object $dest
+     * @return object
+     */
+    public function copy($dest)
+    {
+        
+    }
+    
+    /**
+     * Переименование/перемещение файла
+     * 
+     * @access public
+     * @param string|object $dest
+     * @return object
+     */
+    public function rename($dest)
+    {
+        
+    }
+    
+    /**
+     * Удаление файла
+     * 
+     * @access public
+     * @return null
+     */
+    public function remove()
+    {
+        
     }
 }
 
