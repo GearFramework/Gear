@@ -36,7 +36,7 @@ class GFile extends GFileSystem
             $this->close();
         $this->_handler = @fopen($mode, $useIncludePath, $context);
         if (!$this->_handler)
-            $this->e('Cannot open file :fileName', ['fileName' => $this->path]);
+            $this->e('Can not open file :fileName', ['fileName' => $this->path]);
         return $this;
     }
     
@@ -82,6 +82,14 @@ class GFile extends GFileSystem
             fclose($this->_handler);
         return $this;
     }
+
+    /**
+     * Возвращает true, если элемент пустой
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isEmpty() { return !$this->getSize(); }
     
     /**
      * Возвращает размер элемента в байтах
@@ -89,7 +97,7 @@ class GFile extends GFileSystem
      * @access public
      * @return integer
      */
-    public function getSize() { return (int)filesize($this->path()); }
+    public function getSize() { return filesize($this->path()); }
     
     /**
      * Копирует файл в указанное место
@@ -98,9 +106,14 @@ class GFile extends GFileSystem
      * @param string|object $dest
      * @return object
      */
-    public function copy($dest)
+    public function copy($dest, $permission = null)
     {
-        
+        if ((file_exists($dest) && !is_writable($dest)) || !is_writable(dirname($dest)))
+            $this->e('Can not copy file :fileName to :destName', ['fileName' => $this->path, 'destName' => $dest]);
+        copy($this, $dest);
+        if ($permission !== null)
+            @chmod($dest, $permission);
+        return GFileSystem::factory(['path' => $dest]);
     }
     
     /**
@@ -110,9 +123,14 @@ class GFile extends GFileSystem
      * @param string|object $dest
      * @return object
      */
-    public function rename($dest)
+    public function rename($dest, $permission = null)
     {
-        
+        if ((file_exists($dest) && !is_writable($dest)) || !is_writable(dirname($dest)))
+            $this->e('Can not rename file :fileName to :destName', ['fileName' => $this->path, 'destName' => $dest]);
+        rename($this, $dest);
+        if ($permission !== null)
+            @chmod($dest, $permission);
+        return GFileSystem::factory(['path' => $dest]);
     }
     
     /**
@@ -123,7 +141,9 @@ class GFile extends GFileSystem
      */
     public function remove()
     {
-        
+        if (!$this->isWritable())
+            $this->e('Can not remove file :fileName', ['fileName' => $this->path]);
+        return unlink($this->path);
     }
 }
 

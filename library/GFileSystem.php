@@ -4,7 +4,7 @@ namespace gear\library;
 use gear\Core;
 use gear\library\GIo;
 use gear\library\GException;
-use gear\interfaces\IFactory;
+use gear\interfaces\IStaticFactory;
 
 /**
  * Абстрактный класс элементов файловой системы
@@ -16,12 +16,12 @@ use gear\interfaces\IFactory;
  * @version 1.0.0
  * @since 30.11.2014
  */
-abstract class GFileSystem extends GIo implements IFactory
+abstract class GFileSystem extends GIo implements IStaticFactory
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected $_factoryItem = 
+    protected static $_factoryItem = 
     [
         'file' => ['class' => '\gear\library\GFile'],
         'dir' => ['class' => '\gear\library\GFolder'],
@@ -38,6 +38,26 @@ abstract class GFileSystem extends GIo implements IFactory
     public function __toString() { return $this->path; }
     
     /**
+     * Создание экземляров элементов файловой системы
+     * 
+     * @access public
+     * @static
+     * @param string $name
+     * @param array $args
+     * @return object
+     * @example GFileSystem::{'/var/www'}();
+     * @example GFileSystem::{'/var/www/index.php'}();
+     */
+    public static function __callStatic($name, $args)
+    {
+        return self::factory(
+        [
+            'path' => $name, 
+            'filename' => basename($name)
+        ]);
+    }
+    
+    /**
      * Фабркиа элементов файловой системы
      * 
      * @access public
@@ -45,12 +65,12 @@ abstract class GFileSystem extends GIo implements IFactory
      * @throw FileSystemException
      * @return object
      */
-    public function factory(array $properties = [])
+    public static function factory(array $properties = [])
     {
         if (isset($properties['path']))
         {
             $type = filetype($properties['path']);
-            $properties = array_merge($this->_factoryItem[$type], $properties);
+            $properties = array_merge(self::$_factoryItem[$type], $properties);
             list($class, $config, $properties) = Core::getRecords($properties);
             return new $class($properties);
         }
@@ -124,7 +144,7 @@ abstract class GFileSystem extends GIo implements IFactory
     public function extension() { return pathinfo($this->path, PATHINFO_EXTENSION); }
     
     /**
-     * Возвращает объект GFolder в котором находится текущий элемент
+     * Возвращает директорию в которой находится текущий элемент
      * 
      * @access public
      * @return object
@@ -132,7 +152,7 @@ abstract class GFileSystem extends GIo implements IFactory
     public function getDirname() { return $this->dirname(); }
     
     /**
-     * Возвращает объект GFolder в котором находится текущий элемент
+     * Возвращает директорию в которой находится текущий элемент
      * 
      * @access public
      * @return object
@@ -223,6 +243,30 @@ abstract class GFileSystem extends GIo implements IFactory
     public function isLink() { return is_link($this->path); }
     
     /**
+     * Возвращает true если элемент доступен для чтения
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isReadable() { return is_readable($this->path); }
+    
+    /**
+     * Возвращает true если элемент доступен для записи
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isWritable() { return is_writable($this->path); }
+    
+    /**
+     * Возвращает true если элемент доступен для запуска
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isExecutable() { return is_executable($this->path); }
+    
+    /**
      * Возвращает размер элемента
      * 
      * @access public
@@ -231,7 +275,7 @@ abstract class GFileSystem extends GIo implements IFactory
     public function size($format = null, $force = '') 
     {
         $size = $this->getSize();
-        return $format ? $this->_formatSize($format, $size, $force) : $size; 
+        return $this->_formatSize($format, $size, $force); 
     }
     
     /**
@@ -258,6 +302,15 @@ abstract class GFileSystem extends GIo implements IFactory
         $i = floor(log($size, 1024));
         return $size ? round($size/pow(1024, $i), 2) . $filesizename[$i] : '0 ' . $filesizename[0];            
     }
+    
+    /**
+     * Возвращает true, если элемент пустой
+     * 
+     * @abstract
+     * @access public
+     * @return void
+     */
+    abstract public function isEmpty();
 
     /**
      * Возвращает размер элемента в байтах
