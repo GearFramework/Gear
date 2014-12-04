@@ -102,9 +102,10 @@ class GFolder extends GFileSystem implements \Iterator
      */
     public function rewind()
     {
-        if ($this->_handler)
-            $this->close();
-        $this->open();
+        if (!$this->_handler)
+            $this->open();
+        else
+            rewinddir($this->_handler);
         $this->read();
     }
     
@@ -247,34 +248,39 @@ class GFolder extends GFileSystem implements \Iterator
     public function remove($removeIfNotEmpty = true)
     {
         if (!$removeIfNotEmpty && !$this->isEmpty())
-            return $this;
+            $this->e('Directory :folderName not empty', ['folderName' => $this->path]);
         else
             return $this->_removeRecursive();
     }
     
-    public function removeRecursive()
+    /**
+     * Рекурсивное удаление директории
+     * 
+     * @access protected
+     * @return boolean
+     */
+    protected function _removeRecursive()
     {
         foreach($this->glob('*', self::SKIP_DOTS) as $item)
         {
-            if ($item->isDir())
-            {
-                $result = $item->remove();
-                if (!$result)
-                    $this->e('Can not remove :fileName', ['fileName' => $item->path]);
-            }
-            else
-            {
-                try
-                {
-                    if (!$item->remove())
-                        $this->e('Can not remove :fileName', ['fileName' => $item->path]);
-                }
-                catch(\Exception $e)
-                {
-                    return false;
-                }
-            }
+            if ($item->remove(true) === false)
+                $this->e('Can not remove :fileName', ['fileName' => $this->path]);
         }
+        return true;
+    }
+    
+    /**
+     * Смена директории на указанную, относительно текущей
+     * 
+     * @access public
+     * @param string $dir
+     * @return object
+     */
+    public function chDir($dir) 
+    {
+         $dir = self::factory(['path' => $this . '/' . $dir]);
+         chdir($dir->path);
+         return $dir; 
     }
     
     /**

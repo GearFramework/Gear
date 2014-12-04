@@ -304,6 +304,19 @@ abstract class GFileSystem extends GIo implements IStaticFactory
     }
     
     /**
+     * Смена прав доступа к элементу
+     * 
+     * @access public
+     * @param integer $permission
+     * @return $this
+     */
+    public function chmod($permission)
+    {
+        if (!@chmod($this->path, $permission))
+            $this->e('Permission denied :fileName', ['fileName' => $this->path]);
+    }
+    
+    /**
      * Возвращает true, если элемент пустой
      * 
      * @abstract
