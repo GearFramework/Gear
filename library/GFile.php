@@ -143,7 +143,7 @@ class GFile extends GFileSystem
     {
         if (!$this->isWritable())
             $this->e('Can not remove file :fileName', ['fileName' => $this->path]);
-        return unlink($this->path);
+        return @unlink($this->path);
     }
 }
 

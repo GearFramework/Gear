@@ -244,9 +244,37 @@ class GFolder extends GFileSystem implements \Iterator
      * @access public
      * @return null
      */
-    public function remove()
+    public function remove($removeIfNotEmpty = true)
     {
-        
+        if (!$removeIfNotEmpty && !$this->isEmpty())
+            return $this;
+        else
+            return $this->_removeRecursive();
+    }
+    
+    public function removeRecursive()
+    {
+        foreach($this->glob('*', self::SKIP_DOTS) as $item)
+        {
+            if ($item->isDir())
+            {
+                $result = $item->remove();
+                if (!$result)
+                    $this->e('Can not remove :fileName', ['fileName' => $item->path]);
+            }
+            else
+            {
+                try
+                {
+                    if (!$item->remove())
+                        $this->e('Can not remove :fileName', ['fileName' => $item->path]);
+                }
+                catch(\Exception $e)
+                {
+                    return false;
+                }
+            }
+        }
     }
     
     /**
