@@ -307,13 +307,39 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      * Смена прав доступа к элементу
      * 
      * @access public
-     * @param integer $permission
+     * @param integer|string $permission
      * @return $this
      */
     public function chmod($permission)
     {
-        if (!@chmod($this->path, $permission))
-            $this->e('Permission denied :fileName', ['fileName' => $this->path]);
+        if (is_integer($permission)
+        { 
+            if (!@chmod($this->path, $permission))
+                $this->e('Permission denied :fileName', ['fileName' => $this->path]);
+        }
+        else
+        if (is_string($permission))
+        {
+            $len = strlen($permission);
+            $user = 0;
+            $group = 0;
+            $other = 0;
+            $value = 0;
+            for($i = 0; $i < $len; ++ $i)
+            {
+                if ($permission === 'r')
+                    $tmp = $tmp | 4;
+                else
+                if ($permission === 'w')
+                    $tmp = $tmp | 2;
+                else
+                if ($permission === 'x')
+                    $tmp = $tmp | 1;
+            }
+        }
+        else
+            $this->e('Invalid value of permission :permission'. ['permission' => $permission]);
+        return $this;
     }
     
     /**
@@ -333,6 +359,16 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      * @return integer
      */
     abstract public function getSize();
+    
+    /**
+     * Создание элемента файловой системы
+     * 
+     * @abstract
+     * @access public
+     * @param boolean $overwriteIfExists
+     * @return $this
+     */
+    abstract public function create($overwriteIfExists = true);
     
     /**
      * Копирует текущий элемент в указанное место
