@@ -320,6 +320,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         else
         if (is_string($permission))
         {
+            if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o')
             $len = strlen($permission);
             $user = 0;
             $group = 0;
