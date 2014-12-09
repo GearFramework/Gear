@@ -129,8 +129,7 @@ class GFolder extends GFileSystem implements \Iterator
     { 
         if ($this->_handler)
             $this->close();
-        $this->_handler = @opendir($this->path);
-        if (!$this->_handler)
+        if (!($this->_handler = @opendir($this->path)))
             $this->e('Cannot open file :fileName', ['fileName' => $this->path]);
         if ($filter !== null) $this->filter = $filter;
         if ($flags !== null) $this->flags = $flags;
@@ -159,7 +158,11 @@ class GFolder extends GFileSystem implements \Iterator
         return $this->_current;
     }
     
-    public function write() {}
+    public function write($data = null) 
+    {
+        if (is_object($data) && $data instanceof \gear\library\GFileSystem)
+            $data->copy()
+    }
     
     /**
      * Закрывает папку
@@ -210,7 +213,33 @@ class GFolder extends GFileSystem implements \Iterator
      * @access public
      * @return integer
      */
+<<<<<<< HEAD
     public function getSize() { return 0; }
+=======
+    public function getSize()
+    {
+        $size = 0;
+        foreach($this->glob('*', SELF::SKIP_DOTS) as $item)
+            $size += $item->isDir() ? $item->getSize() : $item->getSize();
+        return $size;
+    }
+    
+    /**
+     * Создание элемента файловой системы
+     * 
+     * @access public
+     * @param boolean $overwriteIfExists
+     * @return $this
+     */
+    public function create($overwriteIfExists = true, $permission = null)
+    {
+        if ($overwriteIfExists && $this->exists())
+            $this->e('Folder :folderName already exists', ['folderName' => $this->path]);
+        if (!$this->dir()->isWritable() || !@mkdir($this->path))
+            $this->e('Can not create folder :folderName', ['folderName' => $this->path]);
+        return $this;
+    }
+>>>>>>> c752fd2d5d90aeb8456e21fde348c1fa592a8f6b
     
     /**
      * Копирует папку в указанное место

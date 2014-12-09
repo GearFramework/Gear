@@ -100,10 +100,27 @@ class GFile extends GFileSystem
     public function getSize() { return filesize($this->path()); }
     
     /**
+     * Создание элемента файловой системы
+     * 
+     * @access public
+     * @param boolean $overwriteIfExists
+     * @return $this
+     */
+    public function create($overwriteIfExists = true, $permission = null)
+    {
+        if ($overwriteIfExists && $this->exists())
+            $this->e('File :fileName already exists', ['fileName' => $this->path]);
+        if (!$this->dir()->isWritable() || !@file_put_contents($this->path, ''))
+            $this->e('Can not create file :fileName', ['fileName' => $this->path]);
+        return $permission !== null ? $this->chmod($permission) : $this;
+    }
+    
+    /**
      * Копирует файл в указанное место
      * 
      * @access public
      * @param string|object $dest
+     * @param null|integer|string $permission
      * @return object
      */
     public function copy($dest, $permission = null)
@@ -111,9 +128,10 @@ class GFile extends GFileSystem
         if ((file_exists($dest) && !is_writable($dest)) || !is_writable(dirname($dest)))
             $this->e('Can not copy file :fileName to :destName', ['fileName' => $this->path, 'destName' => $dest]);
         copy($this, $dest);
+        $itemDest = GFileSystem::factory(['path' => $dest]);
         if ($permission !== null)
-            @chmod($dest, $permission);
-        return GFileSystem::factory(['path' => $dest]);
+            $itemDest->chmod($permission)
+        return $itemDest;
     }
     
     /**
