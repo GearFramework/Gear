@@ -152,15 +152,7 @@ final class Core
         }
         return true;
     }
-    
-    public static function includeLibrary($library)
-    {
-        $fileLibrary = self::resolvePath($library);
-        if (file_exists($fileLibrary))
-            self::e('Library :fileLibrary not found', array('fileLibrary' => $fileLibrary));
-        require $fileLibrary;
-    }
-    
+
     /**
      * Получение доступа к модулю приложения
      * 
@@ -168,10 +160,7 @@ final class Core
      * @static
      * @return \gear\library\GApplication
      */
-    public static function app()
-    {
-        return self::m('app');
-    }
+    public static function app() { return self::m('app'); }
     
     /**
      * Вызов компонента реализцющего системное протоколирование

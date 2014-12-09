@@ -210,10 +210,7 @@ class GFolder extends GFileSystem implements \Iterator
      * @access public
      * @return integer
      */
-    public function getSize()
-    {
-        return 0;
-    }
+    public function getSize() { return 0; }
     
     /**
      * Копирует папку в указанное место
@@ -276,11 +273,11 @@ class GFolder extends GFileSystem implements \Iterator
      * @param string $dir
      * @return object
      */
-    public function chDir($dir) 
+    public function chDir($dir = null) 
     {
-         $dir = self::factory(['path' => $this . '/' . $dir]);
-         chdir($dir->path);
-         return $dir; 
+        $dir = !$dir ? $this : self::factory(['path' => $this . '/' . $dir]);
+        chdir($dir->path);
+        return $dir; 
     }
     
     /**

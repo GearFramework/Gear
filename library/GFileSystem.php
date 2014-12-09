@@ -315,6 +315,17 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         if (!@chmod($this->path, $permission))
             $this->e('Permission denied :fileName', ['fileName' => $this->path]);
     }
+
+    public function atime($format = null) { return !$format ? fileatime($this) : $this->_formatTime(fileatime($this), $format); }
+
+    public function ctime($format = null) { return !$format ? filectime($this) : $this->_formatTime(filectime($this), $format); }
+
+    public function mtime($format = null) { return !$format ? filemtime($this) : $this->_formatTime(filemtime($this), $format); }
+
+    private function _formatTime($time, $format)
+    {
+
+    }
     
     /**
      * Возвращает true, если элемент пустой
