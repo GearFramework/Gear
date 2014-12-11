@@ -161,7 +161,7 @@ class GFolder extends GFileSystem implements \Iterator
     public function write($data = null) 
     {
         if (is_object($data) && $data instanceof \gear\library\GFileSystem)
-            $data->copy()
+            $data->copy();
     }
     
     /**
@@ -213,9 +213,6 @@ class GFolder extends GFileSystem implements \Iterator
      * @access public
      * @return integer
      */
-<<<<<<< HEAD
-    public function getSize() { return 0; }
-=======
     public function getSize()
     {
         $size = 0;
@@ -228,19 +225,19 @@ class GFolder extends GFileSystem implements \Iterator
      * Создание элемента файловой системы
      * 
      * @access public
+     * @param null|integer|string $permission
      * @param boolean $overwriteIfExists
      * @return $this
      */
-    public function create($overwriteIfExists = true, $permission = null)
+    public function create($permission = null, $overwriteIfExists = true)
     {
         if ($overwriteIfExists && $this->exists())
             $this->e('Folder :folderName already exists', ['folderName' => $this->path]);
         if (!$this->dir()->isWritable() || !@mkdir($this->path))
             $this->e('Can not create folder :folderName', ['folderName' => $this->path]);
-        return $this;
+        return $permission ? $this->chmod($permission) : $this;
     }
->>>>>>> c752fd2d5d90aeb8456e21fde348c1fa592a8f6b
-    
+
     /**
      * Копирует папку в указанное место
      * 
@@ -299,7 +296,7 @@ class GFolder extends GFileSystem implements \Iterator
      * Смена директории на указанную, относительно текущей
      * 
      * @access public
-     * @param string $dir
+     * @param null|string $dir
      * @return object
      */
     public function chDir($dir = null) 

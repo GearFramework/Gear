@@ -74,7 +74,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
             list($class, $config, $properties) = Core::getRecords($properties);
             return new $class($properties);
         }
-        $this->e('Invalid item');
+        static::e('Invalid item');
     }
     
     /**
@@ -312,7 +312,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      */
     public function chmod($permission)
     {
-        if (is_integer($permission)
+        if (is_integer($permission))
         { 
             if (!@chmod($this->path, $permission))
                 $this->e('Permission denied :fileName', ['fileName' => $this->path]);
@@ -321,21 +321,8 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         if (is_string($permission))
         {
             if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o')
-            $len = strlen($permission);
-            $user = 0;
-            $group = 0;
-            $other = 0;
-            $value = 0;
-            for($i = 0; $i < $len; ++ $i)
             {
-                if ($permission === 'r')
-                    $tmp = $tmp | 4;
-                else
-                if ($permission === 'w')
-                    $tmp = $tmp | 2;
-                else
-                if ($permission === 'x')
-                    $tmp = $tmp | 1;
+                
             }
         }
         else
@@ -377,10 +364,11 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      * 
      * @abstract
      * @access public
+     * @param null|integer|string $permission
      * @param boolean $overwriteIfExists
      * @return $this
      */
-    abstract public function create($overwriteIfExists = true);
+    abstract public function create($permission = null, $overwriteIfExists = true);
     
     /**
      * Копирует текущий элемент в указанное место

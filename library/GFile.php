@@ -103,14 +103,15 @@ class GFile extends GFileSystem
      * Создание элемента файловой системы
      * 
      * @access public
+     * @param null|integer|string $permission
      * @param boolean $overwriteIfExists
      * @return $this
      */
-    public function create($overwriteIfExists = true, $permission = null)
+    public function create($permission = null, $overwriteIfExists = true, $data = '')
     {
         if ($overwriteIfExists && $this->exists())
             $this->e('File :fileName already exists', ['fileName' => $this->path]);
-        if (!$this->dir()->isWritable() || !@file_put_contents($this->path, ''))
+        if (!$this->dir()->isWritable() || !@file_put_contents($this->path, $data))
             $this->e('Can not create file :fileName', ['fileName' => $this->path]);
         return $permission !== null ? $this->chmod($permission) : $this;
     }
