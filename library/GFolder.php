@@ -247,7 +247,31 @@ class GFolder extends GFileSystem implements \Iterator
      */
     public function copy($dest)
     {
-        
+        if ((file_exists($dest) && !is_writable($dest)) || !is_writable(dirname($dest)))
+            $this->e('Can not copy directory :folderName to :dest', ['folderName' => $this->path, 'dest' => $dest]);
+        if (!file_exists($dest))
+            mkdir($dest);
+        $dest = $dest . '/' . $this->basename();
+        mkdir($dest);
+        $this->_copyRecursive($dest);
+        return $dest;
+    }
+
+    /**
+     * Рекурсивное удаление директории
+     * 
+     * @access protected
+     * @param string|object $dest
+     * @return boolean
+     */
+    protected function _copyRecursive($dest)
+    {
+        foreach($this->glob('*', self::SKIP_DOTS) as $item)
+        {
+            if ($item->copy($dest) === false)
+                $this->e('Can not copy :fileName', ['fileName' => $this->path]);
+        }
+        return true;
     }
     
     /**
@@ -259,7 +283,10 @@ class GFolder extends GFileSystem implements \Iterator
      */
     public function rename($dest)
     {
-        
+        if (!$this->isWritable() || !isWritable($dest))
+            $this->e('Can not rename directory :folderName to :dest', ['folderName' => $this->path, 'dest' => $dest]);
+        @rename($this->path(), $dest);
+        return is_object($dest) ? $dest : GFileSystem::factory(['path' => $dest]);
     }
     
     /**
@@ -273,7 +300,13 @@ class GFolder extends GFileSystem implements \Iterator
         if (!$removeIfNotEmpty && !$this->isEmpty())
             $this->e('Directory :folderName not empty', ['folderName' => $this->path]);
         else
-            return $this->_removeRecursive();
+        if (!$this->isWritable())
+            $this->e('Can not remove directory :folderName', ['folderName' => $this->path]);
+        else
+        {
+            $this->_removeRecursive();
+            return @rmdir($this->path) ? true : false;
+        }
     }
     
     /**
