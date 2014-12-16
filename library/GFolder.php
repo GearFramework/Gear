@@ -243,17 +243,21 @@ class GFolder extends GFileSystem implements \Iterator
      * 
      * @access public
      * @param string|object $dest
+     * @param null|integer|string $permission
      * @return object
      */
-    public function copy($dest)
+    public function copy($dest, $permission = null)
     {
-        if ((file_exists($dest) && !is_writable($dest)) || !is_writable(dirname($dest)))
+        if (file_exists($dest) && !is_writable($dest))
             $this->e('Can not copy directory :folderName to :dest', ['folderName' => $this->path, 'dest' => $dest]);
         if (!file_exists($dest))
-            mkdir($dest);
+            $this->e('Destination directory :folderName not exists', ['folderName' => $dest]);
         $dest = $dest . '/' . $this->basename();
         mkdir($dest);
+        $dest = self::factory(['path' => $dest]);
         $this->_copyRecursive($dest);
+        if ($permission !== null)
+            $dest->chmod($permission);
         return $dest;
     }
 

@@ -323,7 +323,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      */
     public function chmod($permission)
     {
-        if (is_integer($permission))
+        if (is_numeric($permission))
         { 
             if (!@chmod($this->path, $permission))
                 $this->e('Permission denied :fileName', ['fileName' => $this->path]);
@@ -331,14 +331,43 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         else
         if (is_string($permission))
         {
-            if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o')
-            {
-
-            }
+            $permission = str_replace(' ', '', $permission);
+            if (strpos($permission, ','))
+                $this->_chmodRelative(explode(',', $permission));
+            else
+            if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o' || $permission[0] === 'a')
+                $this->_chmodRelative([$permission]);
+            else
+                $this->_chmodTarget($permission);
         }
         else
             $this->e('Invalid value of permission :permission'. ['permission' => $permission]);
         return $this;
+    }
+    
+    private function _chmodRelative($permission)
+    {
+        
+    }
+    
+    private function _chmodTarget($permission)
+    {
+        $res = '0';
+        $perms = chunk_split($permission, 3);
+        $getValue = function($perm) 
+        {
+            $value = 0;
+            if (isset($perm[0]) && $perm[0] == 'r')
+                $value = $value & 4;
+            if (isset($perm[1]) && $perm[1] == 'w')
+                $value = $value & 2;
+            if (isset($perm[2]) && $perm[2] == 'x')
+                $value = $value & 1;
+            return $value;
+        };
+        for($i = 0; $i < 3; ++ $i)
+            isset($perms[$i]) ? $res .= $getValue($perms[$i]) : $res .= '0';
+        return $res;
     }
 
     public function atime($format = null) { return !$format ? fileatime($this) : $this->_formatTime(fileatime($this), $format); }
