@@ -322,7 +322,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         {
             if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o')
             {
-                
+
             }
         }
         else
