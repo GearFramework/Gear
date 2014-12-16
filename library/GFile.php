@@ -128,10 +128,12 @@ class GFile extends GFileSystem
     {
         if ((file_exists($dest) && !is_writable($dest)) || !is_writable(dirname($dest)))
             $this->e('Can not copy file :fileName to :destName', ['fileName' => $this->path, 'destName' => $dest]);
+        if (is_object($dest) && $dest->isDir())
+            $dest = $dest->path . '/' . $this->basename();
         copy($this, $dest);
         $itemDest = GFileSystem::factory(['path' => $dest]);
         if ($permission !== null)
-            $itemDest->chmod($permission)
+            $itemDest->chmod($permission);
         return $itemDest;
     }
     

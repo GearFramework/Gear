@@ -50,11 +50,19 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      */
     public static function __callStatic($name, $args)
     {
-        return self::factory(
-        [
-            'path' => $name, 
-            'filename' => basename($name)
-        ]);
+        if (get_called_class() !== __CLASS__)
+            return static::factory(
+            [
+                'class' => get_called_class(),
+                'path' => $name, 
+                'filename' => basename($name)
+            ]);
+        else
+            return static::factory(
+            [
+                'path' => $name, 
+                'filename' => basename($name)
+            ]);
     }
     
     /**
@@ -69,8 +77,11 @@ abstract class GFileSystem extends GIo implements IStaticFactory
     {
         if (isset($properties['path']))
         {
-            $type = filetype($properties['path']);
-            $properties = array_merge(self::$_factoryItem[$type], $properties);
+            if (!isset($properties['class']))
+            {
+                $type = filetype($properties['path']);
+                $properties = array_merge(self::$_factoryItem[$type], $properties);
+            }
             list($class, $config, $properties) = Core::getRecords($properties);
             return new $class($properties);
         }
