@@ -333,40 +333,153 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         {
             $permission = str_replace(' ', '', $permission);
             if (strpos($permission, ','))
-                $this->_chmodRelative(explode(',', $permission));
+                $permission = $this->_chmodRelative(explode(',', $permission));
             else
             if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o' || $permission[0] === 'a')
-                $this->_chmodRelative([$permission]);
+                $permission = $this->_chmodRelative([$permission]);
             else
-                $this->_chmodTarget($permission);
+                $permission = $this->_chmodTarget($permission);
+            echo $permission;
         }
         else
             $this->e('Invalid value of permission :permission'. ['permission' => $permission]);
         return $this;
     }
     
-    private function _chmodRelative($permission)
+    /**
+     * Возвращает права доступа
+     * Если $asString установлен в true, то метод вернёт строковое 
+     * представление в виде: rwxrwxrwx
+     * 
+     * @access public
+     * @param bool $asString
+     * @return numeric|string
+     */
+    public function getMode($asString = false)
     {
-        
+        $mode = substr(decoct(fileperms($this->path)), -4);
+        if ($asString)
+        {
+            $mode = fileperms($this->path);
+            $a = [0xC000 => 's', 0xA000 => 'l', 0x8000 => '-', 0x6000 => 'b', 0x4000 => 'd', 0x2000 => 'c', 0x1000 => 'p'];
+            $p = null;
+            foreach($a as $d => $type)
+                if (($mode & $d) == $d) { $perm = $type; break; }
+            if (!$perm) $perm = 'u';
+            $perm .= (($mode & 0x0100) ? 'r' : '-');
+            $perm .= (($mode & 0x0080) ? 'w' : '-');
+            $perm .= (($mode & 0x0040) ? (($mode & 0x0800) ? 's' : 'x' ) : (($mode & 0x0800) ? 'S' : '-'));
+            $perm .= (($mode & 0x0020) ? 'r' : '-');
+            $perm .= (($mode & 0x0010) ? 'w' : '-');
+            $perm .= (($mode & 0x0008) ? (($mode & 0x0400) ? 's' : 'x' ) : (($mode & 0x0400) ? 'S' : '-'));
+            $perm .= (($mode & 0x0004) ? 'r' : '-');
+            $perm .= (($mode & 0x0002) ? 'w' : '-');
+            $perm .= (($mode & 0x0001) ? (($mode & 0x0200) ? 't' : 'x' ) : (($mode & 0x0200) ? 'T' : '-'));
+            $mode = $perm;
+        }
+        return $mode;
     }
     
+    /**
+     * Преобразует значения вида g+rw,uo-x в восмеричное представление
+     * 
+     * @access private
+     * @param array $permission
+     * @return numeric
+     */
+    private function _chmodRelative($permission)
+    {
+        $mode = (string)$this->getMode();
+        $str2Oct = function($strMode)
+        {
+            $d = 0;
+            $l = strlen($strMode);
+            for($i = 0; $i < $l; ++ $i)
+            {
+                if ($strMode[$i] == 'r') $d = $d | 4;
+                else
+                if ($strMode[$i] == 'w') $d = $d | 2;
+                else
+                if ($strMode[$i] == 'x' || $strMode[$i] == 's' || $strMode[$i] == 't') $d = $d | 1;
+            }
+            return $d;
+        };
+        $set = function($type, $mode, $value, $op)
+        {
+            foreach($type as $t)
+            {
+                if ($op == '+') $mode[$t] = $mode[$t] | $value;
+                else
+                if ($op == '-') $mode[$t] = $mode[$t] ^ $value;
+                else
+                if ($op == '=') $mode[$t] = $value;
+            }
+            return $mode;
+        };
+        foreach($permission as $modes)
+        {
+            $p = preg_split('/([+-=])/', $modes, -1, PREG_SPLIT_DELIM_CAPTURE);
+            $ugo = $p[0];
+            $op = $p[1];
+            for($i = 0; $i < strlen($ugo); ++ $i)
+            {
+                $d = $str2Oct($p[2]);
+                if ($ugo[$i] === 'a')
+                    $b = [1, 2, 3];
+                else
+                if ($ugo[$i] === 'u')
+                    $b = [1];
+                else
+                if ($ugo[$i] === 'g')
+                    $b = [2];
+                else
+                if ($ugo[$i] === 'o')
+                    $b = [3];
+                $mode = $set($b, $mode, $d, $op);
+            }
+        }
+        echo $mode . '<br>';
+        return $mode;
+    }
+    
+    /**
+     * Преобразует значения вида rwxrwxrwx в восмеричное представление
+     * 
+     * @access private
+     * @param string $permission
+     * @return numeric
+     */
     private function _chmodTarget($permission)
     {
         $res = '0';
-        $perms = chunk_split($permission, 3);
-        $getValue = function($perm) 
+        $perms = explode("\n", chunk_split($permission, 3, "\n"));
+        $getValue = function($perm, $pos, &$res)
         {
             $value = 0;
             if (isset($perm[0]) && $perm[0] == 'r')
-                $value = $value & 4;
+                $value = $value | 4;
             if (isset($perm[1]) && $perm[1] == 'w')
-                $value = $value & 2;
-            if (isset($perm[2]) && $perm[2] == 'x')
-                $value = $value & 1;
+                $value = $value | 2;
+            if (isset($perm[2]))
+            {
+                if ($perm[2] === 'x' || $perm[2] === 's' || $perm[2] === 't')
+                    $value = $value | 1;
+                if ($perm[2] === 's')
+                {
+                    if ($pos === 0)
+                        $res[0] = 4;
+                    else
+                    if ($pos === 1)
+                        $res[0] = 2;
+                }
+                else
+                if ($perm[2] === 't' && $pos === 2)
+                    $res[0] = 1;
+           }
             return $value;
         };
         for($i = 0; $i < 3; ++ $i)
-            isset($perms[$i]) ? $res .= $getValue($perms[$i]) : $res .= '0';
+            isset($perms[$i]) ? $res .= $getValue($perms[$i], $i, $res) : $res .= '0';
         return $res;
     }
 
