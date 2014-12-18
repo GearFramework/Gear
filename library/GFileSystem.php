@@ -324,10 +324,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
     public function chmod($permission)
     {
         if (is_numeric($permission))
-        { 
-            if (!@chmod($this->path, $permission))
-                $this->e('Permission denied :fileName', ['fileName' => $this->path]);
-        }
+            $res = @chmod($this->path, $permission);
         else
         if (is_string($permission))
         {
@@ -339,10 +336,12 @@ abstract class GFileSystem extends GIo implements IStaticFactory
                 $permission = $this->_chmodRelative([$permission]);
             else
                 $permission = $this->_chmodTarget($permission);
-            echo $permission;
+            $res = @chmod($this->path, $permission);
         }
         else
             $this->e('Invalid value of permission :permission'. ['permission' => $permission]);
+        if (!$res)
+            $this->e('can not change mode :fileName', ['fileName' => $this->path]);
         return $this;
     }
     
@@ -419,26 +418,13 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         foreach($permission as $modes)
         {
             $p = preg_split('/([+-=])/', $modes, -1, PREG_SPLIT_DELIM_CAPTURE);
-            $ugo = $p[0];
-            $op = $p[1];
+            $ugo = $p[0]; $op = $p[1]; $o = ['u' => 1, 'g' => 2, 'o' => 3, 'a' => [1, 2, 3]];
             for($i = 0; $i < strlen($ugo); ++ $i)
             {
                 $d = $str2Oct($p[2]);
-                if ($ugo[$i] === 'a')
-                    $b = [1, 2, 3];
-                else
-                if ($ugo[$i] === 'u')
-                    $b = [1];
-                else
-                if ($ugo[$i] === 'g')
-                    $b = [2];
-                else
-                if ($ugo[$i] === 'o')
-                    $b = [3];
-                $mode = $set($b, $mode, $d, $op);
+                $mode = $set($o[$ugo[$i]], $mode, $d, $op);
             }
         }
-        echo $mode . '<br>';
         return $mode;
     }
     
@@ -483,16 +469,42 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         return $res;
     }
 
+    /**
+     * Возвращает время последнего доступа к файлу
+     * 
+     * @access public
+     * @param null|string $format
+     * @return timestamp|string
+     */
     public function atime($format = null) { return !$format ? fileatime($this) : $this->_formatTime(fileatime($this), $format); }
 
+    /**
+     * Возвращает время изменения индексного дескриптора файла
+     * 
+     * @access public
+     * @param null|string $format
+     * @return timestamp|string
+     */
     public function ctime($format = null) { return !$format ? filectime($this) : $this->_formatTime(filectime($this), $format); }
 
+    /**
+     * Возвращает время последнего изменения файла
+     * 
+     * @access public
+     * @param null|string $format
+     * @return timestamp|string
+     */
     public function mtime($format = null) { return !$format ? filemtime($this) : $this->_formatTime(filemtime($this), $format); }
 
-    private function _formatTime($time, $format)
-    {
-
-    }
+    /**
+     * Форматирование даты
+     * 
+     * @access private
+     * @param timestamp $time
+     * @param string $format
+     * @return string
+     */
+    private function _formatTime($time, $format) { return (new \gear\helpers\GCalendar())->getDate($time)->format($format); }
     
     /**
      * Возвращает true, если элемент пустой

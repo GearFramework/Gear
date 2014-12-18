@@ -859,7 +859,7 @@ class GCalendar extends GObject
         $date = $from;
         while(!$stop)
         {
-            $date = call_user_func([$method[0], $method[1]), $date, $method[2]];
+            $date = call_user_func([$method[0], $method[1]], $date, $method[2]);
             if (($from->timestamp <= $to->timestamp && $date->timestamp < $to->timestamp) ||
                 ($from->timestamp > $to->timestamp && $date->timestamp > $to->timestamp))
                 $dates[] = $date;
