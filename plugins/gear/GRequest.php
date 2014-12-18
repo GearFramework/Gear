@@ -165,6 +165,22 @@ class GRequest extends GPlugin
             $_SESSION[$name] = $value;
     }
     
+    public function file($name = null)
+    {
+        if ($name === null)
+            return $_FILES;
+        else
+        {
+            if (!isset($_FILES[$name]))
+                return null;
+            if (is_array($_FILES[$name]))
+            {
+                
+            }
+            return null;
+        }
+    }
+    
     /**
      * Получение запрошенного значения
      * 

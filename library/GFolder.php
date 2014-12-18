@@ -158,10 +158,25 @@ class GFolder extends GFileSystem implements \Iterator
         return $this->_current;
     }
     
+    /**
+     * Если $data является файлом или каталогом, то копирует его в данную 
+     * директорию, иначе в директории создаётся временный файл, в который
+     * записыватся содержимое $data
+     * 
+     * @access public
+     * @param mixed $data
+     * @return $this
+     */
     public function write($data = null) 
     {
         if (is_object($data) && $data instanceof \gear\library\GFileSystem)
-            $data->copy();
+            $data->copy($this->path);
+        else
+        if (is_string($data) && file_exists($data))
+            GFileSystem::factory(['path' => $data])->copy($this->path);
+        else
+            GFileSystem::factory(['path' => tempnam($this->path)])->write($data);
+        return $this;
     }
     
     /**

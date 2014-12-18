@@ -59,7 +59,7 @@ class GFile extends GFileSystem
      * 
      * @access public
      * @param integer|string|object $data
-     * @return 
+     * @return $this;
      */
     public function write($data = '')
     {
@@ -67,7 +67,8 @@ class GFile extends GFileSystem
             $this->open('a+');
         if (is_array($data) || is_object($data))
             $data = serialize($data);
-        return fwrite($this->_handler, $data);
+        fwrite($this->_handler, $data);
+        return $this;
     }
     
     /**

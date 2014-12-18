@@ -406,13 +406,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
         $set = function($type, $mode, $value, $op)
         {
             foreach($type as $t)
-            {
-                if ($op == '+') $mode[$t] = $mode[$t] | $value;
-                else
-                if ($op == '-') $mode[$t] = $mode[$t] ^ $value;
-                else
-                if ($op == '=') $mode[$t] = $value;
-            }
+                $op == '+' ? $mode[$t] | $value : ($op == '-' ? $mode[$t] ^ $value : $mode[$t] = $value);
             return $mode;
         };
         foreach($permission as $modes)
