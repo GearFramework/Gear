@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\plugins\gear;
+namespace gear\plugins\gear\http;
 use gear\Core;
 use gear\library\GPlugin;
 use gear\library\GException;
@@ -165,7 +165,15 @@ class GRequest extends GPlugin
             $_SESSION[$name] = $value;
     }
     
-    public function file($name = null)
+    /**
+     * Получение данных о загруженных файлах
+     * 
+     * @access public
+     * @param string $name
+     * @param mixed $filter
+     * @return mixed
+     */
+    public function files($name = null, $filter = null)
     {
         if ($name === null)
             return $_FILES;
@@ -175,9 +183,23 @@ class GRequest extends GPlugin
                 return null;
             if (is_array($_FILES[$name]))
             {
-                
+                $files = [];
+                foreach($_FILES[$name]['name'] as $index => $fileName)
+                {
+                    $file = 
+                    [
+                        'name' => $fileName,
+                        'type' => $_FILES[$name]['type'][$index],
+                        'tmp_name' => $_FILES[$name]['tmp_name'][$index],
+                        'error' => $_FILES[$name]['error'][$index],
+                        'size' => $_FILES[$name]['size'][$index],
+                    ];
+                    if (!$filter || ($filter && ($file = $this->filtering($filter, $file))))
+                        $files[] = $file;
+                }
             }
-            return null;
+            else
+                return $filter ? $this->filtering($filter, $_FILES[$name]) : $_FILES[$name];
         }
     }
     

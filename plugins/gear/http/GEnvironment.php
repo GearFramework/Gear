@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\plugins\gear;
+namespace gear\plugins\gear\http;
 use \gear\Core;
 use \gear\library\GPlugin;
 use \gear\library\GException;

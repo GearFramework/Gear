@@ -35,8 +35,8 @@ class GApplication extends GModule
         ),
         'plugins' => array
         (
-            'request' => array('class' => '\gear\plugins\gear\GRequest'),
-            'env' => array('class' => '\gear\plugins\gear\GEnvironment'),
+            'request' => array('class' => '\gear\plugins\gear\http\GRequest'),
+            'env' => array('class' => '\gear\plugins\gear\http\GEnvironment'),
             'log' => array('class' => '\gear\plugins\gear\GLog'),
         ),
     );
@@ -96,7 +96,7 @@ class GApplication extends GModule
      * @access public
      * @return bool
      */
-    public function hasHttp() { return $this->getMode() === Core::HTTP; }
+    public function isHttp() { return $this->getMode() === Core::HTTP; }
     
     /**
      * Возвращает true, если приложение запущено из консоли
@@ -104,7 +104,18 @@ class GApplication extends GModule
      * @access public
      * @return bool
      */
-    public function hasCli() { return $this->getMode() === Core::CLI; }
+    public function isCli() { return $this->getMode() === Core::CLI; }
+    
+    /**
+     * Возвращает true, если запрос был через AJAX
+     * 
+     * @access public
+     * @return boolean
+     */
+    public function isAjax()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    }
     
     /**
      * Возвращает текущий исполняемый процесс
@@ -127,17 +138,6 @@ class GApplication extends GModule
             return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         else
             return null;
-    }
-    
-    /**
-     * Возвращает true, если запрос был через AJAX
-     * 
-     * @access public
-     * @return boolean
-     */
-    public function isAjax()
-    {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
     
     /**
