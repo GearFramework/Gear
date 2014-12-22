@@ -32,10 +32,11 @@ class GLoader extends GComponent implements ILoader
     );
     protected static $_init = false;
     /* Public */
+    public $aliases = []; 
     public $usePaths = false;
-    public $paths = array();
+    public $paths = [];
     public $useResolvePaths = false;
-    public $resolvePaths = array();
+    public $resolvePaths = [];
     
     /**
      * Метод автоматической загрузки классов
@@ -47,6 +48,12 @@ class GLoader extends GComponent implements ILoader
      */
     public function loader($className)
     {
+        if (isset($this->aliases[$className]))
+        {
+            $alias = $className;
+            list($className, $config, $properties) = Core::getRecords($this->aliases[$className]);
+            class_alias($className, $alias);
+        }
         if ($this->usePaths && isset($this->paths[$className]))
             $file = $this->paths[$className];
         else

@@ -38,6 +38,7 @@ class GApplication extends GModule
             'request' => array('class' => '\gear\plugins\gear\http\GRequest'),
             'env' => array('class' => '\gear\plugins\gear\http\GEnvironment'),
             'log' => array('class' => '\gear\plugins\gear\GLog'),
+            'http' => array('class' => '\gear\plugins\gear\http\GHttp'),
         ),
     );
     protected $_namespace = null;

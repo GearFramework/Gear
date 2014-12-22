@@ -50,7 +50,16 @@ final class Core
             [
                 'syslog' => ['class' => '\gear\components\gear\syslog\GSyslog'],
                 // Автозагрузчик классов
-                'loader' => ['class' => '\gear\components\gear\loader\GLoader'],
+                'loader' => 
+                [
+                    'class' => '\gear\components\gear\loader\GLoader',
+                    'aliases' => 
+                    [
+                        'Arrays' => ['class' => 'gear\helpers\GArray'],
+                        'Calendar' => ['class' => 'gear\helpers\GCalendar'],
+                        'Html' => ['class' => 'gear\helpers\GHtml'],
+                    ],
+                ],
                 // Обработчик ошибок
                 'errorHandler' => ['class' => '\gear\components\gear\handlers\GErrorsHandler'],
                 // Обработчик неперехваченных исключений
@@ -76,6 +85,11 @@ final class Core
             return self::m($name);
         if (self::isComponentRegistered($name))
             return self::c($name, count($args) ? $args[0] : false);
+        if (isset(self::$_config['helpers'][$name]))
+        {
+            array_unshift($args, $name);
+            return call_user_func_array([__CLASS__, 'h'], $args);
+        }
         array_unshift($args, $name);
         return call_user_func_array(array(__CLASS__, 'params'), $args);
             

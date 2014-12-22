@@ -2,7 +2,7 @@
 
 namespace gear\helpers;
 use gear\Core;
-use gear\library\GObject;
+use gear\library\GHelper;
 
 /**
  * Класс для работы с HTML
@@ -13,7 +13,7 @@ use gear\library\GObject;
  * @version 1.0.0
  * @since 21.11.2014
  */
-class GHtml
+class GHtml extends GHelper
 {
     /* Const */
     const IS_TAG = 1;

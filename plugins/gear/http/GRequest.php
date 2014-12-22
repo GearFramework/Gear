@@ -215,7 +215,7 @@ class GRequest extends GPlugin
      */
     protected function _data(array &$data, $name, $default, $filter)
     {
-        if ($this->getOwner()->hasCli())
+        if ($this->getOwner()->isCli())
             return $this->cli($name, $default, $filter);
         else
         {
