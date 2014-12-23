@@ -11,11 +11,16 @@ class GHttp extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_header = array
-    (
-        'class' => 'gear\plugins\gear\http\GHeader',
-    );
+    protected $_header = ['class' => 'gear\plugins\gear\http\GHeader'];
+    protected $_callbacksOutputs = [];
+    protected $_outputData = null;
     /* Public */
+    
+    public function __destruct()
+    {
+        if ($this->_outputData)
+            echo $this->_outputData;
+    }
     
     public function header()
     {
@@ -41,7 +46,13 @@ class GHttp extends GPlugin
     
     public function out($data, $buffering = false)
     {
-        echo $data;
+        foreach($this->callbackOutputs as $callback)
+            $callback(&$data);
+        if ($buffering)
+            $this->_outputData .= $data;
+        else
+            echo $data;
+        return $this;
     }
 }
 

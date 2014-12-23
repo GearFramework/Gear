@@ -31,7 +31,19 @@ final class Core
     [         
         'preloads' => 
         [
-            'library' => 
+            '\gear\library\GException',
+            '\gear\library\GEvent',
+            '\gear\CoreException',
+            '\gear\interfaces\IModule',
+            '\gear\interfaces\IComponent',
+            '\gear\interfaces\IPlugin',
+            '\gear\library\GObject',
+            '\gear\library\GModule',
+            '\gear\library\GComponent',
+            '\gear\library\GPlugin',
+            '\gear\interfaces\ILoader',
+            '\gear\GServicesContainer',
+/*            'library' => 
             [
                 '\gear\library\GException',
                 '\gear\library\GEvent',
@@ -44,6 +56,7 @@ final class Core
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
+                '\gear\GServiceContainer',
             ],
             'modules' => [],
             'components' =>
@@ -64,11 +77,48 @@ final class Core
                 'errorHandler' => ['class' => '\gear\components\gear\handlers\GErrorsHandler'],
                 // Обработчик неперехваченных исключений
                 'exceptionHandler' => ['class' => '\gear\components\gear\handlers\GExceptionsHandler'],
-            ],
+            ],*/
         ],
         'modules' => [],
-        'components' => [],
-        'params' => ['baseDir' => GEAR, 'locale' => 'ru_RU'],
+        'components' => 
+        [
+            'syslog' => 
+            [
+                'class' => '\gear\components\gear\syslog\GSyslog',
+                'autoload' => true,
+            ],
+            // Автозагрузчик классов
+            'loader' => 
+            [
+                'class' => '\gear\components\gear\loader\GLoader',
+                'aliases' => 
+                [
+                    'Arrays' => ['class' => 'gear\helpers\GArray'],
+                    'Calendar' => ['class' => 'gear\helpers\GCalendar'],
+                    'Html' => ['class' => 'gear\helpers\GHtml'],
+                ],
+                'autoload' => true,
+            ],
+            // Обработчик ошибок
+            'errorHandler' => 
+            [
+                'class' => '\gear\components\gear\handlers\GErrorsHandler',
+                'autoload' => true,
+            ],
+            // Обработчик неперехваченных исключений
+            'exceptionHandler' => 
+            [
+                'class' => '\gear\components\gear\handlers\GExceptionsHandler',
+                'autoload' => true,
+            ],
+        ],
+        'params' => 
+        [
+            'baseDir' => GEAR, 
+            'locale' => 'ru_RU',
+            'encoding' => 'utf-8',
+            'services' => ['class' => '\gear\GServicesContainer'],
+        ],
     ];
     private static $_modules = [];      // Подключенные модули
     private static $_components = [];   // Подключённые компоненты
@@ -97,6 +147,21 @@ final class Core
     
     public static function getConfig() { return self::$_config; }
     
+    public function services()
+    {
+        $services = self::params('services');
+        if (!$services)
+            self::e('Services container not defined');
+        else
+        if (!is_object($services))
+        {
+            list($class, $config, $properties) = self::getRecords($services);
+            $services = new $class($properties);
+            self::params('services', $services);
+        }
+        return $services;
+    }
+    
     /**
      * Инициализация ядра
      * 
@@ -115,15 +180,32 @@ final class Core
             $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
         if (is_string($config))
         {
-            $fileConfig = self::resolvePath($config);
+        echo 'ss';
+            $fileConfig = self::resolvePath($config, true);
             if (is_dir($fileConfig))
                 $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
+        echo 'ss';
             $config = is_file($fileConfig) ? require($fileConfig) : null;
+        echo 'ss';
         }
+        echo 'ss';
         if (!is_array($config))
             $config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]];
+        echo 'ss';
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
+        foreach(self::$_config as $sectionName => $section)
+        {
+            if ($sectionName != 'params' && $sectionName != 'preloads')
+            {
+                $serviceLocation = self::class . '.' . $sectionName;
+                foreach($section as $serviceName => $service)
+                {
+                    $serviceLocation .= '.' . $serviceName;
+                    \gear\GServiceContainer::registerService($serviceLocation, $service);
+                }
+            }
+        }
         return true;
     }
     
@@ -137,6 +219,17 @@ final class Core
      */
     private static function _preloads()
     {
+        if (isset(self::$_config['preloads']))
+        {
+            foreach(self::$_config['preloads'] as $preload)
+            {
+                $pathFile = self::resolvePath($preload, true) . '.php';
+                if (!file_exists($pathFile))
+                    self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
+                require($pathFile);
+            }
+        }
+        return true;
         foreach(self::$_config['preloads'] as $section => $preloads)
         {
             foreach($preloads as $preloadName => $preload)
@@ -218,6 +311,7 @@ final class Core
      */
     public static function m($name)
     {
+        return self::services()->getRegisteredService(self::class . '.modules.' . $name);
         if (!isset(self::$_modules[$name]))
         {
             if (!($module = self::isModuleRegistered($name)))
@@ -237,6 +331,7 @@ final class Core
      */
     public static function isModuleRegistered($name)
     {
+        return self::services()->isRegisteredService(self::class . '.modules.' . $name);
         if (isset(self::$_config['preloads']['modules'][$name]))
             return self::$_config['preloads']['modules'][$name];
         else
@@ -258,6 +353,7 @@ final class Core
      */
     public static function registerModule($name, array $module)
     {
+        return self::services()->registerService(self::class . '.modules.' . $name, $module);
         if ($existModule = self::isModuleRegistered($name))
         {
             if (!isset($existModule['override']) || !$existModule['override'])
@@ -277,6 +373,7 @@ final class Core
      */
     public static function isModuleInstalled($name)
     {
+        return self::services()->isInstalledService(self::class . '.modules.' . $name);
         return isset(self::$_modules[$name]) ? self::$_modules[$name] : null;
     }
     
@@ -290,15 +387,16 @@ final class Core
      * @param null|object $owner
      * @return \gear\library\GModule
      */
-    public static function installModule($name, array $module, $owner = null)
+    public static function installModule($name, array $module)
     {
+        return self::services()->installService(self::class . '.modules.' . $name, $module);
         if (isset(self::$_modules[$name]))
         {
             if (!self::$_modules[$name]->hasOverride())
                 self::e('Module ":moduleName" can not be overloaded', array('moduleName' => $name));
             self::uninstallModule($name);
         }
-        return self::$_modules[$name] = self::_processElement($module, $owner);
+        return self::$_modules[$name] = self::_processElement($module);
     }
     
     /**
@@ -311,6 +409,8 @@ final class Core
      */
     public static function uninstallModule($name)
     {
+        self::params('services')->uninstallService(self::class . '.modules.' . $name);
+        return true;
         if (isset(self::$_modules[$name]))
         {
             self::$_modules[$name]->event('onUninstall');
@@ -331,13 +431,6 @@ final class Core
     public static function getModules($instances = false)
     {
         $modules = array();
-        if (!$instances)
-        {
-            if (isset(self::$_config['preloads']['modules']))
-                $modules = array_keys(self::$_config['preloads']['modules']);
-            if (isset(self::$_config['modules']))
-                $modules = array_merge($modules, array_keys(self::$_config['modules']));
-        }
         return $modules;
     }
 
@@ -351,6 +444,7 @@ final class Core
      */
     public static function c($name, $instance = false)
     {
+        return self::params('services')->getRegisteredService(self::class . '.components.' . $name, $instance);
         if (!isset(self::$_components[$name]))
         {
             if (!($component = self::isComponentRegistered($name)))
@@ -375,6 +469,7 @@ final class Core
      */
     public static function isComponentRegistered($name)
     {
+        return self::params('services')->isRegisteredService(self::class . '.components.' . $name);
         if (isset(self::$_config['preloads']['components'][$name]))
             return self::$_config['preloads']['components'][$name];
         else
@@ -396,6 +491,7 @@ final class Core
      */
     public static function registerComponent($name, array $component)
     {
+        return self::services()->registerService(self::class . '.components.' . $name, $component);
         if ($c = self::isComponentRegistered($name))
         {
             if (!isset($c['override']) || !$c['override'])
@@ -415,6 +511,7 @@ final class Core
      */
     public static function isComponentInstalled($name)
     {
+        return self::services()->isInstalledService(self::class . '.components.' . $name);
         return isset(self::$_components[$name]) ? self::$_components[$name] : null;
     }
     
@@ -430,6 +527,9 @@ final class Core
      */
     public static function installComponent($name, array $component, $owner = null)
     {
+        if ($owner)
+            $properties['owner'] = $owner;
+        return self::services()->installService(self::class . '.components.' . $name, $component);
         if (isset(self::$_components[$name]))
         {
             if (!self::$_components[$name]->hasOverride())
@@ -449,6 +549,7 @@ final class Core
      */
     public static function uninstallComponent($name)
     {
+        self::params('services')->uninstallService(self::class . '.components.' . $name);
         if (isset(self::$_components[$name]))
         {
             self::$_components[$name]->event('onUninstall');
@@ -563,11 +664,14 @@ final class Core
      * @param string $path
      * @return null|string
      */
-    public static function resolvePath($path)
+    public static function resolvePath($path, $internalResolver = false)
     {
         $resolved = null;
-        if (self::isComponentInstalled('loader') && method_exists(Core::c('loader'), 'resolvePath'))
-            $resolved = Core::c('loader')->resolvePath($path);
+        if (!$internalResolver)
+        {
+            if (self::isComponentInstalled('loader') && method_exists(Core::c('loader'), 'resolvePath'))
+                $resolved = Core::c('loader')->resolvePath($path);
+        }
         else
         {
             /* Абсолютный путь */
