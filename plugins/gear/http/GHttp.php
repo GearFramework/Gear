@@ -38,6 +38,11 @@ class GHttp extends GPlugin
         $this->_header = $header;
         return $this;
     }
+    
+    public function out($data, $buffering = false)
+    {
+        echo $data;
+    }
 }
 
 class HttpException extends GException

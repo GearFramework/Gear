@@ -22,6 +22,7 @@ abstract class GModule extends GObject implements IModule
     /* Private */
     /* Protected */
     protected static $_config = [];
+    protected static $_init = false;
     protected $_components = [];
     /* Public */
     
@@ -34,9 +35,10 @@ abstract class GModule extends GObject implements IModule
      * @param array $properties
      * @return GComponent
      */
-    public static function install($config, array $properties = array())
+    public static function install($config, array $properties = [])
     {
-        static::init($config);
+        if (static::$_init === false)
+            static::init($config);
         $instance = static::it($properties);
         $instance->event('onInstalled');
         return $instance;
@@ -55,7 +57,14 @@ abstract class GModule extends GObject implements IModule
         if (is_string($config))
             $config = require(Core::resolvePath($config));
         if (!is_array($config))
-            static::e('Некорректная конфигурация');
+            static::e('Invalid configuration');
+        if (isset($config['#include']))
+        {
+            $include = $config['#include'];
+            unset($config['#include']);
+            $include = require(Core::resolvePath($include));
+            $config = array_replace_recursive($config, $include);
+        }
         static::$_config = array_replace_recursive(static::$_config, $config);
     }
     
@@ -67,7 +76,7 @@ abstract class GModule extends GObject implements IModule
      * @param array $properties
      * @return GComponent
      */
-    public static function it(array $properties = array())
+    public static function it(array $properties = [])
     {
         return new static($properties);
     }
@@ -78,7 +87,7 @@ abstract class GModule extends GObject implements IModule
     }
     
     /**
-     * Получение компонента, харегистрированного модулем
+     * Получение компонента, зарегистрированного модулем
      * 
      * @access public
      * @param string $name
@@ -92,7 +101,7 @@ abstract class GModule extends GObject implements IModule
             if (!($component = $this->isComponentRegistered($name)))
                 $this->e('Компонент модуля ":componentName" не зарегистрирован', array('componentName' => $name));
             list($class, $config, $properties) = Core::getRecords($component);
-            $this->_components[$name] = $class::install($config, $properties, $this);
+            return $this->_components[$name] = $class::install($config, $properties, $this);
         }
         return $instance ? clone $this->_components[$name] : $this->_components[$name];
     }

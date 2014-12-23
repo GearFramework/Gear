@@ -38,7 +38,7 @@ abstract class GPlugin extends GComponent implements IPlugin
      * @param null|object $owner
      * @return GPlugin
      */
-    public static function install($config = array(), array $properties = array(), $owner = null)
+    public static function install($config = [], array $properties = [], $owner = null)
     {
         static::checkDependency($owner);
         return parent::install($config, $properties, $owner);
@@ -120,10 +120,10 @@ abstract class GPlugin extends GComponent implements IPlugin
         if (preg_match('/^on[A-Z]/', $name))
         {
             array_unshift($args, $name);
-            $result = call_user_func_array(array($this, 'event'), $args);
-            return $result ? call_user_func_array(array($this->_owner, 'event'), $args) : $result;
+            $result = call_user_func_array([$this, 'event'], $args);
+            return $result ? call_user_func_array([$this->_owner, 'event'], $args) : $result;
         }
-        return call_user_func_array(array($this->getOwner(), $name), $args);
+        return call_user_func_array([$this->getOwner(), $name], $args);
     }
 
     /**

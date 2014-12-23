@@ -494,8 +494,8 @@ final class Core
             foreach(self::$_events[$name] as $handler)
             {
                 $result = call_user_func_array($handler, $args);
-                if ($result instanceof \gear\library\GEvent && 
-                    $result->stopPropagation === true)
+                if (($result instanceof \gear\library\GEvent && 
+                    $result->stopPropagation === true) || !$result)
                     break;
             }
         }
@@ -511,7 +511,7 @@ final class Core
      * @param mixed $handler callable value
      * @return boolean
      */
-    public static function attachEvents($eventName, $handler)
+    public static function attachEvent($eventName, $handler)
     {
         if (!is_callable($handler))
             self::e('Invalid handler of event ":eventName"', ['eventName' => $eventName]);

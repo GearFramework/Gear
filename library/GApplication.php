@@ -176,6 +176,32 @@ class GApplication extends GModule
         header('Location: ' . $url);
         exit(0);
     }
+    
+    /**
+     * Обработчик события, вызываемого на этапе создания объекта (из
+     * конструктора)
+     * 
+     * @access public
+     * @param GEvent $event
+     * @return boolean
+     */
+    public function onConstructed()
+    {
+        parent::onConstructed();
+        Core::attachEvent('onBeforeApplicationRun', [$this, 'onBeforeRun']);
+        Core::attachEvent('onAfterApplicationRun', [$this, 'onAfterRun']);
+        return true;
+    }
+
+    public function onBeforeRun($event)
+    {
+        return $event;
+    }
+    
+    public function onAfterRun($event)
+    {
+        return $event;
+    }
 }
 
 /** 

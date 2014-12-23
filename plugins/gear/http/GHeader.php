@@ -27,7 +27,7 @@ class GHeader extends GModel
                 return $this->get($args[0]);
         }
         else
-            return $this->setHeaders($args[0], $args[1]);
+            return $this->set($args[0], $args[1]);
     }
     
     public function __toString()
@@ -42,12 +42,11 @@ class GHeader extends GModel
     
     public function set($name, $value)
     {
-        
+        header($name . ': ' . $value);
     }
     
     public function get($name)
     {
-        echo file_get_contents('php://input');
     }
 }
 
