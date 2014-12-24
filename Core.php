@@ -50,11 +50,16 @@ final class Core
             'modules' => [],
             'components' =>
             [
-                'syslog' => ['class' => '\gear\components\gear\syslog\GSyslog'],
+                'syslog' => 
+                [
+                    'class' => '\gear\components\gear\syslog\GSyslog',
+                    'nameService' => 'syslog',
+                ],
                 // Автозагрузчик классов
                 'loader' => 
                 [
                     'class' => '\gear\components\gear\loader\GLoader',
+                    'nameService' => 'loader',
                     'aliases' => 
                     [
                         'Arrays' => ['class' => 'gear\helpers\GArray'],
@@ -63,9 +68,17 @@ final class Core
                     ],
                 ],
                 // Обработчик ошибок
-                'errorHandler' => ['class' => '\gear\components\gear\handlers\GErrorsHandler'],
+                'errorHandler' => 
+                [
+                    'class' => '\gear\components\gear\handlers\GErrorsHandler',
+                    'nameService' => 'errorHandler',
+                ],
                 // Обработчик неперехваченных исключений
-                'exceptionHandler' => ['class' => '\gear\components\gear\handlers\GExceptionsHandler'],
+                'exceptionHandler' => 
+                [
+                    'class' => '\gear\components\gear\handlers\GExceptionsHandler',
+                    'nameService' => 'exceptionHandler',
+                ],
             ],
         ],
         'modules' => [],

@@ -18,12 +18,15 @@ use \gear\interfaces\IModule;
  */
 abstract class GModule extends GObject implements IModule
 {
+    /* Traits */
+    use \gear\traits\TNamedService;
     /* Const */
     /* Private */
     /* Protected */
     protected static $_config = [];
     protected static $_init = false;
     protected $_components = [];
+    protected $_nameService = null;
     /* Public */
     
     /**
@@ -66,6 +69,13 @@ abstract class GModule extends GObject implements IModule
             $config = array_replace_recursive($config, $include);
         }
         static::$_config = array_replace_recursive(static::$_config, $config);
+        if (isset(static::$_config['components']))
+        {
+            foreach(static::$_config['components'] as $componentName => $component)
+            {
+                Core::services()->registerService(self::class . '.components.' . $componentName, $component);
+            }
+        }
     }
     
     /**
@@ -96,14 +106,18 @@ abstract class GModule extends GObject implements IModule
      */
     public function c($name, $instance = false)
     {
-        if (!isset($this->_components[$name]))
+        $location = self::class . '.components.' . $name;
+        if (!Core::services()->isRegisteredService($location))
+                $this->e('Component :componentName is not registered', array('componentName' => $name));
+        return Core::services()->getRegisteredService($location, $instance);
+/*        if (!isset($this->_components[$name]))
         {
             if (!($component = $this->isComponentRegistered($name)))
                 $this->e('Компонент модуля ":componentName" не зарегистрирован', array('componentName' => $name));
             list($class, $config, $properties) = Core::getRecords($component);
             return $this->_components[$name] = $class::install($config, $properties, $this);
         }
-        return $instance ? clone $this->_components[$name] : $this->_components[$name];
+        return $instance ? clone $this->_components[$name] : $this->_components[$name];*/
     }
     
     /**
@@ -116,7 +130,8 @@ abstract class GModule extends GObject implements IModule
      */
     public function isComponentRegistered($name)
     {
-        return isset(static::$_config['components'][$name]) ? static::$_config['components'][$name] : false;
+        return Core::services()->isRegisteredService(self::class . '.components.' . $name);
+//        return isset(static::$_config['components'][$name]) ? static::$_config['components'][$name] : false;
     }
     
     /**
@@ -129,7 +144,8 @@ abstract class GModule extends GObject implements IModule
      */
     public function registerComponent($name, $component)
     {
-        static::$_config['components'][$name] = $component;
+        Core::services()->registerService(self::class . '.components.' . $name, $component);
+//        static::$_config['components'][$name] = $component;
         return $this;
     }
 
