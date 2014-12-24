@@ -31,19 +31,7 @@ final class Core
     [         
         'preloads' => 
         [
-            '\gear\library\GException',
-            '\gear\library\GEvent',
-            '\gear\CoreException',
-            '\gear\interfaces\IModule',
-            '\gear\interfaces\IComponent',
-            '\gear\interfaces\IPlugin',
-            '\gear\library\GObject',
-            '\gear\library\GModule',
-            '\gear\library\GComponent',
-            '\gear\library\GPlugin',
-            '\gear\interfaces\ILoader',
-            '\gear\GServicesContainer',
-/*            'library' => 
+            'library' => 
             [
                 '\gear\library\GException',
                 '\gear\library\GEvent',
@@ -52,11 +40,12 @@ final class Core
                 '\gear\interfaces\IComponent',
                 '\gear\interfaces\IPlugin',
                 '\gear\library\GObject',
+                '\gear\traits\TNamedService',
                 '\gear\library\GModule',
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
-                '\gear\GServiceContainer',
+                '\gear\GServicesContainer',
             ],
             'modules' => [],
             'components' =>
@@ -77,41 +66,10 @@ final class Core
                 'errorHandler' => ['class' => '\gear\components\gear\handlers\GErrorsHandler'],
                 // Обработчик неперехваченных исключений
                 'exceptionHandler' => ['class' => '\gear\components\gear\handlers\GExceptionsHandler'],
-            ],*/
+            ],
         ],
         'modules' => [],
-        'components' => 
-        [
-            'syslog' => 
-            [
-                'class' => '\gear\components\gear\syslog\GSyslog',
-                'autoload' => true,
-            ],
-            // Автозагрузчик классов
-            'loader' => 
-            [
-                'class' => '\gear\components\gear\loader\GLoader',
-                'aliases' => 
-                [
-                    'Arrays' => ['class' => 'gear\helpers\GArray'],
-                    'Calendar' => ['class' => 'gear\helpers\GCalendar'],
-                    'Html' => ['class' => 'gear\helpers\GHtml'],
-                ],
-                'autoload' => true,
-            ],
-            // Обработчик ошибок
-            'errorHandler' => 
-            [
-                'class' => '\gear\components\gear\handlers\GErrorsHandler',
-                'autoload' => true,
-            ],
-            // Обработчик неперехваченных исключений
-            'exceptionHandler' => 
-            [
-                'class' => '\gear\components\gear\handlers\GExceptionsHandler',
-                'autoload' => true,
-            ],
-        ],
+        'components' => [],
         'params' => 
         [
             'baseDir' => GEAR, 
@@ -145,9 +103,14 @@ final class Core
             
     }
     
-    public static function getConfig() { return self::$_config; }
-    
-    public function services()
+    /**
+     * Возвращает инстанс менеджера сервисов
+     * 
+     * @access public
+     * @static
+     * @return object
+     */
+    public static function services()
     {
         $services = self::params('services');
         if (!$services)
@@ -180,18 +143,13 @@ final class Core
             $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
         if (is_string($config))
         {
-        echo 'ss';
             $fileConfig = self::resolvePath($config, true);
             if (is_dir($fileConfig))
                 $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
-        echo 'ss';
             $config = is_file($fileConfig) ? require($fileConfig) : null;
-        echo 'ss';
         }
-        echo 'ss';
         if (!is_array($config))
             $config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]];
-        echo 'ss';
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         foreach(self::$_config as $sectionName => $section)
@@ -202,7 +160,7 @@ final class Core
                 foreach($section as $serviceName => $service)
                 {
                     $serviceLocation .= '.' . $serviceName;
-                    \gear\GServiceContainer::registerService($serviceLocation, $service);
+                    self::services()->registerService($serviceLocation, $service);
                 }
             }
         }
@@ -219,17 +177,6 @@ final class Core
      */
     private static function _preloads()
     {
-        if (isset(self::$_config['preloads']))
-        {
-            foreach(self::$_config['preloads'] as $preload)
-            {
-                $pathFile = self::resolvePath($preload, true) . '.php';
-                if (!file_exists($pathFile))
-                    self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
-                require($pathFile);
-            }
-        }
-        return true;
         foreach(self::$_config['preloads'] as $section => $preloads)
         {
             foreach($preloads as $preloadName => $preload)
@@ -238,7 +185,7 @@ final class Core
                 {
                     case 'library' :
                     {
-                        $pathFile = self::resolvePath($preload) . '.php';
+                        $pathFile = self::resolvePath($preload, true) . '.php';
                         if (!file_exists($pathFile))
                             self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
                         require($pathFile);
@@ -248,11 +195,13 @@ final class Core
                     case 'components' :
                     {
                         list($class, $config, $properties) = self::getRecords($preload);
-                        $pathFile = self::resolvePath($class) . '.php';
+                        $pathFile = self::resolvePath($class, true) . '.php';
                         if (!file_exists($pathFile))
                             self::e('File ":preloadName" not found', array('preloadName' => $preloadName));
                         require($pathFile);
-                        self::${'_' . $section}[$preloadName] = $class::install($config, $properties);
+                        $instance = $class::install($config, $properties);
+                        self::services()->installService(self::class . '.' . $section . '.' . $preloadName, $instance);
+                        //self::${'_' . $section}[$preloadName] = $class::install($config, $properties);
                     }
                 }
             }

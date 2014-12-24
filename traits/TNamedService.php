@@ -4,8 +4,19 @@ namespace gear\traits;
 
 trait TNamedService
 {
-    public function getNameService($section = null)
+    public function getNameService()
     {
-        return self::class . '.' . ($section ? $section : '');
+        return $this->_nameService;
+    }
+
+    public function setNameService($nameService)
+    {
+        $this->_nameService = $nameService;
+        return $this;
+    }
+    
+    public function nameService()
+    {
+        return $this->getNameService();
     }
 }

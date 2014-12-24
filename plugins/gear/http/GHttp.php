@@ -46,8 +46,8 @@ class GHttp extends GPlugin
     
     public function out($data, $buffering = false)
     {
-        foreach($this->callbackOutputs as $callback)
-            $callback(&$data);
+        foreach($this->_callbacksOutputs as $callback)
+            $data = $callback($data);
         if ($buffering)
             $this->_outputData .= $data;
         else
