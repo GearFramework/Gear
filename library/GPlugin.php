@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+
 use \gear\Core;
 use \gear\library\GObject;
 use \gear\library\GComponent;
@@ -22,7 +23,7 @@ abstract class GPlugin extends GComponent implements IPlugin
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array();
+    protected static $_config = [];
     protected static $_init = false;
     /* Public */
 

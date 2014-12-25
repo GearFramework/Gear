@@ -21,10 +21,10 @@ class GProcessComponent extends GComponent
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array();
+    protected static $_config = [];
     protected static $_init = false;
     protected $_defaultProcess = 'index';
-    protected $_processes = array();
+    protected $_processes = [];
     protected $_currentProcess = null;
     /* Public */
     
@@ -36,38 +36,38 @@ class GProcessComponent extends GComponent
      * @throws ProcessComponentException 
      * @return mixed
      */
-    public function exec($request = array())
+    public function exec($request = [])
     {
         try
         {
             $args = func_get_args();
             $nums = func_num_args();
             if (!$nums)
-                $this->_currentProcess = $this->_prepareProcess(array());
+                $this->_currentProcess = $this->_prepareProcess([]);
             else
             if ($nums >= 1)
             {
                 if ($args[0] instanceof \gear\interfaces\IProcess || $args[0] instanceof \Closure)
                 {
-                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : array();
+                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : [];
                     $this->_currentProcess = $args[0];
                 }
                 else
                 {
-                    $request = is_array($args[0]) ? $args[0] : array();
+                    $request = is_array($args[0]) ? $args[0] : [];
                     $this->_currentProcess = $this->_prepareProcess($request);
                 }
             }
             return call_user_func
             (
-                $this->_currentProcess instanceof \Closure ? $this->_currentProcess : array($this->_currentProcess, 'entry'), 
+                $this->_currentProcess instanceof \Closure ? $this->_currentProcess : [$this->_currentProcess, 'entry'], 
                 $request
             );
         }
         catch(GException $e)
         {
             $this->event('onProcessNotFound', $e, $request);
-            if (Core::app()->hasHttp())
+            if (Core::app()->isHttp())
             {
                 header('HTTP/1.0 404 Not Found', true, 404);
                 echo $e->getMessage();
@@ -111,19 +111,19 @@ class GProcessComponent extends GComponent
                 else
                 {
                     $class = $this->_prepareProcessClass($processName);
-                    $properties = array_merge($processes[$processName], array('name' => $processName));
+                    $properties = array_merge($processes[$processName], ['name' => $processName]);
                 }
             }
             else
             {
                 $class = $this->_prepareProcessClass($processName);
-                $properties = array('name' => $processName, 'params' => $processes[$processName]);
+                $properties = ['name' => $processName, 'params' => $processes[$processName]];
             }
         }
         else
         {
             $class = $this->_prepareProcessClass($processName);
-            $properties = array('name' => $processName);
+            $properties = ['name' => $processName];
         }
         return $process ? $process : new $class($properties);
     }
@@ -184,6 +184,7 @@ class GProcessComponent extends GComponent
     public function addProcess($name, $process)
     {
         $this->_processes[$name] = $process;
+        return $this;
     }
     
     /**
