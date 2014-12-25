@@ -148,7 +148,8 @@ final class Core
      * @throws \Exception
      * @return boolean
      */
-    public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
+    public static function init($config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]], 
+                                $coreMode = self::MODE_DEVELOPMENT)
     {
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
@@ -162,7 +163,7 @@ final class Core
             $config = is_file($fileConfig) ? require($fileConfig) : null;
         }
         if (!is_array($config))
-            $config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]];
+            self::e('Invalid configuration');
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         foreach(self::$_config as $sectionName => $section)
@@ -213,7 +214,6 @@ final class Core
                         require($pathFile);
                         $instance = $class::install($config, $properties);
                         self::services()->installService(self::class . '.' . $section . '.' . $preloadName, $instance);
-                        //self::${'_' . $section}[$preloadName] = $class::install($config, $properties);
                     }
                 }
             }
@@ -273,13 +273,6 @@ final class Core
     public static function m($name)
     {
         return self::services()->getRegisteredService(self::class . '.modules.' . $name);
-        if (!isset(self::$_modules[$name]))
-        {
-            if (!($module = self::isModuleRegistered($name)))
-                self::e('Module ":moduleName" is not registered', array('moduleName' => $name));
-            self::installModule($name, $module);
-        }
-        return self::$_modules[$name];
     }
     
     /**
@@ -293,13 +286,6 @@ final class Core
     public static function isModuleRegistered($name)
     {
         return self::services()->isRegisteredService(self::class . '.modules.' . $name);
-        if (isset(self::$_config['preloads']['modules'][$name]))
-            return self::$_config['preloads']['modules'][$name];
-        else
-        if (isset(self::$_config['modules'][$name]))
-            return self::$_config['modules'][$name];
-        else
-            return false;
     }
     
     /**
@@ -314,13 +300,7 @@ final class Core
      */
     public static function registerModule($name, array $module)
     {
-        return self::services()->registerService(self::class . '.modules.' . $name, $module);
-        if ($existModule = self::isModuleRegistered($name))
-        {
-            if (!isset($existModule['override']) || !$existModule['override'])
-                self::e('Module ":moduleName" can not be overloaded', array('moduleName' => $name));
-        }
-        self::$_config['modules'][$name] = $module;
+        self::services()->registerService(self::class . '.modules.' . $name, $module);
         return true;
     }
     
@@ -335,7 +315,6 @@ final class Core
     public static function isModuleInstalled($name)
     {
         return self::services()->isInstalledService(self::class . '.modules.' . $name);
-        return isset(self::$_modules[$name]) ? self::$_modules[$name] : null;
     }
     
     /**
@@ -351,13 +330,6 @@ final class Core
     public static function installModule($name, array $module)
     {
         return self::services()->installService(self::class . '.modules.' . $name, $module);
-        if (isset(self::$_modules[$name]))
-        {
-            if (!self::$_modules[$name]->hasOverride())
-                self::e('Module ":moduleName" can not be overloaded', array('moduleName' => $name));
-            self::uninstallModule($name);
-        }
-        return self::$_modules[$name] = self::_processElement($module);
     }
     
     /**
@@ -370,31 +342,10 @@ final class Core
      */
     public static function uninstallModule($name)
     {
-        self::params('services')->uninstallService(self::class . '.modules.' . $name);
+        self::services()->uninstallService(self::class . '.modules.' . $name);
         return true;
-        if (isset(self::$_modules[$name]))
-        {
-            self::$_modules[$name]->event('onUninstall');
-            unset(self::$_modules[$name]);
-            return true;
-        }
-        return false;
     }
     
-    /**
-     * Возвращает список модулей
-     * 
-     * @access public
-     * @static
-     * @param bool $instances
-     * @return array
-     */
-    public static function getModules($instances = false)
-    {
-        $modules = array();
-        return $modules;
-    }
-
     /**
      * Получение компонента
      * 
@@ -406,18 +357,6 @@ final class Core
     public static function c($name, $instance = false)
     {
         return self::params('services')->getRegisteredService(self::class . '.components.' . $name, $instance);
-        if (!isset(self::$_components[$name]))
-        {
-            if (!($component = self::isComponentRegistered($name)))
-                self::e('Component ":componentName" is not registered', array('componentName' => $name));
-            self::installComponent($name, $component);
-        }
-        if ($instance)
-        {
-            $component = clone self::$_components[$name];
-            return is_object($instance) ? $component->setOwner($instance) : $component;
-        } 
-        return self::$_components[$name];
     }
     
     /**
@@ -431,13 +370,6 @@ final class Core
     public static function isComponentRegistered($name)
     {
         return self::params('services')->isRegisteredService(self::class . '.components.' . $name);
-        if (isset(self::$_config['preloads']['components'][$name]))
-            return self::$_config['preloads']['components'][$name];
-        else
-        if (isset(self::$_config['components'][$name]))
-            return self::$_config['components'][$name];
-        else
-            return false;
     }
     
     /**
@@ -452,13 +384,7 @@ final class Core
      */
     public static function registerComponent($name, array $component)
     {
-        return self::services()->registerService(self::class . '.components.' . $name, $component);
-        if ($c = self::isComponentRegistered($name))
-        {
-            if (!isset($c['override']) || !$c['override'])
-                self::e('Component ":componentName" can not be overloaded', array('componentName' => $name));
-        }
-        self::$_config['components'][$name] = $component;
+        self::services()->registerService(self::class . '.components.' . $name, $component);
         return true;
     }
     
@@ -473,7 +399,6 @@ final class Core
     public static function isComponentInstalled($name)
     {
         return self::services()->isInstalledService(self::class . '.components.' . $name);
-        return isset(self::$_components[$name]) ? self::$_components[$name] : null;
     }
     
     /**
@@ -491,13 +416,6 @@ final class Core
         if ($owner)
             $properties['owner'] = $owner;
         return self::services()->installService(self::class . '.components.' . $name, $component);
-        if (isset(self::$_components[$name]))
-        {
-            if (!self::$_components[$name]->hasOverride())
-                self::e('Component ":componentName" can not be overloaded', array('componentName' => $name));
-            self::uninstallComponent($name);
-        }
-        return self::$_components[$name] = self::_processElement($component, $owner);
     }
     
     /**
@@ -511,28 +429,7 @@ final class Core
     public static function uninstallComponent($name)
     {
         self::params('services')->uninstallService(self::class . '.components.' . $name);
-        if (isset(self::$_components[$name]))
-        {
-            self::$_components[$name]->event('onUninstall');
-            unset(self::$_components[$name]);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Обработка элемента (получение и устновка модуля или компонента)
-     * 
-     * @access private
-     * @static
-     * @param array $element
-     * @param null|object $owner
-     * @return object
-     */
-    private static function _processElement(array $element, $owner = null)
-    {
-        list($class, $config, $properties) = self::getRecords($element);
-        return $class::install($config, $properties, $owner);
+        return true;
     }
     
     /**
@@ -562,6 +459,20 @@ final class Core
             }
         }
         return $result;
+    }
+    
+    /**
+     * генерация события
+     * 
+     * @access public
+     * @static
+     * @param string $name
+     * @param object $event
+     * @return void
+     */
+    public static function on($name, $event)
+    {
+        return self::event($name, $event);
     }
     
     /**
@@ -600,21 +511,39 @@ final class Core
             $config = $class;
             $class = $config['name'];
             unset($config['name']);
-            if (isset($config['#config']))
-                $config = self::resolvePath($config['#config']);
+            self::_includeRecords($config);
+            self::_importRecords($config);
         }
-        if (isset($properties['#import']))
+        self::_includeRecords($properties);
+        self::_importRecords($properties);
+        return array($class, $config, $properties);
+    }
+    
+    private static function _importRecords(array &$array)
+    {
+        if (isset($array['#import']))
         {
-            if (is_array($properties['#import']))
+            $import = $array['#import'];
+            unset($array['#import']);
+            if (is_array($import))
             {
-                foreach($properties['#import'] as $nameArg)
-                    $properties = array_merge($properties, self::arg($properties['#import']));
+                foreach($import as $importName)
+                    $array[$importName] = self::params($importName);
             }
             else
-                $properties = array_merge($properties, self::arg($properties['#import']));
-            unset($properties['#import']);
+                $array[$import] = self::params($import);
         }
-        return array($class, $config, $properties);
+    }
+    
+    private static function _includeRecords(array &$array)
+    {
+        if (isset($array['#include']))
+        {
+            $include = require(self::resolvePath($array['#include']));
+            unset($array['#include']);
+            if (is_array($include))
+                $array = array_replace_recursive($array, $include);
+        }
     }
     
     /**

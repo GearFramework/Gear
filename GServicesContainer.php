@@ -4,6 +4,15 @@ namespace gear;
 
 use gear\Core;
 
+/**
+ * Менеджер сервисов (управление модулями, компонентами, плагинами)
+ * 
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis
+ * @version 1.0.0
+ * @since 23.12.2014
+ */
 class GServicesContainer
 {
     /* Const */
@@ -12,6 +21,14 @@ class GServicesContainer
     /* Protected */
     /* Public */
     
+    /**
+     * Регистрация сервиса
+     * 
+     * @access public
+     * @param string $serviceLocation
+     * @param array $service
+     * @return $this
+     */
     public function registerService($serviceLocation, array $service)
     {
         $this->_services[$serviceLocation] = $service;
@@ -23,11 +40,26 @@ class GServicesContainer
         return $this;
     }
     
-    public function isRegisteredService($service) 
+    /**
+     * Возвращает true если указанный сервис зарегисттрирован, иначе - false 
+     * 
+     * @access public
+     * @param string $serviceLocation
+     * @return boolean
+     */
+    public function isRegisteredService($serviceLocation) 
     { 
-        return isset($this->_services[$service]); 
+        return isset($this->_services[$serviceLocation]); 
     }
     
+    /**
+     * Инсталляция сервиса (создание инстанса)
+     * 
+     * @access public
+     * @param string $serviceLocation
+     * @param array|object $service
+     * @return object
+     */
     public function installService($serviceLocation, $service)
     {
         if (is_array($service))
@@ -38,16 +70,29 @@ class GServicesContainer
             else
                 $service = $this->_services[$serviceLocation] = new $class($properties);
         }
-        $this->_services[$serviceLocation] = $service;
-        return $this;
+        return $this->_services[$serviceLocation] = $service;
     }
     
-    public function isInstalledService($service) 
+    /**
+     * Возвращает true если сервис инсталлирован, иначе - false
+     * 
+     * @access public
+     * @param string $serviceLocation
+     * @return boolean
+     */
+    public function isInstalledService($serviceLocation) 
     { 
-        return isset($this->_services[$service]) && is_object($this->_services[$service]); 
+        return isset($this->_services[$serviceLocation]) && is_object($this->_services[$serviceLocation]); 
     }
     
-    public function uninstallService($service)
+    /**
+     * Деинсталляция сервиса
+     * 
+     * @access public
+     * @param string $serviceLocation
+     * @return $this
+     */
+    public function uninstallService($serviceLocation)
     {
         if (isset($this->_services[$service]))
         {
@@ -57,7 +102,16 @@ class GServicesContainer
         return $this;
     }
     
-    public function getRegisteredService($service, $clone = false)
+    /**
+     * Возврашщает инстанс зарегистрированного сервиса. Если $clone установлен
+     * в true, то возвращается его копия
+     * 
+     * @access
+     * @param string $serviceLocation
+     * @param boolean $clone
+     * @return object
+     */
+    public function getRegisteredService($serviceLocation, $clone = false)
     {
         if (!isset($this->_services[$service]))
             Core::e('Service :service not registered', ['service' => $service]);

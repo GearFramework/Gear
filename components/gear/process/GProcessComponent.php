@@ -177,10 +177,22 @@ class GProcessComponent extends GComponent
      * 
      * @access public
      * @param array $processes
-     * @return void
+     * @return $this
      */
-    public function appendProcesses(array $processes) { $this->_processes = array_merge($this->_processes, $processes); }
+    public function appendProcesses(array $processes) 
+    { 
+        $this->_processes = array_merge($this->_processes, $processes);
+        return $this; 
+    }
     
+    /**
+     * Добавляет процесс в список
+     * 
+     * @access public
+     * @param string $name
+     * @param mixed $process
+     * @return $this
+     */
     public function addProcess($name, $process)
     {
         $this->_processes[$name] = $process;
