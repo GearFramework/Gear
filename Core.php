@@ -169,10 +169,9 @@ final class Core
         {
             if ($sectionName != 'params' && $sectionName != 'preloads')
             {
-                $serviceLocation = self::class . '.' . $sectionName;
                 foreach($section as $serviceName => $service)
                 {
-                    $serviceLocation .= '.' . $serviceName;
+                    $serviceLocation = self::class . '.' . $sectionName . '.' . $serviceName;
                     self::services()->registerService($serviceLocation, $service);
                 }
             }
