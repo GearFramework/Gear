@@ -7,14 +7,14 @@ use \gear\library\GObject;
 use \gear\library\GException;
 
 /** 
- * Класс компонентов
+ * Класс сервисов
  * 
  * @package Gear Framework
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
- * @since 01.08.2013
+ * @version 1.0.0
+ * @since 25.12.2014
  */
 abstract class GService extends GObject
 {
@@ -42,7 +42,7 @@ abstract class GService extends GObject
      * @access public
      * @static
      * @param string|array $config
-     * @return GComponent
+     * @return GService
      */
     public static function install($config)
     {
@@ -50,7 +50,7 @@ abstract class GService extends GObject
             static::init($config);
         $args = func_get_args();
         array_shift($args);
-        $instance = call_user_func_array([static::class, 'it'], $args);
+        $instance = call_user_func_array([get_called_class(), 'it'], $args);
         $instance->event('onInstalled');
         return $instance;
     }
@@ -69,8 +69,7 @@ abstract class GService extends GObject
             $config = require(Core::resolvePath($config));
         if (!is_array($config))
             static::e('Incorrect configuration');
-        
-        static::$_config = array_replace_recursive(static::$_config, $config);
+        static::$_config = array_replace_recursive(static::$_config, Core::configure($config));
     }
     
     /**

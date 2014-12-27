@@ -3,7 +3,7 @@
 namespace gear\library;
 
 use \gear\Core;
-use \gear\library\GObject;
+use \gear\library\GService;
 use \gear\library\GException;
 use \gear\interfaces\IComponent;
 
@@ -17,7 +17,7 @@ use \gear\interfaces\IComponent;
  * @version 0.0.1
  * @since 01.08.2013
  */
-abstract class GComponent extends GObject implements IComponent
+abstract class GComponent extends GService implements IComponent
 {
     /* Traits */
     use \gear\traits\TNamedService;

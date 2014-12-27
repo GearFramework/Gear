@@ -1,6 +1,6 @@
 <?php
 
-namespace gear;
+namespace gear\library\container;
 
 use gear\Core;
 
@@ -113,16 +113,16 @@ class GServicesContainer
      */
     public function getRegisteredService($serviceLocation, $clone = false)
     {
-        if (!isset($this->_services[$service]))
-            Core::e('Service :service not registered', ['service' => $service]);
-        if (!is_object($this->_services[$service]))
+        if (!isset($this->_services[$serviceLocation]))
+            Core::e('Service :serviceName not registered', ['serviceName' => $serviceLocation]);
+        if (!is_object($this->_services[$serviceLocation]))
         {
-            list($class, $config, $properties) = Core::getRecords($this->_services[$service]);
+            list($class, $config, $properties) = Core::getRecords($this->_services[$serviceLocation]);
             if (method_exists($class, 'install'))
-                return $this->_services[$service] = $class::install($config, $properties);
+                return $this->_services[$serviceLocation] = $class::install($config, $properties);
             else
-                return $this->_services[$service] = new $class($properties);
+                return $this->_services[$serviceLocation] = new $class($properties);
         }
-        return $clone ? clone $this->_services[$service] : $this->_services[$service];
+        return $clone ? clone $this->_services[$serviceLocation] : $this->_services[$serviceLocation];
     }
 }

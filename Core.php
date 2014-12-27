@@ -41,11 +41,11 @@ final class Core
                 '\gear\interfaces\IPlugin',
                 '\gear\library\GObject',
                 '\gear\traits\TNamedService',
+                '\gear\library\GService',
                 '\gear\library\GModule',
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
-                '\gear\GServicesContainer',
             ],
             'modules' => [],
             'components' =>
@@ -88,11 +88,10 @@ final class Core
             'baseDir' => GEAR, 
             'locale' => 'ru_RU',
             'encoding' => 'utf-8',
-            'services' => ['class' => '\gear\GServicesContainer'],
+            'services' => ['class' => '\gear\library\container\GServicesContainer'],
+            'configurator' => ['class' => '\gear\library\configurator\GConfigurator'],
         ],
     ];
-    private static $_modules = [];      // Подключенные модули
-    private static $_components = [];   // Подключённые компоненты
     private static $_events = [];       // Обработчики событий
     private static $_coreMode = null;   // Режим запуска PRODUCTION или DEVELOPMENT
     private static $_runMode = null;    // Окружение: http или консоль
@@ -132,10 +131,38 @@ final class Core
         if (!is_object($services))
         {
             list($class, $config, $properties) = self::getRecords($services);
+            $file = self::resolvePath($class, true) . '.php';
+            require $file;
+            if (method_exists($class, 'init')) { $class::init($config); }
             $services = new $class($properties);
             self::params('services', $services);
         }
         return $services;
+    }
+    
+    /**
+     * Возвращает инстанс конфигуратора
+     * 
+     * @access public
+     * @static
+     * @return object
+     */
+    public static function configurator()
+    {
+        $configurator = self::params('configurator');
+        if (!$configurator)
+            self::e('Configurator not defined');
+        else
+        if (!is_object($configurator))
+        {
+            list($class, $config, $properties) = self::getRecords($configurator, true);
+            $file = self::resolvePath($class, true) . '.php';
+            require $file;
+            if (method_exists($class, 'init')) { $class::init($config); }
+            $configurator = new $class($properties);
+            self::params('configurator', $configurator);
+        }
+        return !func_num_args() ? $configurator : call_user_func_array([$configurator, 'configure'], func_get_args());
     }
     
     /**
@@ -148,8 +175,7 @@ final class Core
      * @throws \Exception
      * @return boolean
      */
-    public static function init($config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]], 
-                                $coreMode = self::MODE_DEVELOPMENT)
+    public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
@@ -163,7 +189,7 @@ final class Core
             $config = is_file($fileConfig) ? require($fileConfig) : null;
         }
         if (!is_array($config))
-            self::e('Invalid configuration');
+            $config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]];
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         foreach(self::$_config as $sectionName => $section)
@@ -190,35 +216,42 @@ final class Core
      */
     private static function _preloads()
     {
-        foreach(self::$_config['preloads'] as $section => $preloads)
+        foreach(self::$_config['preloads']['library'] as $class)
         {
-            foreach($preloads as $preloadName => $preload)
-            {
-                switch($section)
-                {
-                    case 'library' :
-                    {
-                        $pathFile = self::resolvePath($preload, true) . '.php';
-                        if (!file_exists($pathFile))
-                            self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
-                        require($pathFile);
-                        break;
-                    }
-                    case 'modules' :
-                    case 'components' :
-                    {
-                        list($class, $config, $properties) = self::getRecords($preload);
-                        $pathFile = self::resolvePath($class, true) . '.php';
-                        if (!file_exists($pathFile))
-                            self::e('File ":preloadName" not found', array('preloadName' => $preloadName));
-                        require($pathFile);
-                        $instance = $class::install($config, $properties);
-                        self::services()->installService(self::class . '.' . $section . '.' . $preloadName, $instance);
-                    }
-                }
-            }
+            $pathFile = self::resolvePath($class, true) . '.php';
+            if (!file_exists($pathFile))
+                self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
+            require($pathFile);
+        }
+        foreach(self::$_config['preloads'] as $sectionName => $section)
+        {
+            if ($sectionName !== 'library')
+                self::_preloadSection ($sectionName, $section);
         }
         return true;
+    }
+    
+    /**
+     * Подгрузка модулей и компонентов на этапе конфигурации ядра
+     * 
+     * @access private
+     * @static
+     * @param string $sectionName
+     * @param array $section
+     * @return void
+     */
+    private static function _preloadSection($sectionName, array $section)
+    {
+        foreach($section as $serviceName => $service)
+        {
+            list($class, $config, $properties) = self::getRecords($service);
+            $pathFile = self::resolvePath($class, true) . '.php';
+            if (!file_exists($pathFile))
+                self::e('File ":preloadName" not found', array('preloadName' => $pathFile));
+            require($pathFile);
+            $instance = $class::install($config, $properties);
+            self::services()->installService(self::class . '.' . $sectionName . '.' . $serviceName, $instance);
+        }
     }
 
     /**
@@ -272,7 +305,14 @@ final class Core
      */
     public static function m($name)
     {
+        try
+        {
         return self::services()->getRegisteredService(self::class . '.modules.' . $name);
+        }
+        catch(\Exception $e)
+        {
+            echo $e->getTraceAsString();
+        }
     }
     
     /**
@@ -356,7 +396,14 @@ final class Core
      */
     public static function c($name, $instance = false)
     {
+        try
+        {
         return self::params('services')->getRegisteredService(self::class . '.components.' . $name, $instance);
+        }
+        catch(\Exception $e)
+        {
+            Core::dump($e->getTrace());
+        }
     }
     
     /**
@@ -499,10 +546,13 @@ final class Core
      * @access public
      * @static
      * @param array $properties
+     * @param boolean $basic
      * @return array as Array(className, configuration, properties)
      */
-    public static function getRecords(array $properties)
+    public static function getRecords(array $properties, $basic = false)
     {
+        if (!$basic)
+            $properties = self::configurator($properties);
         $class = $properties['class'];
         unset($properties['class']);
         $config = array();
@@ -511,39 +561,10 @@ final class Core
             $config = $class;
             $class = $config['name'];
             unset($config['name']);
-            self::_includeRecords($config);
-            self::_importRecords($config);
+            if (!$basic)
+                $config = self::configurator($config);
         }
-        self::_includeRecords($properties);
-        self::_importRecords($properties);
         return array($class, $config, $properties);
-    }
-    
-    private static function _importRecords(array &$array)
-    {
-        if (isset($array['#import']))
-        {
-            $import = $array['#import'];
-            unset($array['#import']);
-            if (is_array($import))
-            {
-                foreach($import as $importName)
-                    $array[$importName] = self::params($importName);
-            }
-            else
-                $array[$import] = self::params($import);
-        }
-    }
-    
-    private static function _includeRecords(array &$array)
-    {
-        if (isset($array['#include']))
-        {
-            $include = require(self::resolvePath($array['#include']));
-            unset($array['#include']);
-            if (is_array($include))
-                $array = array_replace_recursive($array, $include);
-        }
     }
     
     /**

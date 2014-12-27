@@ -3,7 +3,7 @@
 namespace gear\library;
 
 use \gear\Core;
-use \gear\library\GObject;
+use \gear\library\GService;
 use \gear\library\GException;
 use \gear\interfaces\IModule;
 
@@ -17,7 +17,7 @@ use \gear\interfaces\IModule;
  * @version 0.0.1
  * @since 01.08.2013
  */
-abstract class GModule extends GObject implements IModule
+abstract class GModule extends GService implements IModule
 {
     /* Traits */
     use \gear\traits\TNamedService;
