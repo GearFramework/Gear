@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+
 use \gear\Core;
 use \gear\library\GObject;
 use \gear\library\GException;
@@ -30,7 +31,7 @@ class GModel extends GObject
      * @param array $properties
      * @return void
      */
-    public function __construct(array $properties = array()) { parent::__construct($properties); }
+    public function __construct(array $properties = array(), $owner = null) { parent::__construct($properties, $owner); }
 
     /**
      * Клонирование

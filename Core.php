@@ -36,6 +36,7 @@ final class Core
                 '\gear\library\GException',
                 '\gear\library\GEvent',
                 '\gear\CoreException',
+                '\gear\interfaces\IService',
                 '\gear\interfaces\IModule',
                 '\gear\interfaces\IComponent',
                 '\gear\interfaces\IPlugin',
@@ -53,13 +54,13 @@ final class Core
                 'syslog' => 
                 [
                     'class' => '\gear\components\gear\syslog\GSyslog',
-                    'nameService' => 'syslog',
+                    'name' => 'syslog',
                 ],
                 // Автозагрузчик классов
                 'loader' => 
                 [
                     'class' => '\gear\components\gear\loader\GLoader',
-                    'nameService' => 'loader',
+                    'name' => 'loader',
                     'aliases' => 
                     [
                         'Arrays' => ['class' => 'gear\helpers\GArray'],
@@ -71,13 +72,13 @@ final class Core
                 'errorHandler' => 
                 [
                     'class' => '\gear\components\gear\handlers\GErrorsHandler',
-                    'nameService' => 'errorHandler',
+                    'name' => 'errorHandler',
                 ],
                 // Обработчик неперехваченных исключений
                 'exceptionHandler' => 
                 [
                     'class' => '\gear\components\gear\handlers\GExceptionsHandler',
-                    'nameService' => 'exceptionHandler',
+                    'name' => 'exceptionHandler',
                 ],
             ],
         ],

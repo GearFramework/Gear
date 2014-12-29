@@ -2,10 +2,10 @@
 
 namespace gear\library;
 
-use \gear\Core;
-use \gear\library\GService;
-use \gear\library\GException;
-use \gear\interfaces\IModule;
+use gear\Core;
+use gear\library\GService;
+use gear\library\GException;
+use gear\interfaces\IModule;
 
 /** 
  * Класс модулей
@@ -20,78 +20,13 @@ use \gear\interfaces\IModule;
 abstract class GModule extends GService implements IModule
 {
     /* Traits */
-    use \gear\traits\TNamedService;
     /* Const */
     /* Private */
     /* Protected */
     protected static $_config = [];
     protected static $_init = false;
-    protected $_components = [];
-    protected $_nameService = null;
     /* Public */
-    
-    /**
-     * Установка модуля
-     * 
-     * @access public
-     * @static
-     * @param string|array $config
-     * @param array $properties
-     * @return GComponent
-     */
-    public static function install($config, array $properties = [])
-    {
-        if (static::$_init === false)
-            static::init($config);
-        $instance = static::it($properties);
-        $instance->event('onInstalled');
-        return $instance;
-    }
-    
-    /**
-     * Конфигурирование класса модуля
-     * 
-     * @access public
-     * @static
-     * @param string|array $config
-     * @return void
-     */
-    public static function init($config)
-    {
-        if (is_string($config))
-            $config = require(Core::resolvePath($config));
-        if (!is_array($config))
-            static::e('Invalid configuration');
-        if (isset($config['#include']))
-        {
-            $include = $config['#include'];
-            unset($config['#include']);
-            $include = require(Core::resolvePath($include));
-            $config = array_replace_recursive($config, $include);
-        }
-        static::$_config = array_replace_recursive(static::$_config, $config);
-        if (isset(static::$_config['components']))
-        {
-            foreach(static::$_config['components'] as $componentName => $component)
-            {
-                Core::services()->registerService(self::class . '.components.' . $componentName, $component);
-            }
-        }
-    }
-    
-    /**
-     * Получение экземпляра модуля
-     * 
-     * @access public
-     * @static
-     * @param array $properties
-     * @return GComponent
-     */
-    public static function it(array $properties = [])
-    {
-        return new static($properties);
-    }
-    
+
     public function __get($name)
     {
         return $this->isComponentRegistered($name) ? $this->c($name) : parent::__get($name);
@@ -103,22 +38,14 @@ abstract class GModule extends GService implements IModule
      * @access public
      * @param string $name
      * @param boolean $instance
-     * @return GComponent
+     * @return IComponent
      */
     public function c($name, $instance = false)
     {
-        $location = self::class . '.components.' . $name;
+        $location = static::class . '.components.' . $name;
         if (!Core::services()->isRegisteredService($location))
                 $this->e('Component :componentName is not registered', array('componentName' => $name));
         return Core::services()->getRegisteredService($location, $instance);
-/*        if (!isset($this->_components[$name]))
-        {
-            if (!($component = $this->isComponentRegistered($name)))
-                $this->e('Компонент модуля ":componentName" не зарегистрирован', array('componentName' => $name));
-            list($class, $config, $properties) = Core::getRecords($component);
-            return $this->_components[$name] = $class::install($config, $properties, $this);
-        }
-        return $instance ? clone $this->_components[$name] : $this->_components[$name];*/
     }
     
     /**
@@ -127,12 +54,11 @@ abstract class GModule extends GService implements IModule
      * 
      * @access public
      * @param string $name
-     * @return array|false
+     * @return boolean
      */
     public function isComponentRegistered($name)
     {
-        return Core::services()->isRegisteredService(self::class . '.components.' . $name);
-//        return isset(static::$_config['components'][$name]) ? static::$_config['components'][$name] : false;
+        return Core::services()->isRegisteredService(static::class . '.components.' . $name);
     }
     
     /**
@@ -145,8 +71,7 @@ abstract class GModule extends GService implements IModule
      */
     public function registerComponent($name, $component)
     {
-        Core::services()->registerService(self::class . '.components.' . $name, $component);
-//        static::$_config['components'][$name] = $component;
+        Core::services()->registerService(static::class . '.components.' . $name, $component);
         return $this;
     }
 

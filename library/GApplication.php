@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+
 use gear\Core;
 use gear\library\GModule;
 use gear\library\GException;

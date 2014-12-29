@@ -25,13 +25,12 @@ class GObject
         'plugins' => 
         [
             'view' => ['class' => '\gear\plugins\gear\GView'],
-            'log' => ['class' => '\gear\plugins\gear\GLog'],
         ],
         'behaviors' => [],
     );
+    protected $_access = Core::ACCESS_PUBLIC;
     protected $_properties = [];
     protected $_owner = null;
-    protected $_access = Core::ACCESS_PUBLIC;
     protected $_behaviors = [];
     protected $_plugins = [];
     protected $_events = [];
@@ -47,10 +46,12 @@ class GObject
      * @param array $properties
      * @return void
      */
-    protected function __construct(array $properties = [])
+    protected function __construct(array $properties = [], $owner = null)
     {
         foreach($properties as $name => $value)
             $this->$name = $value;
+        if ($owner)
+            $this->setOwner($owner);
         $this->event('onConstructed');
     }
     
@@ -61,10 +62,7 @@ class GObject
      * @access public 
      * @return void
      */
-    public function __destruct()
-    {
-        $this->event('onDestroy');
-    }
+    public function __destruct() { $this->event('onDestroy'); }
     
     /**
      * Запрещено клонирование
@@ -188,7 +186,7 @@ class GObject
      * 
      * @access public
      * @param string $name
-     * @return boolen
+     * @return mixed
      */
     public function __isset($name)
     {
@@ -290,7 +288,7 @@ class GObject
      * 
      * @access public
      * @param string $path
-     * @return void
+     * @return $this
      */
     public function setViewPath($path)
     {

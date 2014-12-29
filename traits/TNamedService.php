@@ -4,18 +4,18 @@ namespace gear\traits;
 
 trait TNamedService
 {
-    public function getNameService()
+    public function getName()
     {
-        return $this->_nameService;
+        return $this->_name;
     }
 
-    public function setNameService($nameService)
+    public function setName($nameService)
     {
-        $this->_nameService = $nameService;
+        $this->_name = $nameService;
         return $this;
     }
     
-    public function nameService()
+    public function name()
     {
         return $this->getNameService();
     }

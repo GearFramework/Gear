@@ -2,9 +2,9 @@
 
 namespace gear\library;
 
-use \gear\Core;
-use \gear\library\GObject;
-use \gear\library\GException;
+use gear\Core;
+use gear\library\GObject;
+use gear\library\GException;
 
 /** 
  * Класс сервисов
@@ -25,7 +25,7 @@ abstract class GService extends GObject
     /* Protected */
     protected static $_config = [];
     protected static $_init = false;
-    protected $_nameService = null;
+    protected $_name = null;
     /* Public */
     
     /**
@@ -50,7 +50,7 @@ abstract class GService extends GObject
             static::init($config);
         $args = func_get_args();
         array_shift($args);
-        $instance = call_user_func_array([get_called_class(), 'it'], $args);
+        $instance = call_user_func_array([static::class, 'it'], $args);
         $instance->event('onInstalled');
         return $instance;
     }
@@ -70,6 +70,12 @@ abstract class GService extends GObject
         if (!is_array($config))
             static::e('Incorrect configuration');
         static::$_config = array_replace_recursive(static::$_config, Core::configure($config));
+        static::$_config = Core::configurator(static::$_config);
+        if (isset(static::$_config['components']))
+        {
+            foreach(static::$_config['components'] as $componentName => $component)
+                Core::services()->registerService(static::class . '.components.' . $componentName, $component);
+        }
     }
     
     /**

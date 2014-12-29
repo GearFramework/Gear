@@ -2,10 +2,10 @@
 
 namespace gear\library;
 
-use \gear\Core;
-use \gear\library\GService;
-use \gear\library\GException;
-use \gear\interfaces\IComponent;
+use gear\Core;
+use gear\library\GService;
+use gear\library\GException;
+use gear\interfaces\IComponent;
 
 /** 
  * Класс компонентов
@@ -20,79 +20,20 @@ use \gear\interfaces\IComponent;
 abstract class GComponent extends GService implements IComponent
 {
     /* Traits */
-    use \gear\traits\TNamedService;
     /* Const */
     /* Private */
     /* Protected */
     protected static $_config = [];
     protected static $_init = false;
-    protected $_nameService = null;
     /* Public */
-    
-    public function __clone() {}
-    
-    /**
-     * Установка компонента
-     * 
-     * @access public
-     * @static
-     * @param string|array $config
-     * @param array $properties
-     * @param null|object $owner
-     * @return GComponent
-     */
-    public static function install($config, array $properties = [], $owner = null)
-    {
-        if (static::$_init === false)
-            static::init($config);
-        $instance = static::it($properties, $owner);
-        $instance->event('onInstalled');
-        return $instance;
-    }
-    
-    /**
-     * Конфигурирование класса компонента
-     * 
-     * @access public
-     * @static
-     * @param string|array $config
-     * @return void
-     */
-    public static function init($config)
-    {
-        if (is_string($config))
-            $config = require(Core::resolvePath($config));
-        if (!is_array($config))
-            static::e('Incorrect configuration');
-        static::$_config = array_replace_recursive(static::$_config, $config);
-    }
-    
-    /**
-     * Получение экхемпляра компонента
-     * 
-     * @access public
-     * @static
-     * @param array $properties
-     * @param nulll|object $owner
-     * @return GComponent
-     */
-    public static function it(array $properties = array(), $owner = null)
-    {
-        if ($owner)
-            $properties['owner'] = $owner;
-        return new static($properties);
-    }
 
     /**
-     * Возвращает true, если компонент может быть перегружен, иначе false
-     * 
+     * Разрешено клонирование компонентов
+     *
      * @access public
-     * @return boolean
+     * @return void
      */
-    public function isOverride()
-    {
-        return isset($this->_properties['override']) && (bool)$this->_properties['override'] === true;
-    }
+    public function __clone() {}
 }
 
 /** 
