@@ -197,6 +197,7 @@ final class Core
         {
             if ($sectionName != 'params' && $sectionName != 'preloads')
             {
+                $section = self::configurator($section);
                 foreach($section as $serviceName => $service)
                 {
                     $serviceLocation = self::class . '.' . $sectionName . '.' . $serviceName;

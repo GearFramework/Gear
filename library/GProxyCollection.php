@@ -1,9 +1,10 @@
 <?php
 
 namespace gear\library;
-use \gear\Core;
-use \gear\library\GCollection;
-use \gear\library\GException;
+
+use gear\Core;
+use gear\library\GCollection;
+use gear\library\GException;
 
 /** 
  * 
