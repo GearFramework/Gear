@@ -21,27 +21,27 @@ class GApplication extends GModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'components' => array
-        (
-            'process' => array
-            (
-                'class' => array
-                (
+    protected static $_config =
+    [
+        'components' =>
+        [
+            'process' =>
+            [
+                'class' =>
+                [
                     'name' => '\gear\components\gear\process\GProcessComponent',
                     'defaultProcess' => 'index',
-                ),
-            ),
-        ),
-        'plugins' => array
-        (
-            'request' => array('class' => '\gear\plugins\gear\http\GRequest'),
-            'env' => array('class' => '\gear\plugins\gear\http\GEnvironment'),
-            'log' => array('class' => '\gear\plugins\gear\GLog'),
-            'http' => array('class' => '\gear\plugins\gear\http\GHttp'),
-        ),
-    );
+                ],
+            ],
+        ],
+        'plugins' =>
+        [
+            'request' => ['class' => '\gear\plugins\gear\http\GRequest'],
+            'env' => ['class' => '\gear\plugins\gear\http\GEnvironment'],
+            'log' => ['class' => '\gear\plugins\gear\GLog'],
+            'http' => ['class' => '\gear\plugins\gear\http\GHttp'],
+        ],
+    ];
     protected $_namespace = null;
     /* Public */
     
@@ -55,13 +55,13 @@ class GApplication extends GModule
     {
         $args = func_get_args();
         if (!func_num_args())
-            $args = array($this->request->isPost() ? $this->request->post() : $this->request->get());
+            $args = [$this->request->isPost() ? $this->request->post() : $this->request->get()];
         else
             $args = func_get_args();
-        if ($this->event('onBeforeRun', $args))
+        if (Core::event('onBeforeApplicationRun', new GEvent($this, ['process' => $process, 'request' => $request])))
         {
-            $result = call_user_func_array(array($this->c('process'), 'exec'), $args);
-            $this->event('onAfterRun', new GEvent($this), $result);
+            $result = call_user_func_array([$this->c('process'), 'exec'], $args);
+            Core::event('onAfterApplicationRun', new GEvent($this), $result);
         }
     }
 
