@@ -40,6 +40,8 @@ class GCalendar extends GObject
      * @return string
      */
     public function __toString() { return $this->_current->format(); }
+
+    public static function it() { return new static(); }
     
     /**
      * Создание экземпляра
