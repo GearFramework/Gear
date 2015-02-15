@@ -91,6 +91,7 @@ final class Core
             'encoding' => 'utf-8',
             'services' => ['class' => '\gear\library\container\GServicesContainer'],
             'configurator' => ['class' => '\gear\library\configurator\GConfigurator'],
+            'defaultApplication' => ['class' => '\gear\library\GApplication'],
         ],
     ];
     private static $_events = [];       // Обработчики событий
@@ -190,7 +191,7 @@ final class Core
             $config = is_file($fileConfig) ? require($fileConfig) : null;
         }
         if (!is_array($config))
-            $config = ['modules' => ['app' => ['class' => '\gear\library\GApplication']]];
+            $config = ['modules' => ['app' => self::params('defaultApplication')]];
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         foreach(self::$_config as $sectionName => $section)
@@ -222,7 +223,7 @@ final class Core
         {
             $pathFile = self::resolvePath($class, true) . '.php';
             if (!file_exists($pathFile))
-                self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
+                self::e('File ":pathFile" not found', ['pathFile' => $pathFile]);
             require($pathFile);
         }
         foreach(self::$_config['preloads'] as $sectionName => $section)
@@ -249,7 +250,7 @@ final class Core
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
             if (!file_exists($pathFile))
-                self::e('File ":preloadName" not found', array('preloadName' => $pathFile));
+                self::e('File ":preloadName" not found', ['preloadName' => $pathFile]);
             require($pathFile);
             $instance = $class::install($config, $properties);
             self::services()->installService(self::class . '.' . $sectionName . '.' . $serviceName, $instance);
