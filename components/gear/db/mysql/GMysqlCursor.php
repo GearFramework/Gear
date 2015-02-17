@@ -23,17 +23,17 @@ class GMysqlCursor extends GDbCursor
     /**
      * Логические операции
      */
-    protected $_eq = array('$lt' => '<', '$gt' => '>', '$ne' => '<>', '$lte' => '<=', '$gte' => '=>');
-    protected $_logic = array('$or' => 'OR', '$and' => 'AND');
+    protected $_eq = ['$lt' => '<', '$gt' => '>', '$ne' => '<>', '$lte' => '<=', '$gte' => '=>'];
+    protected $_logic = ['$or' => 'OR', '$and' => 'AND'];
 
     protected $_hasCount = false;
     protected $_hasExplain = false;
     protected $_select = null;
-    protected $_fields = array();
-    protected $_joins = array();
-    protected $_where = array();
-    protected $_group = array();
-    protected $_sort = array();
+    protected $_fields = [];
+    protected $_joins = [];
+    protected $_where = [];
+    protected $_group = [];
+    protected $_sort = [];
     protected $_limit = null;
     /* Public */
 
@@ -86,7 +86,7 @@ class GMysqlCursor extends GDbCursor
         $this->_query = $query;
         $this->_resource = mysqli_query($this->getHandler(), $this->_query);
         if (!$this->_resource)
-            $this->e($this->error(), array('query' => $query));
+            $this->e($this->error(), ['query' => $query]);
         return $this;
     }
 
@@ -147,12 +147,12 @@ class GMysqlCursor extends GDbCursor
      */
     public function insert($properties)
     {
-        $set = array();
+        $set = [];
         if ($properties instanceof \gear\library\GObject)
             $properties = $properties->props();
         if (is_array($test = reset($properties)))
         {
-            $tmp = array();
+            $tmp = [];
             $fields = $this->_getFields($test);
             foreach($properties as $record)
             {
@@ -167,7 +167,7 @@ class GMysqlCursor extends GDbCursor
             $fields = $this->_getFields($properties);
             foreach($properties as $value)
                 $set[] = $this->_escapeValue($value);
-            $set = array(implode(', ', $set));
+            $set = [implode(', ', $set)];
         }
         $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` '
                       . '(' . implode(', ', $fields) . ') VALUES '
@@ -187,7 +187,7 @@ class GMysqlCursor extends GDbCursor
      */
     protected function _getFields(array $record)
     {
-        $fields = array();
+        $fields = [];
         foreach($record as $field => $value)
             $fields[] = $this->_escapeOperand($field);
         return $fields;
@@ -206,9 +206,9 @@ class GMysqlCursor extends GDbCursor
      */
     public function save($properties, $updates = null)
     {
-        $set = array();
-        $fields = array();
-        $updates = array();
+        $set = [];
+        $fields = [];
+        $updates = [];
         if ($properties instanceof gear\library\GObject)
             $properties = $properties->props();
         foreach($properties as $name => $value)
@@ -222,7 +222,7 @@ class GMysqlCursor extends GDbCursor
         $this->_query = 'INSERT INTO `' . $this->getCollection()->name . '` (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $set) . ') ';
         if ($updates)
         {
-            $updates = array();
+            $updates = [];
             foreach($updates as $name)
             {
                 $name = $this->_escapeOperand($name);
@@ -246,7 +246,7 @@ class GMysqlCursor extends GDbCursor
     {
         if ($properties instanceof gear\library\GObject)
             $properties = $properties->props();
-        $set = array();
+        $set = [];
         foreach($properties as $name => $value)
             $set[] = $this->_escapeOperand($name) . ' = ' . $this->_escapeValue($value);
         $this->_query = 'UPDATE `' . $this->getCollection()->name . '` SET '
@@ -337,7 +337,7 @@ class GMysqlCursor extends GDbCursor
      */
     public function where($criteria = null)
     {
-        $this->_where = array();
+        $this->_where = [];
         if ($criteria)
             $this->_where[] = $this->_buildCondition($criteria);
         return $this;
@@ -355,9 +355,43 @@ class GMysqlCursor extends GDbCursor
      */
     protected function _buildCondition($criteria, $logic = 'AND', $col = null, $eq = '=')
     {
-        $condition = array();
+
+        $condition = [];
         foreach($criteria as $left => $right)
         {
+            if (numeric($left))
+            {
+                if (is_array($right))
+                    $condition[] = '(' . $this->_buildCondition($right, $logic, $col, $eq) . ')';
+                else
+                    $this->e('Invalid query');
+            }
+            else
+            {
+                if (isset($this->_logic[$left]))
+                    $condition[] = $this->_buildCondition($right, $this->_logic[$left], $col, $eq);
+                else
+                if (isset($this->_eq[$left]))
+                    $condition[] = $this->_escapeOperand($col) . $this->_eq[$left] . $this->_escapeValue($right);
+                else
+                {
+                    if (is_array($right))
+                    {
+                        $v = reset($right);
+                        $op = ['$in' => 'IN', '$nin' => 'NOT IN'];
+                        if ($v === '$in' || $v === '$nin')
+                            array_shift($right);
+                        else
+                            $v = '$in';
+                        $condition[] = $this->_escapeOperand($col) . $op[$v] . '(' . implode(', ', $this->_escapeValue($right)) . ')';
+                    }
+                }
+            }
+
+
+
+
+
             if (is_integer($left))
             {
                 if (count($condition))
@@ -397,7 +431,7 @@ class GMysqlCursor extends GDbCursor
                 {
                     if (count($condition))
                         $condition[] = $logic;
-                    $values = array();
+                    $values = [];
                     foreach($right as $value)
                         $values[] = $this->_escapeValue($value);
                     $condition[] = $this->_escapeOperand($col) . ' ' . ($left === '$in' ? 'IN' : 'NOT IN') . ' (' . implode(', ', $values) . ')';
@@ -413,7 +447,7 @@ class GMysqlCursor extends GDbCursor
                     {
                         $fnName = $right[0];
                         unset($right[0]);
-                        $values = array();
+                        $values = [];
                         foreach($right as $value)
                             $values[] = $this->_escapeValue($value);
                         $condition[] = $this->_escapeOperand($col) . ' ' . $eq . ' ' . $fnName . '(' . implode(', ', $values) . ')';
@@ -471,6 +505,14 @@ class GMysqlCursor extends GDbCursor
      */
     protected function _escapeValue($value)
     {
+        if (is_array($value))
+        {
+            foreach($value as &$val)
+                $val = $this->_escapeValue($val);
+            unset($val);
+            return $value;
+        }
+        else
         if (strlen($value) && $value{0} === ':')
             return strpos($value, '.') ? substr($value, 1) : $this->getOwner()->name . '.' . substr($value, 1);
         else
@@ -698,7 +740,7 @@ class GMysqlCursor extends GDbCursor
         if (!is_object($this->_resource))
             $this->query();
         mysqli_data_seek($this->_resource, 0);
-        $items = array();
+        $items = [];
         while($row = mysqli_fetch_assoc($this->_resource))
            $items[] = $row;
         return $items;
@@ -720,11 +762,11 @@ class GMysqlCursor extends GDbCursor
     {
         $this->_count = false;
         $this->_select = null;
-        $this->_fields = array();
-        $this->_joins = array();
-        $this->_where = array();
-        $this->_group = array();
-        $this->_sort = array();
+        $this->_fields = [];
+        $this->_joins = [];
+        $this->_where = [];
+        $this->_group = [];
+        $this->_sort = [];
         $this->_limit = null;
         $this->_query = null;
         $this->_resource = null;
@@ -740,14 +782,14 @@ class GMysqlCursor extends GDbCursor
     {
         $this->_query = null;
         $this->_resource = null;
-        $this->_items = array();
+        $this->_items = [];
         if (!$this->_select)
             $this->_select = $this->_owner->name;
         if ($command === 'group')
-            $this->_group = array();
+            $this->_group = [];
         else
         if ($command === 'sort')
-            $this->_sort = array();
+            $this->_sort = [];
     }
 }
 
