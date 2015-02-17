@@ -383,7 +383,7 @@ class GMysqlCursor extends GDbCursor
                             array_shift($right);
                         else
                             $v = '$in';
-                        $condition[] = $this->_escapeOperand($col) . $op[$v] . '(' . implode(', ', $this->_escapeValue($right)) . ')';
+                        $condition[] = $this->_escapeOperand($col) . $op[$v] . '(' . implode(', ', $this->_escapeValue($right))  . ')';
                     }
                 }
             }
