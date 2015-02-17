@@ -355,44 +355,51 @@ class GMysqlCursor extends GDbCursor
      */
     protected function _buildCondition($criteria, $logic = 'AND', $col = null, $eq = '=')
     {
-
         $condition = [];
         foreach($criteria as $left => $right)
         {
-            if (numeric($left))
+            if (is_numeric($left))
             {
                 if (is_array($right))
                     $condition[] = '(' . $this->_buildCondition($right, $logic, $col, $eq) . ')';
                 else
-                    $this->e('Invalid query');
+                    $condition[] = $this->_escapeValue($right);
+            }
+            if (isset($this->_logic[$left]))
+                $condition[] = $this->_buildCondition($right, $this->_logic[$left], $col);
+            else
+            if (isset($this->_eq[$left]))
+                $condition[] = $this->_escapeOperand($col) . $this->_eq[$left] . $this->_escapeValue($right);
+            else
+            if ($left === '$in' || $left === '$nin')
+            {
+                if (!$col)
+                    $this->e('Invalid query. Not defined column in ' . $left);
+                if (!is_array($right))
+                    $this->e('Invalid query. Not corrent value.');
+                $op = ['$in' => 'IN', '$nin' => 'NOT IN'];
+                $condition[] = $this->_escapeOperand($col) . ' ' . $op[$left] . '(' . implode(', ', $this->_escapeValue($right)) . ')';
+            }
+            else
+            if ($left === '$fn')
+            {
+                $fn = array_shift($right);
+                $condition[] = $fn . '(' . implode(', ', $this->_escapeValue($right)) . ')';
             }
             else
             {
-                if (isset($this->_logic[$left]))
-                    $condition[] = $this->_buildCondition($right, $this->_logic[$left], $col, $eq);
+                if (is_array($right))
+                    $condition[] = $this->_buildCondition($right, $logic, $left);
                 else
-                if (isset($this->_eq[$left]))
-                    $condition[] = $this->_escapeOperand($col) . $this->_eq[$left] . $this->_escapeValue($right);
-                else
-                {
-                    if (is_array($right))
-                    {
-                        $v = reset($right);
-                        $op = ['$in' => 'IN', '$nin' => 'NOT IN'];
-                        if ($v === '$in' || $v === '$nin')
-                            array_shift($right);
-                        else
-                            $v = '$in';
-                        $condition[] = $this->_escapeOperand($col) . $op[$v] . '(' . implode(', ', $this->_escapeValue($right))  . ')';
-                    }
-                }
+                    $condition[] = $this->_escapeOperand($left) . $eq . $this->_escapeValue($right);
             }
+        }
+        return implode(' ' . $logic . ' ', $condition);
 
 
 
 
-
-            if (is_integer($left))
+/*            if (is_integer($left))
             {
                 if (count($condition))
                     $condition[] = $logic;
@@ -462,7 +469,7 @@ class GMysqlCursor extends GDbCursor
                                    : $this->_escapeOperand($left) . ' ' . $eq . ' ' . $this->_escapeValue($right);
                 }
             }
-        }
+        }*/
         return implode(' ', $condition);
     }
 
