@@ -343,6 +343,11 @@ class GMysqlCursor extends GDbCursor
         return $this;
     }
 
+    protected function _isAssoc(array $arr)
+    {
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
     /**
      * Построение условного выражения согласно полученного критерия
      *
@@ -355,16 +360,26 @@ class GMysqlCursor extends GDbCursor
      */
     protected function _buildCondition($criteria, $logic = 'AND', $col = null, $eq = '=')
     {
+        $condition = '';
+        foreach($criteria as $left => $right)
+        {
+            if (is_numeric($left) && is_array($right))
+                $condition .= ($condition !== '' ? $logic : ' (') . $this->_buildCondition($right) . ' )';
+        }
+
         $condition = [];
         foreach($criteria as $left => $right)
         {
+            // Array [ 0 => ]
             if (is_numeric($left))
             {
+                // Array [ 0 => [] ] group operation
                 if (is_array($right))
                     $condition[] = '(' . $this->_buildCondition($right, $logic, $col, $eq) . ')';
                 else
                     $condition[] = $this->_escapeValue($right);
             }
+            else
             if (isset($this->_logic[$left]))
                 $condition[] = $this->_buildCondition($right, $this->_logic[$left], $col);
             else
@@ -386,11 +401,26 @@ class GMysqlCursor extends GDbCursor
                 $fn = array_shift($right);
                 $condition[] = $fn . '(' . implode(', ', $this->_escapeValue($right)) . ')';
             }
+            // Array ['columnName' => ]
             else
             {
                 if (is_array($right))
-                    $condition[] = $this->_buildCondition($right, $logic, $left);
+                {
+                    // Array ['columnName' => []]
+                    if (!$this->_isAssoc($right))
+                    {
+                        if (count($right) > 1)
+                            // Array ['columnName' => [1, 2, 3, ...]]
+                            $condition[] = $this->_escapeOperand($left) . ' IN (' . $this->_escapeValue($right) . ') ';
+                        else
+                            // Array ['columnName' => ['expr' => 'value']]
+                            $condition[] = $this->_buildCondition($right, $logic, $left);
+                    }
+                    else
+                        $condition[] = $this->_buildCondition($right, $logic, $left);
+                }
                 else
+                    // Array ['columnName' => 2]
                     $condition[] = $this->_escapeOperand($left) . $eq . $this->_escapeValue($right);
             }
         }
