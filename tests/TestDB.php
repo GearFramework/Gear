@@ -21,7 +21,19 @@ class TestDb
 
     public function find($criteria)
     {
-        return $this->_connection->selectCollection($this->_dbName, $this->_collectionName)->find($criteria);
+        try
+        {
+            return $this->_connection->selectCollection($this->_dbName, $this->_collectionName)->find($criteria);
+        }
+        catch(\Exception $e)
+        {
+            die
+            (
+                '<b>' . $e->getMessage() . '</b><br />' .
+                $e->getFile() . ':' . $e->getLine() . '<br />' .
+                '<pre>' . print_r($e->getTrace(), 1) . '</pre>'
+            );
+        }
     }
 
     public function query($cursor)
