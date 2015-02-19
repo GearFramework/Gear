@@ -371,7 +371,10 @@ class GMysqlCursor extends GDbCursor
                 if (!is_array($right))
                     $this->e('Invalid query.');
                 if (count($right) == 1)
+                {
+                    die($this->_logic[$left]);
                     $condition .= ($condition !== '' ? $this->_logic[$left] : ' ') . $this->_buildCondition($right) . ' ';
+                }
                 else
                 if (count($right) > 1)
                     $condition .= ($condition !== '' ? $logic : ' (') . $this->_buildCondition($right, $this->_logic[$left]) . ') ';
