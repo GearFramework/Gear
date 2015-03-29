@@ -10,8 +10,8 @@ defined('DEBUG') or define('DEBUG', false);
  * 
  * @package Gear Framework
  * @final
- * @author Denisk Kukushkin
- * @copyright Denisk Kukushkin 2013
+ * @author Denis Kukushkin
+ * @copyright Denis Kukushkin 2013
  * @version 1.0.0
  * @since 01.08.2013
  * @license MIT

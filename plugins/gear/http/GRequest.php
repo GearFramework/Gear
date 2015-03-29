@@ -21,12 +21,14 @@ class GRequest extends GPlugin
     /* Const */
     const GET = 1;
     const POST = 2;
+    const PUT = 3;
+    const DELETE = 4;
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
+    protected static $_config =
+    [
         'dependency' => '\gear\library\GApplication',
-    );
+    ];
     protected static $_init = false;
     protected $_cliEnviroment = null;
     protected $_filters = array();
