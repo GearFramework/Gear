@@ -25,13 +25,11 @@ class GRequest extends GPlugin
     const DELETE = 4;
     /* Private */
     /* Protected */
-    protected static $_config =
-    [
-        'dependency' => '\gear\library\GApplication',
-    ];
+    protected static $_config = ['dependency' => '\gear\library\GApplication'];
     protected static $_init = false;
     protected $_cliEnviroment = null;
-    protected $_filters = array();
+    protected $_filters = [];
+    protected $_requestHandlers = [];
     /* Public */
     
     /**
@@ -68,7 +66,23 @@ class GRequest extends GPlugin
      * @return boolean
      */
     public function isPost() { return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST'; }
-    
+
+    /**
+     * Возвращает true, если тип запроса был PUT иначе false
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isPut() { return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'PUT'; }
+
+    /**
+     * Возвращает true, если тип запроса был DELETE иначе false
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isDelete() { return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'DELETE'; }
+
     /**
      * Установка фильтров
      * 
@@ -76,10 +90,7 @@ class GRequest extends GPlugin
      * @param array $filters
      * @return void
      */
-    public function setFilters(array $filters)
-    {
-        $this->_filters = $filters;
-    }
+    public function setFilters(array $filters) { $this->_filters = $filters; }
     
     /**
      * Получение списка фильтров
@@ -87,9 +98,18 @@ class GRequest extends GPlugin
      * @access public
      * @return array
      */
-    public function getFilters()
+    public function getFilters() { return $this->_filters; }
+
+    public function setRequestHandlers(array $handlers) { $this->_requestHandlers = $handlers; }
+
+    public function getRequestHandlers($method = null)
     {
-        return $this->_filters;
+        return $method && isset($this->_requestHandlers[$method]) ? $this->_requestHandlers[$method] : $this->_requestHandlers;
+    }
+
+    public function setRequestHandler($name, $handler)
+    {
+        
     }
     
     /**
@@ -101,10 +121,7 @@ class GRequest extends GPlugin
      * @param mixed $filter
      * @return mixed
      */
-    public function get($name = null, $default = null, $filter = null)
-    {
-        return $this->_data($_GET, $name, $default, $filter);
-    }
+    public function get($name = null, $default = null, $filter = null) { return $this->_data($_GET, $name, $default, $filter); }
     
     /**
      * Получение значения из массива $_POST
