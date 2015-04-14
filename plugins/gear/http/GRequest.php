@@ -109,7 +109,7 @@ class GRequest extends GPlugin
 
     public function setRequestHandler($name, $handler)
     {
-        
+
     }
     
     /**
