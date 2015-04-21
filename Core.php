@@ -91,7 +91,10 @@ final class Core
                 'name' => 'helper',
             ],
         ],
-        'helpers' => [],
+        'helpers' =>
+        [
+            'calendar' => ['class' => '\gear\helpers\GCalendar'],
+        ],
         'params' =>
         [
             'baseDir' => GEAR, 
@@ -100,6 +103,7 @@ final class Core
             'services' => ['class' => '\gear\library\container\GServicesContainer'],
             'configurator' => ['class' => '\gear\library\configurator\GConfigurator'],
             'defaultApplication' => ['class' => '\gear\library\GApplication'],
+            'helperManager' => 'helper',
         ],
     ];
     private static $_events = [];       // Обработчики событий
@@ -490,11 +494,20 @@ final class Core
         return true;
     }
 
+    /**
+     * Возвращает доступ к указанному хелперу
+     *
+     * @access public
+     * @static
+     * @param string $name
+     * @return object
+     */
     public static function h($name)
     {
-        if (($helper = Core::isComponentInstalled('helper')) === false)
+        $helperManager = self::params('helperManager');
+        if (($helper = Core::isComponentInstalled($helperManager)) === false)
         {
-            $helper = Core::c('helper');
+            $helper = Core::c($helperManager);
             $helper->registerHelpers(self::$_config['helpers']);
         }
         return $helper->runHelper($name);
