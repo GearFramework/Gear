@@ -160,7 +160,10 @@ class GObject
             array_unshift($args, $this);
             return call_user_func_array(array($this->_owner, $name), $args);
         }
-        $this->e('Method ":methodName" is not exists', ['methodName' => $name]);
+        $result = $this->event('onCalled', $name, $args);
+        if ($result === null)
+            $this->e('Method ":methodName" is not exists', ['methodName' => $name]);
+        return $result;
     }
     
     /**

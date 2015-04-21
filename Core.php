@@ -83,8 +83,16 @@ final class Core
             ],
         ],
         'modules' => [],
-        'components' => [],
-        'params' => 
+        'components' =>
+        [
+            'helper' =>
+            [
+                'class' => '\gear\components\gear\helper\GHelperManager',
+                'name' => 'helper',
+            ],
+        ],
+        'helpers' => [],
+        'params' =>
         [
             'baseDir' => GEAR, 
             'locale' => 'ru_RU',
@@ -480,6 +488,16 @@ final class Core
     {
         self::params('services')->uninstallService(self::class . '.components.' . $name);
         return true;
+    }
+
+    public static function h($name)
+    {
+        if (($helper = Core::isComponentInstalled('helper')) === false)
+        {
+            $helper = Core::c('helper');
+            $helper->registerHelpers(self::$_config['helpers']);
+        }
+        return $helper->runHelper($name);
     }
     
     /**

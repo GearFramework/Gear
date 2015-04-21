@@ -41,7 +41,7 @@ class GCalendar extends GObject
      */
     public function __toString() { return $this->_current->format(); }
 
-    public static function it() { return new static(); }
+    public static function it(array $properties = []) { return new static($properties); }
     
     /**
      * Создание экземпляра
