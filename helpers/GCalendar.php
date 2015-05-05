@@ -16,15 +16,17 @@ use gear\interfaces\IFactory;
  */
 class GCalendar extends GObject
 {
+    /* Traits */
+    use gear\traits\TFactory;
     /* Const */
     const SECONDS_PER_MINUTE = 60;
     const SECONDS_PER_HOUR = 3600;
     const SECONDS_PER_DAY = 86400;
     /* Private */
     /* Protected */
-    protected $_factoryItem = array
+    protected $_factory = array
     (
-        'class' => '\gear\helpers\GDate',
+        'class' => '\gear\models\GDate',
     );
     protected $_current = null;
     protected $_locale = 'ru_RU';
@@ -32,6 +34,11 @@ class GCalendar extends GObject
     protected $_format = 'Y-m-d H:i:s';
     protected $_natural = false;
     /* Public */
+
+    public static function __callStatic($name, $args)
+    {
+
+    }
     
     /**
      * Возвращает в отформатированном виде текущую дату календаря
@@ -51,9 +58,9 @@ class GCalendar extends GObject
      * @param string|array $class
      * @return object
      */
-    public function factory(array $properties, $class = null)
+    public function factory(array $properties)
     {
-        list($class, $config, $defaultProperties) = Core::getRecords($this->_factoryItem);
+        list($class, $config, $defaultProperties) = Core::getRecords($this->_factory);
         return new $class(array_merge($defaultProperties, $properties, ['owner' => $this]));
     }
     

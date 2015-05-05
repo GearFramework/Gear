@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\helpers;
+namespace gear\models;
 use gear\Core;
 use gear\library\GModel;
 
@@ -12,6 +12,8 @@ class GDate extends GModel
     const SECONDS_PER_DAY = 86400;
     /* Private */
     /* Protected */
+    protected $_format = 'Y-m-d H:i:s';
+    protected $_natural = false;
     protected $_datetime = null;
     protected $_timestamp = 0;
     protected $_value = null;
