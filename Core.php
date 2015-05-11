@@ -7,6 +7,7 @@ defined('DEBUG') or define('DEBUG', false);
 
 /**
  * Ядро Gear Framework
+ *
  * 
  * @package Gear Framework
  * @final
@@ -119,7 +120,7 @@ final class Core
             return self::m($name);
         if (self::isComponentRegistered($name))
             return self::c($name, count($args) ? $args[0] : false);
-        if (isset(self::$_config['helpers'][$name]))
+        if (self::isHelperRegistered($name))
         {
             array_unshift($args, $name);
             return call_user_func_array([__CLASS__, 'h'], $args);
@@ -511,6 +512,17 @@ final class Core
             $helper->registerHelpers(self::$_config['helpers']);
         }
         return $helper->runHelper($name);
+    }
+
+    public static function isHelperRegistered($name)
+    {
+        $helperManager = self::params('helperManager');
+        if (($helper = Core::isComponentInstalled($helperManager)) === false)
+        {
+            $helper = Core::c($helperManager);
+            $helper->registerHelpers(self::$_config['helpers']);
+        }
+        return $helper->isHelperRegistered($name);
     }
     
     /**

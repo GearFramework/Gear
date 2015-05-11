@@ -48,6 +48,15 @@ class GHelperManager extends GComponent
         return $this;
     }
 
+    /**
+     * Возвращает true, если указанный хелпер зарегистрирован
+     *
+     * @access public
+     * @param string $name
+     * @return bool
+     */
+    public function isHelperRegistered($name) { return isset($this->_helpers[$name]); }
+
     public function onCalled($event, $name, $args)
     {
         return call_user_func_array([$this->_activeHelper, $name], $args);
