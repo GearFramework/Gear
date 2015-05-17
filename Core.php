@@ -16,6 +16,7 @@ defined('DEBUG') or define('DEBUG', false);
  * @version 1.0.0
  * @since 01.08.2013
  * @license MIT
+ * @php 5.3.x
  */
 final class Core
 {
@@ -30,10 +31,10 @@ final class Core
     /* Private */
     private static $_config =           // Текущая конфигурация ядра
     [         
-        'preloads' => 
-        [
-            'library' => 
-            [
+        'preloads' => array
+        (
+            'library' => array
+            (
                 '\gear\library\GException',
                 '\gear\library\GEvent',
                 '\gear\CoreException',
@@ -48,66 +49,66 @@ final class Core
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
-            ],
-            'modules' => [],
-            'components' =>
-            [
-                'syslog' => 
-                [
+            ),
+            'modules' => array(),
+            'components' => array
+            (
+                'syslog' => array
+                (
                     'class' => '\gear\components\gear\syslog\GSyslog',
                     'name' => 'syslog',
-                ],
+                ),
                 // Автозагрузчик классов
-                'loader' => 
-                [
+                'loader' => array
+                (
                     'class' => '\gear\components\gear\loader\GLoader',
                     'name' => 'loader',
-                    'aliases' => 
-                    [
-                        'Arrays' => ['class' => 'gear\helpers\GArray'],
-                        'Calendar' => ['class' => 'gear\helpers\GCalendar'],
-                        'Html' => ['class' => 'gear\helpers\GHtml'],
-                    ],
-                ],
+                    'aliases' =>  array
+                    (
+                        'Arrays' => array('class' => 'gear\helpers\GArray'),
+                        'Calendar' => array('class' => 'gear\helpers\GCalendar'),
+                        'Html' => array('class' => 'gear\helpers\GHtml'),
+                    ),
+                ),
                 // Обработчик ошибок
-                'errorHandler' => 
-                [
+                'errorHandler' => array
+                (
                     'class' => '\gear\components\gear\handlers\GErrorsHandler',
                     'name' => 'errorHandler',
-                ],
+                ),
                 // Обработчик неперехваченных исключений
-                'exceptionHandler' => 
-                [
+                'exceptionHandler' => array
+                (
                     'class' => '\gear\components\gear\handlers\GExceptionsHandler',
                     'name' => 'exceptionHandler',
-                ],
-            ],
-        ],
-        'modules' => [],
-        'components' =>
-        [
-            'helper' =>
-            [
+                ),
+            ),
+        ),
+        'modules' => array(),
+        'components' => array
+        (
+            'helper' => array
+            (
                 'class' => '\gear\components\gear\helper\GHelperManager',
                 'name' => 'helper',
-            ],
-        ],
-        'helpers' =>
-        [
-            'calendar' => ['class' => '\gear\helpers\GCalendar'],
-        ],
-        'params' =>
-        [
+            ),
+        ),
+        'helpers' => array
+        (
+            'calendar' => array('class' => '\gear\helpers\GCalendar'),
+        ),
+        'params' => array
+        (
             'baseDir' => GEAR, 
             'locale' => 'ru_RU',
             'encoding' => 'utf-8',
-            'services' => ['class' => '\gear\library\container\GServicesContainer'],
-            'configurator' => ['class' => '\gear\library\configurator\GConfigurator'],
-            'defaultApplication' => ['class' => '\gear\library\GApplication'],
+            'services' => array('class' => '\gear\library\container\GServicesContainer'),
+            'configurator' => array('class' => '\gear\library\configurator\GConfigurator'),
+            'defaultApplication' => array('class' => '\gear\library\GApplication'),
             'helperManager' => 'helper',
-        ],
+        ),
     ];
-    private static $_events = [];       // Обработчики событий
+    private static $_events = array();       // Обработчики событий
     private static $_coreMode = null;   // Режим запуска PRODUCTION или DEVELOPMENT
     private static $_runMode = null;    // Окружение: http или консоль
     private static $_version = '1.0.0'; // Версия ядра
@@ -123,7 +124,7 @@ final class Core
         if (self::isHelperRegistered($name))
         {
             array_unshift($args, $name);
-            return call_user_func_array([__CLASS__, 'h'], $args);
+            return call_user_func_array(array(__CLASS__, 'h'), $args);
         }
         array_unshift($args, $name);
         return call_user_func_array(array(__CLASS__, 'params'), $args);
@@ -148,7 +149,8 @@ final class Core
             list($class, $config, $properties) = self::getRecords($services);
             $file = self::resolvePath($class, true) . '.php';
             require $file;
-            if (method_exists($class, 'init')) { $class::init($config); }
+            if (method_exists($class, 'init'))
+                $class::init($config);
             $services = new $class($properties);
             self::params('services', $services);
         }
@@ -173,11 +175,12 @@ final class Core
             list($class, $config, $properties) = self::getRecords($configurator, true);
             $file = self::resolvePath($class, true) . '.php';
             require $file;
-            if (method_exists($class, 'init')) { $class::init($config); }
+            if (method_exists($class, 'init'))
+                $class::init($config);
             $configurator = new $class($properties);
             self::params('configurator', $configurator);
         }
-        return !func_num_args() ? $configurator : call_user_func_array([$configurator, 'configure'], func_get_args());
+        return !func_num_args() ? $configurator : call_user_func_array(array($configurator, 'configure'), func_get_args());
     }
     
     /**
@@ -192,7 +195,7 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
+        $modes = array(self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production');
         self::$_coreMode = $coreMode;
         if ($config === null)
             $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
@@ -204,7 +207,7 @@ final class Core
             $config = is_file($fileConfig) ? require($fileConfig) : null;
         }
         if (!is_array($config))
-            $config = ['modules' => ['app' => self::params('defaultApplication')]];
+            $config = array('modules' => array('app' => self::params('defaultApplication')));
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         foreach(self::$_config as $sectionName => $section)
@@ -236,7 +239,7 @@ final class Core
         {
             $pathFile = self::resolvePath($class, true) . '.php';
             if (!file_exists($pathFile))
-                self::e('File ":pathFile" not found', ['pathFile' => $pathFile]);
+                self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
             require($pathFile);
         }
         foreach(self::$_config['preloads'] as $sectionName => $section)
@@ -263,7 +266,7 @@ final class Core
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
             if (!file_exists($pathFile))
-                self::e('File ":preloadName" not found', ['preloadName' => $pathFile]);
+                self::e('File ":preloadName" not found', array('preloadName' => $pathFile));
             require($pathFile);
             $instance = $class::install($config, $properties);
             self::services()->installService(self::class . '.' . $sectionName . '.' . $serviceName, $instance);
@@ -323,7 +326,7 @@ final class Core
     {
         try
         {
-        return self::services()->getRegisteredService(self::class . '.modules.' . $name);
+            return self::services()->getRegisteredService(self::class . '.modules.' . $name);
         }
         catch(\Exception $e)
         {
@@ -414,7 +417,7 @@ final class Core
     {
         try
         {
-        return self::params('services')->getRegisteredService(self::class . '.components.' . $name, $instance);
+            return self::params('services')->getRegisteredService(self::class . '.components.' . $name, $instance);
         }
         catch(\Exception $e)
         {
@@ -580,7 +583,7 @@ final class Core
     public static function attachEvent($eventName, $handler)
     {
         if (!is_callable($handler))
-            self::e('Invalid handler of event ":eventName"', ['eventName' => $eventName]);
+            self::e('Invalid handler of event ":eventName"', array('eventName' => $eventName));
         self::$_events[$eventName][] = $handler;
         return true;
     }

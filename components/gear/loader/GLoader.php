@@ -3,13 +3,14 @@
 /**
  * Файл с реализацией компонента стандартного загрузчика
  * классов
+ * PHP 5.3.x и выше
  */
 
 namespace gear\components\gear\loader;
-use \gear\Core;
-use \gear\library\GComponent;
-use \gear\library\GException;
-use \gear\interfaces\ILoader;
+use gear\Core;
+use gear\library\GComponent;
+use gear\library\GException;
+use gear\interfaces\ILoader;
 
 /** 
  * Класс стандартного компонента, занимающегося автозагрузкой классов
@@ -20,29 +21,29 @@ use \gear\interfaces\ILoader;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 02.08.2013
+ * @php 5.3.x
  */
 class GLoader extends GComponent implements ILoader
 {
+    /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'autoloadHandler' => 'loader',
-    );
+    protected static $_config = array('autoloadHandler' => 'loader');
     protected static $_init = false;
     /* Public */
-    public $aliases = []; 
+    public $aliases = array();
     public $usePaths = false;
-    public $paths = [];
+    public $paths = array();
     public $useResolvePaths = false;
-    public $resolvePaths = [];
+    public $resolvePaths = array();
     
     /**
      * Метод автоматической загрузки классов
+     * - Поддержка алиасов
+     * - Поддержка пользовательских путей расположения файлов с классами
      * 
      * @access public
-     * @static
      * @param string $className
      * @return void
      */
@@ -51,7 +52,7 @@ class GLoader extends GComponent implements ILoader
         if (isset($this->aliases[$className]))
         {
             $alias = $className;
-            list($className, $config, $properties) = Core::getRecords($this->aliases[$className]);
+            list($className) = Core::getRecords($this->aliases[$className]);
             class_alias($className, $alias);
         }
         if ($this->usePaths && isset($this->paths[$className]))
