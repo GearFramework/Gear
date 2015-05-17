@@ -11,6 +11,7 @@ use gear\Core;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.05.2015
+ * @php 5.3.x
  */
 trait TFactory
 {
@@ -19,11 +20,17 @@ trait TFactory
      *
      * @access public
      * @param array $properties
+     * @param \Closure $propertyCallback
      * @return object
      */
-    public function factory(array $properties = [])
+    public function factory(array $properties = array(), \Closure $propertyCallback = null)
     {
-        $properties = array_merge($this->_factory, ['owner' => $this], $properties);
+        $properties = array_merge
+        (
+            $propertyCallback ? $propertyCallback($this->_factory, $properties) : $this->_factory,
+            array('owner' => $this),
+            $properties
+        );
         list($class, $config, $properties) = Core::getRecords($properties);
         if (method_exists($class, 'init'))
             $class::init($config);

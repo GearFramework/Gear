@@ -595,13 +595,11 @@ final class Core
      * @access public
      * @static
      * @param array $properties
-     * @param boolean $basic
      * @return array as Array(className, configuration, properties)
      */
-    public static function getRecords(array $properties, $basic = false)
+    public static function getRecords(array $properties)
     {
-        if (!$basic)
-            $properties = self::configurator($properties);
+        $properties = self::_prepareConfig($properties);
         $class = $properties['class'];
         unset($properties['class']);
         $config = array();
@@ -610,10 +608,40 @@ final class Core
             $config = $class;
             $class = $config['name'];
             unset($config['name']);
-            if (!$basic)
-                $config = self::configurator($config);
         }
         return array($class, $config, $properties);
+    }
+
+    /**
+     * Подготовка конфигурационных параметров
+     *
+     * @access private
+     * @param array $config
+     * @return array
+     */
+    private static function _prepareConfig(array $config)
+    {
+        if (isset($config['#import']))
+        {
+            $imports = !is_array($config['#import']) ? array($config['#import']) : $config['#import'];
+            unset($config['#import']);
+            foreach($imports as $param)
+            {
+                $import = self::params($config['#import']);
+                array_replace_recursive($config, self::_prepareConfig($import));
+            }
+        }
+        if (isset($config['#include']))
+        {
+            $includes = !is_array($config['#include']) ? array($config['#include']) : $config['#include'];
+            unset($config['#include']);
+            foreach($includes as $file)
+            {
+                $file = self::resolvePath($file, true);
+                array_replace_recursive($config, self::_prepareConfig(require($file)));
+            }
+        }
+        return $config;
     }
     
     /**

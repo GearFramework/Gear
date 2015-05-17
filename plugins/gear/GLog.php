@@ -14,6 +14,7 @@ use gear\library\GException;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 03.08.2013
+ * @php 5.3.x
  */
 class GLog extends GPlugin
 {

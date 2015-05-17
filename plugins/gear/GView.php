@@ -15,6 +15,7 @@ use \gear\library\GEvent;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 02.08.2013
+ * @php 5.3.x
  */
 class GView extends GPlugin
 {
