@@ -2,6 +2,7 @@
 
 namespace gear\traits;
 use gear\Core;
+use gear\library\GEvent;
 
 /**
  * Трейт фабрики объектов
@@ -25,16 +26,18 @@ trait TFactory
      */
     public function factory(array $properties = array(), \Closure $propertyCallback = null)
     {
+        $this->event('onBeforeFactory', new GEvent(array('sender' => $this)), $properties, $this->factory);
         $properties = array_merge
         (
-            $propertyCallback ? $propertyCallback($this->_factory, $properties) : $this->_factory,
+            $propertyCallback ? $propertyCallback($this->factory, $properties) : $this->factory,
             array('owner' => $this),
             $properties
         );
         list($class, $config, $properties) = Core::getRecords($properties);
         if (method_exists($class, 'init'))
             $class::init($config);
-        return method_exists($class, 'it') ? $class::it($properties) : new $class($properties);
+        $object = method_exists($class, 'it') ? $class::it($properties) : new $class($properties);
+        $this->event('onAfterFactory', new GEvent(array('sender' => $this)), $object);
     }
 
     /**

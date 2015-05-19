@@ -608,6 +608,7 @@ final class Core
             $config = $class;
             $class = $config['name'];
             unset($config['name']);
+            $config = self::_prepareConfig($config);
         }
         return array($class, $config, $properties);
     }
