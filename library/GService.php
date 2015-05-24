@@ -15,15 +15,14 @@ use gear\library\GException;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 25.12.2014
+ * @php 5.3.x
  */
 abstract class GService extends GObject
 {
-    /* Traits */
-    use \gear\traits\TNamedService;
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static $_config = array();
     protected static $_init = false;
     protected $_name = null;
     /* Public */
@@ -50,7 +49,7 @@ abstract class GService extends GObject
             static::init($config);
         $args = func_get_args();
         array_shift($args);
-        $instance = call_user_func_array([static::class, 'it'], $args);
+        $instance = call_user_func_array(array(static::class, 'it'), $args);
         $instance->event('onInstalled');
         return $instance;
     }
@@ -69,8 +68,8 @@ abstract class GService extends GObject
             $config = require(Core::resolvePath($config));
         if (!is_array($config))
             static::e('Incorrect configuration');
-        static::$_config = array_replace_recursive(static::$_config, Core::configure($config));
-        static::$_config = Core::configurator(static::$_config);
+        static::$_config = array_replace_recursive(static::$_config, $config);
+        list(,,static::$_config) = Core::getRecords(static::$_config);
         if (isset(static::$_config['components']))
         {
             foreach(static::$_config['components'] as $componentName => $component)
@@ -89,9 +88,7 @@ abstract class GService extends GObject
      */
     public static function it(array $properties = array(), $owner = null)
     {
-        if ($owner)
-            $properties['owner'] = $owner;
-        return new static($properties);
+        return new static($properties, $owner);
     }
 
     /**
@@ -104,6 +101,35 @@ abstract class GService extends GObject
     {
         return isset($this->_properties['override']) && (bool)$this->_properties['override'] === true;
     }
+
+    /**
+     * Возвращает имя сервиса
+     *
+     * @access public
+     * @return string
+     */
+    public function getName() { return $this->_name; }
+
+    /**
+     * Устанавливает имя сервиса
+     *
+     * @access public
+     * @param string $nameService
+     * @return $this
+     */
+    public function setName($nameService)
+    {
+        $this->_name = $nameService;
+        return $this;
+    }
+
+    /**
+     * Возвращает имя сервиса
+     *
+     * @access public
+     * @return string
+     */
+    public function name() { return $this->getName(); }
 }
 
 /** 

@@ -29,7 +29,7 @@ trait TFactory
         $this->event('onBeforeFactory', new GEvent(array('sender' => $this)), $properties, $this->factory);
         $properties = array_merge
         (
-            $propertyCallback ? $propertyCallback($this->factory, $properties) : $this->factory,
+            $propertyCallback ? $propertyCallback($this, $properties) : $this->factory,
             array('owner' => $this),
             $properties
         );

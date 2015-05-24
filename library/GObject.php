@@ -14,6 +14,7 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
+ * @php 5.3.x
  */
 class GObject
 {
@@ -22,19 +23,19 @@ class GObject
     /* Protected */
     protected static $_config = array
     (
-        'plugins' => 
-        [
-            'view' => ['class' => '\gear\plugins\gear\GView'],
-        ],
-        'behaviors' => [],
+        'plugins' => array
+        (
+            'view' => array('class' => '\gear\plugins\gear\GView'),
+        ),
+        'behaviors' => array(),
     );
     protected $_access = Core::ACCESS_PUBLIC;
-    protected $_properties = [];
+    protected $_properties = array();
     protected $_owner = null;
-    protected $_behaviors = [];
-    protected $_plugins = [];
-    protected $_events = [];
-    protected $_preloads = [];
+    protected $_behaviors = array();
+    protected $_plugins = array();
+    protected $_events = array();
+    protected $_preloads = array();
     protected $_viewPath = 'views';
     /* Public */
     
@@ -46,7 +47,7 @@ class GObject
      * @param array $properties
      * @return void
      */
-    protected function __construct(array $properties = [], $owner = null)
+    protected function __construct(array $properties = array(), $owner = null)
     {
         foreach($properties as $name => $value)
             $this->$name = $value;
@@ -148,7 +149,7 @@ class GObject
             return call_user_func_array(array($this, 'event'), $args);
         }
         if ($this->isBehavior($name))
-            return call_user_func_array([$this, 'b'], array_merge([$name], $args));
+            return call_user_func_array(array($this, 'b'), array_merge(array($name), $args));
         if ($this->isPluginRegistered($name))
         {
             $p = $this->p($name);
@@ -162,7 +163,7 @@ class GObject
         }
         $result = $this->event('onCalled', $name, $args);
         if ($result === null)
-            $this->e('Method ":methodName" is not exists', ['methodName' => $name]);
+            $this->e('Method ":methodName" is not exists', array('methodName' => $name));
         return $result;
     }
     
@@ -272,7 +273,7 @@ class GObject
      */
     public function setAccess($access)
     {
-        $this->_properties['access'] = $this->_access = $access;
+        $this->_access = $access;
         return $this;
     }
     
@@ -305,10 +306,7 @@ class GObject
      * @access public
      * @return string
      */
-    public function getViewPath()
-    {
-        return $this->_viewPath;
-    }
+    public function getViewPath() { return $this->_viewPath; }
     
     /**
      * Установка списка плагинов, которые необходимо инстанцировать
@@ -317,11 +315,12 @@ class GObject
      * 
      * @access public
      * @param array $preloads
-     * @return void
+     * @return $this
      */
     public function setPreloads(array $preloads)
     {
         $this->_preloads = $preloads;
+        return $this;
     }
     
     /**
@@ -331,10 +330,7 @@ class GObject
      * @access public
      * @return array
      */
-    public function getPreloads()
-    {
-        return $this->_preloads;
-    }
+    public function getPreloads() { return $this->_preloads; }
 
     /**
      * Возвращает значение указанного конфигурационного параметра класса
@@ -351,13 +347,13 @@ class GObject
         else
         if (is_null($value))
         {
+            $value = null;
             if (isset(static::$_config[$name]))
-                return static::$_config[$name];
+                $value =  static::$_config[$name];
             else
             if (isset(self::$_config[$name]))
-                return self::$_config[$name];
-            else
-                return null;
+                $value = self::$_config[$name];
+            return $value;
         }
         else
             static::$_config[$name] = $value;
@@ -369,10 +365,7 @@ class GObject
      * @access public
      * @return array
      */
-    public function getBehaviors()
-    {
-        return $this->i('behaviors');
-    }
+    public function getBehaviors() { return $this->i('behaviors'); }
 
     /**
      * Возвращает true если объект имеет поведение с указанным названием, иначе
@@ -382,10 +375,7 @@ class GObject
      * @param string $name
      * @return boolean
      */
-    public function isBehavior($name)
-    {
-        return isset($this->_behaviors[$name]);
-    }
+    public function isBehavior($name) { return isset($this->_behaviors[$name]); }
     
     /**
      * Подключает к объекту набор поведений
@@ -419,11 +409,12 @@ class GObject
         if ($behavior instanceof \Closure)
             $this->_behaviors[$name] = method_exists($behavior, 'bindTo') ? $behavior->bindTo($this, $this) : $behavior;
         else
-        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record (release class::__invoke(), array('classname', 'methodname'))
+        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record
+        // (release class::__invoke(), array('classname', 'methodname'))
         if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
             $this->_behaviors[$name] = $behavior->setOwner($this);
         else
-            $this->e('Behavior ":behaviorName" is not correct', ['behaviorName' => $name]);
+            $this->e('Behavior ":behaviorName" is not correct', array('behaviorName' => $name));
         return $this;
     }
     
@@ -442,10 +433,10 @@ class GObject
     public function b($name)
     {
         if (!$this->isBehavior($name))
-            $this->e('Behavior ":behaviorName" is not exists', ['behaviorName' => $name]);
+            $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
         $args = func_get_args();
         array_shift($args);
-        call_user_func_array($this->_behaviors[$name], $args);
+        return call_user_func_array($this->_behaviors[$name], $args);
     }
     
     /**
@@ -487,9 +478,10 @@ class GObject
         if (!isset($this->_plugins[$name]))
         {
             list($class, $config, $properties) = $this->getPluginRecord($name);
-            $this->_plugins[$name] = !class_exists($class, false) 
-                                     ? $class::install($config, $properties, $this) 
-                                     : $class::it($properties, $this);
+            if (!class_exists($class, false))
+                $this->_plugins[$name] = $class::install($config, $properties, $this);
+            else
+                $this->_plugins[$name] = $class::it($properties, $this);
         }
         return $this->_plugins[$name];
     }
@@ -512,17 +504,8 @@ class GObject
         if (isset(self::$_config['plugins'][$name]))
             $plugin = self::$_config['plugins'][$name];
         else
-            $this->e('Plugin ":pluginName" is not registered', ['pluginName' => $name]);
-        $class = $plugin['class'];
-        unset($plugin['class']);
-        $config = [];
-        if (is_array($class))
-        {
-            $config = $class;
-            $class = $config['name'];
-            unset($config['name']);
-        }
-        return [$class, $config, $plugin];
+            $this->e('Plugin ":pluginName" is not registered', array('pluginName' => $name));
+        return Core::getRecords($plugin['class']);
     }
     
     /**
@@ -563,7 +546,7 @@ class GObject
     public function attachEvent($name, $handler)
     {
         if (!is_callable($handler))
-            $this->e('Incorrect handler of event ":eventName"', ['eventName' => $name]);
+            $this->e('Incorrect handler of event ":eventName"', array('eventName' => $name));
         $this->_events[$name][] = $handler;
         return $this;
     }
@@ -584,7 +567,7 @@ class GObject
             $event = new GEvent($this);
             array_unshift($args, $event);
         }
-        $result = method_exists($this, $name) ? call_user_func_array([$this, $name], $args) : true;
+        $result = method_exists($this, $name) ? call_user_func_array(array($this, $name), $args) : true;
         if (isset($this->_events[$name]) && $result)
         {
             foreach($this->_events[$name] as $handler)

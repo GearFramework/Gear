@@ -6,6 +6,7 @@ use gear\Core;
 use gear\library\GService;
 use gear\library\GException;
 use gear\interfaces\IModule;
+use gear\interfaces\IComponent;
 
 /** 
  * Класс модулей
@@ -16,14 +17,14 @@ use gear\interfaces\IModule;
  * @copyright Kukushkin Denis 2013
  * @version 0.0.1
  * @since 01.08.2013
+ * @php 5.3.x
  */
 abstract class GModule extends GService implements IModule
 {
-    /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static $_config = array();
     protected static $_init = false;
     /* Public */
 

@@ -14,6 +14,7 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
+ * @php 5.3.x
  */
 class GModel extends GObject
 {
@@ -22,14 +23,15 @@ class GModel extends GObject
     /* Protected */
     protected $_pk = 'id';
     /* Public */
-    
+
     /**
      * Конструктор класса
      * Принимает ассоциативный массив свойств объекта и их значений
      *
      * @access public
      * @param array $properties
-     * @return void
+     * @param null|object $owner
+     * @return \gear\library\GModel
      */
     public function __construct(array $properties = array(), $owner = null) { parent::__construct($properties, $owner); }
 

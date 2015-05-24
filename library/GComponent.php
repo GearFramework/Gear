@@ -16,14 +16,14 @@ use gear\interfaces\IComponent;
  * @copyright Kukushkin Denis 2013
  * @version 0.0.1
  * @since 01.08.2013
+ * @php 5.3.x
  */
 abstract class GComponent extends GService implements IComponent
 {
-    /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static $_config = array();
     protected static $_init = false;
     /* Public */
 

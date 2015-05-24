@@ -15,33 +15,34 @@ use gear\library\GEvent;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 03.08.2013
+ * @php 5.3.x
  */
 class GApplication extends GModule
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config =
-    [
-        'components' =>
-        [
-            'process' =>
-            [
-                'class' =>
-                [
+    protected static $_config = array
+    (
+        'components' => array
+        (
+            'process' => array
+            (
+                'class' => array
+                (
                     'name' => '\gear\components\gear\process\GProcessComponent',
                     'defaultProcess' => 'index',
-                ],
-            ],
-        ],
-        'plugins' =>
-        [
-            'request' => ['class' => '\gear\plugins\gear\http\GRequest'],
-            'env' => ['class' => '\gear\plugins\gear\http\GEnvironment'],
-            'log' => ['class' => '\gear\plugins\gear\GLog'],
-            'http' => ['class' => '\gear\plugins\gear\http\GHttp'],
-        ],
-    ];
+                ),
+            ),
+        ),
+        'plugins' => array
+        (
+            'request' => array('class' => '\gear\plugins\gear\http\GRequest'),
+            'env' => array('class' => '\gear\plugins\gear\http\GEnvironment'),
+            'log' => array('class' => '\gear\plugins\gear\GLog'),
+            'http' => array('class' => '\gear\plugins\gear\http\GHttp'),
+        ),
+    );
     protected $_namespace = null;
     /* Public */
     
@@ -55,12 +56,12 @@ class GApplication extends GModule
     {
         $args = func_get_args();
         if (!func_num_args())
-            $args = [$this->request->isPost() ? $this->request->post() : $this->request->get()];
+            $args = array($this->request->isPost() ? $this->request->post() : $this->request->get());
         else
             $args = func_get_args();
-        if (Core::event('onBeforeApplicationRun', new GEvent($this, ['process' => $process, 'request' => $request])))
+        if (Core::event('onBeforeApplicationRun', new GEvent($this, array('process' => $process, 'request' => $request))))
         {
-            $result = call_user_func_array([$this->c('process'), 'exec'], $args);
+            $result = call_user_func_array(array($this->c('process'), 'exec'), $args);
             Core::event('onAfterApplicationRun', new GEvent($this), $result);
         }
     }
@@ -189,8 +190,8 @@ class GApplication extends GModule
     public function onConstructed()
     {
         parent::onConstructed();
-        Core::attachEvent('onBeforeApplicationRun', [$this, 'onBeforeRun']);
-        Core::attachEvent('onAfterApplicationRun', [$this, 'onAfterRun']);
+        Core::attachEvent('onBeforeApplicationRun', array($this, 'onBeforeRun'));
+        Core::attachEvent('onAfterApplicationRun', array($this, 'onAfterRun'));
         return true;
     }
 
