@@ -10,13 +10,14 @@ namespace gear\library;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
+ * @php 5.3.x
  */
 class GEvent
 {
     /* Const */
     /* Private */
     private $_sender = null;
-    private $_args = [];
+    private $_args = array();
     /* Protected */
     /* Public */
     public $stopPropagation = false;
@@ -26,9 +27,9 @@ class GEvent
      * 
      * @access public
      * @param object $sender
-     * @return void
+     * @return GEvent
      */
-    public function __construct($sender, $args = [])
+    public function __construct($sender, array $args = array())
     {
         $this->_sender = $sender;
         $this->_args = $args;
@@ -58,10 +59,7 @@ class GEvent
      * @param mixed $value
      * @return void
      */
-    public function __set($name, $value)
-    {
-        $this->_args[$name] = $value;
-    }
+    public function __set($name, $value) { $this->_args[$name] = $value; }
     
     /**
      * Возвращает объект, который вызвал вызвал событие

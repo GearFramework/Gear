@@ -45,7 +45,7 @@ class GObject
      * 
      * @access protected
      * @param array $properties
-     * @return void
+     * @return GObject
      */
     protected function __construct(array $properties = array(), $owner = null)
     {
@@ -728,27 +728,17 @@ class GObject
 
     /**
      * Генерация исключений
-     * 
+     *
      * @access public
      * @param string $message
-     * @param array $params
-     * @param integer $type
+     * @throws ObjectException
      * @return void
      */
-    public static function e($message, array $params = [], $type = 0)
+    public static function e($message)
     {
-        $class = get_called_class();
-        $classException = $class . 'Exception';
-        if (!class_exists($classException, false))
-        {
-            $classException = static::_getExceptionClass($class);
-            if (!class_exists($classException, false))
-                $classException = static::_getExceptionClass(get_parent_class($class));
-        }
-        $exception = class_exists($classException, false) 
-                     ? new $classException($message, $params, $type) 
-                     : new \gear\library\ObjectException($message, $params, $type);
-        throw $exception;
+        $args = func_get_args();
+        $args[] = get_called_class();
+        throw call_user_func_array(array('Core', 'e'), $args);
     }
 
     /**

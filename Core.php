@@ -727,22 +727,55 @@ final class Core
      * @access public
      * @static
      * @param string $message
+     * @param integer $code
+     * @param \Exception $previous
      * @param array $params
+     * @param string $class
      * @throws \Exception|\gear\CoreException
      * @return void
      */
-    public static function e($message, array $params = [])
+    public static function e($message, $code = 0, $previous = null, array $params = array(), $class = __CLASS__)
     {
-        if (!class_exists('\gear\CoreException', false))
+        $count = count($args = func_get_args());
+        for($i = 1; $i < $count; ++ $i)
+        {
+            if (is_numeric($args[$i]))
+                $code = $args[$i];
+            else
+            if ($args[$i] instanceof \Exception)
+                $previous = $args[$i];
+            else
+            if (is_array($args[$i]))
+                $params = $args[$i];
+            else
+            if (is_string($args[$i]))
+                $class = $args[$i];
+        }
+        $classException = $class . 'Exception';
+        if ($class !== __CLASS__)
+        {
+            if (!class_exists($classException, false))
+            {
+                $classException = static::_e($class);
+                if (!class_exists($classException, false))
+                    $classException = static::_e(get_parent_class($class));
+            }
+        }
+        if (!class_exists($classException, false))
         {
             foreach($params as $name => $value)
                 $message = str_replace(':' . $name, $value, $message);
-            throw new \Exception($message);
+            $classException = '\Exception';
         }
-        else
-            throw new \gear\CoreException($message, $params);
+        return new $classException($message, $code, $previous, $params);
     }
-    
+
+    private static function _e($class)
+    {
+        $path = str_replace('\\', '/', $class);
+        return str_replace('/', '\\', dirname($path) . '/' . substr(basename($path), 1) . 'Exception');
+    }
+
     public static function dump($value)
     {
         echo '<pre>';

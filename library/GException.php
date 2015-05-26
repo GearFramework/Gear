@@ -10,6 +10,7 @@ namespace gear\library;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 03.08.2013
+ * @php 5.3.x
  */
 class GException extends \Exception
 {
@@ -31,10 +32,11 @@ class GException extends \Exception
      * @access public
      * @param string $message
      * @param array $args
-     * @return void
+     * @return GException
      */
-    public function __construct($message, $args = array())
+    public function __construct($message, $code = 0, \Exception $previous = null, array $args = array())
     {
+        parent::__construct($message, $code, $previous);
         foreach($args as $name => $value)
         {
             $this->$name = $value;
@@ -51,10 +53,7 @@ class GException extends \Exception
      * @param mixed $value
      * @return void
      */
-    public function __set($name, $value)
-    {
-        $this->_args[$name] = $value;
-    }
+    public function __set($name, $value) { $this->_args[$name] = $value; }
 
     /**
      * Доступ к аргументам исключения
@@ -63,10 +62,7 @@ class GException extends \Exception
      * @param string $name
      * @return mixed
      */
-    public function __get($name)
-    {
-        return isset($this->_args[$name]) ? $this->_args[$name] : null;
-    }
+    public function __get($name) { return isset($this->_args[$name]) ? $this->_args[$name] : null; }
 
     /**
      * Возвращает массив аргументов
@@ -74,8 +70,5 @@ class GException extends \Exception
      * @access public
      * @return array
      */
-    public function args()
-    {
-        return $this->_args;
-    }
+    public function args($name = null) { return !$name ? $this->_args : (isset($this->_args[$name]) ? $this->_args[$name] : null); }
 }
