@@ -14,6 +14,7 @@ use gear\library\GModel;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 18.12.2013
+ * @php 5.3.x
  */
 abstract class GApi extends GModel
 {

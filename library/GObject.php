@@ -21,6 +21,10 @@ class GObject
     /* Const */
     /* Private */
     /* Protected */
+
+    /**
+     * @var array of class configuration
+     */
     protected static $_config = array
     (
         'plugins' => array
@@ -29,13 +33,37 @@ class GObject
         ),
         'behaviors' => array(),
     );
+    /**
+     * @var int access level to object
+     */
     protected $_access = Core::ACCESS_PUBLIC;
+    /**
+     * @var array of object properties
+     */
     protected $_properties = array();
+    /**
+     * @var null|object owner object
+     */
     protected $_owner = null;
+    /**
+     * @var array behaviors
+     */
     protected $_behaviors = array();
+    /**
+     * @var array instances plugins
+     */
     protected $_plugins = array();
+    /**
+     * @var array events handlers
+     */
     protected $_events = array();
+    /**
+     * @var array array of plugin names, for loading on construct
+     */
     protected $_preloads = array();
+    /**
+     * @var string path or namespace to object views
+     */
     protected $_viewPath = 'views';
     /* Public */
     
@@ -58,7 +86,7 @@ class GObject
     
     /**
      * Деструктор
-     * Вызывает событие onDestory
+     * Вызывает событие onDestroy
      *
      * @access public 
      * @return void
@@ -98,7 +126,7 @@ class GObject
         if ($value instanceof \gear\interfaces\IPlugin)
             $this->installPlugin($name, $value);
         else
-        if (is_callable($value))
+        if (is_callable($value) || $value instanceof \gear\interfaces\IBehavior)
             $this->attachBehavior($name, $value);
         else
             $this->_properties[$name] = $value;
@@ -153,8 +181,9 @@ class GObject
         if ($this->isPluginRegistered($name))
         {
             $p = $this->p($name);
-            if (is_callable($p))
-                return call_user_func_array($p, $args);
+            if (!is_callable($p))
+                $this->e('Plugin ":methodName" is not callable and cannot be use as function', array('methodName' => $name));
+            return call_user_func_array($p, $args);
         }
         if (is_object($this->_owner))
         {
@@ -203,7 +232,7 @@ class GObject
         if ($this->isPluginRegistered($name))
             return true;
         else
-            return isset($this->_properties[$name]);
+            return array_key_exists($name, $this->_properties);
     }
     
     /**

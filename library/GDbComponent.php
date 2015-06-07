@@ -15,6 +15,7 @@ use \gear\interfaces\IDbComponent;
  * @copyright Kukushkin Denis 2013
  * @version 0.0.1
  * @since 01.08.2013
+ * @php 5.3.x
  */
 abstract class GDbComponent extends GComponent implements IDbComponent
 {
