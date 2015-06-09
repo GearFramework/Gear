@@ -63,6 +63,17 @@ class GModel extends GObject
      * @return string
      */
     public function getPk() { return $this->_pk; }
+
+    /**
+     * Возвращает объект-коллекцию в которой находится модель
+     *
+     * @access public
+     * @return db\GDbCollection|null
+     */
+    public function getCollection()
+    {
+        return $this->owner instanceof \gear\library\GDbComponent ? $this->owner->getCollection() : null;
+    }
 }
 
 /**

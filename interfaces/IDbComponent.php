@@ -21,9 +21,35 @@ interface IDbComponent extends IComponent
      * @param boolean $autoSelectDb
      * @param boolean $autoSelectCollection
      * @throws DbComponentCollection
-     * @return GDbConnection|GDbDatabase|GDbCollection
+     * @return GDbConnection || GDbDatabase || GDbCollection
      */
-    public function getConnection($autoSelectDb = true, $autoSelectCollection = true);
+    public function getDbConnection($autoSelectDb = true, $autoSelectCollection = true);
+
+    /**
+     * Возвращает соединение с сервером базы данных
+     *
+     * @access public
+     * @return \gear\library\db\GDbConnection
+     */
+    public function getConnection();
+
+
+    /**
+     * Возвращает объект базы данных
+     *
+     * @access public
+     * @return \gear\library\db\GDbDatabase
+     */
+    public function getDb();
+
+
+    /**
+     * Возвращает объект таблицу (коллекцию)
+     *
+     * @access public
+     * @return \gear\library\db\GDbCollection
+     */
+    public function getCollection();
     
     /**
      * Возвращает название компонента, выполняющего соединение с сервером базы

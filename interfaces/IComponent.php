@@ -12,5 +12,6 @@ use gear\interfaces\IService;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
+ * @release 1.0.0
  */
 interface IComponent extends IService {}

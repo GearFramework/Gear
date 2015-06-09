@@ -10,6 +10,7 @@ namespace gear\interfaces;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 03.08.2013
+ * @release 1.0.0
  */
 interface ILoader
 {

@@ -10,6 +10,7 @@ namespace gear\interfaces;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 29.12.2014
+ * @release 1.0.0
  */
 interface IService
 {
