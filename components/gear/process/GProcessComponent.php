@@ -13,18 +13,20 @@ use gear\library\GModel;
  * @component ProcessComponent
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
+ * @php 5.3.x
+ * @release 1.0.0
  */
 class GProcessComponent extends GComponent
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static $_config = array();
     protected static $_init = false;
     protected $_defaultProcess = 'index';
-    protected $_processes = [];
+    protected $_processes = array();
     protected $_currentProcess = null;
     /* Public */
     
@@ -36,31 +38,31 @@ class GProcessComponent extends GComponent
      * @throws ProcessComponentException 
      * @return mixed
      */
-    public function exec($request = [])
+    public function exec($request = array())
     {
         try
         {
             $args = func_get_args();
             $nums = func_num_args();
             if (!$nums)
-                $this->_currentProcess = $this->_prepareProcess([]);
+                $this->_currentProcess = $this->_prepareProcess(array());
             else
             if ($nums >= 1)
             {
                 if ($args[0] instanceof \gear\interfaces\IProcess || $args[0] instanceof \Closure)
                 {
-                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : [];
+                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : array();
                     $this->_currentProcess = $args[0];
                 }
                 else
                 {
-                    $request = is_array($args[0]) ? $args[0] : [];
+                    $request = is_array($args[0]) ? $args[0] : array();
                     $this->_currentProcess = $this->_prepareProcess($request);
                 }
             }
             return call_user_func
             (
-                $this->_currentProcess instanceof \Closure ? $this->_currentProcess : [$this->_currentProcess, 'entry'], 
+                $this->_currentProcess instanceof \Closure ? $this->_currentProcess : array($this->_currentProcess, 'entry'),
                 $request
             );
         }
@@ -111,19 +113,19 @@ class GProcessComponent extends GComponent
                 else
                 {
                     $class = $this->_prepareProcessClass($processName);
-                    $properties = array_merge($processes[$processName], ['name' => $processName]);
+                    $properties = array_merge($processes[$processName], array('name' => $processName));
                 }
             }
             else
             {
                 $class = $this->_prepareProcessClass($processName);
-                $properties = ['name' => $processName, 'params' => $processes[$processName]];
+                $properties = array('name' => $processName, 'params' => $processes[$processName]);
             }
         }
         else
         {
             $class = $this->_prepareProcessClass($processName);
-            $properties = ['name' => $processName];
+            $properties = array('name' => $processName);
         }
         return $process ? $process : new $class($properties);
     }
@@ -160,9 +162,13 @@ class GProcessComponent extends GComponent
      * 
      * @access public
      * @param array $processes
-     * @return void
+     * @return $this
      */
-    public function setProcesses(array $processes) { $this->_processes = $processes; }
+    public function setProcesses(array $processes)
+    {
+        $this->_processes = $processes;
+        return $this;
+    }
     
     /**
      * Получение описания процессов
@@ -179,7 +185,7 @@ class GProcessComponent extends GComponent
      * @param array $processes
      * @return $this
      */
-    public function appendProcesses(array $processes) 
+    public function addProcesses(array $processes)
     { 
         $this->_processes = array_merge($this->_processes, $processes);
         return $this; 
@@ -203,7 +209,7 @@ class GProcessComponent extends GComponent
      * Установка текущего процесса
      * 
      * @access public
-     * @return void
+     * @return $this
      */
     public function setProcess($process)
     {
@@ -211,6 +217,7 @@ class GProcessComponent extends GComponent
             $this->_currentProcess = $process;
         else
             $this->e('Invalid process');
+        return $this;
     }
     
     /**
@@ -226,9 +233,13 @@ class GProcessComponent extends GComponent
      * 
      * @access public
      * @param string $processName
-     * @return void
+     * @return $this
      */
-    public function setDefaultProcess($processName) { $this->_defaultProcess = $processName; }
+    public function setDefaultProcess($processName)
+    {
+        $this->_defaultProcess = $processName;
+        return $this;
+    }
     
     /**
      * Получение названия процесса, исполняемого по-умолчанию

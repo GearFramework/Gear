@@ -534,7 +534,7 @@ class GObject
             $plugin = self::$_config['plugins'][$name];
         else
             $this->e('Plugin ":pluginName" is not registered', array('pluginName' => $name));
-        return Core::getRecords($plugin['class']);
+        return Core::getRecords($plugin);
     }
     
     /**
@@ -760,14 +760,11 @@ class GObject
      *
      * @access public
      * @param string $message
-     * @throws ObjectException
      * @return void
      */
-    public static function e($message)
+    public static function e($message, $params = array(), $code = 0, \Exception $previous = null)
     {
-        $args = func_get_args();
-        $args[] = get_called_class();
-        throw call_user_func_array(array('Core', 'e'), $args);
+        Core::e($message, $params, $code, $previous, get_called_class());
     }
 
     /**

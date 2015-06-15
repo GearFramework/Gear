@@ -28,26 +28,75 @@ class GConfigurator extends GComponent
         'php' => '5.3.0',
         'extensions' => array()
     );
+    protected $_tests = array();
     /* Public */
     public $rules = array();
+
+    /**
+     * Установка списка тестов
+     *
+     * @access public
+     * @param array $tests
+     * @return $this
+     */
+    public function setTests($tests)
+    {
+        $this->_tests = $tests;
+        return $this;
+    }
+
+    /**
+     * Возвращает списко тестов
+     *
+     * @access public
+     * @return array
+     */
+    public function getTests() { return $this->_tests; }
     
     /**
      * Производит конфигурирование и проверку приложения
      * 
      * @access public
-     * @return void
+     * @return boolean
      */
-    public function run()
+    public function preloadTest()
     {
         if ($this->buffer)
             ob_start();
         if ($this->session && !ini_get('session.auto_start'))
             session_start();
         if (version_compare(PHP_VERSION, $this->php, '<='))
-            $this->e('Текущая версия PHP ' . PHP_VERSION . ' не соответствует требуемой ' . $this->php);
+            $this->e('Invalid php version. Your version is ' . PHP_VERSION . ' needle ' . $this->php);
         foreach($this->extensions as $extension)
             if (!extension_loaded($extension))
-                $this->e('Расширение PHP ":extensionName" не установлено', array('extensionName' => $extension));
+                $this->e('PHP extension ":extensionName" not installed', array('extensionName' => $extension));
+        return true;
+    }
+
+    /**
+     * Исполнение пользовательского теста
+     *
+     * @access public
+     * @param string|array|\Closure $callback
+     * @return $this
+     * @throws mixed
+     */
+    public function test($callback = null)
+    {
+        if (!$callback)
+            $callback = $this->tests;
+        if (is_callable($callback))
+        {
+            if (!$callback($this))
+                $this->e('Error configuration test');
+        }
+        else
+        if (is_array($callback))
+        {
+            foreach($callback as $test)
+                $this->test($test);
+        }
+        return $this;
     }
     
     /**
@@ -56,11 +105,7 @@ class GConfigurator extends GComponent
      * @access public
      * @return boolean
      */
-    public function onInstalled()
-    {
-        $this->run();
-        return true;
-    }
+    public function onInstalled() { return $this->preloadTest(); }
 }
 
 /** 

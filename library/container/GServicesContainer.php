@@ -13,6 +13,7 @@ use gear\Core;
  * @version 1.0.0
  * @since 23.12.2014
  * @php 5.3.x
+ * @release 1.0.0
  */
 class GServicesContainer
 {
@@ -49,10 +50,7 @@ class GServicesContainer
      * @param string $serviceLocation
      * @return boolean
      */
-    public function isRegisteredService($serviceLocation) 
-    { 
-        return isset($this->_services[$serviceLocation]); 
-    }
+    public function isRegisteredService($serviceLocation) { return isset($this->_services[$serviceLocation]); }
     
     /**
      * Инсталляция сервиса (создание инстанса)

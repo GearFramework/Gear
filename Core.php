@@ -21,6 +21,14 @@ defined('DEBUG') or define('DEBUG', false);
 final class Core
 {
     /* Const */
+    const EMERGENCY = 'EMERGENCY';
+    const ALERT = 'ALERT';
+    const CRITICAL = 'CRITICAL';
+    const ERROR = 'ERROR';
+    const WARNING = 'WARNING';
+    const NOTICE = 'NOTICE';
+    const INFO = 'INFO';
+    const DEBUG = 'DEBUG';
     const HTTP = 1;
     const CLI = 2;
     const MODE_DEVELOPMENT = 1;
@@ -43,7 +51,6 @@ final class Core
                 '\gear\interfaces\IComponent',
                 '\gear\interfaces\IPlugin',
                 '\gear\library\GObject',
-                '\gear\traits\TNamedService',
                 '\gear\library\GService',
                 '\gear\library\GModule',
                 '\gear\library\GComponent',
@@ -55,13 +62,13 @@ final class Core
             (
                 'syslog' => array
                 (
-                    'class' => '\gear\components\gear\syslog\GSyslog',
+                    'class' => array('name' => '\gear\components\gear\syslog\GSyslog'),
                     'name' => 'syslog',
                 ),
                 // Автозагрузчик классов
                 'loader' => array
                 (
-                    'class' => '\gear\components\gear\loader\GLoader',
+                    'class' => array('name' => '\gear\components\gear\loader\GLoader'),
                     'name' => 'loader',
                     'aliases' =>  array
                     (
@@ -103,7 +110,7 @@ final class Core
             'locale' => 'ru_RU',
             'encoding' => 'utf-8',
             'services' => array('class' => '\gear\library\container\GServicesContainer'),
-            'configurator' => array('class' => '\gear\library\configurator\GConfigurator'),
+            'configurator' => array('class' => '\gear\components\gear\configurator\GConfigurator'),
             'defaultApplication' => array('class' => '\gear\library\GApplication'),
             'helperManager' => 'helper',
         ),
@@ -214,10 +221,10 @@ final class Core
         {
             if ($sectionName != 'params' && $sectionName != 'preloads')
             {
-                $section = self::configurator($section);
+                $section = self::_prepareConfig($section);
                 foreach($section as $serviceName => $service)
                 {
-                    $serviceLocation = self::class . '.' . $sectionName . '.' . $serviceName;
+                    $serviceLocation = __CLASS__ . '.' . $sectionName . '.' . $serviceName;
                     self::services()->registerService($serviceLocation, $service);
                 }
             }
@@ -242,10 +249,10 @@ final class Core
                 self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
             require($pathFile);
         }
+        unset(self::$_config['preloads']['library']);
         foreach(self::$_config['preloads'] as $sectionName => $section)
         {
-            if ($sectionName !== 'library')
-                self::_preloadSection ($sectionName, $section);
+            self::_preloadSection ($sectionName, $section);
         }
         return true;
     }
@@ -269,7 +276,7 @@ final class Core
                 self::e('File ":preloadName" not found', array('preloadName' => $pathFile));
             require($pathFile);
             $instance = $class::install($config, $properties);
-            self::services()->installService(self::class . '.' . $sectionName . '.' . $serviceName, $instance);
+            self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
         }
     }
 
@@ -326,7 +333,7 @@ final class Core
     {
         try
         {
-            return self::services()->getRegisteredService(self::class . '.modules.' . $name);
+            return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
         }
         catch(\Exception $e)
         {
@@ -344,7 +351,7 @@ final class Core
      */
     public static function isModuleRegistered($name)
     {
-        return self::services()->isRegisteredService(self::class . '.modules.' . $name);
+        return self::services()->isRegisteredService(__CLASS__ . '.modules.' . $name);
     }
     
     /**
@@ -359,7 +366,7 @@ final class Core
      */
     public static function registerModule($name, array $module)
     {
-        self::services()->registerService(self::class . '.modules.' . $name, $module);
+        self::services()->registerService(__CLASS__ . '.modules.' . $name, $module);
         return true;
     }
     
@@ -373,7 +380,7 @@ final class Core
      */
     public static function isModuleInstalled($name)
     {
-        return self::services()->isInstalledService(self::class . '.modules.' . $name);
+        return self::services()->isInstalledService(__CLASS__ . '.modules.' . $name);
     }
     
     /**
@@ -388,7 +395,7 @@ final class Core
      */
     public static function installModule($name, array $module)
     {
-        return self::services()->installService(self::class . '.modules.' . $name, $module);
+        return self::services()->installService(__CLASS__ . '.modules.' . $name, $module);
     }
     
     /**
@@ -401,7 +408,7 @@ final class Core
      */
     public static function uninstallModule($name)
     {
-        self::services()->uninstallService(self::class . '.modules.' . $name);
+        self::services()->uninstallService(__CLASS__ . '.modules.' . $name);
         return true;
     }
     
@@ -417,7 +424,7 @@ final class Core
     {
         try
         {
-            return self::params('services')->getRegisteredService(self::class . '.components.' . $name, $instance);
+            return self::params('services')->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
         }
         catch(\Exception $e)
         {
@@ -435,7 +442,7 @@ final class Core
      */
     public static function isComponentRegistered($name)
     {
-        return self::params('services')->isRegisteredService(self::class . '.components.' . $name);
+        return self::params('services')->isRegisteredService(__CLASS__ . '.components.' . $name);
     }
     
     /**
@@ -450,7 +457,7 @@ final class Core
      */
     public static function registerComponent($name, array $component)
     {
-        self::services()->registerService(self::class . '.components.' . $name, $component);
+        self::services()->registerService(__CLASS__ . '.components.' . $name, $component);
         return true;
     }
     
@@ -464,7 +471,7 @@ final class Core
      */
     public static function isComponentInstalled($name)
     {
-        return self::services()->isInstalledService(self::class . '.components.' . $name);
+        return self::services()->isInstalledService(__CLASS__ . '.components.' . $name);
     }
     
     /**
@@ -481,7 +488,7 @@ final class Core
     {
         if ($owner)
             $properties['owner'] = $owner;
-        return self::services()->installService(self::class . '.components.' . $name, $component);
+        return self::services()->installService(__CLASS__ . '.components.' . $name, $component);
     }
     
     /**
@@ -494,7 +501,7 @@ final class Core
      */
     public static function uninstallComponent($name)
     {
-        self::params('services')->uninstallService(self::class . '.components.' . $name);
+        self::params('services')->uninstallService(__CLASS__ . '.components.' . $name);
         return true;
     }
 
@@ -600,15 +607,19 @@ final class Core
     public static function getRecords(array $properties)
     {
         $properties = self::_prepareConfig($properties);
-        $class = $properties['class'];
-        unset($properties['class']);
+        $class = null;
         $config = array();
-        if (is_array($class))
+        if (isset($properties['class']))
         {
-            $config = $class;
-            $class = $config['name'];
-            unset($config['name']);
-            $config = self::_prepareConfig($config);
+            $class = $properties['class'];
+            unset($properties['class']);
+            if (is_array($class))
+            {
+                $config = $class;
+                $class = $config['name'];
+                unset($config['name']);
+                $config = self::_prepareConfig($config);
+            }
         }
         return array($class, $config, $properties);
     }
@@ -628,8 +639,8 @@ final class Core
             unset($config['#import']);
             foreach($imports as $param)
             {
-                $import = self::params($config['#import']);
-                array_replace_recursive($config, self::_prepareConfig($import));
+                $import = self::params($param);
+                $config = array_replace_recursive($config, self::_prepareConfig($import));
             }
         }
         if (isset($config['#include']))
@@ -639,7 +650,7 @@ final class Core
             foreach($includes as $file)
             {
                 $file = self::resolvePath($file, true);
-                array_replace_recursive($config, self::_prepareConfig(require($file)));
+                $config = array_replace_recursive($config, self::_prepareConfig(require($file)));
             }
         }
         return $config;
@@ -668,12 +679,11 @@ final class Core
                 $resolved = $path;
             /* Относительный путь или пространство имён */
             else
-            if ($path[0] === '\\')
-                $resolved = GEAR . '/..' . str_replace('\\', '/', $path);
-            else
             {
-                $resolved = GEAR . '/..' . (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/')
-                          . str_replace('\\', '/', $path);
+                $resolved = GEAR . '/..';
+                if ($path[0] !== '\\')
+                    $resolved .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/');
+                $resolved .= str_replace('\\', '/', $path);
             }
         }
         return $resolved;
@@ -732,9 +742,9 @@ final class Core
      * @param array $params
      * @param string $class
      * @throws \Exception|\gear\CoreException
-     * @return void
+     * @return \Exception
      */
-    public static function e($message, $code = 0, $previous = null, array $params = array(), $class = __CLASS__)
+    public static function e($message, array $params = array(), $code = 0, $previous = null, $class = __CLASS__)
     {
         $count = count($args = func_get_args());
         for($i = 1; $i < $count; ++ $i)
@@ -767,7 +777,7 @@ final class Core
                 $message = str_replace(':' . $name, $value, $message);
             $classException = '\Exception';
         }
-        return new $classException($message, $code, $previous, $params);
+        throw new $classException($message, $code, $previous, $params);
     }
 
     private static function _e($class)

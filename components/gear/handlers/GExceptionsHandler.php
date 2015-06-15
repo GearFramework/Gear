@@ -14,37 +14,32 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 02.08.2013
+ * @php 5.3.x
  */
 class GExceptionsHandler extends GComponent
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'handler' => 'exception',
-    );
+    protected static $_config = array('handler' => 'exception');
     protected static $_init = false;
-    /* Public */
-    public $viewPath = array
+    protected $_viewPath = array
     (
         'mode' => array
         (
-            Core::HTTP => '\\gear\\views\\exceptionHttp', 
-            Core::CLI => '\\gear\\views\\exceptionConsole',
+            Core::HTTP => '\gear\views\exceptionHttp',
+            Core::CLI => '\gear\views\exceptionConsole',
         ),
     );
-    
+    /* Public */
+
     /**
      * Возвращает путь к шаблону отображения
      * 
      * @access public 
      * @return string
      */
-    public function getViewPath()
-    {
-        return $this->viewPath['mode'][Core::getMode()];
-    }
+    public function getViewPath() { return $this->_viewPath['mode'][Core::getMode()]; }
     
     /**
      * Обработчик исключений, которые не были перехвачены try {} catch {}
@@ -61,7 +56,7 @@ class GExceptionsHandler extends GComponent
                 ob_end_clean();
             $this->view->render
             (
-                $this->getViewPath(), 
+                $this->viewPath,
                 array
                 (
                     'exception' => $e instanceof GException ? $e : new GException($e->getMessage())
@@ -94,7 +89,7 @@ class GExceptionsHandler extends GComponent
             if (!$currentLine)
             {
                 $startLine = 0;
-                $endLine = $count - 1;
+                $endLine = $count <= 10 ? $count - 1 : 9;
             }
             else
             {
@@ -102,9 +97,7 @@ class GExceptionsHandler extends GComponent
                 $endLine = $currentLine + 10 < $count ? $currentLine + 9 : $count - 1;
             }
             for($i = $startLine; $i <= $endLine; ++ $i)
-            {
                 $sources[$i + 1] = $lines[$i];
-            }
         }
         return $sources;
     }

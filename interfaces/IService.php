@@ -20,9 +20,10 @@ interface IService
      * @access public
      * @static
      * @param string|array $config
-     * @return GService
+     * @param array $properties
+     * @return object
      */
-    public static function install($config);
+    public static function install($config, array $properties = array());
 
     /**
      * Конфигурирование класса сервиса

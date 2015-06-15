@@ -5,6 +5,7 @@ namespace gear\library;
 use gear\Core;
 use gear\library\GObject;
 use gear\library\GException;
+use gear\interfaces\IService;
 
 /** 
  * Класс сервисов
@@ -16,8 +17,9 @@ use gear\library\GException;
  * @version 1.0.0
  * @since 25.12.2014
  * @php 5.3.x
+ * @release 1.0.0
  */
-abstract class GService extends GObject
+abstract class GService extends GObject implements IService
 {
     /* Const */
     /* Private */
@@ -41,15 +43,16 @@ abstract class GService extends GObject
      * @access public
      * @static
      * @param string|array $config
+     * @param array $properties
      * @return GService
      */
-    public static function install($config)
+    public static function install($config, array $properties = array())
     {
         if (static::$_init === false)
             static::init($config);
         $args = func_get_args();
         array_shift($args);
-        $instance = call_user_func_array(array(static::class, 'it'), $args);
+        $instance = call_user_func_array(array(get_called_class(), 'it'), $args);
         $instance->event('onInstalled');
         return $instance;
     }
@@ -73,7 +76,7 @@ abstract class GService extends GObject
         if (isset(static::$_config['components']))
         {
             foreach(static::$_config['components'] as $componentName => $component)
-                Core::services()->registerService(static::class . '.components.' . $componentName, $component);
+                Core::services()->registerService(get_called_class() . '.components.' . $componentName, $component);
         }
     }
     

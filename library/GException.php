@@ -36,13 +36,12 @@ class GException extends \Exception
      */
     public function __construct($message, $code = 0, \Exception $previous = null, array $args = array())
     {
-        parent::__construct($message, $code, $previous);
         foreach($args as $name => $value)
         {
             $this->$name = $value;
             $message = str_replace(':' . $name, $value, $message);
         }
-        parent::__construct($message);
+        parent::__construct($message, $code, $previous);
     }
 
     /**

@@ -10,6 +10,7 @@ namespace gear\components\gear\loader;
 use gear\Core;
 use gear\library\GComponent;
 use gear\library\GException;
+use gear\library\GEvent;
 use gear\interfaces\ILoader;
 
 /** 
@@ -19,9 +20,10 @@ use gear\interfaces\ILoader;
  * @component Loader
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 02.08.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 class GLoader extends GComponent implements ILoader
 {
@@ -62,6 +64,8 @@ class GLoader extends GComponent implements ILoader
         if (!file_exists($file))
             $this->e('Library ":library" of class ":className" not found', array('library' => $file, 'className' => $className));
         include_once($file);
+        if (!class_exists($className, false))
+            $this->e('Library not included class :className', array('className' => $className));
     }
     
     /**
@@ -78,14 +82,16 @@ class GLoader extends GComponent implements ILoader
             $path = $this->resolvePaths[$namespace];
         else
         {
-            if (preg_match('/^[a-zA-Z]{1}\:/', $namespace) || substr($namespace, 0, 1) == '/')
+            /* Абсолютный путь */
+            if (preg_match('/^[a-zA-Z]{1}\:/', $namespace) || $namespace[0] === '/')
                 $path = $namespace;
+            /* Относительный путь или пространство имён */
             else
             {
-                if (substr($namespace, 0, 1) == '\\')
-                    $path = GEAR . '/..' . str_replace('\\', '/', $namespace);
-                else
-                    $path = GEAR . '/../' . (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : 'gear/') . str_replace('\\', '/', $namespace);
+                $path = GEAR . '/..';
+                if ($namespace[0] !== '\\')
+                    $path .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/');
+                $path .= str_replace('\\', '/', $namespace);
             }
         }
         return $path;

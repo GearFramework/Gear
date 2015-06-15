@@ -14,37 +14,32 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 02.08.2013
+ * @php 5.3.x
  */
 class GErrorsHandler extends GComponent
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'handler' => 'error',
-    );
+    protected static $_config = array('handler' => 'error');
     protected static $_init = false;
-    /* Public */
-    public $viewPath = array
+    protected $_viewPath = array
     (
         'mode' => array
         (
-            Core::HTTP => '\\gear\\views\\errorHttp', 
-            Core::CLI => '\\gear\\views\\errorConsole',
+            Core::HTTP => '\gear\views\errorHttp',
+            Core::CLI => '\gear\views\errorConsole',
         ),
     );
-    
+    /* Public */
+
     /**
      * Возвращает путь к шаблону отображения
      * 
      * @access public 
      * @return string
      */
-    public function getViewPath()
-    {
-        return $this->viewPath['mode'][Core::getMode()];
-    }
+    public function getViewPath() { return $this->_viewPath['mode'][Core::getMode()]; }
     
     /**
      * Обработчик ошибок php

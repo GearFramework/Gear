@@ -11,15 +11,35 @@ use gear\library\GException;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 12.05.2014
+ * @php 5.3.x
  */
 class GSyslog extends GComponent
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_init = array();
+    protected static $_config = array
+    (
+        'plugins' => array
+        (
+            'fileLog' => array
+            (
+                'class' => '\gear\plugins\gear\loggers\GFileLogger',
+                'location' => 'logs',
+                'templateFilename' => '%Y-%m-%d.log',
+                'levels' => array(Core::DEBUG, Core::CRITICAL, Core::WARNING, Core::ERROR),
+                'maxLogFileSize' => '10MB',
+            ),
+        ),
+    );
+    protected static $_init = false;
+    protected $_properties = array
+    (
+        'datetimeTemplate' => 'd/m/Y H:i:s',
+    );
+    protected $_routes = array('fileLog');
     /* Public */
     
     /**
@@ -32,6 +52,14 @@ class GSyslog extends GComponent
     {
         return call_user_func(array($this, 'log'), $level, $message, $context);
     }
+
+    public function setRoutes(array $routes)
+    {
+        $this->_routes = $routes;
+        return $this;
+    }
+
+    public function getRoutes() { return $this->_routes; }
     
     /**
      * Запись сообщения
@@ -45,6 +73,10 @@ class GSyslog extends GComponent
      */
     public function log($level, $message, array $context = array())
     {
+        foreach($context as $param => $value)
+            $message = str_replace(':' . $param, $value, $message);
+        foreach($this->routes as $route)
+            $this->p($route)->write($level, $message, date($this->datetimeTemplate));
         return $this;
     }
 }
@@ -55,7 +87,7 @@ class GSyslog extends GComponent
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 12.05.2014
  */
 class SyslogException extends GException
