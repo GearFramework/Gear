@@ -108,11 +108,20 @@ class GFileLogger extends GPlugin
     protected function _prepareFilename()
     {
         $filename = $this->templateFilename;
-        preg_match_all('/(%(Y|m|d|H|i|s))/', $this->templateFilename, $matches);
+        preg_match_all('#(\%[a-zA-Z]{1})#u', $this->templateFilename, $matches);
         if ($matches[0])
         {
             foreach($matches[0] as $item)
-                $filename = str_replace($item, date($item[1]), $filename);
+            {
+                $item = substr($item, 1, 1);
+                if ($item == 'c')
+                {
+                    $class = get_class($this->_owner);
+                    $filename = str_replace('%' . $item, substr($class, strrpos($class, '\\') + 1), $filename);
+                }
+                else
+                    $filename = str_replace('%' . $item, date($item), $filename);
+            }
         }
         $filename = Core::resolvePath($this->location . '/' . $filename);
         if (file_exists($filename) && $this->maxLogFileSize > 0 && $this->maxLogFileSize <= filesize($filename))

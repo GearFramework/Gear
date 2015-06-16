@@ -37,10 +37,14 @@ class GApplication extends GModule
         ),
         'plugins' => array
         (
+            /* Плагин для работы с http-запросами */
             'request' => array('class' => '\gear\plugins\gear\http\GRequest'),
+            /* Плагин для работы с окружением */
             'env' => array('class' => '\gear\plugins\gear\http\GEnvironment'),
-            'log' => array('class' => '\gear\plugins\gear\GLog'),
+            /* Плагин для работы с http */
             'http' => array('class' => '\gear\plugins\gear\http\GHttp'),
+            /* Плагин для протоколирования работы  */
+            'log' => array('class' => '\gear\plugins\gear\GLog'),
         ),
     );
     protected $_namespace = null;
@@ -66,19 +70,10 @@ class GApplication extends GModule
         }
     }
 
-    /**
-     * Возвращает название пространства имён приложения.
-     * По сути это название папки, в которой находится класс приложения. 
-     * Т.е. если файл класса приложения Test Находится по пути
-     * /usr/share/gear/test/Test.php то данный метод приложения вернёт значение
-     * test
-     * 
-     * @access public
-     * @return string
-     */
-    public function getNamespace()
+    public function setNamespace($namespace)
     {
-        return $this->_namespace ? $this->_namespace : $this->_namespace = basename(dirname(str_replace('\\', '/', get_class($this))));
+        $this->_namespace = $namespace;
+        return $this;
     }
 
     /**

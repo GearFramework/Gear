@@ -6,13 +6,14 @@ use gear\library\GComponent;
 use gear\library\GException;
 
 /**
- * Системное протоколирование
+ * Системное протоколирование доступное через \gear\Core::syslog()
  * 
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 12.05.2014
+ * @see \gear\Core::syslog()
  * @php 5.3.x
  */
 class GSyslog extends GComponent
@@ -24,6 +25,7 @@ class GSyslog extends GComponent
     (
         'plugins' => array
         (
+            /* Плагин записи данных протоколирования в файлы */
             'fileLog' => array
             (
                 'class' => '\gear\plugins\gear\loggers\GFileLogger',
@@ -39,6 +41,7 @@ class GSyslog extends GComponent
     (
         'datetimeTemplate' => 'd/m/Y H:i:s',
     );
+    /* Пути сохранения данных протоколирования */
     protected $_routes = array('fileLog');
     /* Public */
     
@@ -53,12 +56,25 @@ class GSyslog extends GComponent
         return call_user_func(array($this, 'log'), $level, $message, $context);
     }
 
+    /**
+     * Уставнока путей сохранения данных протоколирования
+     *
+     * @access public
+     * @param array $routes
+     * @return $this
+     */
     public function setRoutes(array $routes)
     {
         $this->_routes = $routes;
         return $this;
     }
 
+    /**
+     * Получение путей сохранения данных протоколирования
+     *
+     * @access public
+     * @return string
+     */
     public function getRoutes() { return $this->_routes; }
     
     /**

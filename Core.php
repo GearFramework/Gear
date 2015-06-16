@@ -37,10 +37,13 @@ final class Core
     const ACCESS_PROTECTED = 1;
     const ACCESS_PUBLIC = 2;
     /* Private */
-    private static $_config =           // Текущая конфигурация ядра
-    [         
+    /* Текущая конфигурация ядра */
+    private static $_config = array
+    (
+        /* Библиотеки, модули, компоненты подключаемые на этапе инициализации */
         'preloads' => array
         (
+            /* Библиотеки подключаемые на этапе инициализации */
             'library' => array
             (
                 '\gear\library\GException',
@@ -57,9 +60,12 @@ final class Core
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
             ),
+            /* Модули подключаемые на этапе инициализации */
             'modules' => array(),
+            /* Компоненты подключаемые на этапе инициализации */
             'components' => array
             (
+                /* Системное логгирование */
                 'syslog' => array
                 (
                     'class' => array('name' => '\gear\components\gear\syslog\GSyslog'),
@@ -91,7 +97,9 @@ final class Core
                 ),
             ),
         ),
+        /* Модули ядра */
         'modules' => array(),
+        /* Компоненты ядра */
         'components' => array
         (
             'helper' => array
@@ -104,6 +112,7 @@ final class Core
         (
             'calendar' => array('class' => '\gear\helpers\GCalendar'),
         ),
+        /* Параметры работы ядра, приложения и т.п. */
         'params' => array
         (
             'baseDir' => GEAR, 
@@ -114,11 +123,15 @@ final class Core
             'defaultApplication' => array('class' => '\gear\library\GApplication'),
             'helperManager' => 'helper',
         ),
-    ];
-    private static $_events = array();       // Обработчики событий
-    private static $_coreMode = null;   // Режим запуска PRODUCTION или DEVELOPMENT
-    private static $_runMode = null;    // Окружение: http или консоль
-    private static $_version = '1.0.0'; // Версия ядра
+    );
+    /* Обработчики событий */
+    private static $_events = array();
+    /* Режим запуска ядра */
+    private static $_coreMode = null;
+    /* Окружение: http или консоль */
+    private static $_runMode = null;
+    /* Версия ядра */
+    private static $_version = '1.0.0';
     /* Protected */
     /* Public */
     
@@ -163,40 +176,14 @@ final class Core
         }
         return $services;
     }
-    
-    /**
-     * Возвращает инстанс конфигуратора
-     * 
-     * @access public
-     * @static
-     * @return object
-     */
-    public static function configurator()
-    {
-        $configurator = self::params('configurator');
-        if (!$configurator)
-            self::e('Configurator not defined');
-        else
-        if (!is_object($configurator))
-        {
-            list($class, $config, $properties) = self::getRecords($configurator, true);
-            $file = self::resolvePath($class, true) . '.php';
-            require $file;
-            if (method_exists($class, 'init'))
-                $class::init($config);
-            $configurator = new $class($properties);
-            self::params('configurator', $configurator);
-        }
-        return !func_num_args() ? $configurator : call_user_func_array(array($configurator, 'configure'), func_get_args());
-    }
-    
+
     /**
      * Инициализация ядра
      * 
      * @access public
      * @static
-     * @param string as path to configuration file|array of configuration $config
-     * @param integer Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION $coreMode
+     * @param string|array|\Closure $config path to configuration file or array of configuration or anonymous function must return array
+     * @param integer $coreMode Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION
      * @throws \Exception
      * @return boolean
      */
@@ -204,6 +191,8 @@ final class Core
     {
         $modes = array(self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production');
         self::$_coreMode = $coreMode;
+        if ($config instanceof \Closure)
+            $config = $config($coreMode = self::MODE_DEVELOPMENT);
         if ($config === null)
             $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
         if (is_string($config))
@@ -680,9 +669,9 @@ final class Core
             /* Относительный путь или пространство имён */
             else
             {
-                $resolved = GEAR . '/..';
+                $resolved = GEAR . '/../';
                 if ($path[0] !== '\\')
-                    $resolved .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/');
+                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : 'gear/');
                 $resolved .= str_replace('\\', '/', $path);
             }
         }
@@ -775,7 +764,7 @@ final class Core
         {
             foreach($params as $name => $value)
                 $message = str_replace(':' . $name, $value, $message);
-            $classException = '\Exception';
+            throw new \Exception($message, $code, $previous);
         }
         throw new $classException($message, $code, $previous, $params);
     }

@@ -33,6 +33,7 @@ class GObject
         ),
         'behaviors' => array(),
     );
+    protected $_namespace = null;
     /**
      * @var int access level to object
      */
@@ -753,6 +754,23 @@ class GObject
                 return $this;
             }
         }
+    }
+
+    /**
+     * Возвращает название пространства имён класса.
+     *
+     * @access public
+     * @return string
+     */
+    public function getNamespace()
+    {
+        if (!$this->_namespace)
+        {
+            $class = get_class($this);
+            $this->_namespace = substr($class, 0, strrpos($class, '\\'));
+
+        }
+        return $this->_namespace;
     }
 
     /**

@@ -88,9 +88,9 @@ class GLoader extends GComponent implements ILoader
             /* Относительный путь или пространство имён */
             else
             {
-                $path = GEAR . '/..';
+                $path = GEAR . '/../';
                 if ($namespace[0] !== '\\')
-                    $path .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/');
+                    $path .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : 'gear/');
                 $path .= str_replace('\\', '/', $namespace);
             }
         }

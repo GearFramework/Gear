@@ -22,60 +22,81 @@ class GLog extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
+    protected $_properties = array
+    (
+        'datetimeTemplate' => 'd/m/Y H:i:s',
+    );
+    /* Пути сохранения данных протоколирования */
+    protected $_routes = array
+    (
+        'fileLog' => array
+        (
+            'class' => '\gear\plugins\gear\loggers\GFileLogger',
+            'location' => 'logs',
+            'templateFilename' => 'log-%Y-%m-%d.log',
+            'levels' => array(Core::DEBUG, Core::CRITICAL, Core::WARNING, Core::ERROR),
+            'maxLogFileSize' => '10MB',
+        ),
+    );
     /* Public */
-    public $log = 'logs\log-%Y-%m-%d.log';
-    public $filename = null;
-    public $rotate = false;
-    
+
     /**
-     * Вызов метода write()
-     * 
+     * Неявный вызов log()
+     *
      * @access public
-     * @return void
+     * @return mixed
      */
-    public function __invoke()
+    public function __invoke($level, $message, array $context = array())
     {
-        call_user_func_array(array($this, 'write'), func_get_args());
-    }
-    
-    /**
-     * Получение имени файла
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function _processFileName()
-    {
-        if ($this->log)
-        {
-            preg_match_all('#(\%[a-zA-Z]{1})#u', $this->log, $res);
-            $format = $this->log;
-            foreach($res[0] as $item)
-            {
-                $item = substr($item, 1, 1);
-                if ($item == 'c')
-                    $format = str_replace('%' . $item, get_class($this->_owner), $format);
-                else
-                    $format = str_replace('%' . $item, date($item), $format);
-            }
-            $this->filename = Core::resolvePath($format);
-        }
+        return call_user_func(array($this, 'log'), $level, $message, $context);
     }
 
     /**
-     * Запись лога в файл
-     * 
+     * Уставнока путей сохранения данных протоколирования
+     *
      * @access public
-     * @param string $stringLog
-     * @return void
+     * @param array $routes
+     * @return $this
      */
-    public function write($stringLog, array $params = array())
+    public function setRoutes(array $routes)
     {
-        foreach($params as $name => $value)
-            $stringLog = str_replace(':' . $name, $value, $stringLog);
-        if ($this->rotate || !$this->filename)
-            $this->_processFileName();
-        @file_put_contents($this->filename, '[' . date('d/m/Y H:i:s') . '] ' . $stringLog . "\n", FILE_APPEND);
+        $this->_routes = $routes;
+        return $this;
+    }
+
+    /**
+     * Получение путей сохранения данных протоколирования
+     *
+     * @access public
+     * @return string
+     */
+    public function getRoutes() { return $this->_routes; }
+
+    /**
+     * Запись сообщения
+     *
+     * @access public
+     * @param mixed $level
+     * @param string $message
+     * @param array $context
+     * @throw SyslogException
+     * @return $this
+     */
+    public function log($level, $message, array $context = array())
+    {
+        foreach($context as $param => $value)
+            $message = str_replace(':' . $param, $value, $message);
+        foreach($this->_routes as $name => &$route)
+        {
+            if (!is_object($route))
+            {
+                list($class, $config, $properties) = Core::getRecords($route);
+                $route = $class::install($config, $properties, $this->owner);
+            }
+            $route->write($level, $message, date($this->datetimeTemplate));
+        }
+        unset($route);
+        return $this;
     }
 }
 

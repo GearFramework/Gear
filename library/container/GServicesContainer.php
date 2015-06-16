@@ -81,8 +81,8 @@ class GServicesContainer
      * @return boolean
      */
     public function isInstalledService($serviceLocation) 
-    { 
-        return isset($this->_services[$serviceLocation]) && is_object($this->_services[$serviceLocation]); 
+    {
+        return isset($this->_services[$serviceLocation]) && is_object($this->_services[$serviceLocation]);
     }
     
     /**

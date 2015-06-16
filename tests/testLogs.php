@@ -30,14 +30,21 @@ try
         ],
         'modules' =>
         [
-            'app' => ['class' => '\gear\library\GApplication'],
+            'app' =>
+            [
+                'class' =>
+                [
+                    'name' => '\gear\library\GApplication',
+                ],
+            ],
         ]
     ]);
     \gear\Core::app()->process->setProcesses(
     [
         'index' => function()
         {
-            \gear\Core::syslog(\gear\Core::WARNING, 'Test logger');
+            \gear\Core::syslog(\gear\Core::WARNING, 'Test system logs');
+            \gear\Core::app()->setNamespace('gear')->log(\gear\Core::WARNING, 'Test application logs');
         },
     ]);
 }
