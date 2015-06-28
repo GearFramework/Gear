@@ -8,8 +8,9 @@ namespace gear\interfaces;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 18.06.2014
+ * @release 1.0.0
  */
 interface IFactory
 {
@@ -17,8 +18,8 @@ interface IFactory
      * Возвращает созданный объект
      * 
      * @access public
-     * @param array $properties
+     * @param array|\Closure $properties
      * @return object
      */
-    public function factory(array $properties = []);
+    public function factory($properties = array());
 }

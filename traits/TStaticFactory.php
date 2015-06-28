@@ -23,26 +23,27 @@ trait TFactory
      * @param array|\Closure $properties
      * @return object
      */
-    public function factory($properties = array())
+    public static function factory($properties = array(), $owner = null)
     {
-        if ($this->event('onBeforeFactory', new GEvent(array('sender' => $this)), $properties, $this->getFactory()))
+        if (!$owner || ($owner && $owner->event('onBeforeFactory', new GEvent(array('sender' => $owner)), $properties, static::getFactory())))
         {
             if ($properties instanceof \Closure)
-                $properties = $properties($this->getFactory());
+                $properties = $properties(static::getFactory());
             $properties = array_merge
             (
-                $this->getFactory(),
-                array('owner' => $this),
+                static::getFactory(),
+                array('owner' => $owner),
                 $properties
             );
             list($class, $config, $properties) = Core::getRecords($properties);
             if (method_exists($class, 'init'))
                 $class::init($config);
             $object = method_exists($class, 'it') ? $class::it($properties) : new $class($properties);
-            $this->event('onAfterFactory', new GEvent(array('sender' => $this)), $object);
+            if ($owner)
+                $owner->event('onAfterFactory', new GEvent(array('sender' => $owner)), $object);
             return $object;
         }
-        $this->e('Error on factoring process');
+        static::e('Error on factoring process');
     }
 
     /**
@@ -51,7 +52,7 @@ trait TFactory
      * @access public
      * @param array $factory
      */
-    public function setFactory(array $factory) { $this->_factory = $factory; }
+    public static function setFactory(array $factory) { static::$_factory = $factory; }
 
     /**
      * Получение параметров создаваемых объектов
@@ -59,5 +60,5 @@ trait TFactory
      * @access public
      * @return array
      */
-    public function getFactory() { return $this->_factory; }
+    public static function getFactory() { return static::$_factory; }
 }

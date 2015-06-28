@@ -12,7 +12,10 @@ try
     ]);
     \gear\Core::app()->process->setProcesses(
     [
-        'index' => function() { echo "Index process\n"; },
+        'index' => function()
+        {
+            echo "Index process\n";
+        },
         'foo' => function() { return (new \GTestProcess())->foo(); },
         'test' => ['class' => '\GTestProcess'],
     ]);
@@ -24,7 +27,7 @@ catch(Exception $e)
 
 class GTestProcess extends \gear\models\GProcess
 {
-    public function apiIndex()
+    public function apiIndex($a = 0)
     {
         echo "Class process " . get_class($this) . "\n";
     }

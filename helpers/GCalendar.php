@@ -37,7 +37,7 @@ class GCalendar extends GObject
 
     public static function __callStatic($name, $args)
     {
-
+        return static::it()->getDate($name);
     }
     
     /**

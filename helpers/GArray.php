@@ -14,16 +14,20 @@ use gear\library\GException;
  * @version 1.0.0
  * @since 22.12.2014
  */
-class GArray extends GHeader
+class GArray extends GHelper
 {
     /* Const */
     /* Private */
     /* Protected */
     /* Public */
-    
+
+    /**
+     * @param array|object $array
+     * @return bool
+     */
     public static function isAssoc($array)
     {
-        if (is_object($array) && $array instanceof \Traversable)
+        if (is_object($array) && method_exists($array, 'isAssoc'))
             return $array->isAssoc();
         else
         if (is_array($array))
@@ -32,7 +36,7 @@ class GArray extends GHeader
             return array_keys($keys) !== $keys;
         }
         else
-            self::e('Ivalid argument');
+            self::e('Invalid argument');
     }
 }
 

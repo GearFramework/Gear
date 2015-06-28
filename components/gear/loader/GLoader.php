@@ -64,8 +64,6 @@ class GLoader extends GComponent implements ILoader
         if (!file_exists($file))
             $this->e('Library ":library" of class ":className" not found', array('library' => $file, 'className' => $className));
         include_once($file);
-        if (!class_exists($className, false))
-            $this->e('Library not included class :className', array('className' => $className));
     }
     
     /**

@@ -15,9 +15,10 @@ use gear\interfaces\IComponent;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 01.08.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 abstract class GModule extends GService implements IModule
 {
@@ -43,7 +44,7 @@ abstract class GModule extends GService implements IModule
      */
     public function c($name, $instance = false)
     {
-        $location = static::class . '.components.' . $name;
+        $location = get_class($this) . '.components.' . $name;
         if (!Core::services()->isRegisteredService($location))
                 $this->e('Component :componentName is not registered', array('componentName' => $name));
         return Core::services()->getRegisteredService($location, $instance);
@@ -59,7 +60,7 @@ abstract class GModule extends GService implements IModule
      */
     public function isComponentRegistered($name)
     {
-        return Core::services()->isRegisteredService(static::class . '.components.' . $name);
+        return Core::services()->isRegisteredService(get_class($this) . '.components.' . $name);
     }
     
     /**
@@ -72,7 +73,7 @@ abstract class GModule extends GService implements IModule
      */
     public function registerComponent($name, $component)
     {
-        Core::services()->registerService(static::class . '.components.' . $name, $component);
+        Core::services()->registerService(get_class($this) . '.components.' . $name, $component);
         return $this;
     }
 

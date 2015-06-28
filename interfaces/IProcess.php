@@ -10,6 +10,8 @@ namespace gear\interfaces;
  * @copyright Kukushkin Denis
  * @version 0.0.1
  * @since 10.02.2014
+ * @php 5.3.x
+ * @release 1.0.0
  */
 interface IProcess
 {

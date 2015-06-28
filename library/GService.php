@@ -63,7 +63,7 @@ abstract class GService extends GObject implements IService
      * @access public
      * @static
      * @param string|array $config
-     * @return void
+     * @return bool
      */
     public static function init($config)
     {
@@ -78,6 +78,7 @@ abstract class GService extends GObject implements IService
             foreach(static::$_config['components'] as $componentName => $component)
                 Core::services()->registerService(get_called_class() . '.components.' . $componentName, $component);
         }
+        return static::$_init = true;
     }
     
     /**
@@ -86,7 +87,7 @@ abstract class GService extends GObject implements IService
      * @access public
      * @static
      * @param array $properties
-     * @param nulll|object $owner
+     * @param null|object $owner
      * @return GComponent
      */
     public static function it(array $properties = array(), $owner = null)

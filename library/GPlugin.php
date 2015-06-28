@@ -2,11 +2,9 @@
 
 namespace gear\library;
 
-use \gear\Core;
-use \gear\library\GObject;
-use \gear\library\GComponent;
-use \gear\library\GException;
-use \gear\interfaces\IPlugin;
+use gear\library\GComponent;
+use gear\library\GException;
+use gear\interfaces\IPlugin;
 
 /**
  * Класс описывающий плагин
@@ -160,7 +158,7 @@ abstract class GPlugin extends GComponent implements IPlugin
      *
      * @access public
      * @param string $name
-     * @param string of class name|anonymous function $behavior
+     * @param string $behavior of class name|anonymous function
      * @return $this
      */
     public function attachBehavior($name, $behavior) { return $this->owner->attachBehavior($name, $behavior); }
@@ -205,7 +203,7 @@ abstract class GPlugin extends GComponent implements IPlugin
      * экземпляра плагина
      *
      * @access public
-     * @return void
+     * @return mixed
      */
     public function eventConstructed()
     {

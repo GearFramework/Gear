@@ -320,14 +320,9 @@ final class Core
      */
     public static function m($name)
     {
-        try
-        {
-            return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
-        }
-        catch(\Exception $e)
-        {
-            echo $e->getTraceAsString();
-        }
+        if (!self::isModuleRegistered($name))
+            self::e('Module :moduleName not registered', array('moduleName' => $name));
+        return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
     }
     
     /**
@@ -411,14 +406,9 @@ final class Core
      */
     public static function c($name, $instance = false)
     {
-        try
-        {
-            return self::params('services')->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
-        }
-        catch(\Exception $e)
-        {
-            Core::dump($e->getTrace());
-        }
+        if (!self::isComponentRegistered($name))
+            self::e('Component :componentName not registered', array('componentName' => $name));
+        return self::params('services')->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
     }
     
     /**
@@ -431,7 +421,7 @@ final class Core
      */
     public static function isComponentRegistered($name)
     {
-        return self::params('services')->isRegisteredService(__CLASS__ . '.components.' . $name);
+        return self::services()->isRegisteredService(__CLASS__ . '.components.' . $name);
     }
     
     /**
@@ -490,7 +480,7 @@ final class Core
      */
     public static function uninstallComponent($name)
     {
-        self::params('services')->uninstallService(__CLASS__ . '.components.' . $name);
+        self::services()->uninstallService(__CLASS__ . '.components.' . $name);
         return true;
     }
 
@@ -531,7 +521,7 @@ final class Core
      * @static
      * @param string $name
      * @param object $event
-     * @return void
+     * @return mixed
      */
     public static function event($name, $event)
     {
@@ -560,12 +550,9 @@ final class Core
      * @static
      * @param string $name
      * @param object $event
-     * @return void
+     * @return mixed
      */
-    public static function on($name, $event)
-    {
-        return self::event($name, $event);
-    }
+    public static function on($name, $event) { return call_user_func_array(array(__CLASS__, 'event'), func_get_args()); }
     
     /**
      * Добавление обработчика события
@@ -715,10 +702,7 @@ final class Core
      * @static
      * @return string
      */
-    public static function getVersion()
-    {
-        return self::$_version;
-    }
+    public static function getVersion() { return self::$_version; }
     
     /**
      * Генерация исключения
@@ -775,13 +759,18 @@ final class Core
         return str_replace('/', '\\', dirname($path) . '/' . substr(basename($path), 1) . 'Exception');
     }
 
-    public static function dump($value)
+    public static function dump($value, $renderer = null)
     {
-        echo '<pre>';
-        if (is_array($value) || is_object($value))
-            echo print_r($value, 1);
+        if ($renderer && is_callable($renderer))
+            $renderer('views\dump', array('value' => $value));
         else
-            var_dump($value);
-        echo '</pre>';
+        {
+            echo '<pre>';
+            if (is_array($value) || is_object($value))
+                echo print_r($value, 1);
+            else
+                var_dump($value);
+            echo '</pre>';
+        }
     }
 }

@@ -13,9 +13,10 @@ use \gear\library\GEvent;
  * @plugin View
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 02.08.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 class GView extends GPlugin
 {
@@ -25,6 +26,21 @@ class GView extends GPlugin
     protected static $_init = false;
     protected $_arguments = array();
     /* Public */
+
+    /**
+     * Отображение указанного представления
+     *
+     * @access public
+     * @param string $view
+     * @param array $arguments
+     * @param bool $return
+     * @return boolean|string
+     * @see render()
+     */
+    public function __invoke($view = null, array $arguments = array(), $return = false)
+    {
+        return $this->render($view, $arguments, $return);
+    }
     
     /**
      * Отображение указанного представления

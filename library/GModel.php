@@ -15,6 +15,7 @@ use \gear\library\GException;
  * @version 1.0.0
  * @since 01.08.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 class GModel extends GObject
 {

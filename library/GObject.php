@@ -74,6 +74,7 @@ class GObject
      * 
      * @access protected
      * @param array $properties
+     * @param null|object $owner
      * @return GObject
      */
     protected function __construct(array $properties = array(), $owner = null)

@@ -17,8 +17,8 @@ interface IStaticFactory
      * Возвращает созданный объект
      * 
      * @access public
-     * @param array $properties
+     * @param array|\Closure $properties
      * @return object
      */
-    public static function factory(array $properties = []);
+    public static function factory($properties = array());
 }

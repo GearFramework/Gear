@@ -8,7 +8,7 @@ namespace gear\interfaces;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
  * @release 1.0.0
  */

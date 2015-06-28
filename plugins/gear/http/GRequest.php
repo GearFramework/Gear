@@ -6,30 +6,37 @@ use gear\Core;
 use gear\library\GPlugin;
 use gear\library\GException;
 
-/** 
+define('GET', 'get');
+define('POST', 'post');
+define('PUT', 'put');
+define('DELETE', 'delete');
+
+/**
  * Класс плагина, предоставляющего доступ к данным GET, POST, SESSION, COOKIE
  * 
  * @package Gear Framework
  * @plugin Request
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
+ * @php 5.3.x
+ * @release 1.0.0
  */
 class GRequest extends GPlugin
 {
     /* Const */
-    const GET = 1;
-    const POST = 2;
-    const PUT = 3;
-    const DELETE = 4;
+    const GET = 'get';
+    const POST = 'post';
+    const PUT = 'put';
+    const DELETE = 'delete';
     /* Private */
     /* Protected */
-    protected static $_config = ['dependency' => '\gear\library\GApplication'];
+    protected static $_config = array('dependency' => '\gear\library\GApplication');
     protected static $_init = false;
-    protected $_cliEnviroment = null;
-    protected $_filters = [];
-    protected $_requestHandlers = [];
+    protected $_cliEnvironment = null;
+    protected $_filters = array();
+    protected $_requestHandlers = array();
     /* Public */
     
     /**
@@ -40,7 +47,8 @@ class GRequest extends GPlugin
      */
     public function __invoke()
     {
-        return call_user_func_array(array($this, 'request'), func_get_args());
+        $requestMethod = $this->is();
+        return call_user_func_array(array($this, method_exists($this, $requestMethod) ? $requestMethod : 'request'), func_get_args());
     }
     
     /**
@@ -49,7 +57,7 @@ class GRequest extends GPlugin
      * @access public
      * @return integer
      */
-    public function is() { return $_SERVER['REQUEST_METHOD'] === 'POST' ? self::POST : self::GET; }
+    public function is() { return strtolower($_SERVER['REQUEST_METHOD']); }
     
     /**
      * Возвращает true, если тип запроса был GET иначе false
@@ -100,18 +108,66 @@ class GRequest extends GPlugin
      */
     public function getFilters() { return $this->_filters; }
 
+    /**
+     * Установка нестандартного обработчика запроса
+     * $handlers должен быть массивом вида
+     *
+     * Array(
+     *     self::GET => function() {},
+     *     self::POST => array(myObject, 'handlerMethod')
+     * )
+     *
+     * @access public
+     * @param array $handlers
+     * @return $this
+     */
     public function setRequestHandlers(array $handlers) { $this->_requestHandlers = $handlers; }
 
-    public function getRequestHandlers($method = null)
+    /**
+     * Установка нестандартного обработчика запроса
+     *
+     * @access public
+     * @param integer $requestType
+     * @param string|array|object|\Closure $handler
+     * @return $this
+     */
+    public function setRequestHandler($requestType, $handler)
     {
-        return $method && isset($this->_requestHandlers[$method]) ? $this->_requestHandlers[$method] : $this->_requestHandlers;
+        if (!is_callable($handler))
+            $this->e('Request handler is invalid');
+        $this->_requestHandlers[$requestType] = $handler;
+        return $this;
     }
 
-    public function setRequestHandler($name, $handler)
-    {
+    /**
+     * Возвращает массив обработчиков http-запросов
+     *
+     * @access public
+     * @return array
+     */
+    public function getRequestHandlers() { return $this->_requestHandlers; }
 
+    /**
+     * Возвращает обработчик указанного метода http-запроса
+     *
+     * @access public
+     * @param integer $requestType (self::GET or self::POST or self::PUT or self::DELETE)
+     * @return null|string|array|object|\Closure $handler
+     */
+    public function getRequestHandler($requestType)
+    {
+        return isset($this->_requestHandlers[$requestType]) ? $this->_requestHandlers[$requestType] : null;
     }
-    
+
+    /**
+     * Возвращает true, если существует пользовательский обработчик указанного метода запроса
+     *
+     * @access public
+     * @param string $requestType
+     * @return bool
+     */
+    public function isRequestHandler($requestType) { return isset($this->_requestHandlers[$requestType]); }
+
     /**
      * Получение значения из массива $_GET
      * 
@@ -121,7 +177,15 @@ class GRequest extends GPlugin
      * @param mixed $filter
      * @return mixed
      */
-    public function get($name = null, $default = null, $filter = null) { return $this->_data($_GET, $name, $default, $filter); }
+    public function get($name = null, $default = null, $filter = null)
+    {
+        if ($this->isRequestHandler(self::GET))
+        {
+            $handler = $this->getRequestHandler(self::GET);
+            return $handler($name, $default, $filter);
+        }
+        return $this->_data($_GET, $name, $default, $filter);
+    }
     
     /**
      * Получение значения из массива $_POST
@@ -134,9 +198,46 @@ class GRequest extends GPlugin
      */
     public function post($name = null, $default = null, $filter = null)
     {
+        if ($this->isRequestHandler(self::POST))
+        {
+            $handler = $this->getRequestHandler(self::POST);
+            return $handler($name, $default, $filter);
+        }
         return $this->_data($_POST, $name, $default, $filter);
     }
-    
+
+    /**
+     * Обработка запроса PUT
+     *
+     * @access public
+     * @return mixed
+     */
+    public function put()
+    {
+        if ($this->isRequestHandler(self::PUT))
+        {
+            $handler = $this->getRequestHandler(self::PUT);
+            return call_user_func_array($handler, func_get_args());
+        }
+        return null;
+    }
+
+    /**
+     * Обработка запроса DELETE
+     *
+     * @access public
+     * @return mixed
+     */
+    public function delete()
+    {
+        if ($this->isRequestHandler(self::DELETE))
+        {
+            $handler = $this->getRequestHandler(self::DELETE);
+            return call_user_func_array($handler, func_get_args());
+        }
+        return null;
+    }
+
     /**
      * Получение значения из массива $_REQUEST
      * 
@@ -146,10 +247,7 @@ class GRequest extends GPlugin
      * @param mixed $filter
      * @return mixed
      */
-    public function request($name = null, $default = null, $filter = null)
-    {
-        return $this->_data($_REQUEST, $name, $default, $filter);
-    }
+    public function request($name = null, $default = null, $filter = null) { return $this->_data($_REQUEST, $name, $default, $filter); }
     
     /**
      * Получение/установка значений cookie
@@ -203,7 +301,7 @@ class GRequest extends GPlugin
                 return null;
             if (is_array($_FILES[$name]))
             {
-                $files = [];
+                $files = array();
                 foreach($_FILES[$name]['name'] as $index => $fileName)
                 {
                     $file = 
@@ -222,6 +320,23 @@ class GRequest extends GPlugin
                 return $filter ? $this->filtering($filter, $_FILES[$name]) : $_FILES[$name];
         }
     }
+
+    /**
+     * Принудительная установка параметров запроса
+     *
+     * @access public
+     * @param array $request
+     * @return $this
+     */
+    public function setData(array $request)
+    {
+        if ($this->isGet())
+            $_GET = $request;
+        else
+        if ($this->isPost())
+            $_POST = $request;
+        return $this;
+    }
     
     /**
      * Получение запрошенного значения
@@ -231,44 +346,43 @@ class GRequest extends GPlugin
      * @param string $name
      * @param mixed $default
      * @param mixed $filter
-     * @return mxied
+     * @return mixed
      */
     protected function _data(array &$data, $name, $default, $filter)
     {
         if ($this->getOwner()->isCli())
             return $this->cli($name, $default, $filter);
-        else
+        if ($name === null)
+            return $data;
+        if (is_string($name))
         {
-            if ($name === null) 
-                return $data;
-            if (is_string($name))
+            if (!isset($data[$name]))
+                return $default;
+            return $filter ? $this->filtering($filter, $data[$name], $default) : $data[$name];
+        }
+        else
+        if (is_array($name))
+        {
+            /* Arrays is alias of /gear/helpers/GArray */
+            if (Arrays::isAssoc($name))
             {
-                if (!isset($data[$name])) 
-                    return $default;
-                return $filter ? $this->filtering($filter, $data[$name], $default) : $data[$name];
+                $data = $name;
+                return $this;
             }
             else
-            if (is_array($name))
             {
-                if (preg_match('/\D+/', implode('', array_keys($name))))
+                $result = array();
+                foreach($name as $dataName)
                 {
-                    $data = $name;
-                    return $this;
+                    if (isset($data[$dataName]))
+                        $result[$dataName] = $filter ? $this->filtering($filter, $data[$dataName], $default) : $data[$dataName];
+                    else
+                        $result[$dataName] = $default;
                 }
-                else
-                {
-                    $result = array();
-                    foreach($name as $dataName)
-                    {
-                        $result[$dataName] = isset($data[$dataName]) 
-                                             ? ($filter ? $this->filtering($filter, $data[$dataName], $default) : $data[$dataName]) 
-                                             : $default;
-                    }
-                    return $result;
-                }
+                return $result;
             }
-            return $default;
         }
+        return $default;
     }
     
     /**
@@ -287,15 +401,15 @@ class GRequest extends GPlugin
         if ($name)
         {
             if (!$name)
-                return $this->_cliEnviroment;
+                return $this->_cliEnvironment;
             else
-            if (isset($this->_cliEnviroment[$name]))
-                return $filter ? $this->filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnviroment[$name];
+            if (isset($this->_cliEnvironment[$name]))
+                return $filter ? $this->filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnvironment[$name];
             else
                 return $default;
         }
         else
-            return $this->_cliEnviroment;
+            return $this->_cliEnvironment;
     }
     
     /**
@@ -319,7 +433,7 @@ class GRequest extends GPlugin
                     $long[] = substr($value, 2) . ':';
             }
         }
-        $this->_cliEnviroment = getopt($short, $long);
+        $this->_cliEnvironment = getopt($short, $long);
     }
     
     /**
@@ -333,16 +447,16 @@ class GRequest extends GPlugin
      */
     public function filtering($filter, $value, $default = null)
     {
-        if (is_callable($filter))
-            $value = call_user_func($filter, $value, $default);
-        else
         if (is_string($filter) && isset($this->_filters[$filter]))
             $value = call_user_func(array($this->_filters[$filter], $filter), $value, $default);
+        else
+        if (is_callable($filter))
+            $value = call_user_func($filter, $value, $default);
         else
         if (is_array($filter))
         {
             foreach($filter as $filterItem)
-                $value = $this->_filtering($filterItem, $value, $default);
+                $value = $this->filtering($filterItem, $value, $default);
         }
         else
             $this->e('Unknown filter');

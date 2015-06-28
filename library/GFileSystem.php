@@ -2,6 +2,7 @@
 
 namespace gear\library;
 use gear\Core;
+use gear\helpers\GCalendar;
 use gear\library\GIo;
 use gear\library\GException;
 use gear\interfaces\IStaticFactory;
@@ -15,6 +16,7 @@ use gear\interfaces\IStaticFactory;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 30.11.2014
+ * @php 5.4.x
  */
 abstract class GFileSystem extends GIo implements IStaticFactory
 {
@@ -73,7 +75,7 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      * @throw FileSystemException
      * @return object
      */
-    public static function factory(array $properties = [])
+    public static function factory($properties = [])
     {
         if (isset($properties['path']))
         {
@@ -498,7 +500,9 @@ abstract class GFileSystem extends GIo implements IStaticFactory
      * @param string $format
      * @return string
      */
-    private function _formatTime($time, $format) { return (new \gear\helpers\GCalendar())->getDate($time)->format($format); }
+    private function _formatTime($time, $format)
+    {
+        return GCalendar::it()->getDate($time)->format($format); }
     
     /**
      * Возвращает true, если элемент пустой

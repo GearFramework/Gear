@@ -5,6 +5,7 @@ use gear\Core;
 use gear\library\GModel;
 use gear\library\GException;
 use gear\library\GEvent;
+use gear\interfaces\IProcess;
 
 /** 
  * Класс процессов
@@ -15,7 +16,7 @@ use gear\library\GEvent;
  * @version 0.0.1
  * @since 03.08.2013
  */
-class GProcess extends GModel implements \gear\interfaces\IProcess
+class GProcess extends GModel implements IProcess
 {
     /* Const */
     /* Private */
@@ -24,9 +25,9 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
     protected $_apis = array();
     protected $_currentApi = null;
     protected $_request = array();
+    protected $_rules = array();
     /* Public */
     public $defaultApi = 'index';
-    public $rules = array();
     public $name = '';
     
     /**
@@ -83,50 +84,6 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
     }
 
     /**
-     * Установка описания для внешних функций api процесса
-     * 
-     * @access public
-     * @param array as api list $apis
-     * @return void
-     */
-    public function setApis(array $apis) { $this->_apis = $apis; }
-    
-    /**
-     * Получение списка внешних api-функций или одной указанной
-     * 
-     * @access public
-     * @param string $name
-     * @return mixed
-     */
-    public function getApis($name = null)
-    {
-        return !$name ? $this->_apis : (isset($this->_apis[$name]) ? $this->_apis[$name] : null);
-    }
-    
-    /**
-     * Установка параметров запроса GET|POST
-     * 
-     * @access public
-     * @param array $request
-     * @return void
-     */
-    public function setRequest(array $request)
-    {
-        $this->_request = $request;
-    }
-    
-    /**
-     * Получение параметров запроса
-     * 
-     * @access public
-     * @return array
-     */
-    public function getRequest()
-    {
-        return $this->_request;
-    }
-    
-    /**
      * Подготовка аргументов, которые могут потребоваться api-методу
      * 
      * @access protected
@@ -136,7 +93,6 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
      */
     protected function _prepareArguments($apiName, $request)
     {
-        
         $args = $this->getApiArguments($this->_currentApi);
         $apiArguments = array();
         foreach($args as $argument)
@@ -165,20 +121,18 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
      * Получение списка параметров указанного метода
      *
      * @access public
-     * @param GProcess $process
      * @param string $api
      * @return array
      */
     public function getApiArguments($api)
     {
-        if (is_array($api))
+        if ($api instanceof \Closure)
+            $reflection = new \ReflectionFunction($api);
+        else
         {
             list($instance, $apiName) = $api;
             $reflection = new \ReflectionMethod($instance, $apiName);
         }
-        else
-        if ($api instanceof \Closure)
-            $reflection = new \ReflectionFunction($api);
         return $reflection->getParameters();
     }
     
@@ -186,13 +140,57 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
      * Получение правил для указанного аргумента api-метода процесса
      * 
      * @access public
-     * @param string $api
+     * @param string $apiName
      * @param \ReflectionParameter $argument
      * @return
      */
     public function getArgumentRules($apiName, \ReflectionParameter $argument)
     {
         return isset($this->rules[$apiName][$argument->name]) ? $this->rules[$apiName][$argument->name] : null;
+    }
+
+    /**
+     * Установка описания для внешних функций api процесса
+     *
+     * @access public
+     * @param array $apis as api list
+     * @return void
+     */
+    public function setApis(array $apis) { $this->_apis = $apis; }
+
+    /**
+     * Получение списка внешних api-функций или одной указанной
+     *
+     * @access public
+     * @param string $name
+     * @return mixed
+     */
+    public function getApis($name = null)
+    {
+        return !$name ? $this->_apis : (isset($this->_apis[$name]) ? $this->_apis[$name] : null);
+    }
+
+    /**
+     * Установка параметров запроса GET|POST
+     *
+     * @access public
+     * @param array $request
+     * @return void
+     */
+    public function setRequest(array $request)
+    {
+        $this->_request = $request;
+    }
+
+    /**
+     * Получение параметров запроса
+     *
+     * @access public
+     * @return array
+     */
+    public function getRequest()
+    {
+        return $this->_request;
     }
 
     /**
@@ -209,11 +207,21 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
      * либо в описании компонента, управляющего процессами
      * 
      * @access public
-     * @param integer one from Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC $value
+     * @param integer $value only one: Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC
      * @return void
      */
     public function setAccess($value) { $this->e('"access" is read-only property'); }
-    
+
+    /**
+     * Установка правил обработки поступающих данных от пользоваля к
+     * api-методам процесса
+     *
+     * @access public
+     * @param array $rules
+     * @return array
+     */
+    public function setRules(array $rules) { return $this->_rules = $rules; }
+
     /**
      * Возвращает массив правил обработки поступающих данных от пользоваля к
      * api-методам процесса
@@ -221,7 +229,7 @@ class GProcess extends GModel implements \gear\interfaces\IProcess
      * @access public
      * @return array
      */
-    public function getRules() { return $this->rules; }
+    public function getRules() { return $this->_rules; }
     
     /**
      * Обработчик по-умолчанию события возникающего перед исполнением

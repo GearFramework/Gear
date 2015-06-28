@@ -2,13 +2,14 @@
 
 namespace gear\components\gear\process;
 use gear\Core;
+use gear\interfaces\IProcess;
 use gear\library\GComponent;
 use gear\library\GException;
-use gear\library\GModel;
+use gear\models\GProcess;
 
 /** 
  * Компонент обслуживающий процессы
- * 
+ *
  * @package Gear Framework
  * @component ProcessComponent
  * @author Kukushkin Denis
@@ -23,59 +24,66 @@ class GProcessComponent extends GComponent
     /* Const */
     /* Private */
     /* Protected */
+    /* Настройки компонента */
     protected static $_config = array();
     protected static $_init = false;
+    /* Объект возвращающий параметры запроса */
+    protected $_request = null;
+    /* Имя процесса исполняемого по-умолчанию */
     protected $_defaultProcess = 'index';
+    /* Список установленных процессов */
     protected $_processes = array();
+    /* Текущий исполняемый процесс */
     protected $_currentProcess = null;
     /* Public */
-    
+
+
+    /**
+     * Установка объекта отдающего параметры запроса
+     *
+     * @access public
+     * @param object $request
+     * @return $this
+     */
+    public function setRequest($request)
+    {
+        $this->_request = $request;
+        return $this;
+    }
+
+    /**
+     * Получение объекта отдающего параметры запроса
+     *
+     * @access public
+     * @return null|object
+     */
+    public function getRequest() { return $this->_request; }
+
     /**
      * Исполнение процесса
-     * 
+     *
      * @access public
-     * @param mixed $request
-     * @throws ProcessComponentException 
+     * @param null|object|\Closure $process
+     * @param null|object $request
      * @return mixed
      */
-    public function exec($request = array())
+    public function exec($process = null, $request = null)
     {
         try
         {
-            $args = func_get_args();
-            $nums = func_num_args();
-            if (!$nums)
-                $this->_currentProcess = $this->_prepareProcess(array());
+            if ($request && !is_object($request))
+                $request = Core::app()->request;
+            $this->request = $request;
+            if ($process && ($process instanceof \gear\interfaces\IProcess || $process instanceof \Closure))
+                $this->_currentProcess = $process;
             else
-            if ($nums >= 1)
-            {
-                if ($args[0] instanceof \gear\interfaces\IProcess || $args[0] instanceof \Closure)
-                {
-                    $request = isset($args[1]) && is_array($args[1]) ? $args[1] : array();
-                    $this->_currentProcess = $args[0];
-                }
-                else
-                {
-                    $request = is_array($args[0]) ? $args[0] : array();
-                    $this->_currentProcess = $this->_prepareProcess($request);
-                }
-            }
-            return call_user_func
-            (
-                $this->_currentProcess instanceof \Closure ? $this->_currentProcess : array($this->_currentProcess, 'entry'),
-                $request
-            );
+                $this->_currentProcess = $this->_routing();
+            return $this->_currentProcess instanceof \Closure
+                 ? call_user_func($this->_currentProcess) : $this->_currentProcess->entry();
         }
         catch(GException $e)
         {
-            $this->event('onProcessNotFound', $e, $request);
-            if (Core::app()->isHttp())
-            {
-                header('HTTP/1.0 404 Not Found', true, 404);
-                echo $e->getMessage();
-            }
-            else
-                echo $e->getMessage();
+            $this->event('onProcessNotFound', $e);
             exit(404);
         }
     }
@@ -84,13 +92,12 @@ class GProcessComponent extends GComponent
      * Получение процесса исходя из запроса пользователя
      * 
      * @access protected
-     * @param array $request
      * @return object of \gear\interfaces\IProcess or \Closure
      */
-    protected function _prepareProcess(array $request)
+    protected function _routing()
     {
         $process = null;
-        $processName = Core::app()->request->get('e');
+        $processName = $this->request->get('e');
         if (!$processName)
         {
             $processName = $this->getDefaultProcess();
@@ -98,35 +105,31 @@ class GProcessComponent extends GComponent
                 $this->e('Unknown process');
         }
         $processes = $this->getProcesses();
+        $class = null;
+        $properties = array();
         if (isset($processes[$processName]))
         {
-            if ($processes[$processName] instanceof \Closure)
+            if (is_object($processes[$processName]))
                 $process = $processes[$processName];
             else
             if (is_array($processes[$processName]))
             {
                 if (isset($processes[$processName]['class']))
                 {
+                    /** @var array $config */
                     list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
                     $properties['name'] = $processName;
                 }
                 else
-                {
-                    $class = $this->_prepareProcessClass($processName);
                     $properties = array_merge($processes[$processName], array('name' => $processName));
-                }
             }
             else
-            {
-                $class = $this->_prepareProcessClass($processName);
-                $properties = array('name' => $processName, 'params' => $processes[$processName]);
-            }
+                $properties = array('name' => $processName, 'param' => $processes[$processName]);
         }
         else
-        {
-            $class = $this->_prepareProcessClass($processName);
             $properties = array('name' => $processName);
-        }
+        if (!$class)
+            $class = $this->_routingClass($processName);
         return $process ? $process : new $class($properties);
     }
     
@@ -137,23 +140,24 @@ class GProcessComponent extends GComponent
      * @param string $processName
      * @return string
      */
-    protected function _prepareProcessClass($processName)
+    protected function _routingClass($processName)
     {
         $routes = explode('/', $processName);
-        $nums = count($routes);
-        if ($nums == 1)
-            $class = Core::app()->getNamespace() . '\process\G' . ucfirst($processName);
+        $count = count($routes);
+        $class = null;
+        if ($count == 1)
+            $class = Core::app()->getNamespace() . '\process\P' . ucfirst($processName);
         else
-        if ($nums == 2)
+        if ($count == 2)
         {
             if ($processName[0] === '/')
-                $class = '\\' . $routes[0] . '\process\G' . ucfirst($routes[1]);
+                $class = '\\' . $routes[0] . '\process\P' . ucfirst($routes[1]);
             else
-                $class = Core::app()->getNamespace() . '\modules\\' . $routes[0] . '\process\G' . ucfirst($routes[1]);
+                $class = Core::app()->getNamespace() . '\modules\\' . $routes[0] . '\process\P' . ucfirst($routes[1]);
         }
         else
-        if ($nums >= 3)
-            $class = '\\' . $routes[0] . '\modules\\' . $routes[1] . '\process\G' . ucfirst($routes[2]);
+        if ($count >= 3)
+            $class = '\\' . $routes[0] . '\modules\\' . $routes[1] . '\process\P' . ucfirst($routes[2]);
         return $class;
     }
     
@@ -204,16 +208,17 @@ class GProcessComponent extends GComponent
         $this->_processes[$name] = $process;
         return $this;
     }
-    
+
     /**
      * Установка текущего процесса
-     * 
+     *
      * @access public
+     * @param object|\Closure $process
      * @return $this
      */
     public function setProcess($process)
     {
-        if ($process instanceof \gear\interfaces\IProcess || is_callable($process))
+        if ($process instanceof IProcess || is_callable($process))
             $this->_currentProcess = $process;
         else
             $this->e('Invalid process');
@@ -248,6 +253,17 @@ class GProcessComponent extends GComponent
      * @return string
      */
     public function getDefaultProcess() { return $this->_defaultProcess; }
+
+    public function onProcessNotFound($event, \Exception $e)
+    {
+        if (Core::app()->isHttp())
+        {
+            header('HTTP/1.0 404 Not Found', true, 404);
+            echo $e->getMessage();
+        }
+        else
+            echo $e->getMessage();
+    }
 }
 
 /** 

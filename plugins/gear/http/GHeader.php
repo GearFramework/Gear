@@ -5,6 +5,16 @@ use gear\Core;
 use gear\library\GModel;
 use gear\library\GException;
 
+/**
+ * Плагин для работы с http-заголовками
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis
+ * @version 1.0.0
+ * @since 23.12.2014
+ * @php 5.3.x
+ */
 class GHeader extends GModel
 {
     /* Const */

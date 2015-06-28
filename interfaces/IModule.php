@@ -10,7 +10,7 @@ use gear\interfaces\IService;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 01.08.2013
  * @release 1.0.0
  */

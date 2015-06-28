@@ -13,9 +13,10 @@ use gear\library\GEvent;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 class GApplication extends GModule
 {
@@ -47,7 +48,12 @@ class GApplication extends GModule
             'log' => array('class' => '\gear\plugins\gear\GLog'),
         ),
     );
+    protected static $_init = false;
     protected $_namespace = null;
+    /* Список callback-функция для работы с выводимыми данными */
+    protected $_outputCallbacks = array();
+    /* Буфер вывода */
+    protected $_outputData = null;
     /* Public */
     
     /**
@@ -58,18 +64,23 @@ class GApplication extends GModule
      */
     public function run($process = null, $request = null)
     {
-        $args = func_get_args();
-        if (!func_num_args())
-            $args = array($this->request->isPost() ? $this->request->post() : $this->request->get());
-        else
-            $args = func_get_args();
         if (Core::event('onBeforeApplicationRun', new GEvent($this, array('process' => $process, 'request' => $request))))
         {
-            $result = call_user_func_array(array($this->c('process'), 'exec'), $args);
+            if ($request)
+                $this->request->setData($request);
+            $result = $this->c('process')->exec($process, $this->request);
+            /** @var mixed $result */
             Core::event('onAfterApplicationRun', new GEvent($this), $result);
         }
     }
 
+    /**
+     * Принудительная смена пространства имён приложения
+     *
+     * @access public
+     * @param string $namespace
+     * @return $this
+     */
     public function setNamespace($namespace)
     {
         $this->_namespace = $namespace;
@@ -103,18 +114,7 @@ class GApplication extends GModule
      * @return bool
      */
     public function isCli() { return $this->getMode() === Core::CLI; }
-    
-    /**
-     * Возвращает true, если запрос был через AJAX
-     * 
-     * @access public
-     * @return boolean
-     */
-    public function isAjax()
-    {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-    }
-    
+
     /**
      * Возвращает текущий исполняемый процесс
      * 
@@ -122,58 +122,61 @@ class GApplication extends GModule
      * @return object
      */
     public function getProcess() { return $this->c('process')->getProcess(); }
-    
+
     /**
-     * Получение текущего URL в режиме Core::HTTP, в режиме Core::CLI 
-     * возвращает null
-     * 
+     * Вывод данных
+     *
      * @access public
-     * @return null|string
+     * @param string $data
+     * @param bool $buffering
+     * @return $this
      */
-    public function getUrl()
+    public function out($data, $buffering = false)
     {
-        if ($this->hasHttp())
-            return (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        else
-            return null;
-    }
-    
-    /**
-     * Делает переход на указанный процесс, api-метод с параметрами
-     * 
-     * @access public
-     * @param string $process
-     * @param null|string $api
-     * @param string|array $params
-     * @return void
-     */
-    public function redirect($process, $api = null, $params = array())
-    {
-        $url = 'index.php?e=' . $process . ($api ? '&f=' . $api : '');
-        if (is_array($params))
+        foreach($this->outputCallbacks as $callback)
         {
-            foreach($params as $name => $value)
-                $url .= '&' . $name . '=' . urlencode($value);
+            if (is_callable($callback))
+                $data = $callback($data);
         }
+        if ($buffering)
+            $this->_outputData .= $data;
         else
-        if (is_string($params) && !empty($params))
-            $url .= '&' . $params;
-        $this->redirectUrl($url);
+            echo $data;
+        return $this;
     }
-    
+
     /**
-     * Переход на указанный URL
-     * 
+     * Возвращает массив callback-функций, работающих с выводимыми Данными
+     *
      * @access public
-     * @param string $url
-     * @return void
+     * @return array
      */
-    public function redirectUrl($url)
+    public function getOutputCallbacks() { return $this->_outputCallbacks; }
+
+    /**
+     * Установка списка callback-функций, работающих с выводимыми Данными
+     *
+     * @access public
+     * @return $this
+     */
+    public function setOutputCallbacks(array $callbacks)
     {
-        header('Location: ' . $url);
-        exit(0);
+        $this->_outputCallbacks = $callbacks;
+        return $this;
     }
-    
+
+    /**
+     * Добавление callback-функции, работающего с выводимыми Данными
+     *
+     * @access public
+     * @return $this
+     */
+    public function addOutputCallbacks(array $callbacks)
+    {
+        $this->_outputCallbacks = $callbacks;
+        return $this;
+    }
+
     /**
      * Обработчик события, вызываемого на этапе создания объекта (из
      * конструктора)
