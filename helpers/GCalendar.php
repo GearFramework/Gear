@@ -466,7 +466,6 @@ class GCalendar extends GObject implements IFactory
     {
         if (!$date)
             $date = $this->_current;
-        die(($date->year - $years) . "\n");
         $date = $date->setYear($date->year - $years);
         return $this->factory(array('timestamp' => $date->timestamp));
     }
