@@ -5,19 +5,22 @@ use gear\Core;
 use gear\library\GObject;
 use gear\interfaces\IFactory;
 
+define('MONTH_NUMBER', 1);
+define('MONTH_FULLNAME', 2);
+define('MONTH_SHORTNAME', 3);
+
 /**
  * Класс для работы с календарём
  *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 01.06.2014
+ * @php 5.3.x
  */
-class GCalendar extends GObject
+class GCalendar extends GObject implements IFactory
 {
-    /* Traits */
-    use gear\traits\TFactory;
     /* Const */
     const SECONDS_PER_MINUTE = 60;
     const SECONDS_PER_HOUR = 3600;
@@ -27,6 +30,8 @@ class GCalendar extends GObject
     protected $_factory = array
     (
         'class' => '\gear\models\GDate',
+        'format' => 'Y-m-d H:i:s',
+        'natural' => false,
     );
     protected $_current = null;
     protected $_locale = 'ru_RU';
@@ -35,33 +40,54 @@ class GCalendar extends GObject
     protected $_natural = false;
     /* Public */
 
-    public static function __callStatic($name, $args)
-    {
-        return static::it()->getDate($name);
-    }
+    /**
+     * Возвращает объект даты, указанной в качестве названия метода.
+     * Пример
+     * GCalendar::{'2015-06-29'}();
+     *
+     * @access public
+     * @static
+     * @param string $name
+     * @param array $args
+     * @return object
+     * @php => 5.4
+     */
+    public static function __callStatic($name, $args) { return static::it()->getDate($name); }
     
     /**
-     * Возвращает в отформатированном виде текущую дату календаря
+     * Возвращает в отформатированном виде текущую (установленную) дату календаря
      * 
      * @access public
      * @return string
      */
-    public function __toString() { return $this->_current->format(); }
+    public function __toString()
+    {
+        if (!$this->_current)
+            $this->_current = $this->now();
+        return $this->_current->__toString();
+    }
 
-    public static function it(array $properties = []) { return new static($properties); }
-    
     /**
-     * Создание экземпляра
-     * 
+     * Создаёт экхемпляр календаря
+     *
      * @access public
      * @param array $properties
-     * @param string|array $class
+     * @return GCalendar
+     */
+    public static function it(array $properties = array()) { return new static($properties); }
+
+    /**
+     * Создание экземпляра
+     *
+     * @access public
+     * @param array $properties
      * @return object
      */
-    public function factory(array $properties)
+    public function factory($properties = array())
     {
         list($class, $config, $defaultProperties) = Core::getRecords($this->_factory);
-        return new $class(array_merge($defaultProperties, $properties, ['owner' => $this]));
+        /** @var string $class */
+        return new $class(array_merge($defaultProperties, $properties), $this);
     }
     
     /**
@@ -70,10 +96,7 @@ class GCalendar extends GObject
      * @access public
      * @return object
      */
-    public function now()
-    {
-        return $this->factory(['timestamp' => time()]);
-    }
+    public function now() { return $this->factory(array('timestamp' => time())); }
     
     /**
      * Возвращает затрашнюю дату
@@ -81,10 +104,7 @@ class GCalendar extends GObject
      * @access public
      * @return object
      */
-    public function tomorrow()
-    {
-        return $this->factory(['timestamp' => strtotime('+1 day')]);
-    }
+    public function tomorrow() { return $this->factory(array('timestamp' => time() + self::SECONDS_PER_DAY)); }
     
     /**
      * Возвращает вчеращнюю дату
@@ -92,10 +112,7 @@ class GCalendar extends GObject
      * @access public
      * @return object
      */
-    public function yesterday()
-    {
-        return $this->factory(['timestamp' => strtotime('-1 day')]);
-    }
+    public function yesterday() { return $this->factory(array('timestamp' => time() - self::SECONDS_PER_DAY)); }
 
     /**
      * Следующий день, относительно указанного в параметре
@@ -104,7 +121,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextDay($date = null) { return $this->addDays($date, 1); }
+    public function nextDay($date = null) { return $this->addDay($date); }
     
     /**
      * Предыдущий день, относительно указанного в параметре
@@ -113,7 +130,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousDay($date = null) { return $this->subDays($date, 1); }
+    public function previousDay($date = null) { return $this->subDay($date); }
     
     /**
      * Следующий месяц
@@ -122,7 +139,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextMonth($date = null) { return $this->addMonths($date, 1); }
+    public function nextMonth($date = null) { return $this->addMonth($date); }
     
     /**
      * Предыдущий месяц
@@ -131,7 +148,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousMonth($date = null) { return $this->subMonths($date, 1); }
+    public function previousMonth($date = null) { return $this->subMonth($date); }
     
     /**
      * Следующий год
@@ -140,7 +157,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextYear($date = null) { return $this->addYears($date, 1); }
+    public function nextYear($date = null) { return $this->addYear($date); }
     
     /**
      * Предыдущий год
@@ -149,7 +166,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousYear($date = null) { return $this->subYears($date, 1); }
+    public function previousYear($date = null) { return $this->subYear($date); }
     
     /**
      * Следующий час
@@ -158,7 +175,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextHour($date = null) { return $this->addHours($date, 1); }
+    public function nextHour($date = null) { return $this->addHour($date); }
     
     /**
      * Предыдущий час
@@ -167,7 +184,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousHour($date = null) { return $this->subHours($date, 1); }
+    public function previousHour($date = null) { return $this->subHour($date); }
     
     /**
      * Следующая минута
@@ -176,7 +193,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextMinute($date = null) { return $this->addMinutes($date, 1); }
+    public function nextMinute($date = null) { return $this->addMinute($date); }
     
     /**
      * Предыдущая минута
@@ -185,7 +202,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousMinute($date = null) { return $this->subMinutes($date, 1); }
+    public function previousMinute($date = null) { return $this->subMinute($date); }
     
     /**
      * Следующая секунда
@@ -194,7 +211,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function nextSecond($date = null) { return $this->addSeconds($date, 1); }
+    public function nextSecond($date = null) { return $this->addSecond($date); }
     
     /**
      * Предыдущая секунда
@@ -203,7 +220,7 @@ class GCalendar extends GObject
      * @param object $date
      * @return object
      */
-    public function previousSecond($date = null) { return $this->subSeconds($date, 1); }
+    public function previousSecond($date = null) { return $this->subSecond($date); }
     
     /**
      * Следующая неделя
@@ -224,6 +241,23 @@ class GCalendar extends GObject
     public function previousWeek($date = null) { return $this->subDays($date, 7); }
 
     /**
+     * Установка даты в календаре
+     *
+     * @access public
+     * @param object $date
+     * @return void
+     */
+    public function setCurrent($date) { $this->_current = $date; }
+
+    /**
+     * Возвращает установленную дату в календаре (по-умолчанию текущая дата)
+     *
+     * @access public
+     * @return object
+     */
+    public function getCurrent() { return $this->_current ?: $this->_current = $this->now(); }
+
+    /**
      * Установка текущей даты календаря
      * 
      * Значение $date может принимать значения:
@@ -239,7 +273,7 @@ class GCalendar extends GObject
     {
         if (!is_object($date) && !is_numeric($date))
             $date = strtotime($date);
-        return $this->_current = is_object($date) ? $date : $this->factory(['timestamp' => $date]);
+        return $this->current = is_object($date) ? $date : $this->factory(array('timestamp' => $date));
     }
     
     /**
@@ -253,9 +287,9 @@ class GCalendar extends GObject
     public function getDate($date = null) 
     {
         if ($date)
-            return $this->factory(['timestamp' => !is_numeric($date) ? strtotime($date) : $date]);
+            return $this->factory(array('timestamp' => !is_numeric($date) ? strtotime($date) : $date));
         else
-            return $this->_current; 
+            return $this->current;
     }
 
     /**
@@ -268,8 +302,8 @@ class GCalendar extends GObject
      */
     public function setDay($date = null, $day = 1)
     {
-        $timestamp = $this->_createDate($date, null, null, null, null, $day);
-        return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
+        $timestamp = $this->mktime($date, null, null, null, null, $day);
+        return $date ? $date->setTimestamp($timestamp) : $this->current->setTimestamp($timestamp);
     }
 
     /**
@@ -279,7 +313,7 @@ class GCalendar extends GObject
      * @param null|object $date
      * @return integer
      */
-    public function getDay($date = null) { return date('d', $date ? $date->timestamp : $this->_current->timestamp); }
+    public function getDay($date = null) { return date('d', $date ? $date->timestamp : $this->current->timestamp); }
 
     /**
      * Добавление к текущей дате указанное число дней и возвращает новую
@@ -288,11 +322,12 @@ class GCalendar extends GObject
      * @access public
      * @param null|object $date
      * @param integer $days кол-во дней, которые необходимо прибавить
-     * @return obejct
+     * @return object
      */
+    public function addDay($date = null) { return $this->addDays($date, 1); }
     public function addDays($date = null, $days = 0)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $days * self::SECONDS_PER_DAY]);
+        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->current->timestamp) + $days * self::SECONDS_PER_DAY));
     }
 
     /**
@@ -304,9 +339,10 @@ class GCalendar extends GObject
      * @param integer $days кол-во дней, которые необходимо вычесть
      * @return object
      */
+    public function subDay($date = null) { return $this->subDays($date, 1); }
     public function subDays($date = null, $days)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $days * self::SECONDS_PER_DAY]);
+        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->current->timestamp) - $days * self::SECONDS_PER_DAY));
     }
 
     /**
@@ -319,8 +355,8 @@ class GCalendar extends GObject
      */
     public function setMonth($date = null, $month = 1)
     {
-        $timestamp = $this->_createDate($date, null, null, null, $month);
-        return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
+        $timestamp = $this->mktime($date, null, null, null, $month);
+        return $date ? $date->setTimestamp($timestamp) : $this->current->setTimestamp($timestamp);
     }
 
     /**
@@ -337,14 +373,14 @@ class GCalendar extends GObject
      * @param integer $mode
      * @return integer
      */
-    public function getMonth($date = null, $mode = 1) 
+    public function getMonth($date = null, $mode = MONTH_NUMBER)
     { 
         $class = $this->localeNamespace . '\\' . $this->locale;
         switch($mode)
         {
-            case 2 : return $class::getFullMonth($date ? $date->timestamp : $this->_current->timestamp);
-            case 3 : return $class::getShortMonth($date ? $date->timestamp : $this->_current->timestamp);
-            case 1 : 
+            case MONTH_SHORTNAME : return $class::getShortMonth($date ? $date->timestamp : $this->_current->timestamp);
+            case MONTH_FULLNAME : return $class::getFullMonth($date ? $date->timestamp : $this->_current->timestamp);
+            case MONTH_NUMBER :
             default : return date('m', $date ? $date->timestamp : $this->_current->timestamp);
         } 
     }
@@ -357,9 +393,10 @@ class GCalendar extends GObject
      * @param integer $months
      * @return object
      */
+    public function addMonth($date = null) { return $this->addMonths($date, 1); }
     public function addMonths($date = null, $months = 0)
     {
-        return $this->factory(['timestamp' => strtotime('+' . (int)$months . ' month', $date ? $date->timestamp : $this->_current->timestamp)]);
+        return $this->factory(array('timestamp' => strtotime('+' . (int)$months . ' month', $date ? $date->timestamp : $this->current->timestamp)));
     }
 
     /**
@@ -370,9 +407,10 @@ class GCalendar extends GObject
      * @param integer $months
      * @return object
      */
+    public function subMonth($date = null) { return $this->subMonths($date, 1); }
     public function subMonths($date = null, $months = 0)
     {
-        return $this->factory(['timestamp' => strtotime('-' . (int)$months . ' month', $date ? $date->timestamp : $this->_current->timestamp)]);
+        return $this->factory(array('timestamp' => strtotime('-' . (int)$months . ' month', $date ? $date->timestamp : $this->current->timestamp)));
     }
 
     /**
@@ -387,7 +425,7 @@ class GCalendar extends GObject
     {
         if (!$year)
             $year = date('Y');
-        $timestamp = $this->_createDate($date, null, null, null, null, null, $year);
+        $timestamp = $this->mktime($date, null, null, null, null, null, $year);
         return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
     }
 
@@ -413,7 +451,7 @@ class GCalendar extends GObject
         if (!$date)
             $date = $this->_current;
         $date = $date->setYear($date->year + $years);
-        return $this->factory(['timestamp' => $date->timestamp]);
+        return $this->factory(array('timestamp' => $date->timestamp));
     }
 
     /**
@@ -428,8 +466,9 @@ class GCalendar extends GObject
     {
         if (!$date)
             $date = $this->_current;
+        die(($date->year - $years) . "\n");
         $date = $date->setYear($date->year - $years);
-        return $this->factory(['timestamp' => $date->timestamp]);
+        return $this->factory(array('timestamp' => $date->timestamp));
     }
 
     /**
@@ -442,7 +481,7 @@ class GCalendar extends GObject
      */
     public function setHour($date = null, $hour = 0)
     {
-        $timestamp = $this->_createDate($date, $hour);
+        $timestamp = $this->mktime($date, $hour);
         return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
     }
 
@@ -491,7 +530,7 @@ class GCalendar extends GObject
      */
     public function setMinute($date = null, $minute = 0)
     {
-        $timestamp = $this->_createDate($date, null, $minute);
+        $timestamp = $this->mktime($date, null, $minute);
         return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
     }
 
@@ -540,7 +579,7 @@ class GCalendar extends GObject
      */
     public function setSecond($date = null, $second = 0)
     {
-        $timestamp = $this->_createDate($date, null, null, $second);
+        $timestamp = $this->mktime($date, null, null, $second);
         return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
     }
 
@@ -743,7 +782,7 @@ class GCalendar extends GObject
      */
     public function getFirstDateOfMonth($date = null)
     {
-        return $this->factory(['timestamp' => $this->_createDate($date ? $date : $this->_current, null, null, null, null, 1)]);
+        return $this->factory(['timestamp' => $this->mktime($date ? $date : $this->_current, null, null, null, null, 1)]);
     }
     
     /**
@@ -757,7 +796,7 @@ class GCalendar extends GObject
     {
         if (!$date)
             $date = $this->_current;
-        return $this->factory(['timestamp' => $this->_createDate($date, null, null, null, null, date('t', $date->timestamp))]);
+        return $this->factory(['timestamp' => $this->mktime($date, null, null, null, null, date('t', $date->timestamp))]);
     }
     
     /**
@@ -770,10 +809,9 @@ class GCalendar extends GObject
     public function getFirstDateOfYear($date = null)
     {
         $class = $this->localeNamespace . '\\' . $this->locale;
-        return $this->factory(array
-        (
-            'timestamp' => $this->_createDate($date, null, null, null, $class::getFirstMonthOfYear(), $class::getFirstDayOfYear())
-        ));
+        return $this->factory([
+            'timestamp' => $this->mktime($date, null, null, null, $class::getFirstMonthOfYear(), $class::getFirstDayOfYear())
+        ]);
     }
     
     /**
@@ -786,10 +824,9 @@ class GCalendar extends GObject
     public function getLastDateOfYear($date = null)
     {
         $class = $this->localeNamespace . '\\' . $this->locale;
-        return $this->factory(array
-        (
-            'timestamp' => $this->_createDate($date, null, null, null, $class::getLastMonthOfYear(), $class::getLastDayOfYear())
-        ));
+        return $this->factory([
+            'timestamp' => $this->mktime($date, null, null, null, $class::getLastMonthOfYear(), $class::getLastDayOfYear())
+        ]);
     }
     
     /**
@@ -1018,7 +1055,7 @@ class GCalendar extends GObject
      */
     public function setFormat($format)
     {
-        $this->_format = $format;
+        $this->_factory['format'] = $this->current->format = $this->_format = $format;
         return $this;
     }
 
@@ -1040,7 +1077,7 @@ class GCalendar extends GObject
      */
     public function setNatural($natural)
     {
-        $this->_natural = (boolean)$natural;
+        $this->_factory['natural'] = $this->curent->format = $this->_natural = (boolean)$natural;
         return $this;
     }
 
@@ -1158,22 +1195,9 @@ class GCalendar extends GObject
     }
 
     /**
-     * Обработчик события onConstructed, заполняет текущую дату
-     * 
-     * @access public
-     * @return boolean
-     */
-    public function onConstructed()
-    {
-        parent::onConstructed();
-        $this->date = $this->now();
-        return true;
-    }
-
-    /**
      * Формирует временную метку UNIX по указанным значениям
      * 
-     * @access private
+     * @access public
      * @param null|object $date
      * @param null|integer $hour
      * @param null|integer $minute
@@ -1183,17 +1207,31 @@ class GCalendar extends GObject
      * @param null|integer $year
      * @return integer
      */
-    private function _createDate($date, $hour = null, $minute = null, $second = null, $month = null, $day = null, $year = null)
+    public function mktime($date, $hour = null, $minute = null, $second = null, $month = null, $day = null, $year = null)
     {
+        $date = $date ?: $this->current;
         $timestamp = mktime
         (
-            $hour !== null ? $hour : date('G', $date ? $date->timestamp : $this->_current->timestamp), 
-            $minute !== null ? $minute : date('i', $date ? $date->timestamp : $this->_current->timestamp), 
-            $second !== null ? $second : date('s', $date ? $date->timestamp : $this->_current->timestamp), 
-            $month !== null ? $month : date('n', $date ? $date->timestamp : $this->_current->timestamp), 
-            $day !== null ? $day : date('j', $date ? $date->timestamp : $this->_current->timestamp), 
-            $year !== null ? $year : date('Y', $date ? $date->timestamp : $this->_current->timestamp)
+            $hour !== null ?: date('G', $date->timestamp),
+            $minute !== null ?: date('i', $date->timestamp),
+            $second !== null ?: date('s', $date->timestamp),
+            $month !== null ?: date('n', $date->timestamp),
+            $day !== null ?: date('j', $date->timestamp),
+            $year !== null ?: date('Y', $date->timestamp)
         );
         return $timestamp;
+    }
+
+    /**
+     * Обработчик события onConstructed, заполняет текущую дату
+     *
+     * @access public
+     * @return boolean
+     */
+    public function onConstructed()
+    {
+        parent::onConstructed();
+        $this->current = $this->now();
+        return true;
     }
 }

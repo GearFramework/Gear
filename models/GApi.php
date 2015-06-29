@@ -1,8 +1,6 @@
 <?php
 
 namespace gear\models;
-
-use gear\Core;
 use gear\library\GModel;
 
 /** 
@@ -12,9 +10,10 @@ use gear\library\GModel;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 18.12.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 abstract class GApi extends GModel
 {
@@ -22,6 +21,14 @@ abstract class GApi extends GModel
     /* Private */
     /* Protected */
     /* Public */
+
+    /**
+     * Вызов метода runApi
+     *
+     * @access public
+     * @return mixed
+     */
+    public function __invoke() { return call_user_func_array(array($this, 'runApi'), func_get_args()); }
     
     /**
      * Получение процесса из-под которого выполняется api-метод

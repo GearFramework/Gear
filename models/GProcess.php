@@ -13,8 +13,10 @@ use gear\interfaces\IProcess;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
+ * @php 5.3.x
+ * @release 1.0.0
  */
 class GProcess extends GModel implements IProcess
 {
@@ -36,26 +38,23 @@ class GProcess extends GModel implements IProcess
      * @access public
      * @return mixed
      */
-    public function __invoke()
-    {
-        return call_user_func_array(array($this, 'entry'), func_get_args());
-    }
+    public function __invoke() { return call_user_func_array(array($this, 'entry'), func_get_args()); }
     
     /**
      * Точка входа в процесс
      * 
      * @access public
-     * @param array $request
+     * @param object $request
      * @return mixed
      */
-    public function entry($request = array())
+    public function entry($request = null)
     {
-        if ($this->event('onBeforeExec', new GEvent($this), $request))
+        if ($request && !is_object($request))
+            $request = Core::app()->request;
+        $this->request = $request;
+        if ($this->beforeExec(new GEvent($this), $this->request))
         {
-            $this->request = $request;
-            $apiName = Core::app()->request->get('f');
-            if (!$apiName)
-                $apiName = $this->defaultApi;
+            $apiName = $this->request->get('f', $this->defaultApi, function($value) { return preg_replace('/\W/', '', $value); });
             $api = $this->getApis($apiName);
             if ($api)
             {
@@ -64,8 +63,7 @@ class GProcess extends GModel implements IProcess
                 else
                 {
                     list($class, $config, $properties) = Core::getRecords($api);
-                    $properties['owner'] = $this;
-                    $this->_currentApi = array(new $class($properties), 'runApi');
+                    $this->_currentApi = array(new $class($properties, $this), 'runApi');
                 }
             }
             else
@@ -75,9 +73,9 @@ class GProcess extends GModel implements IProcess
                     $this->e('Api ":apiName" is not exists in process ":processName"', array('apiName' => $apiName, 'processName' => $this->name));
                 $this->_currentApi = array($this, $api);
             }
-            $arguments = $this->_prepareArguments($apiName, $request);
+            $arguments = $this->_prepareArguments($apiName);
             $result = call_user_func_array($this->_currentApi, $arguments);
-            $this->event('onAfterExec', new GEvent($this), $result);
+            $this->afterExec(new GEvent($this), $result);
             return $result;
         }
         return false;
@@ -88,10 +86,9 @@ class GProcess extends GModel implements IProcess
      * 
      * @access protected
      * @param string $apiName
-     * @param array $request
      * @return array
      */
-    protected function _prepareArguments($apiName, $request)
+    protected function _prepareArguments($apiName)
     {
         $args = $this->getApiArguments($this->_currentApi);
         $apiArguments = array();
@@ -102,8 +99,7 @@ class GProcess extends GModel implements IProcess
             if ($value === null)
             {
                 if (!$argument->isOptional())
-                    $this->e('Api ":apiName" required parameter ":argName"', array
-                    (
+                    $this->e('Api ":apiName" required parameter ":argName"', array(
                         ':apiName' => $apiName,
                         ':argName' => $argument->name
                     ));
@@ -111,7 +107,7 @@ class GProcess extends GModel implements IProcess
             }
             else
             if (isset($rule['filter']))
-                $value = Core::app()->request->filtering($rule['filter'], $value);
+                $value = $this->request->filtering($rule['filter'], $value);
             $apiArguments[] = $value;
         }
         return $apiArguments;
@@ -175,11 +171,12 @@ class GProcess extends GModel implements IProcess
      *
      * @access public
      * @param array $request
-     * @return void
+     * @return $this
      */
     public function setRequest(array $request)
     {
         $this->_request = $request;
+        return $this;
     }
 
     /**
@@ -188,10 +185,7 @@ class GProcess extends GModel implements IProcess
      * @access public
      * @return array
      */
-    public function getRequest()
-    {
-        return $this->_request;
-    }
+    public function getRequest() { return $this->_request; }
 
     /**
      * Получение уровня доступа к процессу
@@ -230,7 +224,20 @@ class GProcess extends GModel implements IProcess
      * @return array
      */
     public function getRules() { return $this->_rules; }
-    
+
+    /**
+     * @access public
+     * @return bool
+     * @see GObject::onConstructed()
+     */
+    public function onConstructed()
+    {
+        parent::onConstructed();
+        Core::attachEvent('onBeforeProcessExecute', [$this, 'onBeforeExec']);
+        Core::attachEvent('onAfterProcessExecute', [$this, 'onAfterExec']);
+        return true;
+    }
+
     /**
      * Обработчик по-умолчанию события возникающего перед исполнением
      * процесса
@@ -239,7 +246,8 @@ class GProcess extends GModel implements IProcess
      * @param GEvent $event
      * @return bool
      */
-    public function onBeforeExec($event) { return true; }
+    public function beforeExec($event, $request) { return Core::on('onBeforeProcessExecute', $event, $request); }
+    public function onBeforeExec($event, $request = null) { return true; }
     
     /**
      * Обработчик по-умолчанию события возникающего после исполнения
@@ -250,7 +258,8 @@ class GProcess extends GModel implements IProcess
      * @param mixed $result
      * @return mixed
      */
-    public function onAfterExec($event, $result = true) { return $result; }
+    public function afterExec($event, $result = true) { return Core::on('onAfterProcessExecute', $event, $result); }
+    public function onAfterExec($event, $result = true) { return true; }
 }
 
 /** 

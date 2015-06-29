@@ -4,6 +4,16 @@ namespace gear\models;
 use gear\Core;
 use gear\library\GModel;
 
+/**
+ * Директория
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright Kukushkin Denis
+ * @version 1.0.0
+ * @since 02.06.2014
+ * @php 5.3.x
+ */
 class GDate extends GModel
 {
     /* Const */
@@ -12,20 +22,31 @@ class GDate extends GModel
     const SECONDS_PER_DAY = 86400;
     /* Private */
     /* Protected */
+    /* Формат вывода даты */
     protected $_format = 'Y-m-d H:i:s';
     protected $_natural = false;
+    /* Дата и время в формате Y-m-d H:i:s */
     protected $_datetime = null;
+    /* Unix-timestamp */
     protected $_timestamp = 0;
     protected $_value = null;
     /* Public */
 
     /**
-     * Форматирование даты
+     * Вывод отформатированой даты
      *
      * @access public
      * @return string
      */
     public function __toString() { return $this->format($this->format); }
+
+    /**
+     * Возвращает владельца даты - календарь
+     *
+     * @access public
+     * @return object
+     */
+    public function getOwner() { return $this->_owner; }
 
     /**
      * Установка даты и времени в формате, понимаемом функцией strtotime()
@@ -80,14 +101,14 @@ class GDate extends GModel
             $this->_timestamp = $this->datetime ? strtotime($this->datetime) : time();
         return $this->_timestamp;
     }
-    
+
     /**
      * Возвращает день
      * 
      * @access public
      * @return integer
      */
-    public function getDay() { return $this->owner->getDay($this); }
+//    public function getDay() { return $this->owner->getDay($this); }
     
     /**
      * Возвращает месяц
@@ -102,7 +123,7 @@ class GDate extends GModel
      * @param integer $mode
      * @return integer
      */
-    public function getMonth($mode = 1) { return $this->owner->getMonth($this, $mode); }
+//    public function getMonth($mode = 1) { return $this->owner->getMonth($this, $mode); }
     
     /**
      * Возвращает год
@@ -110,7 +131,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getYear() { return $this->owner->getYear($this); }
+    public function getYear() { return date('Y', $this->timestamp); }
     
     /**
      * Возвращает час
@@ -118,7 +139,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getHour() { return $this->owner->getHour($this); }
+//    public function getHour() { return $this->owner->getHour($this); }
     
     /**
      * Возвращает минуты
@@ -126,7 +147,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getMinute() { return $this->owner->getMinute($this); }
+//    public function getMinute() { return $this->owner->getMinute($this); }
     
     /**
      * Возвращает секунды
@@ -134,7 +155,7 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getSecond() { return $this->owner->getSecond($this); }
+//    public function getSecond() { return $this->owner->getSecond($this); }
     
     /**
      * Возвращает день недели
@@ -149,7 +170,7 @@ class GDate extends GModel
      * @param integer $mode
      * @return integer
      */
-    public function getDayOfWeek($mode = 1) { return $this->owner->getDayOfWeek($this, $mode); }
+//    public function getDayOfWeek($mode = 1) { return $this->owner->getDayOfWeek($this, $mode); }
 
     /**
      * Установка формата вывода даты
@@ -160,7 +181,7 @@ class GDate extends GModel
      */
     public function setFormat($format)
     {
-        $this->owner->format = $format;
+        $this->_format = $format;
         return $this;
     }
 
@@ -170,7 +191,7 @@ class GDate extends GModel
      * @access public
      * @return string
      */
-    public function getFormat() { return $this->owner->format; }
+    public function getFormat() { return $this->_format; }
 
     /**
      * Установка или снятие флага использования падежного окончания, при 
@@ -182,7 +203,7 @@ class GDate extends GModel
      */
     public function setNatural($natural)
     {
-        $this->owner->natural = (boolean)$natural;
+        $this->_natural = (boolean)$natural;
         return $this;
     }
 
@@ -193,7 +214,7 @@ class GDate extends GModel
      * @access public
      * @return boolean
      */
-    public function getNatural() { return $this->owner->natural; }
+    public function getNatural() { return $this->_natural; }
     
     /**
      * Возвращает номер квартала

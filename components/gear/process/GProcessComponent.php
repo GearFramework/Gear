@@ -5,7 +5,6 @@ use gear\Core;
 use gear\interfaces\IProcess;
 use gear\library\GComponent;
 use gear\library\GException;
-use gear\models\GProcess;
 
 /** 
  * Компонент обслуживающий процессы
@@ -79,7 +78,7 @@ class GProcessComponent extends GComponent
             else
                 $this->_currentProcess = $this->_routing();
             return $this->_currentProcess instanceof \Closure
-                 ? call_user_func($this->_currentProcess) : $this->_currentProcess->entry();
+                 ? call_user_func($this->_currentProcess, $this->request) : $this->_currentProcess->entry($this->request);
         }
         catch(GException $e)
         {

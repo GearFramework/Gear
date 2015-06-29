@@ -22,7 +22,7 @@ class GHelperManager extends GComponent
     private $_helpers = null;
     private $_activeHelper = null;
     /* Protected */
-    protected static $_config = [];
+    protected static $_config = array();
     protected static $_init = false;
     /* Public */
 
@@ -35,7 +35,7 @@ class GHelperManager extends GComponent
     public function runHelper($name)
     {
         if (!isset($this->_helpers[$name]))
-            $this->e('Helper :helperName not found', ['helperName' => $name]);
+            $this->e('Helper :helperName not found', array('helperName' => $name));
         if ($this->_activeHelper !== $this->_helpers[$name])
         {
             if (!is_object($this->_helpers[$name]))
@@ -45,7 +45,7 @@ class GHelperManager extends GComponent
             }
             $this->_activeHelper = $this->_helpers[$name];
         }
-        return $this;
+        return $this->_activeHelper;
     }
 
     /**
@@ -59,6 +59,6 @@ class GHelperManager extends GComponent
 
     public function onCalled($event, $name, $args)
     {
-        return call_user_func_array([$this->_activeHelper, $name], $args);
+        return call_user_func_array(array($this->_activeHelper, $name), $args);
     }
 }

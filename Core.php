@@ -76,6 +76,7 @@ final class Core
                 (
                     'class' => array('name' => '\gear\components\gear\loader\GLoader'),
                     'name' => 'loader',
+                    /* Set helpers, remove dependencies on the class name */
                     'aliases' =>  array
                     (
                         'Arrays' => array('class' => 'gear\helpers\GArray'),

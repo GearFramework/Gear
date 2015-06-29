@@ -79,10 +79,10 @@ class GObject
      */
     protected function __construct(array $properties = array(), $owner = null)
     {
-        foreach($properties as $name => $value)
-            $this->$name = $value;
         if ($owner)
             $this->setOwner($owner);
+        foreach($properties as $name => $value)
+            $this->$name = $value;
         $this->event('onConstructed');
     }
     
@@ -187,10 +187,10 @@ class GObject
                 $this->e('Plugin ":methodName" is not callable and cannot be use as function', array('methodName' => $name));
             return call_user_func_array($p, $args);
         }
-        if (is_object($this->_owner))
+        if (is_object($this->owner))
         {
             array_unshift($args, $this);
-            return call_user_func_array(array($this->_owner, $name), $args);
+            return call_user_func_array(array($this->owner, $name), $args);
         }
         $result = $this->event('onCalled', $name, $args);
         if ($result === null)
