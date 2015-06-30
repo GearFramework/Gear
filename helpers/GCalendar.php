@@ -25,6 +25,7 @@ class GCalendar extends GObject implements IFactory
     const SECONDS_PER_MINUTE = 60;
     const SECONDS_PER_HOUR = 3600;
     const SECONDS_PER_DAY = 86400;
+    const DAYS_PER_WEEK = 7;
     /* Private */
     /* Protected */
     protected $_factory = array
@@ -259,21 +260,21 @@ class GCalendar extends GObject implements IFactory
 
     /**
      * Установка текущей даты календаря
-     * 
+     *
      * Значение $date может принимать значения:
      * - временную метку UNIX
      * - запись даты в формате, который понимает php-функция strtotime()
      * - объект класса, указанного в свойстве _factoryItem
-     * 
+     *
      * @access public
-     * @param integer|string $date
-     * @return $object
-     */ 
+     * @param integer|string|object $date
+     * @return object $object
+     */
     public function setDate($date)
     {
-        if (!is_object($date) && !is_numeric($date))
-            $date = strtotime($date);
-        return $this->current = is_object($date) ? $date : $this->factory(array('timestamp' => $date));
+        if (!is_object($date))
+            $date = $this->factory(array('timestamp' => !is_numeric($date) ? strtotime($date) : $date));
+        return $this->current = $date;
     }
     
     /**
@@ -293,6 +294,28 @@ class GCalendar extends GObject implements IFactory
     }
 
     /**
+     * Устанвока UNIX-timestamp
+     *
+     * @access public
+     * @param integer $timestamp
+     * @param null|object $date
+     * @return object
+     */
+    public function setTimestamp($timestamp, $date = null)
+    {
+        return $date ? $date->setTimestamp($timestamp) : $this->current->setTimestamp($timestamp);
+    }
+
+    /**
+     * Возвращает UNIX-timestamp
+     *
+     * @access public
+     * @param null|object $date
+     * @return integer
+     */
+    public function getTimestamp($date = null) { return $date ? $date->timestamp : $this->current->timestamp; }
+
+    /**
      * Установка числа
      *
      * @access public
@@ -300,10 +323,9 @@ class GCalendar extends GObject implements IFactory
      * @param integer $day
      * @return object
      */
-    public function setDay($date = null, $day = 1)
+    public function setDay($date = null, $day)
     {
-        $timestamp = $this->mktime($date, null, null, null, null, $day);
-        return $date ? $date->setTimestamp($timestamp) : $this->current->setTimestamp($timestamp);
+        return $this->setTimestamp($this->mktime($date, null, null, null, null, $day), $date);
     }
 
     /**
@@ -313,7 +335,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getDay($date = null) { return date('d', $date ? $date->timestamp : $this->current->timestamp); }
+    public function getDay($date = null) { return date('d', $this->getTimestamp($date)); }
 
     /**
      * Добавление к текущей дате указанное число дней и возвращает новую
@@ -325,9 +347,9 @@ class GCalendar extends GObject implements IFactory
      * @return object
      */
     public function addDay($date = null) { return $this->addDays($date, 1); }
-    public function addDays($date = null, $days = 0)
+    public function addDays($date = null, $days)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->current->timestamp) + $days * self::SECONDS_PER_DAY));
+        return $this->setTimestamp($this->getTimestamp($date)  + $days * self::SECONDS_PER_DAY, $date);
     }
 
     /**
@@ -342,7 +364,7 @@ class GCalendar extends GObject implements IFactory
     public function subDay($date = null) { return $this->subDays($date, 1); }
     public function subDays($date = null, $days)
     {
-        return $this->factory(array('timestamp' => ($date ? $date->timestamp : $this->current->timestamp) - $days * self::SECONDS_PER_DAY));
+        return $this->setTimestamp($this->getTimestamp($date)  - $days * self::SECONDS_PER_DAY, $date);
     }
 
     /**
@@ -353,10 +375,9 @@ class GCalendar extends GObject implements IFactory
      * @param integer $month
      * @return object
      */
-    public function setMonth($date = null, $month = 1)
+    public function setMonth($date = null, $month)
     {
-        $timestamp = $this->mktime($date, null, null, null, $month);
-        return $date ? $date->setTimestamp($timestamp) : $this->current->setTimestamp($timestamp);
+        return $this->setTimestamp($this->mktime($date, null, null, null, $month), $date);
     }
 
     /**
@@ -378,10 +399,10 @@ class GCalendar extends GObject implements IFactory
         $class = $this->localeNamespace . '\\' . $this->locale;
         switch($mode)
         {
-            case MONTH_SHORTNAME : return $class::getShortMonth($date ? $date->timestamp : $this->_current->timestamp);
-            case MONTH_FULLNAME : return $class::getFullMonth($date ? $date->timestamp : $this->_current->timestamp);
+            case MONTH_SHORTNAME : return $class::getShortMonth($this->getTimestamp($date));
+            case MONTH_FULLNAME : return $class::getFullMonth($this->getTimestamp($date));
             case MONTH_NUMBER :
-            default : return date('m', $date ? $date->timestamp : $this->_current->timestamp);
+            default : return date('m', $this->getTimestamp($date));
         } 
     }
 
@@ -394,9 +415,9 @@ class GCalendar extends GObject implements IFactory
      * @return object
      */
     public function addMonth($date = null) { return $this->addMonths($date, 1); }
-    public function addMonths($date = null, $months = 0)
+    public function addMonths($date = null, $months)
     {
-        return $this->factory(array('timestamp' => strtotime('+' . (int)$months . ' month', $date ? $date->timestamp : $this->current->timestamp)));
+        return $this->setTimestamp(strtotime('+' . (int)$months . ' month', $this->getTimestamp($date)), $date);
     }
 
     /**
@@ -408,9 +429,9 @@ class GCalendar extends GObject implements IFactory
      * @return object
      */
     public function subMonth($date = null) { return $this->subMonths($date, 1); }
-    public function subMonths($date = null, $months = 0)
+    public function subMonths($date = null, $months)
     {
-        return $this->factory(array('timestamp' => strtotime('-' . (int)$months . ' month', $date ? $date->timestamp : $this->current->timestamp)));
+        return $this->setTimestamp(strtotime('-' . (int)$months . ' month', $this->getTimestamp($date)), $date);
     }
 
     /**
@@ -421,12 +442,9 @@ class GCalendar extends GObject implements IFactory
      * @param integer $year
      * @return object
      */
-    public function setYear($date = null, $year = 0)
+    public function setYear($date = null, $year)
     {
-        if (!$year)
-            $year = date('Y');
-        $timestamp = $this->mktime($date, null, null, null, null, null, $year);
-        return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
+        return $this->setTimestamp($this->mktime($date, null, null, null, null, null, $year), $date);
     }
 
     /**
@@ -436,7 +454,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getYear($date = null) { return date('Y', $date ? $date->timestamp : $this->_current->timestamp); }
+    public function getYear($date = null) { return date('Y', $this->getTimestamp($date)); }
 
     /**
      * Прибавляет к дате указанное количество лет
@@ -446,12 +464,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $years
      * @return object
      */
-    public function addYears($date = null, $years = 0)
+    public function addYear($date = null) { return $this->addYears($date, 1); }
+    public function addYears($date = null, $years)
     {
-        if (!$date)
-            $date = $this->_current;
-        $date = $date->setYear($date->year + $years);
-        return $this->factory(array('timestamp' => $date->timestamp));
+        return $this->setYear($date, ($date ? $date->year : $this->current->year) + $years);
     }
 
     /**
@@ -462,12 +478,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $years
      * @return object
      */
-    public function subYears($date = null, $years = 0)
+    public function subYear($date = null) { return $this->subYears($date, 1); }
+    public function subYears($date = null, $years)
     {
-        if (!$date)
-            $date = $this->_current;
-        $date = $date->setYear($date->year - $years);
-        return $this->factory(array('timestamp' => $date->timestamp));
+        return $this->setYear($date, ($date ? $date->year : $this->current->year) - $years);
     }
 
     /**
@@ -478,11 +492,7 @@ class GCalendar extends GObject implements IFactory
      * @param integer $hour
      * @return object
      */
-    public function setHour($date = null, $hour = 0)
-    {
-        $timestamp = $this->mktime($date, $hour);
-        return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
-    }
+    public function setHour($date = null, $hour) { return $this->setTimestamp($this->mktime($date, $hour), $date); }
 
     /**
      * Возвращает час
@@ -491,7 +501,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getHour($date = null) { return date('H', $date ? $date->timestamp : $this->_current->timestamp); }
+    public function getHour($date = null) { return date('H', $this->getTimestamp($date)); }
 
     /**
      * Прибавляет к времени указанное количество часов
@@ -501,9 +511,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $hours
      * @return object
      */
-    public function addHours($date = null, $hours = 0)
+    public function addHour($date = null) { return $this->addHours($date, 1); }
+    public function addHours($date = null, $hours)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $hours * self::SECONDS_PER_HOUR]);
+        return $this->setTimestamp($this->getTimestamp($date) + $hours * self::SECONDS_PER_HOUR);
     }
 
     /**
@@ -514,9 +525,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $hours
      * @return object
      */
-    public function subHours($date = null, $hours = 0)
+    public function subHour($date = null) { return $this->subHours($date, 1); }
+    public function subHours($date = null, $hours)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $hours * self::SECONDS_PER_HOUR]);
+        return $this->setTimestamp($this->getTimestamp($date) - $hours * self::SECONDS_PER_HOUR);
     }
 
     /**
@@ -527,10 +539,9 @@ class GCalendar extends GObject implements IFactory
      * @param integer $minute
      * @return object
      */
-    public function setMinute($date = null, $minute = 0)
+    public function setMinute($date = null, $minute)
     {
-        $timestamp = $this->mktime($date, null, $minute);
-        return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
+        return $this->setTimestamp($this->mktime($date, null, $minute), $date);
     }
 
     /**
@@ -540,7 +551,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return object
      */
-    public function getMinute($date = null) { return date('i', $date ? $date->timestamp : $this->_current->timestamp); }
+    public function getMinute($date = null) { return date('i', $this->getTimestamp($date)); }
 
     /**
      * Прибавляет к времени указанное количество минут
@@ -550,9 +561,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $minutes
      * @return object
      */
-    public function addMinutes($date = null, $minutes = 0)
+    public function addMinute($date = null) { return $this->addMinutes($date, 1); }
+    public function addMinutes($date = null, $minutes)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $minutes * self::SECONDS_PER_MINUTE]);
+        return $this->setTimestamp($this->getTimestamp($date) + $minutes * self::SECONDS_PER_MINUTE);
     }
 
     /**
@@ -563,9 +575,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $minutes
      * @return object
      */
-    public function subMinutes($date = null, $minutes = 0)
+    public function subMinute($date = null) { return $this->subMinutes($date, 1); }
+    public function subMinutes($date = null, $minutes)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $minutes * self::SECONDS_PER_MINUTE]);
+        return $this->setTimestamp($this->getTimestamp($date) - $minutes * self::SECONDS_PER_MINUTE);
     }
 
     /**
@@ -576,10 +589,9 @@ class GCalendar extends GObject implements IFactory
      * @param integer $minute
      * @return object
      */
-    public function setSecond($date = null, $second = 0)
+    public function setSecond($date = null, $second)
     {
-        $timestamp = $this->mktime($date, null, null, $second);
-        return $date ? $date->setTimestamp($timestamp) : $this->_current->setTimestamp($timestamp);
+        return $this->setTimestamp($this->mktime($date, null, null, $second), $date);
     }
 
     /**
@@ -589,7 +601,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getSecond($date = null) { return date('s', $date ? $date->timestamp : $this->_current->timestamp); }
+    public function getSecond($date = null) { return date('s', $this->getTimestamp($date)); }
 
     /**
      * Прибавляет к времени указанное количество секунд
@@ -599,9 +611,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $seconds
      * @return object
      */
-    public function addSeconds($date = null, $seconds = 0)
+    public function addSecond($date = null) { return $this->addSeconds($date, 1); }
+    public function addSeconds($date = null, $seconds)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $seconds]);
+        return $this->setTimestamp($this->getTimestamp($date) + $seconds);
     }
 
     /**
@@ -612,11 +625,12 @@ class GCalendar extends GObject implements IFactory
      * @param integer $seconds
      * @return object
      */
-    public function subSeconds($date = null, $seconds = 0)
+    public function subSecond($date = null) { return $this->subSeconds($date, 1); }
+    public function subSeconds($date = null, $seconds)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $seconds]);
+        return $this->setTimestamp($this->getTimestamp($date) - $seconds);
     }
-    
+
     /**
      * Прибавляет к дате указанное количество недель
      * 
@@ -625,9 +639,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $weeks
      * @return object
      */
-    public function addWeeks($date = null, $weeks = 0)
+    public function addWeek($date = null) { return $this->addWeeks($date, 1); }
+    public function addWeeks($date = null, $weeks)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) + $weeks * 7 * self::SECONDS_PER_DAY]);
+        return $this->setTimestamp($this->getTimestamp() + $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
     }
     
     /**
@@ -638,9 +653,10 @@ class GCalendar extends GObject implements IFactory
      * @param integer $weeks
      * @return object
      */
-    public function subWeeks($date = null, $weeks = 0)
+    public function subWeek($date = null) { return $this->subWeeks($date, 1); }
+    public function subWeeks($date = null, $weeks)
     {
-        return $this->factory(['timestamp' => ($date ? $date->timestamp : $this->_current->timestamp) - $weeks * 7 * self::SECONDS_PER_DAY]);
+        return $this->setTimestamp($this->getTimestamp() - $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
     }
     
     /**
@@ -661,10 +677,10 @@ class GCalendar extends GObject implements IFactory
         $class = $this->localeNamespace . '\\' . $this->locale;
         switch($mode)
         {
-            case 2 : return $class::getFullWeek($date ? $date->timestamp : $this->_current->timestamp);
-            case 3 : return $class::getShortWeek($date ? $date->timestamp : $this->_current->timestamp);
+            case 2 : return $class::getFullWeek($this->getTimestamp($date));
+            case 3 : return $class::getShortWeek($this->getTimestamp($date));
             case 1 :
-            default : return $class::getNumberDayOfWeek($date ? $date->timestamp : $this->_current->timestamp);
+            default : return $class::getNumberDayOfWeek($this->getTimestamp($date));
         }
     }
     
@@ -675,10 +691,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getNumberOfDay($date = null)
-    {
-        return date('z', $date ? $date->timestamp : $this->_current->timestamp);
-    }
+    public function getNumberOfDay($date = null) { return date('z', $this->getTimestamp($date)); }
     
     /**
      * Возвращает количество дней в месяце
@@ -687,10 +700,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getCountDaysInMonth($date = null)
-    {
-        return date('t', $date ? $date->timestamp : $this->_current->timestamp);
-    }
+    public function getCountDaysInMonth($date = null) { return date('t', $this->getTimestamp($date)); }
     
     /**
      * Возвращает количество дней в году
@@ -699,10 +709,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getCountDaysInYear($date = null)
-    {
-        return date('L', $date ? $date->timestamp : $this->_current->timestamp) ? 366 : 365;
-    }
+    public function getCountDaysInYear($date = null) { return date('L', $this->getTimestamp($date)) ? 366 : 365; }
     
     /**
      * GCalendar::getDaysOfWeek()
@@ -740,15 +747,13 @@ class GCalendar extends GObject implements IFactory
     public function getFirstDateOfWeek($date = null)
     {
         $class = $this->localeNamespace . '\\' . $this->locale;
-        $timestamp = $date ? $date->timestamp : $this->_current->timestamp;
-        $firstDayOfweek = (int)$class::getFirstNumberDayOfWeek();
+        $timestamp = $this->getTimestamp($date);
+        $firstDayOfWeek = (int)$class::getFirstNumberDayOfWeek();
         $dayOfWeek = (int)$class::getNumberDayOfWeek($timestamp);
-        if ($firstDayOfweek >= $dayOfWeek)
-            return $date ? $date : $this->factory(['timestamp' => $timestamp]);
+        if ($firstDayOfWeek >= $dayOfWeek)
+            return $this->factory(array('timestamp' => $timestamp));
         else
-        if ($firstDayOfweek < $dayOfWeek)
-            return $this->subDays($date, $dayOfWeek - $firstDayOfweek);
-            
+            return $this->factory(array('timestamp' => $timestamp - ($dayOfWeek - $firstDayOfWeek) * self::SECONDS_PER_DAY));
     }
     
     /**
@@ -761,15 +766,13 @@ class GCalendar extends GObject implements IFactory
     public function getLastDateOfWeek($date = null)
     {
         $class = $this->localeNamespace . '\\' . $this->locale;
-        $timestamp = $date ? $date->timestamp : $this->_current->timestamp;
-        $lastDayOfweek = (int)$class::getLastNumberDayOfWeek();
+        $timestamp = $this->getTimestamp($date);
+        $lastDayOfWeek = (int)$class::getLastNumberDayOfWeek();
         $dayOfWeek = (int)$class::getNumberDayOfWeek($timestamp);
-        if ($lastDayOfweek <= $dayOfWeek)
-            return $date ? $date : $this->factory(['timestamp' => $timestamp]);
+        if ($lastDayOfWeek <= $dayOfWeek)
+            return $this->factory(array('timestamp' => $timestamp));
         else
-        if ($lastDayOfweek > $dayOfWeek)
-            return $this->addDays($date, $lastDayOfweek - $dayOfWeek);
-            
+            return $this->factory(array('timestamp' => $timestamp + ($lastDayOfWeek - $dayOfWeek) * self::SECONDS_PER_DAY));
     }
     
     /**
@@ -781,7 +784,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function getFirstDateOfMonth($date = null)
     {
-        return $this->factory(['timestamp' => $this->mktime($date ? $date : $this->_current, null, null, null, null, 1)]);
+        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, 1)));
     }
     
     /**
@@ -793,9 +796,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function getLastDateOfMonth($date = null)
     {
-        if (!$date)
-            $date = $this->_current;
-        return $this->factory(['timestamp' => $this->mktime($date, null, null, null, null, date('t', $date->timestamp))]);
+        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, date('t', $this->getTimestamp($date)))));
     }
     
     /**
@@ -807,10 +808,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function getFirstDateOfYear($date = null)
     {
-        $class = $this->localeNamespace . '\\' . $this->locale;
-        return $this->factory([
-            'timestamp' => $this->mktime($date, null, null, null, $class::getFirstMonthOfYear(), $class::getFirstDayOfYear())
-        ]);
+        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, 1, 1)));
     }
     
     /**
@@ -822,10 +820,8 @@ class GCalendar extends GObject implements IFactory
      */
     public function getLastDateOfYear($date = null)
     {
-        $class = $this->localeNamespace . '\\' . $this->locale;
-        return $this->factory([
-            'timestamp' => $this->mktime($date, null, null, null, $class::getLastMonthOfYear(), $class::getLastDayOfYear())
-        ]);
+//        $class = $this->localeNamespace . '\\' . $this->locale;
+        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, 12, 31)));
     }
     
     /**
@@ -838,7 +834,7 @@ class GCalendar extends GObject implements IFactory
     public function getDatesOfWeek($date = null)
     {
         $date = $this->getFirstDateOfWeek($date);
-        $dates = [];
+        $dates = array();
         foreach($this->getDaysOfWeek($date) as $day)
         {
             $dates[] = $date;
@@ -1211,12 +1207,12 @@ class GCalendar extends GObject implements IFactory
         $date = $date ?: $this->current;
         $timestamp = mktime
         (
-            $hour !== null ?: date('G', $date->timestamp),
-            $minute !== null ?: date('i', $date->timestamp),
-            $second !== null ?: date('s', $date->timestamp),
-            $month !== null ?: date('n', $date->timestamp),
-            $day !== null ?: date('j', $date->timestamp),
-            $year !== null ?: date('Y', $date->timestamp)
+            $hour !== null ? $hour : date('H', $date->timestamp),
+            $minute !== null ? $minute : date('i', $date->timestamp),
+            $second !== null ? $second : date('s', $date->timestamp),
+            $month !== null ? $month : date('m', $date->timestamp),
+            $day !== null ? $day : date('d', $date->timestamp),
+            $year !== null ? $year : date('Y', $date->timestamp)
         );
         return $timestamp;
     }

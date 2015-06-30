@@ -15,7 +15,7 @@ try
     [
         'index' => function()
         {
-            echo Core::h('calendar')->setFormat('d/m/Y')->addDay()->subYears(2);
+            echo Core::h('calendar')->setFormat('d/m/Y')->getLastDateOfYear();
         },
     ]);
 }
