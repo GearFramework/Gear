@@ -15,7 +15,10 @@ try
     [
         'index' => function()
         {
-            echo Core::h('calendar')->setFormat('d/m/Y')->getLastDateOfYear();
+            foreach(Core::h('calendar')->setFormat('d/m/Y')->getDatesOfMonth() as $date)
+            {
+                echo $date . "\n";
+            }
         },
     ]);
 }

@@ -834,12 +834,10 @@ class GCalendar extends GObject implements IFactory
     public function getDatesOfWeek($date = null)
     {
         $date = $this->getFirstDateOfWeek($date);
-        $dates = array();
-        foreach($this->getDaysOfWeek($date) as $day)
-        {
-            $dates[] = $date;
-            $date = $date->addDays(1);
-        }
+        $dates = array($date);
+        $timestamp = $date->timestamp;
+        for($day = 1; $day < self::DAYS_PER_WEEK; ++ $day)
+            $dates[] = $this->factory(array('timestamp' => $timestamp + $day * self::SECONDS_PER_DAY));
         return $dates;
     }
     
@@ -853,10 +851,11 @@ class GCalendar extends GObject implements IFactory
     public function getDatesOfMonth($date = null)
     {
         $date = $this->getFirstDateOfMonth($date);
-        $dates = [$date];
+        $dates = array($date);
+        $timestamp = $date->timestamp;
         $countDays = $this->getCountDaysInMonth($date);
-        for($day = 2; $day <= $countDays; ++ $day)
-            $dates[] = $date = $date->addDays(1);
+        for($day = 1; $day < $countDays; ++ $day)
+            $dates[] = $this->factory(array('timestamp' => $timestamp + $day * self::SECONDS_PER_DAY));
         return $dates;
     }
     
