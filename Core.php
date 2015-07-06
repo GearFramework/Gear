@@ -501,6 +501,8 @@ final class Core
             $helper = Core::c($helperManager);
             $helper->registerHelpers(self::$_config['helpers']);
         }
+        else
+            $helper = Core::c($helperManager);
         return $helper->runHelper($name);
     }
 

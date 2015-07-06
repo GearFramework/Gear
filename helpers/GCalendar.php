@@ -784,7 +784,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function getFirstDateOfMonth($date = null)
     {
-        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, 1)));
+        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, null, 1)));
     }
     
     /**
@@ -796,7 +796,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function getLastDateOfMonth($date = null)
     {
-        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, date('t', $this->getTimestamp($date)))));
+        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, null, date('t', $this->getTimestamp($date)))));
     }
     
     /**
@@ -869,10 +869,11 @@ class GCalendar extends GObject implements IFactory
     public function getDatesOfYear($date = null)
     {
         $date = $this->getFirstDateOfYear($date);
-        $dates = [$date];
+        $dates = array($date);
+        $timestamp = $date->timestamp;
         $countDays = $this->getCountDaysInYear($date);
-        for($day = 2; $day <= $countDays; ++ $day)
-            $dates[] = $date = $date->addDays(1);
+        for($day = 1; $day < $countDays; ++ $day)
+            $dates[] = $this->factory(array('timestamp' => $timestamp + $day * self::SECONDS_PER_DAY));
         return $dates;
     }
     
