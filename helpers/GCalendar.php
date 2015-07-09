@@ -886,11 +886,31 @@ class GCalendar extends GObject implements IFactory
      * @param integer|string|object $to
      * @return array of objects
      */
-    public function getRangeDates($from, $to, $step = '1 day', $revert = false)
+    public function getRange($from, $to, $step = '1 day', $revert = false)
     {
         if (!is_object($from)) $from = $this->getDate($from);
         if (!is_object($to)) $to = $this->getDate($to);
         $operation = $from->timestamp <= $to->timestamp ? 'add' : 'sub';
+        $ranger = function($from, $to, $step, $revert)
+        {
+            $dates = array($revert ? $from : $to);
+            $last = $from->timestamp;
+            while(true)
+            {
+                $timestamp = !$revert ? $last + $step : $last - $step;
+                if ($timestamp >= $to->timestamp)
+                    break;
+                $dates[] = $this->factory(array('timestamp' => $timestamp));
+            }
+            $dates[] = $revert ? $to : $from;
+            return $dates;
+        };
+
+        if ($from->timestamp <= $to->timestamp)
+            return !$revert ? $ranger($from, $to, $step, false) : $ranger($to, $from, $step, true);
+        else
+            return !$revert ? $ranger($from, $to, $step, true) : $ranger($to, $from, $step, false);
+
         if ($step && preg_match('/^(\d+)\s(\w+)$/', $step, $founds))
             $method = [$this, $operation . ucfirst($founds[2]) . 's', $founds[1]];
         else
