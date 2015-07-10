@@ -1,6 +1,6 @@
 <?php
 
-require 'd:/usr/github/gear/Core.php';
+require 'c:/usr/github/gear/Core.php';
 use gear\Core;
 try
 {
@@ -21,7 +21,7 @@ try
             {
                 echo $date . "\n";
             }
-            preg_match_all('/(\d+\s*\w+)/', '1 day 3 hours 10 minutes', $founds);
+            preg_match_all('/((\d+)\s*(\w+))/', '1 day 3 hours minute', $founds);
             print_r($founds);
         },
     ]);

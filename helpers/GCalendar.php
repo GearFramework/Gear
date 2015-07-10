@@ -891,7 +891,8 @@ class GCalendar extends GObject implements IFactory
         if (!is_object($from)) $from = $this->getDate($from);
         if (!is_object($to)) $to = $this->getDate($to);
         $operation = $from->timestamp <= $to->timestamp ? 'add' : 'sub';
-        $ranger = function($from, $to, $step, $revert)
+        $calendar = $this;
+        $ranger = function($from, $to, $step, $revert) use($calendar)
         {
             $dates = array($revert ? $from : $to);
             $last = $from->timestamp;
@@ -900,39 +901,58 @@ class GCalendar extends GObject implements IFactory
                 $timestamp = !$revert ? $last + $step : $last - $step;
                 if ($timestamp >= $to->timestamp)
                     break;
-                $dates[] = $this->factory(array('timestamp' => $timestamp));
+                $dates[] = $calendar->factory(array('timestamp' => $timestamp));
             }
             $dates[] = $revert ? $to : $from;
             return $dates;
         };
-
+        $step = $this->_prepareStep($step);
         if ($from->timestamp <= $to->timestamp)
             return !$revert ? $ranger($from, $to, $step, false) : $ranger($to, $from, $step, true);
         else
             return !$revert ? $ranger($from, $to, $step, true) : $ranger($to, $from, $step, false);
+        return $dates;
+    }
 
-        if ($step && preg_match('/^(\d+)\s(\w+)$/', $step, $founds))
-            $method = [$this, $operation . ucfirst($founds[2]) . 's', $founds[1]];
-        else
-            $method = [$this, $operation . 'Days', 1];
-        $stop = false;
-        $dates = [$from];
-        $date = $from;
-        while(!$stop)
+    protected function _prepareStep($step)
+    {
+        preg_match_all('/((\d+)\s*(\w+))/', $step, $founds);
+        $incs = array('years' => 0, 'months' => 0, 'weeks' => 0, 'days' => 0, 'hours' => 0, 'minutes' => 0, 'seconds' => 0);
+        if ($founds[3])
         {
-            $date = call_user_func([$method[0], $method[1]], $date, $method[2]);
-            if (($from->timestamp <= $to->timestamp && $date->timestamp < $to->timestamp) ||
-                ($from->timestamp > $to->timestamp && $date->timestamp > $to->timestamp))
-                $dates[] = $date;
-            else
+            foreach($founds[3] as $i => $name)
             {
-                $dates[] = $to;
-                $stop = true;
+                if (in_array($name, array('year', 'years')))
+                    $name ='years';
+                else
+                if (in_array($name, array('mon', 'mons', 'month', 'months')))
+                    $name ='months';
+                else
+                if (in_array($name, array('week', 'weeks')))
+                    $name ='weeks';
+                else
+                if (in_array($name, array('day', 'days')))
+                    $name ='days';
+                else
+                if (in_array($name, array('hour', 'hours')))
+                    $name ='hours';
+                else
+                if (in_array($name, array('min', 'mins', 'minute', 'minutes')))
+                    $name ='minutes';
+                else
+                if (in_array($name, array('sec', 'secs', 'second', 'seconds')))
+                    $name ='hours';
+                else
+                    continue;
+                $incs[$name] = $founds[2][$i];
             }
         }
-        if ($revert)
-            krsort($dates);
-        return $dates;
+        return $incs;
+    }
+
+    protected function _getAddedTimestamp($date, $elemnts)
+    {
+
     }
     
     /**
