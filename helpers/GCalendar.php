@@ -313,7 +313,7 @@ class GCalendar extends GObject implements IFactory
      * @param null|object $date
      * @return integer
      */
-    public function getTimestamp($date = null) { return $date ? $date->timestamp : $this->current->timestamp; }
+    public function getTimestamp($date = null) { return is_object($date) ? $date->timestamp : $this->current->timestamp; }
 
     /**
      * Установка числа
@@ -349,6 +349,7 @@ class GCalendar extends GObject implements IFactory
     public function addDay($date = null) { return $this->addDays($date, 1); }
     public function addDays($date = null, $days)
     {
+        //print_r();
         return $this->setTimestamp($this->getTimestamp($date)  + $days * self::SECONDS_PER_DAY, $date);
     }
 
@@ -514,7 +515,7 @@ class GCalendar extends GObject implements IFactory
     public function addHour($date = null) { return $this->addHours($date, 1); }
     public function addHours($date = null, $hours)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $hours * self::SECONDS_PER_HOUR);
+        return $this->setTimestamp($this->getTimestamp($date) + $hours * self::SECONDS_PER_HOUR, $date);
     }
 
     /**
@@ -528,7 +529,7 @@ class GCalendar extends GObject implements IFactory
     public function subHour($date = null) { return $this->subHours($date, 1); }
     public function subHours($date = null, $hours)
     {
-        return $this->setTimestamp($this->getTimestamp($date) - $hours * self::SECONDS_PER_HOUR);
+        return $this->setTimestamp($this->getTimestamp($date) - $hours * self::SECONDS_PER_HOUR, $date);
     }
 
     /**
@@ -564,7 +565,7 @@ class GCalendar extends GObject implements IFactory
     public function addMinute($date = null) { return $this->addMinutes($date, 1); }
     public function addMinutes($date = null, $minutes)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $minutes * self::SECONDS_PER_MINUTE);
+        return $this->setTimestamp($this->getTimestamp($date) + $minutes * self::SECONDS_PER_MINUTE, $date);
     }
 
     /**
@@ -578,7 +579,7 @@ class GCalendar extends GObject implements IFactory
     public function subMinute($date = null) { return $this->subMinutes($date, 1); }
     public function subMinutes($date = null, $minutes)
     {
-        return $this->setTimestamp($this->getTimestamp($date) - $minutes * self::SECONDS_PER_MINUTE);
+        return $this->setTimestamp($this->getTimestamp($date) - $minutes * self::SECONDS_PER_MINUTE, $date);
     }
 
     /**
@@ -614,7 +615,7 @@ class GCalendar extends GObject implements IFactory
     public function addSecond($date = null) { return $this->addSeconds($date, 1); }
     public function addSeconds($date = null, $seconds)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $seconds);
+        return $this->setTimestamp($this->getTimestamp($date) + $seconds, $date);
     }
 
     /**
@@ -628,7 +629,7 @@ class GCalendar extends GObject implements IFactory
     public function subSecond($date = null) { return $this->subSeconds($date, 1); }
     public function subSeconds($date = null, $seconds)
     {
-        return $this->setTimestamp($this->getTimestamp($date) - $seconds);
+        return $this->setTimestamp($this->getTimestamp($date) - $seconds, $date);
     }
 
     /**
@@ -642,7 +643,7 @@ class GCalendar extends GObject implements IFactory
     public function addWeek($date = null) { return $this->addWeeks($date, 1); }
     public function addWeeks($date = null, $weeks)
     {
-        return $this->setTimestamp($this->getTimestamp() + $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
+        return $this->setTimestamp($this->getTimestamp($date) + $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
     }
     
     /**
@@ -890,34 +891,41 @@ class GCalendar extends GObject implements IFactory
     {
         if (!is_object($from)) $from = $this->getDate($from);
         if (!is_object($to)) $to = $this->getDate($to);
-        $operation = $from->timestamp <= $to->timestamp ? 'add' : 'sub';
-        $calendar = $this;
-        $ranger = function($from, $to, $step, $revert) use($calendar)
+        $ranger = function($from, $to, $step, $revert)
         {
-            $dates = array($revert ? $from : $to);
-            $last = $from->timestamp;
+            $dates = array($from);
+            $last = clone $from;
+            $operation = !$revert ? 'add' : 'sub';
             while(true)
             {
-                $timestamp = !$revert ? $last + $step : $last - $step;
-                if ($timestamp >= $to->timestamp)
+                echo $last . "\n";
+                foreach($step as $name => $value)
+                    $last->{$operation . ucfirst($name)}($value);
+                if ((!$revert && $last->timestamp >= $to->timestamp) ||
+                    ($revert && $last->timestamp <= $to->timestamp))
                     break;
-                $dates[] = $calendar->factory(array('timestamp' => $timestamp));
+                $dates[] = $last;
+                $last = clone $last;
             }
-            $dates[] = $revert ? $to : $from;
+            $dates[] = $to;
             return $dates;
         };
         $step = $this->_prepareStep($step);
-        if ($from->timestamp <= $to->timestamp)
-            return !$revert ? $ranger($from, $to, $step, false) : $ranger($to, $from, $step, true);
+        if ($from->timestamp === $to->timestamp)
+            $dates = array($from, $to);
         else
-            return !$revert ? $ranger($from, $to, $step, true) : $ranger($to, $from, $step, false);
+        if ($from->timestamp < $to->timestamp)
+            $dates = !$revert ? $ranger($from, $to, $step, false) : $ranger($to, $from, $step, true);
+        else
+            $dates = !$revert ? $ranger($from, $to, $step, true) : $ranger($to, $from, $step, false);
         return $dates;
     }
 
     protected function _prepareStep($step)
     {
         preg_match_all('/((\d+)\s*(\w+))/', $step, $founds);
-        $incs = array('years' => 0, 'months' => 0, 'weeks' => 0, 'days' => 0, 'hours' => 0, 'minutes' => 0, 'seconds' => 0);
+//        $incs = array('years' => 0, 'months' => 0, 'weeks' => 0, 'days' => 0, 'hours' => 0, 'minutes' => 0, 'seconds' => 0);
+        $incs = array();
         if ($founds[3])
         {
             foreach($founds[3] as $i => $name)
@@ -950,11 +958,6 @@ class GCalendar extends GObject implements IFactory
         return $incs;
     }
 
-    protected function _getAddedTimestamp($date, $elemnts)
-    {
-
-    }
-    
     /**
      * Вычисление разницы между датами
      * 

@@ -1,6 +1,6 @@
 <?php
 
-require 'c:/usr/github/gear/Core.php';
+require 'd:/usr/github/gear/Core.php';
 use gear\Core;
 try
 {
@@ -16,13 +16,13 @@ try
         'index' => function()
         {
             Core::h('calendar')->setFormat('d/m/Y');
-            echo Calendar::{(string)time()}() . "\n";
-            foreach(Core::h('calendar')->getDatesOfWeek() as $date)
+            //echo Calendar::{(string)time()}() . "\n";
+            $from = Calendar::{(string)time()}();
+            $to = Calendar::{'2015-08-18'}();
+            foreach(Core::h('calendar')->getRange($from, $to, '1 week') as $date)
             {
                 echo $date . "\n";
             }
-            preg_match_all('/((\d+)\s*(\w+))/', '1 day 3 hours minute', $founds);
-            print_r($founds);
         },
     ]);
 }
