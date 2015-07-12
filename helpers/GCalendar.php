@@ -1115,7 +1115,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function setNatural($natural)
     {
-        $this->_factory['natural'] = $this->curent->format = $this->_natural = (boolean)$natural;
+        $this->_factory['natural'] = $this->current->format = $this->_natural = (boolean)$natural;
         return $this;
     }
 
@@ -1137,7 +1137,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function getQuarter($date = null)
     {
-        return ceil($date ? $date->month : $this->_current->month / 3);
+        return ceil($date ? $date->month : $this->current->month / 3);
     }
 
     /**
@@ -1149,12 +1149,7 @@ class GCalendar extends GObject implements IFactory
      */
     public function isLeap($date = null)
     {
-        if (!$date)
-            $date = $this->_current;
-        else
-        if (!is_object($date) && !is_numeric($date))
-            $date = strtotime($date);
-        return (bool)date('L', is_object($date) ? $date->timestamp : $date);
+        return (bool)date('L', $date ? $date->timestamp : $this->current->timestamp);
     }
     
     /**
@@ -1164,10 +1159,7 @@ class GCalendar extends GObject implements IFactory
      * @param string $year
      * @return boolean
      */
-    public function isLeapYear($year)
-    {
-        return (bool)$year % 4;
-    }
+    public function isLeapYear($year) { return (bool)$year % 4; }
     
     /**
      * Сравнивает две даты. Метод возвращает разницу в секундах

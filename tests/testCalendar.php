@@ -18,11 +18,7 @@ try
             Core::h('calendar')->setFormat('d/m/Y');
             //echo Calendar::{(string)time()}() . "\n";
             $from = Calendar::{(string)time()}();
-            $to = Calendar::{'2015-08-18'}();
-            foreach(Core::h('calendar')->getRange($from, $to, '1 week') as $date)
-            {
-                echo $date . "\n";
-            }
+            $result = $from->diff(Calendar::{'2015-08-18'}());
         },
     ]);
 }
