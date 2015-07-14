@@ -15,7 +15,7 @@ use \gear\models\GProcess;
  * @version 0.0.1
  * @since 28.01.2014
  */
-class GGet extends GProcess
+class PGet extends GProcess
 {
     /* Const */
     /* Private */

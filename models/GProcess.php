@@ -170,10 +170,10 @@ class GProcess extends GModel implements IProcess
      * Установка параметров запроса GET|POST
      *
      * @access public
-     * @param array $request
+     * @param object $request
      * @return $this
      */
-    public function setRequest(array $request)
+    public function setRequest($request)
     {
         $this->_request = $request;
         return $this;
@@ -183,7 +183,7 @@ class GProcess extends GModel implements IProcess
      * Получение параметров запроса
      *
      * @access public
-     * @return array
+     * @return object
      */
     public function getRequest() { return $this->_request; }
 

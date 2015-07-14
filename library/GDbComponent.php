@@ -72,18 +72,7 @@ abstract class GDbComponent extends GComponent implements IDbComponent
      */
     public function getConnection()
     {
-        $connection = null;
-        $connectionName = $this->getConnectionName();
-        if (is_string($connectionName))
-            $connection = Core::c($connectionName);
-        else
-        if (is_array($connectionName))
-        {
-            list($module, $component) = $connectionName;
-            $connection = Core::m($module)->с($component);
-        }
-        if (!$connection)
-            $this->e('Connection to database not found');
+        return $this->getCollection();
     }
 
     /**
@@ -94,7 +83,7 @@ abstract class GDbComponent extends GComponent implements IDbComponent
      */
     public function getDb()
     {
-        return $this->getConnection()->selectDb($this->getDbName());
+        return $this->getDbConnection(false, false)->selectDb($this->getDbName());
     }
 
     /**

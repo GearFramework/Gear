@@ -199,6 +199,7 @@ final class Core
         if (is_string($config))
         {
             $fileConfig = self::resolvePath($config, true);
+            clearstatcache();
             if (is_dir($fileConfig))
                 $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
             $config = is_file($fileConfig) ? require($fileConfig) : null;
@@ -659,9 +660,9 @@ final class Core
             /* Относительный путь или пространство имён */
             else
             {
-                $resolved = GEAR . '/../';
+                $resolved = GEAR . '/..';
                 if ($path[0] !== '\\')
-                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : 'gear/');
+                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/');
                 $resolved .= str_replace('\\', '/', $path);
             }
         }

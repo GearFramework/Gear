@@ -20,7 +20,7 @@ class GMongo extends \Mongo implements IComponent
     /* Private */
     /* Protected */
     protected static $_config = array();
-    protected $_props = array();
+    protected $_properties = array();
     protected $_owner = null;
     /* Public */
     
@@ -89,7 +89,7 @@ class GMongo extends \Mongo implements IComponent
      */
     public function __construct($props)
     {
-        $this->_props = $props;
+        $this->_properties = $props;
         parent::__construct('mongodb://localhost');
 //        parent::__construct('mongodb://' . $this->_props['host'] . ':' . (isset($this->_props['port']) ? $this->_props['port'] : ''));
     }
