@@ -121,7 +121,7 @@ namespace myproject\process;
 use \gear\Core;
 use \gear\models\GProcess;
 
-class GMyProcess extends GProcess
+class PMyProcess extends GProcess
 {
     public function apiIndex()
     {
@@ -141,7 +141,7 @@ namespace myproject\process;
 use \gear\Core;
 use \gear\models\GProcess;
 
-class GMyProcess extends GProcess
+class PMyProcess extends GProcess
 {
     protected $_apis = array
     (
@@ -239,11 +239,11 @@ require '/usr/share/gear/gear/Core.php';
 ```php
 \gear\Core::init('/usr/share/gear/myproject/config/config.test.php');
 // пространство имён относительно /usr/share/gear
-\gear\Core::init('\\myproject\\config\\config.test.php');
+\gear\Core::init('\myproject\config\config.test.php');
 // пространство имён относительно /usr/share/gear/gear, т.е. файл config.test.php 
 // должен лежать по физическому пути /usr/share/gear/gear/config по той простой причине,
 // что на момент подключения конфигурационного файла объекта приложения ещё не существует
-\gear\Core::init('config\\config.test.php');
+\gear\Core::init('config\config.test.php');
 ```
 
 Полученные таким образом настройки объединяются с теми, которые по-умолчанию уже определены в ядре.
@@ -273,7 +273,7 @@ require '/usr/share/gear/gear/Core.php';
     (
         'myComponent' => array
         (
-            'class' => '\\myproject\\components\\GMyComponent',
+            'class' => '\myproject\components\GMyComponent',
             'property1' => 'value1',
             'property2' => 'value2',
         )
@@ -292,7 +292,7 @@ echo \gear\Core::c('myComponent')->property1; \\ Выведет на экран 
         (
             'class' => array
             (
-                'name' => '\\myproject\\components\\GMyComponent',
+                'name' => '\myproject\components\GMyComponent',
                 'param' => 'paramValue',
             ),
             'property1' => 'value1',
@@ -346,7 +346,7 @@ ORM
 (
     'db' => array
     (
-        'class' => '\\gear\\components\\gear\\db\\mysql\\GMySql'
+        'class' => '\gear\components\gear\db\mysql\GMySql'
         'host' => 'localhost',
         'username' => 'admin',
         'password' => '',
