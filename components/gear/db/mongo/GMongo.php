@@ -90,7 +90,8 @@ class GMongo extends \Mongo implements IComponent
     public function __construct($props)
     {
         $this->_properties = $props;
-        parent::__construct('mongodb://localhost');
+        $host = 'mongodb://' . $this->_properties['host'];
+        parent::__construct($host);
 //        parent::__construct('mongodb://' . $this->_props['host'] . ':' . (isset($this->_props['port']) ? $this->_props['port'] : ''));
     }
 }

@@ -15,25 +15,25 @@ use \gear\interfaces\IComponent;
  */
 interface IDbComponent extends IComponent
 {
-    /**
-     * Возвращает соединение
-     * 
-     * @access public
-     * @param boolean $autoSelectDb
-     * @param boolean $autoSelectCollection
-     * @throws DbComponentCollection
-     * @return GDbConnection || GDbDatabase || GDbCollection
-     */
-    public function getDbConnection($autoSelectDb = true, $autoSelectCollection = true);
 
     /**
      * Возвращает соединение с сервером базы данных
      *
      * @access public
+     * @param boolean $autoSelectDb
+     * @param boolean $autoSelectCollection
      * @return \gear\library\db\GDbConnection
      */
-    public function getConnection();
+    public function getConnection($autoSelectDb = true, $autoSelectCollection = true);
 
+    /**
+     * Возвращает соединение
+     * 
+     * @access public
+     * @throws DbComponentCollection
+     * @return GDbConnection || GDbDatabase || GDbCollection
+     */
+    public function getDbConnection();
 
     /**
      * Возвращает объект базы данных

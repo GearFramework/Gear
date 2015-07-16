@@ -2,7 +2,7 @@
 
 namespace gear\library;
 use \gear\Core;
-use \gear\library\GComponent;
+use \gear\library\GStorageComponent;
 use \gear\library\GException;
 use \gear\interfaces\IDbComponent;
 
@@ -17,7 +17,7 @@ use \gear\interfaces\IDbComponent;
  * @since 01.08.2013
  * @php 5.3.x
  */
-abstract class GDbComponent extends GComponent implements IDbComponent
+abstract class GDbComponent extends GStorageComponent implements IDbComponent
 {
     /* Const */
     /* Private */
@@ -30,49 +30,47 @@ abstract class GDbComponent extends GComponent implements IDbComponent
     /* Public */
 
     /**
-     * Возвращает соединение базой данных
+     * Возвращает соединение с сервером базы данных
      *
      * @access public
      * @param boolean $autoSelectDb
      * @param boolean $autoSelectCollection
+     * @return object
+     */
+    public function getConnection($autoSelectDb = true, $autoSelectCollection = true)
+    {
+        $connection = $this->getDbConnection();
+        if ($autoSelectDb && !$autoSelectCollection)
+            return $connection->selectDB($this->getDbName());
+        else
+        if ($autoSelectDb && $autoSelectCollection)
+            return $connection->selectCollection($this->getDbName(), $this->getCollectionName());
+        else
+            return $connection;
+    }
+
+    /**
+     * Возвращает соединение базой данных
+     *
+     * @access public
      * @throws DbComponentCollection
      * @return GDbConnection|GDbDatabase|GDbCollection
      */
-    public function getDbConnection($autoSelectDb = true, $autoSelectCollection = true)
+    public function getDbConnection()
     {
         $connection = null;
         $connectionName = $this->getConnectionName();
         if (is_string($connectionName))
             $connection = Core::c($connectionName);
         else
-        if (is_array($connectionName))
-        {
-            list($module, $component) = $connectionName;
-            $connection = Core::m($module)->с($component);
-        }
-        if ($connection)
-        {
-            if ($autoSelectDb && !$autoSelectCollection)
-                return $connection->selectDB($this->getDbName());
-            else
-            if ($autoSelectDb && $autoSelectCollection)
-                return $connection->selectCollection($this->getDbName(), $this->getCollectionName());
-            else
-                return $connection;
-        }
-        else
+            if (is_array($connectionName))
+            {
+                list($module, $component) = $connectionName;
+                $connection = Core::m($module)->с($component);
+            }
+        if (!$connection)
             $this->e('Компонент базы данных не найден');
-    }
-
-    /**
-     * Возвращает соединение с сервером базы данных
-     *
-     * @access public
-     * @return \gear\library\db\GDbConnection
-     */
-    public function getConnection()
-    {
-        return $this->getCollection();
+        return $connection;
     }
 
     /**
@@ -83,7 +81,7 @@ abstract class GDbComponent extends GComponent implements IDbComponent
      */
     public function getDb()
     {
-        return $this->getDbConnection(false, false)->selectDb($this->getDbName());
+        return $this->getConnection(false, false)->selectDb($this->getDbName());
     }
 
     /**
