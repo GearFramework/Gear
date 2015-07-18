@@ -88,17 +88,17 @@ http://localhost?e=processName
 В зависимости от типа запроса POST или GET, параметр <b>e</b> будет искаться либо в `$_POST` либо в `$_GET`-массиве соответственно. При отсутствии параметра, название процесса будет браться из статического поля `defaultProcess`. Все файлы процессов должны располагаться в папке `process` либо внутри проекта, либо какого-либо модуля.
 Определение класса, т.е. расположения процесса лучше всего показать на примерах:
 
-Для `http://localhost?e=processName` класс `\currentProject\process\GProcessName`
+Для `http://localhost?e=processName` класс `\currentProject\process\PProcessName`
 
-Для `http://localhost?e=/gear/processName` класс `\gear\process\GProcessName`
+Для `http://localhost?e=/gear/processName` класс `\gear\process\PProcessName`
 
-Для `http://localhost?e=/projectName/processName` класс `\projectName\process\GProcessName`
+Для `http://localhost?e=/projectName/processName` класс `\projectName\process\PProcessName`
 
-Для `http://localhost?e=moduleName/processName` класс `\currentProject\moduleName\process\GProcessName`
+Для `http://localhost?e=moduleName/processName` класс `\currentProject\moduleName\process\PProcessName`
 
-Для `http://localhost?e=/gear/moduleName/processName` класс `\gear\moduleName\process\GProcessName`
+Для `http://localhost?e=/gear/moduleName/processName` класс `\gear\moduleName\process\PProcessName`
 
-Для `http://localhost?e=/projectName/moduleName/processName` класс `\projectName\moduleName\process\GProcessName`
+Для `http://localhost?e=/projectName/moduleName/processName` класс `\projectName\moduleName\process\PProcessName`
 
 API-методы
 ----------
