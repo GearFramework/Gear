@@ -31,6 +31,7 @@ class GFtp extends GComponent
         'pasv' => false,
         'port' => 21,
         'timeout' => 90,
+        'remoteDir' => '',
     ];
     protected $_handler = null;
     /* Public */
@@ -51,13 +52,29 @@ class GFtp extends GComponent
             $uri = $uri ?: $this->uri;
             if ($uri)
             {
-
-//                preg_match("/(ftp:\/\/)?((.*?):(.*?)@)?(.*?)(\/.*)/i", $uri, $match);
-                preg_match('/(?:(?:ht|f)tps?:\/\/)?(?:[\\-\\w]+:[\\-\\w]+@)?(?:[0-9a-z][\\-0-9a-z]*[0-9a-z]\\.)+[a-z]{2,6}(?::\\d{1,5})?(?:[?\/\\\\#][?!^$.(){}:|=[\\]+\\-\/\\\\*;&~#@,%\\wА-Яа-я]*)?/i', $uri, $match);
-                //preg_match("/(ftp:\/\/)?(([-a-z0-9_&?=+,.!~*'%$]):([-a-z0-9_&?=+,.!~*'%$])@)?(.*?)(\/.*)/i", $uri, $match);
-                //preg_match("#(http://)?([-a-z0-9_.]+[-a-z0-9_:@&?=+,.!/~*'%$])*#i", $uri, $match);
+                $uri = preg_replace('#^ftp://#', '', $uri);
                 echo "uri = $uri\n";
+                if (preg_match("/^(.*?):(.*?)@/i", $uri, $match))
+                {
+                    $this->username = $match[1];
+                    $this->password = $match[2];
+                    $uri = preg_replace('#^' . preg_quote($match[0]) . '#', '', $uri);
+                }
+                preg_match("#(.*?)(:\d+)?(\/.*)#i", $uri, $match);
                 print_r($match);
+                if (preg_match("#(.*?)(:\d+)?(\/.*)#i", $uri, $match))
+                {
+                    $this->host = $match[1];
+                    $this->remoteDir = $match[2];
+                }
+                else
+                {
+                    $this->host = $uri;
+                    $this->remoteDir = '';
+                }
+                //print_r($this->props());
+                //preg_match("/(ftp:\/\/)?(.*?):(.*?)@(.*?)(\/.*)/i", $uri, $match);
+                //print_r($match);
                 return $this;
             }
             if (!(@ftp_connect($this->host, $this->port, $this->timeout)))
