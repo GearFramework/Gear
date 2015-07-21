@@ -22,7 +22,7 @@ try
             Core::c('loader')->setAlias(get_class(Core::c('ftp')), 'Ftp');
             try
             {
-                Ftp::{'ftp://username:password@sld.domain.tld:22/path1/path2/'}(['timeout' => 100, 'pasv' => true]);
+                Ftp::{'ftp://localhost:21'}(['timeout' => 100, 'pasv' => true]);
 /*                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld/path1/path2/');
                 Core::c('ftp')->connect('ftp://username:password@sld.domain.tld:22/path1/path2/');
                 Core::c('ftp')->connect('ftp://username:password@sld.domain.tld');

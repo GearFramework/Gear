@@ -85,12 +85,8 @@ class GFtp extends GComponent
                     else
                         $this->host = $uri;
                 }
-                $this->props($settings);
-                print_r($this->props());
-                return $this;
             }
             $this->props($settings);
-            print_r($this->props());
             if (!(@ftp_connect($this->host, $this->port, $this->timeout)))
                 $this->e('Error connected to host ' . $this->host);
             $this->login();
