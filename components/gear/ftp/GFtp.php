@@ -15,7 +15,7 @@ use gear\library\GComponent;
  * @since 20.07.2015
  * @php 5.4.x
  */
-class GFtp extends GComponent
+class GFtp extends GComponent implements \IteratorAggregate
 {
     /* Traits */
     /* Const */
@@ -31,15 +31,20 @@ class GFtp extends GComponent
         'pasv' => false,
         'port' => 21,
         'timeout' => 90,
-        'remoteDir' => '',
+        'remoteDir' => '/',
     ];
-    protected $_properties = array();
+    protected $_properties = [];
     protected $_handler = null;
     /* Public */
 
-    public static function __callStatic($name, $settings = array())
+    public static function __callStatic($name, $settings = [])
     {
-        return (new self())->connect($name, count($settings) ? $settings[0] : array());
+        return (new self())->connect($name, count($settings) ? $settings[0] : []);
+    }
+
+    public function getIterator()
+    {
+        return GFtpFolder(['path' => $this->remoteDir], $this);
     }
 
     /**
@@ -60,31 +65,20 @@ class GFtp extends GComponent
             if ($uri)
             {
                 $this->props(self::$_defaultProperties);
-                echo "uri = $uri\n";
                 $uri = str_replace('ftp://', '', $uri);
                 if (preg_match("/^(.*?):(.*?)@/i", $uri, $match))
                 {
-                    $this->username = $match[1];
-                    $this->password = $match[2];
+                    list(, $this->username, $this->password) = $match;
                     $uri = preg_replace('#^' . preg_quote($match[0]) . '#', '', $uri);
                 }
                 if (preg_match("#(.*?):(\d+)#i", $uri, $match))
                 {
-                    $this->host = $match[1];
-                    $this->port = $match[2];
+                    list(, $this->host, $this->port) = $match;
                     $uri = str_replace($this->host . ':' . $this->port, '', $uri);
                     $this->remoteDir = $uri ?: '';
                 }
                 else
-                {
-                    if (preg_match("#(.*?)(\/.*)#i", $uri, $match))
-                    {
-                        $this->host = $match[1];
-                        $this->remoteDir = $match[2];
-                    }
-                    else
-                        $this->host = $uri;
-                }
+                    preg_match("#(.*?)(\/.*)#i", $uri, $match) ? list(, $this->host, $this->remoteDir) = $match : $this->host = $uri;
             }
             $this->props($settings);
             if (!(@ftp_connect($this->host, $this->port, $this->timeout)))
