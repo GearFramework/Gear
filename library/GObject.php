@@ -33,15 +33,15 @@ class GObject
         ),
         'behaviors' => array(),
     );
+    /**
+     * @var array default values of object properties
+     */
+    protected static $_defaultProperties = array();
     protected $_namespace = null;
     /**
      * @var int access level to object
      */
     protected $_access = Core::ACCESS_PUBLIC;
-    /**
-     * @var array default values of object properties
-     */
-    protected $_defaults = array();
     /**
      * @var array of object properties
      */
@@ -83,6 +83,7 @@ class GObject
      */
     protected function __construct(array $properties = array(), $owner = null)
     {
+        $this->restoreDefaultProperties();
         if ($owner)
             $this->setOwner($owner);
         foreach($properties as $name => $value)
@@ -803,6 +804,18 @@ class GObject
         $path = str_replace('\\', '/', $class);
         return str_replace('/', '\\', dirname($path) . '/' . substr(basename($path), 1) . 'Exception');
     }
+
+    /**
+     * Восстанавливает свойства объекта, назначенные по-умолчанию
+     *
+     * @access public
+     * @return $this
+     */
+    public function restoreDefaultProperties()
+    {
+        $this->_properties = self::$_defaultProperties;
+        return $this;
+    }
     
     /**
      * Обработчик события, вызываемого на этапе создания объекта (из
@@ -814,7 +827,6 @@ class GObject
      */
     public function onConstructed()
     {
-        $this->_properties = $this->_defaults;
         $this->_preloading();
         $this->attachBehaviors($this->getBehaviors());
         return true;

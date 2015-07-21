@@ -22,7 +22,7 @@ class GFtp extends GComponent
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_defaults =
+    protected static $_defaultProperties =
     [
         'uri' => '',
         'host' => 'localhost',
@@ -59,7 +59,7 @@ class GFtp extends GComponent
             $uri = $uri ?: $this->uri;
             if ($uri)
             {
-                $this->props($this->_defaults);
+                $this->props(self::$_defaultProperties);
                 echo "uri = $uri\n";
                 $uri = str_replace('ftp://', '', $uri);
                 if (preg_match("/^(.*?):(.*?)@/i", $uri, $match))
