@@ -22,9 +22,9 @@ class GFtp extends GComponent
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_properties =
+    protected $_defaults =
     [
-        'uri' => null,
+        'uri' => '',
         'host' => 'localhost',
         'username' => '',
         'password' => '',
@@ -33,17 +33,24 @@ class GFtp extends GComponent
         'timeout' => 90,
         'remoteDir' => '',
     ];
+    protected $_properties = array();
     protected $_handler = null;
     /* Public */
+
+    public static function __callStatic($name, $settings = array())
+    {
+        return (new self())->connect($name, count($settings) ? $settings[0] : array());
+    }
 
     /**
      * Подключение к ftp-серверу
      *
      * @access public
      * @param null|string $uri
+     * @param array $props
      * @return $this
      */
-    public function connect($uri = null)
+    public function connect($uri = null, array $settings = array())
     {
         if ($this->event('onBeforeConnect'))
         {
@@ -52,31 +59,38 @@ class GFtp extends GComponent
             $uri = $uri ?: $this->uri;
             if ($uri)
             {
-                $uri = preg_replace('#^ftp://#', '', $uri);
+                $this->props($this->_defaults);
                 echo "uri = $uri\n";
+                $uri = str_replace('ftp://', '', $uri);
                 if (preg_match("/^(.*?):(.*?)@/i", $uri, $match))
                 {
                     $this->username = $match[1];
                     $this->password = $match[2];
                     $uri = preg_replace('#^' . preg_quote($match[0]) . '#', '', $uri);
                 }
-                preg_match("#(.*?)(:\d+)?(\/.*)#i", $uri, $match);
-                print_r($match);
-                if (preg_match("#(.*?)(:\d+)?(\/.*)#i", $uri, $match))
+                if (preg_match("#(.*?):(\d+)#i", $uri, $match))
                 {
                     $this->host = $match[1];
-                    $this->remoteDir = $match[2];
+                    $this->port = $match[2];
+                    $uri = str_replace($this->host . ':' . $this->port, '', $uri);
+                    $this->remoteDir = $uri ?: '';
                 }
                 else
                 {
-                    $this->host = $uri;
-                    $this->remoteDir = '';
+                    if (preg_match("#(.*?)(\/.*)#i", $uri, $match))
+                    {
+                        $this->host = $match[1];
+                        $this->remoteDir = $match[2];
+                    }
+                    else
+                        $this->host = $uri;
                 }
-                //print_r($this->props());
-                //preg_match("/(ftp:\/\/)?(.*?):(.*?)@(.*?)(\/.*)/i", $uri, $match);
-                //print_r($match);
+                $this->props($settings);
+                print_r($this->props());
                 return $this;
             }
+            $this->props($settings);
+            print_r($this->props());
             if (!(@ftp_connect($this->host, $this->port, $this->timeout)))
                 $this->e('Error connected to host ' . $this->host);
             $this->login();

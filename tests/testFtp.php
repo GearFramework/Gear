@@ -19,22 +19,24 @@ try
     [
         'index' => function()
         {
+            Core::c('loader')->setAlias(get_class(Core::c('ftp')), 'Ftp');
             try
             {
-                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld/path1/path2/');
-                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld:21/path1/path2/');
+                Ftp::{'ftp://username:password@sld.domain.tld:22/path1/path2/'}(['timeout' => 100, 'pasv' => true]);
+/*                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld/path1/path2/');
+                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld:22/path1/path2/');
                 Core::c('ftp')->connect('ftp://username:password@sld.domain.tld');
-                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld:21');
+                Core::c('ftp')->connect('ftp://username:password@sld.domain.tld:22');
                 Core::c('ftp')->connect('ftp://sld.domain.tld');
-                Core::c('ftp')->connect('ftp://sld.domain.tld:21');
+                Core::c('ftp')->connect('ftp://sld.domain.tld:22');
                 Core::c('ftp')->connect('username:password@sld.domain.tld/path1/path2/');
-                Core::c('ftp')->connect('username:password@sld.domain.tld:21/path1/path2/');
+                Core::c('ftp')->connect('username:password@sld.domain.tld:22/path1/path2/');
                 Core::c('ftp')->connect('username:password@sld.domain.tld');
-                Core::c('ftp')->connect('username:password@sld.domain.tld:21');
+                Core::c('ftp')->connect('username:password@sld.domain.tld:22');
                 Core::c('ftp')->connect('sld.domain.tld/path1/path2/');
-                Core::c('ftp')->connect('sld.domain.tld:21/path1/path2/');
+                Core::c('ftp')->connect('sld.domain.tld:22/path1/path2/');
                 Core::c('ftp')->connect('sld.domain.tld');
-                Core::c('ftp')->connect('sld.domain.tld:21');
+                Core::c('ftp')->connect('sld.domain.tld:22');*/
             }
             catch(\Exception $e)
             {

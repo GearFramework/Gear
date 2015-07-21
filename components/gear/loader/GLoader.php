@@ -94,6 +94,20 @@ class GLoader extends GComponent implements ILoader
         }
         return $path;
     }
+
+    /**
+     * Установка алиаса для класса
+     *
+     * @access public
+     * @param string $className
+     * @param string $alias
+     * @return $this
+     */
+    public function setAlias($className, $alias)
+    {
+        $this->aliases[$alias] = array('class' => $className);
+        return $this;
+    }
     
     /**
      * Обработчик события onInstalled по-умолчанию

@@ -39,6 +39,10 @@ class GObject
      */
     protected $_access = Core::ACCESS_PUBLIC;
     /**
+     * @var array default values of object properties
+     */
+    protected $_defaults = array();
+    /**
      * @var array of object properties
      */
     protected $_properties = array();
@@ -810,6 +814,7 @@ class GObject
      */
     public function onConstructed()
     {
+        $this->_properties = $this->_defaults;
         $this->_preloading();
         $this->attachBehaviors($this->getBehaviors());
         return true;
