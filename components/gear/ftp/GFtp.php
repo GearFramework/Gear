@@ -60,7 +60,7 @@ class GFtp extends GComponent implements \IteratorAggregate
      *
      * @access public
      * @param null|string $uri
-     * @param array $props
+     * @param array $settings
      * @return $this
      */
     public function connect($uri = null, array $settings = array())
@@ -90,8 +90,10 @@ class GFtp extends GComponent implements \IteratorAggregate
             }
             $this->props($settings);
             if (!($this->_handler = @ftp_connect($this->host, $this->port, $this->timeout)))
-                $this->e('Error connected to host ' . $this->host);
+                $this->e('Error connected to host ' . $this->host . ':' . $this->port);
             $this->login();
+            if ($this->remoteDir && $this->remoteDir !== '/')
+                $this->chDir();
             $this->event('onAfterConnect');
         }
         return $this;
@@ -140,9 +142,39 @@ class GFtp extends GComponent implements \IteratorAggregate
         {
             if (!@ftp_login($this->_handler, $this->username, $this->password))
                 $this->e('Invalid login');
-            @ftp_pasv($this->_handler, $this->pasv);
+            $this->pasv();
             $this->event('onAfterLogin');
         }
+        return $this;
+    }
+
+    /**
+     * Установка/снятие пассивного режима
+     *
+     * @access public
+     * @param null|boolean $pasv
+     * @return $this
+     */
+    public function pasv($pasv = null)
+    {
+        @ftp_pasv($this->_handler, $pasv !== null ? (bool)$pasv : (bool)$this->pasv);
+        return $this;
+    }
+
+    /**
+     * Смена удалённой директории
+     *
+     * @access public
+     * @param null|string $dir
+     * @return $this
+     */
+    public function chDir($dir = null)
+    {
+        $dir = $dir !== null ? $dir : $this->remoteDir;
+        if ($dir{0} === '/')
+            $dir = '.' . $dir;
+        if (!@ftp_chdir($this->_handler, $dir))
+            $this->e('Failed to changed directory ' . ($dir !== null ? $dir : $this->remoteDir));
         return $this;
     }
 }

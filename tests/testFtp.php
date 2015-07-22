@@ -22,7 +22,7 @@ try
             Core::c('loader')->setAlias(get_class(Core::c('ftp')), 'Ftp');
             try
             {
-                Ftp::{'ftp://test:1qaz3edc5tgb@localhost:21'}(['timeout' => 100, 'pasv' => true]);
+                Ftp::{'ftp://test:1qaz3edc5tgb@localhost:2190/test'}(['timeout' => 100, 'pasv' => true]);
             }
             catch(\Exception $e)
             {
