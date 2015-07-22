@@ -33,8 +33,8 @@ class GLoader extends GComponent implements ILoader
     /* Protected */
     protected static $_config = array('autoloadHandler' => 'loader');
     protected static $_init = false;
+    protected $_aliases = array();
     /* Public */
-    public $aliases = array();
     public $usePaths = false;
     public $paths = array();
     public $useResolvePaths = false;
@@ -51,10 +51,10 @@ class GLoader extends GComponent implements ILoader
      */
     public function loader($className)
     {
-        if (isset($this->aliases[$className]))
+        if (isset($this->_aliases[$className]))
         {
             $alias = $className;
-            list($className) = Core::getRecords($this->aliases[$className]);
+            list($className) = Core::getRecords($this->_aliases[$className]);
             class_alias($className, $alias);
         }
         if ($this->usePaths && isset($this->paths[$className]))
@@ -105,7 +105,41 @@ class GLoader extends GComponent implements ILoader
      */
     public function setAlias($className, $alias)
     {
-        $this->aliases[$alias] = array('class' => $className);
+        $this->_aliases[$alias] = array('class' => $className);
+        return $this;
+    }
+
+    /**
+     * Устанавливает новый список алиасов
+     *
+     * @access public
+     * @param array $aliases
+     * @return $this
+     */
+    public function setAliases(array $aliases)
+    {
+        $this->_aliases = $aliases;
+        return $this;
+    }
+
+    /**
+     * Возвращает список алиасов
+     *
+     * @access public
+     * @return array
+     */
+    public function getAliases() { return $this->_aliases; }
+
+    /**
+     * Добавление спсика алиасов к существующим
+     *
+     * @access public
+     * @param array $aliases
+     * @return $this
+     */
+    public function appendAliases(array $aliases)
+    {
+        $this->aliases = array_merge($this->aliases, $aliases);
         return $this;
     }
     

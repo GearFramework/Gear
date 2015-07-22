@@ -48,6 +48,14 @@ class GFtp extends GComponent implements \IteratorAggregate
     }
 
     /**
+     * Возвращает ресурс соединения
+     *
+     * @access public
+     * @return null|resource
+     */
+    public function getHandler() { return $this->_handler; }
+
+    /**
      * Подключение к ftp-серверу
      *
      * @access public
@@ -81,7 +89,7 @@ class GFtp extends GComponent implements \IteratorAggregate
                     preg_match("#(.*?)(\/.*)#i", $uri, $match) ? list(, $this->host, $this->remoteDir) = $match : $this->host = $uri;
             }
             $this->props($settings);
-            if (!(@ftp_connect($this->host, $this->port, $this->timeout)))
+            if (!($this->_handler = @ftp_connect($this->host, $this->port, $this->timeout)))
                 $this->e('Error connected to host ' . $this->host);
             $this->login();
             $this->event('onAfterConnect');
