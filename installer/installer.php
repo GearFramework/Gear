@@ -8,5 +8,17 @@ Core::init(
 [
     'modules' =>
     [
+        'app' =>
+        [
+            'class' =>
+            [
+                'name' => '\gear\installer\InstallerApplication',
+                'components' =>
+                [
+                    'process' => ['defaultProcess' => 'usage'],
+                ],
+            ],
+        ],
     ],
 ]);
+Core::app()->run();

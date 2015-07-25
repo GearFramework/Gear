@@ -29,11 +29,8 @@ class GApplication extends GModule
         (
             'process' => array
             (
-                'class' => array
-                (
-                    'name' => '\gear\components\gear\process\GProcessComponent',
-                    'defaultProcess' => 'index',
-                ),
+                'class' => '\gear\components\gear\process\GProcessComponent',
+                'defaultProcess' => 'index',
             ),
         ),
         'plugins' => array
