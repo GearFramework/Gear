@@ -813,7 +813,7 @@ class GObject
      */
     public function restoreDefaultProperties()
     {
-        $this->_properties = self::$_defaultProperties;
+        $this->_properties = static::$_defaultProperties;
         return $this;
     }
     

@@ -16,6 +16,7 @@ Core::init(
                 'components' =>
                 [
                     'process' => ['defaultProcess' => 'usage'],
+                    'installer' => ['class' => '\gear\installer\components\GInstallerComponent'],
                 ],
             ],
         ],

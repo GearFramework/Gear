@@ -22,11 +22,12 @@ class GHttp extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_properties = array
+    protected static $_defaultProperties = array
     (
         'flushDataOnDestroy' => true,
     );
     protected $_header = array('class' => 'gear\plugins\gear\http\GHeader');
+    protected $_curl = array('class' => 'gear\components\gear\curl\GCurl');
     /* Public */
 
     /**
@@ -125,10 +126,10 @@ class GHttp extends GPlugin
      */
     public function getHeader()
     {
-        if (is_array($this->_header))
+        if (!is_object($this->_header))
         {
-            list($class, $properties) = Core::getRecords($this->_header);
-            $this->_header = new $class($properties);
+            list($class, $config, $properties) = Core::getRecords($this->_header);
+            $this->header = $class::install($config, $properties, $this->owner);
         }
         return $this->_header;
     }
@@ -147,6 +148,39 @@ class GHttp extends GPlugin
         else
             $this->e('Incorrect header plugin');
         return $this;
+    }
+
+    public function getCurl()
+    {
+        if (!is_object($this->_curl))
+        {
+            list($class, $config, $properties) = Core::getRecords($this->_curl);
+            $this->curl = $class::install($config, $properties, $this->owner);
+        }
+        return $this->_curl;
+    }
+
+    public function setCurl($curl)
+    {
+        if (is_object($curl) || is_array($curl))
+            $this->_curl = $curl;
+        else
+            $this->e('Incorrect curl plugin');
+        return $this;
+    }
+
+    public function send($url, $method = 'GET', $params = array(), $headers = array(), $callbackResponse = null)
+    {
+        $method = strtolower($method);
+        if (!method_exists($this, $method))
+            $this->e('Invalid http request type');
+        return $this->$method($url, $params, $headers, $callbackResponse);
+    }
+
+    public function get($url, $params = array(), $headers = array(), $callbackResponse = null)
+    {
+        $result = $this->curl->get($url, $params, $headers);
+        return $callbackResponse && is_callable($callbackResponse) ? $callbackResponse($result) : $result;
     }
 }
 
