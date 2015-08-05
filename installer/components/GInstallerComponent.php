@@ -40,6 +40,8 @@ class GInstallerComponent extends GComponent
     const DOWNLOAD_DIR = 'Download directory :dirName';
     const RESOURCE_SEARCH = 'Search :resourceName in :url';
     const LOAD_SETTINGS_FILE = 'Load SETTINGS file';
+    const LOCAL_VERSION = 'Local version [:version]';
+    const REMOTE_VERSION = 'Remote version [:version]';
 
     const STATUS_ERROR = ' [ERROR]';
     const STATUS_OK = ' [OK]';
@@ -146,18 +148,27 @@ class GInstallerComponent extends GComponent
     public function checkRequireUpdating($installedPath)
     {
         $result = true;
-        $settings = file_exists($installedPath . '/SETTINGS') ? @file_get_contents($installedPath . '/SETTINGS') : null;
-        if ($settings)
+        if (is_array($this->_resourceSettings) && isset($this->_resourceSettings['version']))
         {
-            $settings = parse_ini_string($settings);
-            if (is_array($settings) && isset($settings['version']) &&
-                is_array($this->_resourceSettings) && isset($this->_resourceSettings['version']) &&
-                $settings['version'] === $this->_resourceSettings['version'])
+            $this->log(self::REMOTE_VERSION, ['version' => $this->_resourceSettings['version']]);
+            $settings = file_exists($installedPath . '/SETTINGS') ? @file_get_contents($installedPath . '/SETTINGS') : null;
+            if ($settings)
             {
-                echo $settings['version'] . ' === ' . $this->_resourceSettings['version'] ."\n";
-                $result = false;
+                $settings = parse_ini_string($settings);
+                if (is_array($settings) && isset($settings['version']))
+                {
+                    $this->log(self::LOCAL_VERSION, ['version' => $settings['version']]);
+                    if ($settings['version'] === $this->_resourceSettings['version'])
+                        $result = false;
+                }
+                else
+                    $this->log(self::LOCAL_VERSION, ['version' => 'NONE']);
             }
+            else
+                $this->log(self::LOCAL_VERSION, ['version' => 'NONE']);
         }
+        else
+            $this->log(self::REMOTE_VERSION, ['version' => 'NONE']);
         return $result;
     }
 
