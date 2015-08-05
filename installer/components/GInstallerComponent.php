@@ -8,6 +8,32 @@ class GInstallerComponent extends GComponent
 {
     /* Traits */
     /* Const */
+    const INVALID_TYPE_INSTALL = 'Invalid type`s resource installing';
+    const INVALID_TYPE_UPDATE = 'Invalid type`s resource updating';
+    const MODULE_ALREADY = 'Module :moduleName already installed';
+    const COMPONENT_ALREADY = 'Component :componentName already installed';
+    const PLUGIN_ALREADY = 'Plugin :pluginName already installed';
+    const HELPER_ALREADY = 'Helper :helperName already installed';
+    const MODULE_NOT_FOUND = 'Module :moduleName not found';
+    const COMPONENT_NOT_FOUND = 'Component :componentName not found';
+    const PLUGIN_NOT_FOUND = 'Plugin :pluginName not found';
+    const HELPER_NOT_FOUND = 'Helper :helperName not found';
+    const MODULE_DOWNLOAD = 'Download module :moduleName to :dirName';
+    const COMPONENT_DOWNLOAD = 'Download component :componentName to :dirName';
+    const PLUGIN_DOWNLOAD = 'Download plugin :pluginName to :dirName';
+    const HELPER_DOWNLOAD = 'Download helper :helperName to :dirName';
+
+    const GET_LISTING = 'Get listing :dirName';
+    const CREATE_DIR = 'Create directory :dirName';
+    const DOWNLOAD_FILE = 'Download file :fileName';
+    const DOWNLOAD_DIR = 'Download directory :dirName';
+
+    const STATUS_ERROR = ' [ERROR]';
+    const STATUS_OK = ' [OK]';
+    const STATUS_DONE = ' [DONE]';
+    const STATUS_YES = ' [YES]';
+    const STATUS_NO = ' [NO]';
+    const STATUS_NONE = ' [NONE]';
     /* Private */
     /* Protected */
     protected static $_defaultProperties =
@@ -21,7 +47,7 @@ class GInstallerComponent extends GComponent
             'helpers' => '\gear\helpers',
         ],
         'urlApi' => 'https://api.github.com',
-        'repositories' => ['https://www.github.com/GearFramework']
+        'repositories' => ['https://www.github.com/GearFramework'],
     ];
     /* Public */
 
@@ -30,7 +56,7 @@ class GInstallerComponent extends GComponent
         list($type, $name) = explode('/', $resource);
         $method = 'install' . ucfirst(strtolower($type));
         if (!method_exists($this, $method))
-            $this->e('Invalid type installing');
+            $this->e(self::INVALID_TYPE_INSTALL);
         return $this->$method($name);
     }
 
@@ -39,7 +65,7 @@ class GInstallerComponent extends GComponent
         list($type, $name) = explode('/', $resource);
         $method = 'update' . ucfirst(strtolower($type));
         if (!method_exists($this, $method))
-            $this->e('Invalid type updating');
+            $this->e(self::INVALID_TYPE_UPDATE);
         return $this->$method($name);
     }
 
@@ -57,61 +83,75 @@ class GInstallerComponent extends GComponent
     public function installComponents($component)
     {
         if ($this->isInstalled('components', $component))
-        {
-            echo "Component $component already installed\n";
-            return false;
-        }
+            $this->e(self::COMPONENT_ALREADY, ['componentName' => $component]);
         if (($found = $this->isExists($component . '-component')) === false)
-        {
-            echo "Component $component not found\n";
-            return false;
-        }
+            $this->e(self::COMPONENT_NOT_FOUND, ['componentName' => $component]);
         list($url, $owner, $repo) = $found;
-        echo "Get listing / [";
+        $this->log(self::GET_LISTING, ['dirName' => '/'], false);
         $listing = $this->getListing($repo, '/');
-        if (!$listing) { echo "ERROR]\n"; return false; }
-        echo "OK]\n";
+        if (!$listing)
+            $this->e(self::STATUS_ERROR);
+        $this->log(self::STATUS_OK);
         $toPath = $this->getInstallationPath('components', $component);
-        echo "Create component directory $toPath [";
-        if (!@mkdir($toPath)) { echo "ERROR]\n"; return false; }
-        echo "OK]\n";
-        echo "Download component to $toPath...\n";
+        if (!file_exists($toPath))
+        {
+            $this->log(self::CREATE_DIR, ['dirName' => $toPath], false);
+            if (!@mkdir($toPath))
+                $this->e(self::STATUS_ERROR);
+            $this->log(self::STATUS_OK);
+        }
+        $this->log(self::COMPONENT_DOWNLOAD, [':componentName' => $component, 'dirName' => $toPath]);
         return $this->downloadResource($listing, $toPath, $repo);
     }
 
+    /**
+     * Загрузка указанного ресурса
+     *
+     * @access public
+     * @param array $listing
+     * @param string $toPath
+     * @param object $repo
+     * @return bool
+     */
     public function downloadResource($listing, $toPath, $repo)
     {
+        $this->log(self::DOWNLOAD_DIR, ['dirName' => $toPath]);
         $result = true;
         foreach($listing as $list)
         {
             if ($list->type === 'file')
             {
-                echo $list->path . " download file " . $list->download_url . " [";
+                $this->log(self::DOWNLOAD_FILE, ['fileName' => $list->download_url], false);
                 if (!@file_put_contents($toPath . '/' . $list->name, file_get_contents($list->download_url)))
-                {
-                    $result = false;
-                    echo "ERROR]\n", "Download from " . $list->download_url . " error\n";
-                    break;
-                }
-                echo "OK]\n";
+                    $this->e(self::STATUS_ERROR);
+                $this->log(self::STATUS_OK);
             }
             else
             {
                 $dir = $toPath . '/' . $list->name;
-                echo "Create directory $dir [";
-                if (!@mkdir($dir)) { $result = false; echo "ERROR]\n"; break; }
-                echo "OK]\n";
+                $this->log(self::CREATE_DIR, ['dirName' => $dir], false);
+                if (!@mkdir($dir))
+                    $this->e(self::STATUS_ERROR);
+                $this->log(self::STATUS_OK);
                 $listingDir = $this->getListing($repo, $list->path);
-                echo "Get listing " . $list->path . " [";
-                if (!$listingDir) { echo "ERROR]\n"; $result = false; break; }
-                echo "OK]\n";
-                echo "Download folder to $dir...\n";
-                if (!$this->downloadResource($listingDir, $dir, $repo)) { $result = false; break; }
+                $this->log(self::GET_LISTING, ['dirName' => $list->path], false);
+                if (!$listingDir)
+                    $this->e(self::STATUS_ERROR);
+                $this->log(self::STATUS_OK);
+                $this->downloadResource($listingDir, $dir, $repo);
             }
         }
         return $result;
     }
 
+    /**
+     * Получение локального пути для установки ресурса
+     *
+     * @access public
+     * @param string $type
+     * @param string $name
+     * @return string
+     */
     public function getInstallationPath($type, $name)
     {
         return Core::resolvePath($this->installationPaths[$type] . '/' . $name);
@@ -129,6 +169,13 @@ class GInstallerComponent extends GComponent
         return is_object($result) && (isset($result->error) || isset($result->message)) ? false : $result;
     }
 
+    /**
+     * Производит поиск указанного ресурса по списку репозиториев, возвращает найденный репозиторий, либо false
+     *
+     * @access public
+     * @param string $resource
+     * @return array|bool
+     */
     public function isExists($resource)
     {
         $found = false;
@@ -146,15 +193,25 @@ class GInstallerComponent extends GComponent
             if (is_object($result) && !isset($result->message))
             {
                 $found = [$url, $owner, $result];
-                echo "FOUND]\n";
                 break;
             }
-            echo "NOT FOUND]\n";
         }
         return $found;
     }
 
-    public function isInstalled($type, $name) { return file_exists($this->getInstallationPath($type, $name)); }
+    /**
+     * Возвращает true, если указанный ресурс установлен
+     *
+     * @access public
+     * @param string $type
+     * @param string $name
+     * @return bool
+     */
+    public function isInstalled($type, $name)
+    {
+        $path = $this->getInstallationPath($type, $name);
+        return file_exists($path) && count(scandir($path));
+    }
 
     public function callbackResponse($response)
     {
@@ -165,5 +222,12 @@ class GInstallerComponent extends GComponent
     public function installPlugins($module)
     {
 
+    }
+
+    public function log($message, array $params = [], $newLine = true)
+    {
+        foreach($params as $param => $value)
+            $message = str_replace(':' . $param, $value, $message);
+        echo $message . ($newLine ? "\n" : '');
     }
 }
