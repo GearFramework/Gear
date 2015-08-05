@@ -28,6 +28,7 @@ class GInstallerComponent extends GComponent
     const DOWNLOAD_FILE = 'Download file :fileName';
     const DOWNLOAD_DIR = 'Download directory :dirName';
     const RESOURCE_SEARCH = 'Search :resourceName in :url';
+    const LOAD_SETTINGS_FILE = 'Load SETTINGS file';
 
     const STATUS_ERROR = ' [ERROR]';
     const STATUS_OK = ' [OK]';
@@ -51,9 +52,18 @@ class GInstallerComponent extends GComponent
         ],
         'urlApi' => 'https://api.github.com',
         'repositories' => ['https://www.github.com/GearFramework'],
+        'temp' => '\gear\temp',
     ];
+    protected $_resourceSettings = null;
     /* Public */
 
+    /**
+     * Установка указанного ресурса
+     *
+     * @access public
+     * @param string $resource
+     * @return bool
+     */
     public function installResource($resource)
     {
         list($type, $name) = explode('/', $resource);
@@ -63,6 +73,13 @@ class GInstallerComponent extends GComponent
         return $this->$method($name);
     }
 
+    /**
+     * Обновление указанного ресурса
+     *
+     * @access public
+     * @param string $resource
+     * @return bool
+     */
     public function updateResource($resource)
     {
         list($type, $name) = explode('/', $resource);
@@ -72,17 +89,24 @@ class GInstallerComponent extends GComponent
         return $this->$method($name);
     }
 
+    /**
+     * Установка указанного модуля
+     *
+     * @access public
+     * @param string $component
+     * @return bool
+     */
     public function installModules($module)
     {
-        $result = Core::app()->http->get
-        (
-            $this->urlApi . '/repos/GearFramework/' . $module . '.module',
-            [],
-            [],
-            [$this, 'callbackResponse']
-        );
     }
 
+    /**
+     * Установка указанного компонента
+     *
+     * @access public
+     * @param string $component
+     * @return bool
+     */
     public function installComponents($component)
     {
         if ($this->isInstalled('components', $component))
@@ -95,7 +119,7 @@ class GInstallerComponent extends GComponent
         if (!$listing)
             $this->e(self::STATUS_ERROR);
         $this->log(self::STATUS_OK);
-        $toPath = $this->getInstallationPath('components', $component);
+        $toPath = $this->getInstallationPath('components', $component, $listing);
         if (!file_exists($toPath))
         {
             $this->log(self::CREATE_DIR, ['dirName' => $toPath], false);
@@ -105,6 +129,30 @@ class GInstallerComponent extends GComponent
         }
         $this->log(self::COMPONENT_DOWNLOAD, [':componentName' => $component, 'dirName' => $toPath]);
         return $this->downloadResource($listing, $toPath, $repo);
+    }
+
+    /**
+     * Установка указанного плагина
+     *
+     * @access public
+     * @param string $plugin
+     * @return bool
+     */
+    public function installPlugins($plugin)
+    {
+
+    }
+
+    /**
+     * Установка указанного хелпера
+     *
+     * @access public
+     * @param string $helper
+     * @return bool
+     */
+    public function installHelpers($helper)
+    {
+
     }
 
     /**
@@ -155,11 +203,62 @@ class GInstallerComponent extends GComponent
      * @param string $name
      * @return string
      */
-    public function getInstallationPath($type, $name)
+    public function getInstallationPath($type, $name, array $listing = null)
     {
-        return Core::resolvePath($this->installationPaths[$type] . '/' . $name);
+        $path = Core::resolvePath($this->installationPaths[$type] . '/' . $name);
+        if ($listing)
+        {
+            $settings = $this->getSettings($listing);
+            if ($settings && isset($settings['namespace']) && $settings['namespace'])
+                $path = Core::resolvePath($settings['namespace']);
+        }
+        return $path;
     }
 
+    /**
+     * Возвращает массив настроек ресурса из файла SETTINGS если таковой существует в репозитории
+     * ресурса
+     *
+     * @access public
+     * @param array $listing
+     * @return array|null
+     */
+    public function getSettings($listing)
+    {
+        if ($this->_resourceSettings !== null)
+            return $this->_resourceSettings;
+        $this->log(self::LOAD_SETTINGS_FILE, [], false);
+        foreach($listing as $list)
+        {
+            if ($list->name === 'SETTINGS')
+            {
+                $settings = @file_get_contents($list->download_url);
+                if ($settings)
+                {
+                    $this->_resourceSettings = parse_ini_string($settings);
+                    $this->log(self::STATUS_OK);
+                }
+                else
+                {
+                    $this->_resourceSettings = [];
+                    $this->log(self::STATUS_ERROR);
+                }
+                break;
+            }
+        }
+        if ($this->_resourceSettings === null)
+            $this->log(self::STATUS_NOT_FOUND);
+        return $this->_resourceSettings;
+    }
+
+    /**
+     * Возвращает список файлов и папок указанного репозитоория по указанному пути
+     *
+     * @access public
+     * @param object $resource
+     * @param string $path
+     * @return bool|array
+     */
     public function getListing($resource, $path)
     {
         $result = Core::app()->http->get
@@ -218,17 +317,28 @@ class GInstallerComponent extends GComponent
         return file_exists($path) && count(scandir($path));
     }
 
+    /**
+     * Обработчик ответа от сервера
+     *
+     * @access public
+     * @param object|string $response
+     * @return mixed
+     */
     public function callbackResponse($response)
     {
         $result = $response->error ? $response : json_decode($response);
         return !$result ? $response : $result;
     }
 
-    public function installPlugins($module)
-    {
-
-    }
-
+    /**
+     * Вывод на экран сообщений
+     *
+     * @access public
+     * @param string $message
+     * @param array $params
+     * @param bool|true $newLine
+     * @return void
+     */
     public function log($message, array $params = [], $newLine = true)
     {
         foreach($params as $param => $value)
