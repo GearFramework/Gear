@@ -32,6 +32,7 @@ class GInstallerComponent extends GComponent
     const HELPER_DOWNLOAD = 'Download helper :helperName to :dirName';
     const RESOURCE_DOWNLOAD = 'Download :resourceType :resourceName to :dirName';
     const RESOURCE_UPDATE = 'Update :resourceType :resourceName in :dirName';
+    const RESOURCE_NOT_NEED_UPDATE = ':resourceType :resourceName does not need to be updated';
 
     const GET_LISTING = 'Get listing :dirName';
     const CREATE_DIR = 'Create directory :dirName';
@@ -135,16 +136,28 @@ class GInstallerComponent extends GComponent
         $this->log(self::STATUS_OK);
         $toPath = $this->getInstallationPath($type, $resourceName, $listing);
         $this->log(self::RESOURCE_INSTALLED_PATH, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName, 'dirName' => $toPath]);
-        $this->checkNeedleUpdating($toPath);
+        if (!$this->checkRequireUpdating($toPath))
+            $this->e(self::RESOURCE_NOT_NEED_UPDATE, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
         $this->log(self::RESOURCE_UPDATE, ['resourceType' => $type, 'resourceName' => $resourceName, 'dirName' => $toPath]);
         return $this->downloadUpdatingResource($listing, $toPath, $repo);
 
     }
 
-    public function checkNeedleUpdating($installedPath)
+    public function checkRequireUpdating($installedPath)
     {
-        print_r($this->_resourceSettings);
-        die();
+        $result = true;
+        $settings = file_exists($installedPath . '/SETTINGS') ? @file_get_contents($installedPath . '/SETTINGS') : null;
+        if ($settings)
+        {
+            $settings = parse_ini_string($settings);
+            if (is_array($settings) && isset($settings['version']) &&
+                is_array($this->_resourceSettings) && isset($this->_resourceSettings['version']) &&
+                $settings['version'] === $this->_resourceSettings['version'])
+            {
+                $result = false;
+            }
+        }
+        return $result;
     }
 
     /**
