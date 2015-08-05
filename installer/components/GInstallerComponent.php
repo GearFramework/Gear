@@ -154,6 +154,7 @@ class GInstallerComponent extends GComponent
                 is_array($this->_resourceSettings) && isset($this->_resourceSettings['version']) &&
                 $settings['version'] === $this->_resourceSettings['version'])
             {
+                echo $settings['version'] . ' === ' . $this->_resourceSettings['version'] ."\n";
                 $result = false;
             }
         }
