@@ -47,12 +47,18 @@ class PUsage extends GProcess
     {
         try
         {
-            return Core::app()->installer->updateResource($resource);
+            $result = Core::app()->installer->updateResource($resource);
+            if ($result)
+                echo "Updated well done\n";
+            else
+                echo "Updated error\n";
+            return $result;
         }
         catch(\Exception $e)
         {
             echo $e->getMessage() . "\n";
         }
+        echo "Updated error with exception\n";
         return false;
     }
 
