@@ -228,7 +228,6 @@ class GInstallerComponent extends GComponent
         if ($this->_resourceSettings !== null)
             return $this->_resourceSettings;
         $this->log(self::LOAD_SETTINGS_FILE, [], false);
-        print_r($listing);
         foreach($listing as $list)
         {
             if ($list->name === 'SETTINGS')
@@ -300,7 +299,8 @@ class GInstallerComponent extends GComponent
                 break;
             }
         }
-        $this->log(self::STATUS_NOT_FOUND);
+        if (!$found)
+            $this->log(self::STATUS_NOT_FOUND);
         return $found;
     }
 
