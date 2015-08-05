@@ -90,7 +90,7 @@ class GInstallerComponent extends GComponent
         if (!$listing)
             $this->e(self::STATUS_ERROR);
         $this->log(self::STATUS_OK);
-        $toPath = $this->getInstallationPath('components', $resourceName, $listing);
+        $toPath = $this->getInstallationPath($type, $resourceName, $listing);
         if (!file_exists($toPath))
         {
             $this->log(self::CREATE_DIR, ['dirName' => $toPath], false);
