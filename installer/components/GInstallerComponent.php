@@ -208,6 +208,7 @@ class GInstallerComponent extends GComponent
         $path = Core::resolvePath($this->installationPaths[$type] . '/' . $name);
         if ($listing)
         {
+            $this->log(self::LOAD_SETTINGS_FILE, [], false);
             $settings = $this->getSettings($listing);
             if ($settings && isset($settings['namespace']) && $settings['namespace'])
                 $path = Core::resolvePath($settings['namespace']);
@@ -227,7 +228,6 @@ class GInstallerComponent extends GComponent
     {
         if ($this->_resourceSettings !== null)
             return $this->_resourceSettings;
-        $this->log(self::LOAD_SETTINGS_FILE, [], false);
         foreach($listing as $list)
         {
             if ($list->name === 'SETTINGS')
