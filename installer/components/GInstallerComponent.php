@@ -10,18 +10,24 @@ class GInstallerComponent extends GComponent
     /* Const */
     const INVALID_TYPE_INSTALL = 'Invalid type`s resource installing';
     const INVALID_TYPE_UPDATE = 'Invalid type`s resource updating';
+
     const MODULE_ALREADY = 'Module :moduleName already installed';
     const COMPONENT_ALREADY = 'Component :componentName already installed';
     const PLUGIN_ALREADY = 'Plugin :pluginName already installed';
     const HELPER_ALREADY = 'Helper :helperName already installed';
+    const RESOURCE_ALREADY = ':resourceType :resourceName already installed';
+
     const MODULE_NOT_FOUND = 'Module :moduleName not found';
     const COMPONENT_NOT_FOUND = 'Component :componentName not found';
     const PLUGIN_NOT_FOUND = 'Plugin :pluginName not found';
     const HELPER_NOT_FOUND = 'Helper :helperName not found';
+    const RESOURCE_NOT_FOUND = ':resourceType :resourceName not found';
+
     const MODULE_DOWNLOAD = 'Download module :moduleName to :dirName';
     const COMPONENT_DOWNLOAD = 'Download component :componentName to :dirName';
     const PLUGIN_DOWNLOAD = 'Download plugin :pluginName to :dirName';
     const HELPER_DOWNLOAD = 'Download helper :helperName to :dirName';
+    const RESOURCE_DOWNLOAD = 'Download :resourceType :resourceName to :dirName';
 
     const GET_LISTING = 'Get listing :dirName';
     const CREATE_DIR = 'Create directory :dirName';
@@ -45,10 +51,10 @@ class GInstallerComponent extends GComponent
         'userAgent' => 'Gear-Framework',
         'installationPaths' =>
         [
-            'modules' => '\gear\modules',
-            'components' => '\gear\components\gear',
-            'plugins' => '\gear\plugins\gear',
-            'helpers' => '\gear\helpers',
+            'module' => '\gear\modules',
+            'component' => '\gear\components\gear',
+            'plugin' => '\gear\plugins\gear',
+            'helper' => '\gear\helpers',
         ],
         'urlApi' => 'https://api.github.com',
         'repositories' => ['https://www.github.com/GearFramework'],
@@ -66,11 +72,34 @@ class GInstallerComponent extends GComponent
      */
     public function installResource($resource)
     {
-        list($type, $name) = explode('/', $resource);
-        $method = 'install' . ucfirst(strtolower($type));
-        if (!method_exists($this, $method))
+        list($type, $resourceName) = explode('/', $resource);
+        $type = strtolower($type);
+        if (!in_array($type, ['module', 'component', 'plugin', 'helper']))
             $this->e(self::INVALID_TYPE_INSTALL);
-        return $this->$method($name);
+        $method = 'install' . ucfirst($type);
+        if (method_exists($this, $method))
+            return $this->$method($resourceName);
+
+        if ($this->isInstalled($type, $resourceName))
+            $this->e(self::RESOURCE_ALREADY, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
+        if (($found = $this->isExists($resourceName . '-' . $type)) === false)
+            $this->e(self::RESOURCE_NOT_FOUND, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
+        list($url, $owner, $repo) = $found;
+        $this->log(self::GET_LISTING, ['dirName' => '/'], false);
+        $listing = $this->getListing($repo, '/');
+        if (!$listing)
+            $this->e(self::STATUS_ERROR);
+        $this->log(self::STATUS_OK);
+        $toPath = $this->getInstallationPath('components', $resourceName, $listing);
+        if (!file_exists($toPath))
+        {
+            $this->log(self::CREATE_DIR, ['dirName' => $toPath], false);
+            if (!@mkdir($toPath))
+                $this->e(self::STATUS_ERROR);
+            $this->log(self::STATUS_OK);
+        }
+        $this->log(self::RESOURCE_DOWNLOAD, ['resourceType' => $type, 'resourceName' => $resourceName, 'dirName' => $toPath]);
+        return $this->downloadResource($listing, $toPath, $repo);
     }
 
     /**
@@ -107,7 +136,7 @@ class GInstallerComponent extends GComponent
      * @param string $component
      * @return bool
      */
-    public function installComponents($component)
+/*    public function installComponents($component)
     {
         if ($this->isInstalled('components', $component))
             $this->e(self::COMPONENT_ALREADY, ['componentName' => $component]);
@@ -129,7 +158,7 @@ class GInstallerComponent extends GComponent
         }
         $this->log(self::COMPONENT_DOWNLOAD, [':componentName' => $component, 'dirName' => $toPath]);
         return $this->downloadResource($listing, $toPath, $repo);
-    }
+    }*/
 
     /**
      * Установка указанного плагина
