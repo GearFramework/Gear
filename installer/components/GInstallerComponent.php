@@ -27,6 +27,7 @@ class GInstallerComponent extends GComponent
     const CREATE_DIR = 'Create directory :dirName';
     const DOWNLOAD_FILE = 'Download file :fileName';
     const DOWNLOAD_DIR = 'Download directory :dirName';
+    const RESOURCE_SEARCH = 'Search :resourceName in :url';
 
     const STATUS_ERROR = ' [ERROR]';
     const STATUS_OK = ' [OK]';
@@ -34,6 +35,8 @@ class GInstallerComponent extends GComponent
     const STATUS_YES = ' [YES]';
     const STATUS_NO = ' [NO]';
     const STATUS_NONE = ' [NONE]';
+    const STATUS_FOUND = ' [FOUND]';
+    const STATUS_NOT_FOUND = ' [NOT FOUND]';
     /* Private */
     /* Protected */
     protected static $_defaultProperties =
@@ -181,7 +184,7 @@ class GInstallerComponent extends GComponent
         $found = false;
         foreach($this->repositories as $url)
         {
-            echo "Search $resource in $url [";
+            $this->log(self::RESOURCE_SEARCH, ['resourceName' => $resource, 'url' => $url], false);
             $owner = substr($url, strrpos($url, '/') + 1);
             $result = Core::app()->http->get
             (
@@ -193,9 +196,11 @@ class GInstallerComponent extends GComponent
             if (is_object($result) && !isset($result->message))
             {
                 $found = [$url, $owner, $result];
+                $this->log(self::STATUS_FOUND);
                 break;
             }
         }
+        $this->log(self::STATUS_NOT_FOUND);
         return $found;
     }
 
