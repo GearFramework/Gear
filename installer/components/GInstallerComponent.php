@@ -92,7 +92,7 @@ class GInstallerComponent extends GComponent
 
         if ($this->isInstalled($type, $resourceName))
             $this->e(self::RESOURCE_ALREADY, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
-        if (($found = $this->isExists($resourceName . '-' . $type)) === false)
+        if (($found = $this->isExists($resourceName, $type)) === false)
             $this->e(self::RESOURCE_NOT_FOUND, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
         list($url, $owner, $repo) = $found;
         $this->log(self::GET_LISTING, ['dirName' => '/'], false);
@@ -133,7 +133,7 @@ class GInstallerComponent extends GComponent
 
         if (!$this->isInstalled($type, $resourceName))
             $this->e(self::RESOURCE_NOT_INSTALLED, ['resourceType' => $type, 'resourceName' => $resourceName]);
-        if (($found = $this->isExists($resourceName . '-' . $type)) === false)
+        if (($found = $this->isExists($resourceName, $type)) === false)
             $this->e(self::RESOURCE_NOT_FOUND, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
         list($url, $owner, $repo) = $found;
         $this->log(self::GET_LISTING, ['dirName' => '/'], false);
@@ -340,13 +340,13 @@ class GInstallerComponent extends GComponent
      * @param string $resource
      * @return array|bool
      */
-    public function isExists($resource)
+    public function isExists($resource, $type)
     {
         $found = false;
         if (isset($this->_installedResources[$resource]))
         {
             $this->log(self::RESOURCE_SEARCH_DATABASE, ['resourceName' => $resource, 'url' => $this->_installedResources[$resource]], false);
-            $found = $this->_find($this->_installedResources[$resource], $resource);
+            $found = $this->_find($this->_installedResources[$resource], $resource . '-' . $type);
             if ($found)
             {
                 $this->log(self::STATUS_FOUND);
@@ -356,7 +356,7 @@ class GInstallerComponent extends GComponent
         foreach($this->repositories as $url)
         {
             $this->log(self::RESOURCE_SEARCH, ['resourceName' => $resource, 'url' => $url], false);
-            $found = $this->_find($url, $resource);
+            $found = $this->_find($url, $resource . '-' . $type);
             if ($found)
             {
                 $this->log(self::STATUS_FOUND);
