@@ -147,7 +147,6 @@ class GInstallerComponent extends GComponent
 
     public function checkRequireUpdating($installedPath)
     {
-        $result = true;
         if (is_array($this->_resourceSettings) && isset($this->_resourceSettings['version']))
         {
             $this->log(self::REMOTE_VERSION, ['version' => $this->_resourceSettings['version']]);
@@ -158,18 +157,14 @@ class GInstallerComponent extends GComponent
                 if (is_array($settings) && isset($settings['version']))
                 {
                     $this->log(self::LOCAL_VERSION, ['version' => $settings['version']]);
-                    if ($settings['version'] === $this->_resourceSettings['version'])
-                        $result = false;
+                    return !($settings['version'] === $this->_resourceSettings['version']);
                 }
-                else
-                    $this->log(self::LOCAL_VERSION, ['version' => 'NONE']);
             }
-            else
-                $this->log(self::LOCAL_VERSION, ['version' => 'NONE']);
+            $this->log(self::LOCAL_VERSION, ['version' => 'NONE']);
         }
         else
             $this->log(self::REMOTE_VERSION, ['version' => 'NONE']);
-        return $result;
+        return true;
     }
 
     /**
