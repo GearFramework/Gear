@@ -338,11 +338,13 @@ class GInstallerComponent extends GComponent
      *
      * @access public
      * @param string $resource
+     * @param string $type
      * @return array|bool
      */
     public function isExists($resource, $type)
     {
         $found = false;
+        /* Поиск в базе установленных ресурсов */
         if (isset($this->_installedResources[$resource]))
         {
             $this->log(self::RESOURCE_SEARCH_DATABASE, ['resourceName' => $resource, 'url' => $this->_installedResources[$resource]], false);
@@ -353,6 +355,7 @@ class GInstallerComponent extends GComponent
                 return $found;
             }
         }
+        /* Поиск в списке репозиториев */
         foreach($this->repositories as $url)
         {
             $this->log(self::RESOURCE_SEARCH, ['resourceName' => $resource, 'url' => $url], false);
