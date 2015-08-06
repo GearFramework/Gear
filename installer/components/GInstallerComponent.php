@@ -416,7 +416,7 @@ class GInstallerComponent extends GComponent
         else
         {
             $this->_installedResources = [];
-            file_put_contents($db, $this->_installedResources);
+            $this->_flushDb();
         }
     }
 
@@ -424,13 +424,13 @@ class GInstallerComponent extends GComponent
     {
         $this->_installedResources[$resourceName] = $repository;
         $db = Core::resolvePath($this->dbResources);
-        file_put_contents($db, $this->_installedResources);
+        file_put_contents($db, serialize($this->_installedResources));
     }
 
     private function _flushDb()
     {
         $db = Core::resolvePath($this->dbResources);
-        file_put_contents($db, $this->_installedResources);
+        file_put_contents($db, serialize($this->_installedResources));
     }
 
     public function onInstalled()
