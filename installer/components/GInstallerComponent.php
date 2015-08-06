@@ -18,6 +18,7 @@ class GInstallerComponent extends GComponent
     const RESOURCE_ALREADY = ':resourceType :resourceName already installed';
 
     const RESOURCE_NOT_INSTALLED = 'Updating :resourceType :resourceName not installed';
+    const RESOURCE_REMOVE_NOT_INSTALLED = 'Removing :resourceType :resourceName not installed';
     const RESOURCE_INSTALLED_PATH = ':resourceType :resourceName installed into :dirName';
 
     const MODULE_NOT_FOUND = 'Module :moduleName not found';
@@ -43,6 +44,7 @@ class GInstallerComponent extends GComponent
     const LOAD_SETTINGS_FILE = 'Load SETTINGS file';
     const LOCAL_VERSION = 'Local version [:version]';
     const REMOTE_VERSION = 'Remote version [:version]';
+    const MESSAGE_ON_REMOVED = 'PLEASE, remove source-code of :resourceType :resourceName from directory :dirName';
 
     const STATUS_ERROR = ' [ERROR]';
     const STATUS_OK = ' [OK]';
@@ -110,7 +112,7 @@ class GInstallerComponent extends GComponent
         }
         $this->log(self::RESOURCE_DOWNLOAD, ['resourceType' => $type, 'resourceName' => $resourceName, 'dirName' => $toPath]);
         $result = $this->downloadInstallingResource($listing, $toPath, $repo);
-        $this->_writeDb($resourceName, $url);
+        $this->_writeDb($resourceName, $url, $toPath);
         return $result;
     }
 
@@ -147,7 +149,26 @@ class GInstallerComponent extends GComponent
             $this->e(self::RESOURCE_NOT_NEED_UPDATE, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName]);
         $this->log(self::RESOURCE_UPDATE, ['resourceType' => $type, 'resourceName' => $resourceName, 'dirName' => $toPath]);
         return $this->downloadUpdatingResource($listing, $toPath, $repo);
+    }
 
+    public function removeResource($resource)
+    {
+        list($type, $resourceName) = explode('/', $resource);
+        $type = strtolower($type);
+        if (!in_array($type, ['module', 'component', 'plugin', 'helper']))
+            $this->e(self::INVALID_TYPE_UPDATE);
+        $method = 'remove' . ucfirst($type);
+        if (method_exists($this, $method))
+            return $this->$method($resourceName);
+
+        if (!isset($this->_installedResources[$resourceName]))
+            $this->e(self::RESOURCE_REMOVE_NOT_INSTALLED, ['resourceType' => $type, 'resourceName' => $resourceName]);
+        $toPath = $this->_installedResources[$resourceName][1];
+        $this->log(self::RESOURCE_INSTALLED_PATH, ['resourceType' => ucfirst($type), 'resourceName' => $resourceName, 'dirName' => $toPath]);
+        unset($this->_installedResources[$resourceName]);
+        $this->_flushDb();
+        $this->log(self::MESSAGE_ON_REMOVED, ['resourceType' => $type, 'resourceName' => $resourceName, 'dirName' => $toPath]);
+        return true;
     }
 
     public function checkRequireUpdating($installedPath)
@@ -347,8 +368,8 @@ class GInstallerComponent extends GComponent
         /* Поиск в базе установленных ресурсов */
         if (isset($this->_installedResources[$resource]))
         {
-            $this->log(self::RESOURCE_SEARCH_DATABASE, ['resourceName' => $resource, 'url' => $this->_installedResources[$resource]], false);
-            $found = $this->_find($this->_installedResources[$resource], $resource . '-' . $type);
+            $this->log(self::RESOURCE_SEARCH_DATABASE, ['resourceName' => $resource, 'url' => $this->_installedResources[$resource][0]], false);
+            $found = $this->_find($this->_installedResources[$resource][0], $resource . '-' . $type);
             if ($found)
             {
                 $this->log(self::STATUS_FOUND);
@@ -442,9 +463,9 @@ class GInstallerComponent extends GComponent
         }
     }
 
-    private function _writeDb($resourceName, $repository)
+    private function _writeDb($resourceName, $repository, $toPath)
     {
-        $this->_installedResources[$resourceName] = $repository;
+        $this->_installedResources[$resourceName] = [$repository, $toPath];
         $db = Core::resolvePath($this->dbResources);
         file_put_contents($db, serialize($this->_installedResources));
     }

@@ -62,6 +62,25 @@ class PUsage extends GProcess
         return false;
     }
 
+    public function apiRemove($resource)
+    {
+        try
+        {
+            $result = Core::app()->installer->removeResource($resource);
+            if ($result)
+                echo "Removed well done\n";
+            else
+                echo "Removed error\n";
+            return $result;
+        }
+        catch(\Exception $e)
+        {
+            echo $e->getMessage() . "\n";
+        }
+        echo "Removed error with exception\n";
+        return false;
+    }
+
     public function apiHelp()
     {
 
