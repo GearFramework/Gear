@@ -108,7 +108,9 @@ class GInstallerComponent extends GComponent
             $this->log(self::STATUS_OK);
         }
         $this->log(self::RESOURCE_DOWNLOAD, ['resourceType' => $type, 'resourceName' => $resourceName, 'dirName' => $toPath]);
-        return $this->downloadInstallingResource($listing, $toPath, $repo);
+        $result = $this->downloadInstallingResource($listing, $toPath, $repo);
+        $this->_writeDb($resourceName, $url);
+        return $result;
     }
 
     /**
