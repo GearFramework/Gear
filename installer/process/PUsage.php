@@ -89,6 +89,6 @@ class PUsage extends GProcess
         echo "Usage: php installer.php --command <resource-type>/<resource-name>\n";
         echo "--install\tInstalling resource <resource-name>\t--install <module|component|plugin|helper>/<resource-name>\n";
         echo "--update\tUpdating resource <resource-name>\t--update <module|component|plugin|helper>/<resource-name>\n";
-        echo "--remove\tRemoving <resource-name>\t--remove <module|component|plugin|helper>/<resource-name>\n";
+        echo "--remove\tRemoving resource <resource-name>\t--remove <module|component|plugin|helper>/<resource-name>\n";
     }
 }
