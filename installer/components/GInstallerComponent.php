@@ -66,8 +66,10 @@ class GInstallerComponent extends GComponent
         'urlApi' => 'https://api.github.com',
         'repositories' => ['https://www.github.com/GearFramework'],
         'temp' => '\gear\temp',
+        'dbResources' => '\gear\installer\RESOURCES.db',
     ];
     protected $_resourceSettings = null;
+    protected $_installedResources = [];
     /* Public */
 
     /**
@@ -372,7 +374,7 @@ class GInstallerComponent extends GComponent
     public function isInstalled($type, $name)
     {
         $path = $this->getInstallationPath($type, $name);
-        return file_exists($path) && count(scandir($path));
+        return file_exists($path) && count(scandir($path)) && isset($this->_installedResources[$name]);
     }
 
     /**
@@ -402,5 +404,36 @@ class GInstallerComponent extends GComponent
         foreach($params as $param => $value)
             $message = str_replace(':' . $param, $value, $message);
         echo $message . ($newLine ? "\n" : '');
+    }
+
+    private function _loadDb()
+    {
+        $db = Core::resolvePath($this->dbResources);
+        if (file_exists($db))
+            $this->_installedResources = unserialize(file_get_contents($db));
+        else
+        {
+            $this->_installedResources = [];
+            file_put_contents($db, $this->_installedResources);
+        }
+    }
+
+    private function _writeDb($resourceName, $repository)
+    {
+        $this->_installedResources[$resourceName] = $repository;
+        $db = Core::resolvePath($this->dbResources);
+        file_put_contents($db, $this->_installedResources);
+    }
+
+    private function _flushDb()
+    {
+        $db = Core::resolvePath($this->dbResources);
+        file_put_contents($db, $this->_installedResources);
+    }
+
+    public function onInstalled()
+    {
+        $this->_loadDb();
+        return true;
     }
 }
