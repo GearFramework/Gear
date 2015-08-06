@@ -39,6 +39,7 @@ class GInstallerComponent extends GComponent
     const DOWNLOAD_FILE = 'Download file :fileName';
     const DOWNLOAD_DIR = 'Download directory :dirName';
     const RESOURCE_SEARCH = 'Search :resourceName in :url';
+    const RESOURCE_SEARCH_DATABASE = 'Search :resourceName in database url :url';
     const LOAD_SETTINGS_FILE = 'Load SETTINGS file';
     const LOCAL_VERSION = 'Local version [:version]';
     const REMOTE_VERSION = 'Remote version [:version]';
@@ -342,26 +343,44 @@ class GInstallerComponent extends GComponent
     public function isExists($resource)
     {
         $found = false;
+        if (isset($this->_installedResources[$resource]))
+        {
+            $this->log(self::RESOURCE_SEARCH_DATABASE, ['resourceName' => $resource, 'url' => $this->_installedResources[$resource]], false);
+            $found = $this->_find($this->_installedResources[$resource], $resource);
+            if ($found)
+            {
+                $this->log(self::STATUS_FOUND);
+                return $found;
+            }
+        }
         foreach($this->repositories as $url)
         {
             $this->log(self::RESOURCE_SEARCH, ['resourceName' => $resource, 'url' => $url], false);
-            $owner = substr($url, strrpos($url, '/') + 1);
-            $result = Core::app()->http->get
-            (
-                $this->urlApi . '/repos/' . $owner . '/' . $resource,
-                [],
-                ['UserAgent' => $this->userAgent],
-                [$this, 'callbackResponse']
-            );
-            if (is_object($result) && !isset($result->message))
+            $found = $this->_find($url, $resource);
+            if ($found)
             {
-                $found = [$url, $owner, $result];
                 $this->log(self::STATUS_FOUND);
                 break;
             }
         }
         if (!$found)
             $this->log(self::STATUS_NOT_FOUND);
+        return $found;
+    }
+
+    private function _find($url, $resource)
+    {
+        $found = false;
+        $owner = substr($url, strrpos($url, '/') + 1);
+        $result = Core::app()->http->get
+        (
+            $this->urlApi . '/repos/' . $owner . '/' . $resource,
+            [],
+            ['UserAgent' => $this->userAgent],
+            [$this, 'callbackResponse']
+        );
+        if (is_object($result) && !isset($result->message))
+            $found = [$url, $owner, $result];
         return $found;
     }
 
