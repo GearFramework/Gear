@@ -20,6 +20,9 @@ class PUsage extends GProcess
         else
         if ($update = $this->request->get('update'))
             return $this->apiUpdate($update);
+        else
+        if ($remove = $this->request->get('remove'))
+            return $this->apiRemove($remove);
         return $this->apiHelp();
         //$this->view->render('usage');
     }
@@ -83,6 +86,9 @@ class PUsage extends GProcess
 
     public function apiHelp()
     {
-
+        echo "Usage: php installer.php --command <resource-type>/<resource-name>\n";
+        echo "--install\tInstalling resource <resource-name>\t--install <module|component|plugin|helper>/<resource-name>\n";
+        echo "--update\tUpdating resource <resource-name>\t--update <module|component|plugin|helper>/<resource-name>\n";
+        echo "--remove\tRemoving <resource-name>\t--remove <module|component|plugin|helper>/<resource-name>\n";
     }
 }
