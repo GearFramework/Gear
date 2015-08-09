@@ -27,7 +27,7 @@ class GHttp extends GPlugin
         'flushDataOnDestroy' => true,
     );
     protected $_header = array('class' => 'gear\plugins\gear\http\GHeader');
-    protected $_curl = array('class' => 'gear\components\gear\curl\GCurl');
+    protected $_sender = array('class' => 'gear\components\gear\curl\GCurl');
     /* Public */
 
     /**
@@ -126,12 +126,9 @@ class GHttp extends GPlugin
      */
     public function getHeader()
     {
-        if (!is_object($this->_header))
-        {
-            list($class, $config, $properties) = Core::getRecords($this->_header);
-            $this->header = $class::install($config, $properties, $this->owner);
-        }
-        return $this->_header;
+        if (!$this->owner->isComponentRegistered('header'))
+            $this->owner->registerComponent('header', $this->_header);
+        return $this->owner->c('header');
     }
 
     /**
@@ -150,22 +147,19 @@ class GHttp extends GPlugin
         return $this;
     }
 
-    public function getCurl()
+    public function getSender()
     {
-        if (!is_object($this->_curl))
-        {
-            list($class, $config, $properties) = Core::getRecords($this->_curl);
-            $this->curl = $class::install($config, $properties, $this->owner);
-        }
-        return $this->_curl;
+        if (!$this->owner->isComponentRegistered('sender'))
+            $this->owner->registerComponent('sender', $this->_sender);
+        return $this->owner->c('sender');
     }
 
-    public function setCurl($curl)
+    public function setSender($sender)
     {
-        if (is_object($curl) || is_array($curl))
-            $this->_curl = $curl;
+        if (is_object($sender) || is_array($sender))
+            $this->_sender = $sender;
         else
-            $this->e('Incorrect curl plugin');
+            $this->e('Incorrect sender plugin');
         return $this;
     }
 
@@ -179,7 +173,7 @@ class GHttp extends GPlugin
 
     public function get($url, $params = array(), $headers = array(), $callbackResponse = null)
     {
-        $result = $this->curl->get($url, $params, $headers);
+        $result = $this->sender->get($url, $params, $headers);
         return $callbackResponse && is_callable($callbackResponse) ? $callbackResponse($result) : $result;
     }
 }
