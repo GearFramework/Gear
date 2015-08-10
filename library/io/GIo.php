@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\library;
+namespace gear\library\io;
 use gear\Core;
 use gear\library\GModel;
 use gear\library\GException;

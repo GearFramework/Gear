@@ -1,8 +1,8 @@
 <?php
 
-namespace gear\library;
+namespace gear\library\io\fs;
 use gear\Core;
-use gear\library\GFileSystem;
+use gear\library\io\fs\GFileSystem;
 use gear\library\GException;
 
 /**

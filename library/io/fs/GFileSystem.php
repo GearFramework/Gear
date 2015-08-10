@@ -1,11 +1,11 @@
 <?php
 
-namespace gear\library;
+namespace gear\library\io\fs;
 use gear\Core;
-use gear\helpers\GCalendar;
-use gear\library\GIo;
-use gear\library\GException;
 use gear\interfaces\IStaticFactory;
+use gear\helpers\GCalendar;
+use gear\library\io\GIo;
+use gear\library\GException;
 
 /**
  * Абстрактный класс элементов файловой системы

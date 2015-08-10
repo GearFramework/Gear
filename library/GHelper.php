@@ -43,14 +43,10 @@ abstract class GHelper
  * @version 1.0.0
  * @since 22.12.2014
  */
-class HelperException
+class HelperException extends GException
 {
     /* Const */
     /* Private */
     /* Protected */
     /* Public */
-    
-    protected function __construct() {}
-
-    protected function __clone() {}
 }
