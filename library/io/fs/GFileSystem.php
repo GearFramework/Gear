@@ -25,9 +25,9 @@ abstract class GFileSystem extends GIo implements IStaticFactory
     /* Protected */
     protected static $_factoryItem = 
     [
-        'file' => ['class' => '\gear\library\GFile'],
-        'dir' => ['class' => '\gear\library\GFolder'],
-        'link' => ['class' => '\gear\library\GLink'],
+        'file' => ['class' => '\gear\library\io\fs\GFile'],
+        'dir' => ['class' => '\gear\library\io\fs\GFolder'],
+        'link' => ['class' => '\gear\library\io\fs\GLink'],
     ];
     /* Public */
     
