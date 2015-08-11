@@ -31,8 +31,8 @@ final class Core
     const DEBUG = 'DEBUG';
     const HTTP = 1;
     const CLI = 2;
-    const MODE_DEVELOPMENT = 1;
-    const MODE_PRODUCTION = 2;
+    const MODE_DEVELOPMENT = 0;
+    const MODE_PRODUCTION = 1;
     const ACCESS_PRIVATE = 0;
     const ACCESS_PROTECTED = 1;
     const ACCESS_PUBLIC = 2;
