@@ -1,6 +1,6 @@
 <?php
 
-require 'd:/usr/github/gear/Core.php';
+require __DIR__ . '/../Core.php';
 try
 {
     \gear\Core::init(
@@ -22,14 +22,15 @@ try
 }
 catch(Exception $e)
 {
-    die($e->getMessage());
+    die($e->getMessage() . " [ERROR]\n");
 }
 
 class GTestProcess extends \gear\models\GProcess
 {
-    public function apiIndex($a = 0)
+    public function apiIndex($a = 0, $b)
     {
         echo "Class process " . get_class($this) . "\n";
+        echo "Get parametr a = $a\n";
     }
 
     public function foo()
@@ -38,4 +39,11 @@ class GTestProcess extends \gear\models\GProcess
     }
 }
 
-\gear\Core::app()->run();
+try
+{
+    \gear\Core::app()->run();
+}
+catch(Exception $e)
+{
+    die($e->getMessage() . " [ERROR]\n");
+}

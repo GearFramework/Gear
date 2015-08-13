@@ -70,7 +70,7 @@ class GProcess extends GModel implements IProcess
             {
                 $api = 'api' . ucfirst($apiName);
                 if (!method_exists($this, $api))
-                    $this->e('Api ":apiName" is not exists in process ":processName"', array('apiName' => $apiName, 'processName' => $this->name));
+                    $this->e('Api :apiName is not exists in process :processName', array('apiName' => $apiName, 'processName' => $this->name));
                 $this->_currentApi = array($this, $api);
             }
             $arguments = $this->_prepareArguments($apiName);
@@ -100,9 +100,9 @@ class GProcess extends GModel implements IProcess
             if ($value === null)
             {
                 if (!$argument->isOptional())
-                    $this->e('Api ":apiName" required parameter ":argName"', array(
-                        ':apiName' => $apiName,
-                        ':argName' => $argument->name
+                    $this->e('Api :apiName required parameter :argName', array(
+                        'apiName' => $apiName,
+                        'argName' => $argument->name
                     ));
                 $value = $argument->getDefaultValue();
             }
