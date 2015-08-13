@@ -92,6 +92,7 @@ class GProcess extends GModel implements IProcess
     {
         $args = $this->getApiArguments($this->_currentApi);
         $apiArguments = array();
+        $request = $this->request->request();
         foreach($args as $argument)
         {
             $rule = $this->getArgumentRules($apiName, $argument);

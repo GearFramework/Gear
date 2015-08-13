@@ -45,11 +45,7 @@ class GRequest extends GPlugin
      * @access public
      * @return mixed
      */
-    public function __invoke()
-    {
-        $requestMethod = $this->is();
-        return call_user_func_array(array($this, method_exists($this, $requestMethod) ? $requestMethod : 'request'), func_get_args());
-    }
+    public function __invoke() { return call_user_func_array(array($this, 'request'), func_get_args()); }
     
     /**
      * Возвращает тип запроса
@@ -57,7 +53,7 @@ class GRequest extends GPlugin
      * @access public
      * @return integer
      */
-    public function is() { return strtolower($_SERVER['REQUEST_METHOD']); }
+    public function is() { return Core::isCli() ? 'get' : strtolower($_SERVER['REQUEST_METHOD']); }
     
     /**
      * Возвращает true, если тип запроса был GET иначе false
@@ -239,7 +235,7 @@ class GRequest extends GPlugin
     }
 
     /**
-     * Получение значения из массива $_REQUEST
+     * Получение значения из текущего запроса
      * 
      * @access public
      * @param string $name
@@ -247,7 +243,13 @@ class GRequest extends GPlugin
      * @param mixed $filter
      * @return mixed
      */
-    public function request($name = null, $default = null, $filter = null) { return $this->_data($_REQUEST, $name, $default, $filter); }
+    public function request($name = null, $default = null, $filter = null)
+    {
+        $requestMethod = $this->is();
+        if (!method_exists($this, $requestMethod))
+            $this->e('Ivalid request method :requestMethod', array('requestMethod' => strtoupper($requestMethod)));
+        return call_user_func_array(array($this, $requestMethod), func_get_args());
+    }
     
     /**
      * Получение/установка значений cookie
