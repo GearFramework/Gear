@@ -138,6 +138,8 @@ final class Core
     
     public static function __callStatic($name, $args)
     {
+        if (preg_match('/^exception[A-Z]{1}/', $name))
+            return call_user_func_array(array(__CLASS__, 'ex'), $args);
         if (self::isModuleRegistered($name))
             return self::m($name);
         if (self::isComponentRegistered($name))
@@ -149,7 +151,6 @@ final class Core
         }
         array_unshift($args, $name);
         return call_user_func_array(array(__CLASS__, 'params'), $args);
-            
     }
     
     /**
@@ -539,8 +540,7 @@ final class Core
             foreach(self::$_events[$name] as $handler)
             {
                 $result = call_user_func_array($handler, $args);
-                if (($result instanceof \gear\library\GEvent && 
-                    $result->stopPropagation === true) || !$result)
+                if (($result instanceof \gear\library\GEvent && $result->stopPropagation === true) || !$result)
                     break;
             }
         }
