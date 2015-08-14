@@ -47,6 +47,7 @@ final class Core
             'library' => array
             (
                 '\gear\library\GException',
+                '\gear\exceptions\Core*',
                 '\gear\library\GEvent',
                 '\gear\CoreException',
                 '\gear\interfaces\IService',
@@ -139,7 +140,10 @@ final class Core
     public static function __callStatic($name, $args)
     {
         if (preg_match('/^exception[A-Z]{1}/', $name))
-            return call_user_func_array(array(__CLASS__, 'ex'), $args);
+        {
+            array_unshift($args, $name);
+            call_user_func_array(array(__CLASS__, 'ex'), $args);
+        }
         if (self::isModuleRegistered($name))
             return self::m($name);
         if (self::isComponentRegistered($name))
@@ -164,7 +168,7 @@ final class Core
     {
         $services = self::params('services');
         if (!$services)
-            self::e('Services container not defined');
+            self::exceptionCore('Services container not defined');
         else
         if (!is_object($services))
         {
@@ -223,30 +227,92 @@ final class Core
         }
         return true;
     }
-    
+
     /**
      * Подгрузка необходимых библиотек, модулей и компонентов на этапе
      * конфигурации ядра
-     * 
+     *
      * @access private
      * @static
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     private static function _preloads()
     {
         foreach(self::$_config['preloads']['library'] as $class)
         {
-            $pathFile = self::resolvePath($class, true) . '.php';
-            if (!file_exists($pathFile))
-                self::e('File ":pathFile" not found', array('pathFile' => $pathFile));
-            require($pathFile);
+            if (substr($class, -1) === '*')
+            {
+                $pathMask = self::resolvePath($class, true);
+                $path = dir($pathMask);
+                $mask = basename($pathMask);
+                try
+                {
+                    self::_loadPath($path, $mask);
+                }
+                catch(\Exception $e)
+                {
+                    throw $e;
+                }
+            }
+            else
+            {
+                $pathFile = self::resolvePath($class, true) . '.php';
+                try
+                {
+                    self::_loadFile($pathFile);
+                }
+                catch(\Exception $e)
+                {
+                    throw $e;
+                }
+            }
         }
         unset(self::$_config['preloads']['library']);
         foreach(self::$_config['preloads'] as $sectionName => $section)
         {
-            self::_preloadSection ($sectionName, $section);
+            self::_preloadSection($sectionName, $section);
         }
         return true;
+    }
+
+    /**
+     * Загрузка всех библиотек по указанному пути и маске файлов
+     *
+     * @access private
+     * @param string $path
+     * @param string $mask
+     * @return void
+     */
+    private static function _loadPath($path, $mask)
+    {
+        $regexpMask = '#^' . str_replace('*', '.*', $mask) . '\.php$#i';
+        foreach(scandir($path) as $file)
+        {
+            if ($file === '.' || $file === '.' || (is_file($file) && !preg_math($regexpMask, $file)))
+                continue;
+            $file = $path . '/' . $file;
+            if (is_file($file))
+                self::_loadFile($file);
+            else
+            if (is_dir($file))
+                self::_loadPath($file, $mask);
+        }
+    }
+
+    /**
+     * Загрузка указнного файла-библиотеки
+     *
+     * @access private
+     * @param string $file
+     * @throws \Exception
+     * @return void
+     */
+    private static function _loadFile($file)
+    {
+        if (!file_exists($file))
+            self::exceptionCore('File :filename not found', array('filename' => $file));
+        require $file;
     }
     
     /**
@@ -265,8 +331,8 @@ final class Core
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
             if (!file_exists($pathFile))
-                self::e('File ":preloadName" not found', array('preloadName' => $pathFile));
-            require($pathFile);
+                self::exceptionCore('File ":preloadName" not found', array('preloadName' => $pathFile));
+            require $pathFile;
             $instance = $class::install($config, $properties);
             self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
         }
@@ -707,6 +773,29 @@ final class Core
      * @return string
      */
     public static function getVersion() { return self::$_version; }
+
+    /**
+     * Вызов указанного исключения
+     *
+     * @access public
+     * @param string $exceptionName
+     * @param string $message
+     * @param array $params
+     * @param int $code
+     * @param null|object $previous
+     * @throws \Exception
+     */
+    public function ex($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
+    {
+        $exceptionName = preg_replace('/^exception/', '', $exceptionName) . 'Exception';
+        if (!class_exists($exceptionName))
+        {
+            foreach($params as $name => $value)
+                $message = str_replace(':' . $name, $value, $message);
+            throw new \Exception($message, $code, $previous);
+        }
+        throw new $exceptionName($message, $code, $previous, $params);
+    }
     
     /**
      * Генерация исключения

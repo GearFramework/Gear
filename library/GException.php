@@ -20,6 +20,7 @@ class GException extends \Exception
     /* Protected */
     protected $_args = array();
     /* Public */
+    public $defaultMessage = '';
 
     /**
      * Конструктор исключения
@@ -37,6 +38,7 @@ class GException extends \Exception
      */
     public function __construct($message, $code = 0, \Exception $previous = null, array $args = array())
     {
+        $message = $message !== null ?: $this->defaultMessage;
         foreach($args as $name => $value)
         {
             $this->$name = $value;

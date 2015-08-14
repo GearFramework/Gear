@@ -1,6 +1,5 @@
 <?php
 
-namespace gear;
 use \gear\library\GException;
 
 /** 
