@@ -170,7 +170,7 @@ final class Core
     {
         $services = self::params('services');
         if (!$services)
-            self::exceptionCore('Services container not defined');
+            throw self::exceptionCore('Services container not defined');
         else
         if (!is_object($services))
         {
@@ -297,8 +297,7 @@ final class Core
     private static function _loadFile($file)
     {
         if (!file_exists($file))
-            self::exceptionFileNotFound(array('filename' => $file));
-            //self::exceptionCore('File :filename not found', array('filename' => $file));
+            throw self::exceptionFileNotFound(array('filename' => $file));
         require $file;
     }
     
@@ -318,7 +317,7 @@ final class Core
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
             if (!file_exists($pathFile))
-                self::exceptionCore('File ":preloadName" not found', array('preloadName' => $pathFile));
+                throw self::exceptionFileNotFound(array('filename' => $pathFile));
             require $pathFile;
             $instance = $class::install($config, $properties);
             self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
@@ -377,7 +376,7 @@ final class Core
     public static function m($name)
     {
         if (!self::isModuleRegistered($name))
-            self::exceptionCore('Module :moduleName not registered', array('moduleName' => $name));
+            throw self::exceptionCore('Module :moduleName not registered', array('moduleName' => $name));
         return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
     }
     
@@ -463,7 +462,7 @@ final class Core
     public static function c($name, $instance = false)
     {
         if (!self::isComponentRegistered($name))
-            self::exceptionCore('Component :componentName not registered', array('componentName' => $name));
+            throw self::exceptionCore('Component :componentName not registered', array('componentName' => $name));
         return self::params('services')->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
     }
     
@@ -561,6 +560,14 @@ final class Core
         return $helper->runHelper($name);
     }
 
+    /**
+     * Возвращает true, если указанный хелпер зарегистрирован, иначе false
+     *
+     * @access public
+     * @static
+     * @param string $name
+     * @return boolean
+     */
     public static function isHelperRegistered($name)
     {
         $helperManager = self::params('helperManager');
@@ -623,7 +630,7 @@ final class Core
     public static function attachEvent($eventName, $handler)
     {
         if (!is_callable($handler))
-            self::exceptionCore('Invalid handler of event ":eventName"', array('eventName' => $eventName));
+            throw self::exceptionCore('Invalid handler of event ":eventName"', array('eventName' => $eventName));
         self::$_events[$eventName][] = $handler;
         return true;
     }
@@ -779,9 +786,9 @@ final class Core
         {
             foreach($params as $name => $value)
                 $message = str_replace(':' . $name, $value, $message);
-            throw new \Exception($message, $code, $previous);
+            return new \Exception($message, $code, $previous);
         }
-        throw new $exceptionName($message, $code, $previous, $params);
+        return new $exceptionName($message, $code, $previous, $params);
     }
 
     /**
