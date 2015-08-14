@@ -141,8 +141,10 @@ final class Core
     {
         if (preg_match('/^exception[A-Z]{1}/', $name))
         {
+            if (!isset($args[0]) || is_array($args[0]))
+                array_unshift($args, null);
             array_unshift($args, $name);
-            call_user_func_array(array(__CLASS__, 'ex'), $args);
+            call_user_func_array(array(__CLASS__, 'e'), $args);
         }
         if (self::isModuleRegistered($name))
             return self::m($name);
@@ -246,33 +248,17 @@ final class Core
                 $pathMask = self::resolvePath($class, true);
                 $path = dir($pathMask);
                 $mask = basename($pathMask);
-                try
-                {
-                    self::_loadPath($path, $mask);
-                }
-                catch(\Exception $e)
-                {
-                    throw $e;
-                }
+                self::_loadPath($path, $mask);
             }
             else
             {
                 $pathFile = self::resolvePath($class, true) . '.php';
-                try
-                {
-                    self::_loadFile($pathFile);
-                }
-                catch(\Exception $e)
-                {
-                    throw $e;
-                }
+                self::_loadFile($pathFile);
             }
         }
         unset(self::$_config['preloads']['library']);
         foreach(self::$_config['preloads'] as $sectionName => $section)
-        {
             self::_preloadSection($sectionName, $section);
-        }
         return true;
     }
 
@@ -311,7 +297,8 @@ final class Core
     private static function _loadFile($file)
     {
         if (!file_exists($file))
-            self::exceptionCore('File :filename not found', array('filename' => $file));
+            self::exceptionFileNotFound(array('filename' => $file));
+            //self::exceptionCore('File :filename not found', array('filename' => $file));
         require $file;
     }
     
@@ -390,7 +377,7 @@ final class Core
     public static function m($name)
     {
         if (!self::isModuleRegistered($name))
-            self::e('Module :moduleName not registered', array('moduleName' => $name));
+            self::exceptionCore('Module :moduleName not registered', array('moduleName' => $name));
         return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
     }
     
@@ -476,7 +463,7 @@ final class Core
     public static function c($name, $instance = false)
     {
         if (!self::isComponentRegistered($name))
-            self::e('Component :componentName not registered', array('componentName' => $name));
+            self::exceptionCore('Component :componentName not registered', array('componentName' => $name));
         return self::params('services')->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
     }
     
@@ -636,7 +623,7 @@ final class Core
     public static function attachEvent($eventName, $handler)
     {
         if (!is_callable($handler))
-            self::e('Invalid handler of event ":eventName"', array('eventName' => $eventName));
+            self::exceptionCore('Invalid handler of event ":eventName"', array('eventName' => $eventName));
         self::$_events[$eventName][] = $handler;
         return true;
     }
@@ -785,9 +772,9 @@ final class Core
      * @param null|object $previous
      * @throws \Exception
      */
-    public function ex($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
+    public function e($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
     {
-        $exceptionName = preg_replace('/^exception/', '', $exceptionName) . 'Exception';
+        $exceptionName = '\\' . preg_replace('/^exception/', '', $exceptionName) . 'Exception';
         if (!class_exists($exceptionName))
         {
             foreach($params as $name => $value)
@@ -796,10 +783,10 @@ final class Core
         }
         throw new $exceptionName($message, $code, $previous, $params);
     }
-    
+
     /**
      * Генерация исключения
-     * 
+     *
      * @access public
      * @static
      * @param string $message
@@ -810,7 +797,7 @@ final class Core
      * @throws \Exception|\gear\CoreException
      * @return \Exception
      */
-    public static function e($message, array $params = array(), $code = 0, $previous = null, $class = __CLASS__)
+/*    public static function e($message, array $params = array(), $code = 0, $previous = null, $class = __CLASS__)
     {
         $count = count($args = func_get_args());
         for($i = 1; $i < $count; ++ $i)
@@ -850,7 +837,7 @@ final class Core
     {
         $path = str_replace('\\', '/', $class);
         return str_replace('/', '\\', dirname($path) . '/' . substr(basename($path), 1) . 'Exception');
-    }
+    }*/
 
     public static function dump($value, $renderer = null)
     {
