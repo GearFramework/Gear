@@ -9,42 +9,14 @@ use \gear\library\GException;
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
  * @version 1.0.0
- * @since 01.08.2013
+ * @since 15.08.2015
  * @release 1.0.0
  */
 class ObjectException extends GException {}
-
-class ObjectMethodNotFoundException extends GException
-{
-    public $defaultMessage = 'Method :className:::methodName not found';
-}
-
-class ObjectStaticMethodNotFoundException extends GException
-{
-    public $defaultMessage = 'Static method :className:::methodName not found';
-}
-
-class ObjectInvalidPluginException extends GException
-{
-    public $defaultMessage = 'Plugin :pluginName is not callable and cannot be use as function';
-}
-
-class ObjectPluginNotRegisteredException extends GException
-{
-    public $defaultMessage = 'Plugin :pluginName is not registered';
-}
-
-class ObjectInvalidBehaviorException extends GException
-{
-    public $defaultMessage = 'Behavior :behaviorName is invalid';
-}
-
-class ObjectBehaviorNotExistsException extends GException
-{
-    public $defaultMessage = 'Behavior ":behaviorName" is not exists';
-}
-
-class ObjectInvalidEventHandlerException extends GException
-{
-    public $defaultMessage = 'Invalid handler of event :eventName';
-}
+class ObjectMethodNotFoundException extends ObjectException { public $defaultMessage = 'Method :className:::methodName not found'; }
+class ObjectStaticMethodNotFoundException extends ObjectException { public $defaultMessage = 'Static method :className:::methodName not found'; }
+class ObjectInvalidPluginException extends ObjectException { public $defaultMessage = 'Plugin :pluginName is not callable and cannot be use as function'; }
+class ObjectPluginNotRegisteredException extends ObjectException{ public $defaultMessage = 'Plugin :pluginName is not registered'; }
+class ObjectInvalidBehaviorException extends ObjectException { public $defaultMessage = 'Behavior :behaviorName is invalid'; }
+class ObjectBehaviorNotExistsException extends ObjectException { public $defaultMessage = 'Behavior ":behaviorName" is not exists'; }
+class ObjectInvalidEventHandlerException extends ObjectException { public $defaultMessage = 'Invalid handler of event :eventName'; }
