@@ -178,9 +178,9 @@ class GObject
      */
     public function __call($name, $args)
     {
-        if (preg_match('/^exception[A-Z]/', $name))
+        if (preg_match('/^exception/', $name))
         {
-            return call_user_func_array(array(\Core, $name), $args);
+            return call_user_func_array(array(Core, $name), $args);
 /*            if (!isset($args[0]) || is_array($args[0]))
                 array_unshift($args, null);
             array_unshift($args, $name);
@@ -805,20 +805,6 @@ class GObject
     public static function e($exceptionName, $message, $params = array(), $code = 0, \Exception $previous = null)
     {
         return call_user_func_array(array(Core, $exceptionName), func_get_args());
-    }
-
-    /**
-     * Получение соответствующего класса исключения по названию класса
-     *
-     * @access protected
-     * @static
-     * @param string $class
-     * @return string
-     */
-    protected static function _getExceptionClass($class)
-    {
-        $path = str_replace('\\', '/', $class);
-        return str_replace('/', '\\', dirname($path) . '/' . substr(basename($path), 1) . 'Exception');
     }
 
     /**
