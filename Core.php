@@ -47,9 +47,8 @@ final class Core
             'library' => array
             (
                 '\gear\library\GException',
-                '\gear\exceptions\Core*',
+                '\gear\exceptions\*',
                 '\gear\library\GEvent',
-                '\gear\CoreException',
                 '\gear\interfaces\IService',
                 '\gear\interfaces\IModule',
                 '\gear\interfaces\IComponent',
@@ -144,7 +143,7 @@ final class Core
             if (!isset($args[0]) || is_array($args[0]))
                 array_unshift($args, null);
             array_unshift($args, $name);
-            call_user_func_array(array(__CLASS__, 'e'), $args);
+            return call_user_func_array(array(__CLASS__, 'e'), $args);
         }
         if (self::isModuleRegistered($name))
             return self::m($name);
@@ -246,7 +245,7 @@ final class Core
             if (substr($class, -1) === '*')
             {
                 $pathMask = self::resolvePath($class, true);
-                $path = dir($pathMask);
+                $path = dirname($pathMask);
                 $mask = basename($pathMask);
                 self::_loadPath($path, $mask);
             }
@@ -254,6 +253,7 @@ final class Core
             {
                 $pathFile = self::resolvePath($class, true) . '.php';
                 self::_loadFile($pathFile);
+
             }
         }
         unset(self::$_config['preloads']['library']);
@@ -275,7 +275,7 @@ final class Core
         $regexpMask = '#^' . str_replace('*', '.*', $mask) . '\.php$#i';
         foreach(scandir($path) as $file)
         {
-            if ($file === '.' || $file === '.' || (is_file($file) && !preg_math($regexpMask, $file)))
+            if ($file === '.' || $file === '..' || (is_file($file) && !preg_math($regexpMask, $file)))
                 continue;
             $file = $path . '/' . $file;
             if (is_file($file))
@@ -782,7 +782,7 @@ final class Core
     public function e($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
     {
         $exceptionName = '\\' . preg_replace('/^exception/', '', $exceptionName) . 'Exception';
-        if (!class_exists($exceptionName))
+        if (!class_exists($exceptionName, false))
         {
             foreach($params as $name => $value)
                 $message = str_replace(':' . $name, $value, $message);

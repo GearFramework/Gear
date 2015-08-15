@@ -178,6 +178,14 @@ class GObject
      */
     public function __call($name, $args)
     {
+        if (preg_match('/^exception[A-Z]/', $name))
+        {
+            return call_user_func_array(array(\Core, $name), $args);
+/*            if (!isset($args[0]) || is_array($args[0]))
+                array_unshift($args, null);
+            array_unshift($args, $name);
+            return call_user_func_array(array($this, 'e'), $args);*/
+        }
         if (preg_match('/^on[A-Z]/', $name))
         {
             array_unshift($args, $name);
@@ -189,7 +197,7 @@ class GObject
         {
             $p = $this->p($name);
             if (!is_callable($p))
-                $this->e('Plugin ":methodName" is not callable and cannot be use as function', array('methodName' => $name));
+                throw $this->exceptionObjectInvalidPlugin(array('pluginName' => $name));
             return call_user_func_array($p, $args);
         }
         if (is_object($this->owner))
@@ -199,7 +207,7 @@ class GObject
         }
         $result = $this->event('onCalled', $name, $args);
         if ($result === null)
-            $this->e('Method ":methodName" is not exists', array('methodName' => $name));
+            throw $this->exceptionObjectMethodNotFound(array('className' => get_class($this), 'methodName' => $name));
         return $result;
     }
     
@@ -214,7 +222,15 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        static::e('Static method ":methodName" is not exists', ['methodName' => $name]);
+        if (preg_match('/^exception[A-Z]/', $name))
+        {
+            return call_user_func_array(array(\Core, $name), $args);
+/*            if (!isset($args[0]) || is_array($args[0]))
+                array_unshift($args, null);
+            array_unshift($args, $name);
+            return call_user_func_array(array(__CLASS__, 'e'), $args);*/
+        }
+        throw static::exceptionObjectStaticMethodNotFound(array('className' => get_called_class(), 'methodName' => $name));
     }
     
     /**
@@ -282,7 +298,7 @@ class GObject
     public function setOwner($owner)
     {
         if (!is_object($owner))
-            $this->e('Owner must be object');
+            throw $this->exceptionObject('Owner must be object');
         $this->_owner = $owner;
         return $this;
     }
@@ -450,7 +466,7 @@ class GObject
         if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
             $this->_behaviors[$name] = $behavior->setOwner($this);
         else
-            $this->e('Behavior ":behaviorName" is not correct', array('behaviorName' => $name));
+            throw $this->exceptionObjectInvalidBehavior(array('behaviorName' => $name));
         return $this;
     }
     
@@ -469,7 +485,7 @@ class GObject
     public function b($name)
     {
         if (!$this->isBehavior($name))
-            $this->e('Behavior ":behaviorName" is not exists', array('behaviorName' => $name));
+            throw $this->exceptionObjectBehaviorNotExists(array('behaviorName' => $name));
         $args = func_get_args();
         array_shift($args);
         return call_user_func_array($this->_behaviors[$name], $args);
@@ -540,7 +556,7 @@ class GObject
         if (isset(self::$_config['plugins'][$name]))
             $plugin = self::$_config['plugins'][$name];
         else
-            $this->e('Plugin ":pluginName" is not registered', array('pluginName' => $name));
+            throw $this->exceptionObjectPluginNotRegistered(array('pluginName' => $name));
         return Core::getRecords($plugin);
     }
     
@@ -582,7 +598,7 @@ class GObject
     public function attachEvent($name, $handler)
     {
         if (!is_callable($handler))
-            $this->e('Incorrect handler of event ":eventName"', array('eventName' => $name));
+            throw $this->exceptionObjectInvalidEventHandler(array('eventName' => $name));
         $this->_events[$name][] = $handler;
         return $this;
     }
@@ -786,9 +802,9 @@ class GObject
      * @param string $message
      * @return void
      */
-    public static function e($message, $params = array(), $code = 0, \Exception $previous = null)
+    public static function e($exceptionName, $message, $params = array(), $code = 0, \Exception $previous = null)
     {
-        Core::e($message, $params, $code, $previous, get_called_class());
+        return call_user_func_array(array(Core, $exceptionName), func_get_args());
     }
 
     /**
@@ -843,21 +859,4 @@ class GObject
         foreach($this->getPreloads('plugins') as $pluginName)
             $this->p($pluginName);
     }
-}
-
-/** 
- * Исключения базового класса объектов. 
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 0.0.1
- * @since 01.08.2013
- */
-class ObjectException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }
