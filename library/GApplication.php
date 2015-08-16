@@ -4,7 +4,6 @@ namespace gear\library;
 
 use gear\Core;
 use gear\library\GModule;
-use gear\library\GException;
 use gear\library\GEvent;
 
 /** 
@@ -199,21 +198,4 @@ class GApplication extends GModule
     {
         return $event;
     }
-}
-
-/** 
- * Класс исключений приложения
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 03.08.2013
- */
-class ApplicationException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

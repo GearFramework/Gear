@@ -122,7 +122,7 @@ class GErrorsHandler extends GComponent
     public function onInstalled($event)
     {
         if (!($handlerName = $this->i('handler')))
-            $this->e('Not specified "handler"');
+            throw $this->exceptionService('Not specified "handler"');
         set_error_handler(array($this, $handlerName), E_ALL);
         return true;
     }

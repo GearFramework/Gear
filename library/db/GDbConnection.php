@@ -12,8 +12,9 @@ use \gear\library\GException;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 04.08.2013
+ * @php 5.3.x
  */
 abstract class GDbConnection extends GComponent implements \Iterator
 {
@@ -54,7 +55,7 @@ abstract class GDbConnection extends GComponent implements \Iterator
      * @access public
      * @return boolean
      */
-    public function isConnected() { return $this->_handler ? true : false; }
+    public function isConnected() { return is_resource($this->_handler); }
     
     /**
      * Выполняет подключение к серверу, если соединение ещё не было
@@ -157,21 +158,4 @@ abstract class GDbConnection extends GComponent implements \Iterator
         if ($this->i('autoConnect'))
             $this->connect();
     }
-}
-
-/** 
- * Исключения компонента выполняющего подключение к базе данных
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 04.08.2013
- */
-class DbConnectionException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

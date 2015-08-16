@@ -3,8 +3,6 @@
 namespace gear\plugins\gear\loggers;
 use \gear\Core;
 use \gear\library\GPlugin;
-use \gear\library\GEvent;
-use \gear\library\GException;
 
 /**
  * Запись данных протоколирования в файлы
@@ -81,12 +79,12 @@ class GFileLogger extends GPlugin
             if (!file_exists($dirname))
             {
                 if (!is_writable(dirname($dirname)))
-                    $this->e('Could not create logs directory :dirname', array('dirname' => $dirname));
+                    throw $this->exceptionFile('Could not create logs directory :dirname', array('dirname' => $dirname));
                 @mkdir($dirname);
                 @chmod($dirname, $this->modeLocation);
             }
             if (!is_writable($dirname) || (file_exists($fileLog) && !is_writable($fileLog)))
-                $this->e('Log file :fileLog is not writable', array('fileLog' => $fileLog));
+                throw $this->exceptionFile('Log file :fileLog is not writable', array('fileLog' => $fileLog));
             $handle = @fopen($fileLog, 'a');
             if ($handle)
             {

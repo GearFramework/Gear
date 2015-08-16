@@ -46,7 +46,7 @@ abstract class GModule extends GService implements IModule
     {
         $location = get_class($this) . '.components.' . $name;
         if (!Core::services()->isRegisteredService($location))
-                $this->e('Component :componentName is not registered', array('componentName' => $name));
+            throw $this->exceptionServiceComponentNotRegistered(array('componentName' => $name));
         return Core::services()->getRegisteredService($location, $instance);
     }
     

@@ -70,7 +70,7 @@ class GProcess extends GModel implements IProcess
             {
                 $api = 'api' . ucfirst($apiName);
                 if (!method_exists($this, $api))
-                    $this->e('Api :apiName is not exists in process :processName', array('apiName' => $apiName, 'processName' => $this->name));
+                    throw $this->exceptionProcessApiNotExists(array('apiName' => $apiName, 'processName' => $this->name));
                 $this->_currentApi = array($this, $api);
             }
             $arguments = $this->_prepareArguments($apiName);
@@ -100,10 +100,7 @@ class GProcess extends GModel implements IProcess
             if ($value === null)
             {
                 if (!$argument->isOptional())
-                    $this->e('Api :apiName required parameter :argName', array(
-                        'apiName' => $apiName,
-                        'argName' => $argument->name
-                    ));
+                    throw $this->exceptionApiInvalidRequestParameter(array('apiName' => $apiName, 'argName' => $argument->name));
                 $value = $argument->getDefaultValue();
             }
             else
@@ -205,7 +202,7 @@ class GProcess extends GModel implements IProcess
      * @param integer $value only one: Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC
      * @return void
      */
-    public function setAccess($value) { $this->e('"access" is read-only property'); }
+    public function setAccess($value) { throw $this->exceptionObjectPropertyIsReadOnly(array('preopertyName' => 'access')); }
 
     /**
      * Установка правил обработки поступающих данных от пользоваля к
@@ -261,21 +258,4 @@ class GProcess extends GModel implements IProcess
      */
     public function afterExec($event, $result = true) { return Core::on('onAfterProcessExecute', $event, $result); }
     public function onAfterExec($event, $result = true) { return true; }
-}
-
-/** 
- * Класс исключений процесса
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 03.08.2013
- */
-class ProcessException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

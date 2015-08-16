@@ -143,7 +143,7 @@ class GHttp extends GPlugin
         if (is_object($header) || is_array($header))
             $this->_header = $header;
         else
-            $this->e('Incorrect header plugin');
+            throw $this->exceptionInvalidHeaderPlugin();
         return $this;
     }
 
@@ -159,7 +159,7 @@ class GHttp extends GPlugin
         if (is_object($sender) || is_array($sender))
             $this->_sender = $sender;
         else
-            $this->e('Incorrect sender plugin');
+            throw $this->exceptionInvalidSenderPlugin();
         return $this;
     }
 
@@ -167,7 +167,7 @@ class GHttp extends GPlugin
     {
         $method = strtolower($method);
         if (!method_exists($this, $method))
-            $this->e('Invalid http request type');
+           throw  $this->exceptionInvalidHttpRequestMethod(array('requestMethod' => strtoupper($method)));
         return $this->$method($url, $params, $headers, $callbackResponse);
     }
 
@@ -176,22 +176,4 @@ class GHttp extends GPlugin
         $result = $this->sender->get($url, $params, $headers);
         return $callbackResponse && is_callable($callbackResponse) ? $callbackResponse($result) : $result;
     }
-}
-
-/**
- * Исключения плагина для работы с http
- *
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 21.12.2014
- * @php 5.3.x
- */
-class HttpException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

@@ -3,7 +3,6 @@
 namespace gear\library\db;
 use \gear\Core;
 use \gear\library\GModel;
-use \gear\library\GException;
 
 /** 
  * База данных
@@ -12,8 +11,9 @@ use \gear\library\GException;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 04.08.2013
+ * @php 5.3.x
  */
 abstract class GDbDatabase extends GModel implements \Iterator
 {
@@ -138,21 +138,4 @@ abstract class GDbDatabase extends GModel implements \Iterator
     {
         $this->select();
     }
-}
-
-/** 
- * Исключения базы данных
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 04.08.2013
- */
-class DbDatabaseException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

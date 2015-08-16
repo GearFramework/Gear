@@ -21,4 +21,20 @@ interface IStaticFactory
      * @return object
      */
     public static function factory($properties = array());
+
+    /**
+     * Установка параметров создаваемых объектов
+     *
+     * @access public
+     * @param array $factory
+     */
+    public static function setFactory(array $factory);
+
+    /**
+     * Получение параметров создаваемых объектов
+     *
+     * @access public
+     * @return array
+     */
+    public static function getFactory();
 }

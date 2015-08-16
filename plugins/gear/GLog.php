@@ -3,7 +3,6 @@
 namespace gear\plugins\gear;
 use gear\Core;
 use gear\library\GPlugin;
-use gear\library\GException;
 
 /** 
  * Плагин ведения логов
@@ -12,9 +11,10 @@ use gear\library\GException;
  * @plugin Log
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
  * @php 5.3.x
+ * @release 1.0.0
  */
 class GLog extends GPlugin
 {
@@ -98,22 +98,4 @@ class GLog extends GPlugin
         unset($route);
         return $this;
     }
-}
-
-/** 
- * Исключения плагина ведения логов
- * 
- * @package Gear Framework
- * @plugin Log
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 03.08.2013
- */
-class LogException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

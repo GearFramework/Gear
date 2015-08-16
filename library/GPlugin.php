@@ -56,7 +56,7 @@ abstract class GPlugin extends GComponent implements IPlugin
     {
         $dependencyClass = static::i('dependency');
         if (!(!$dependencyClass || ($dependencyClass && $owner instanceof $dependencyClass)))
-            static::e('Owner has been instanced of ":ownerClass"', array('ownerClass' => $dependencyClass));
+            throw static::exceptionService('Owner has been instanced of ":ownerClass"', array('ownerClass' => $dependencyClass));
     }
 
     /**
@@ -117,6 +117,8 @@ abstract class GPlugin extends GComponent implements IPlugin
      */
     public function __call($name, $args)
     {
+        if (preg_match('/^exception/', $name))
+            return call_user_func_array(array(Core, $name), $args);
         if (preg_match('/^on[A-Z]/', $name))
         {
             array_unshift($args, $name);

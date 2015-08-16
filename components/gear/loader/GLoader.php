@@ -62,7 +62,7 @@ class GLoader extends GComponent implements ILoader
         else
             $file = GEAR . '/../' . str_replace('\\', '/', $className) . '.php';
         if (!file_exists($file))
-            $this->e('Library ":library" of class ":className" not found', array('library' => $file, 'className' => $className));
+            throw $this->exceptionLoaderClassFileNotFound(array('filename' => $file, 'className' => $className));
         include_once($file);
     }
     
@@ -154,26 +154,8 @@ class GLoader extends GComponent implements ILoader
     public function onInstalled($event)
     {
         if (!($handlerName = $this->i('autoloadHandler')))
-            $this->e('Not specified "autoloadHandler"');
+            throw $this->exceptionService('Not specified "autoloadHandler"');
         spl_autoload_register(array($this, $handlerName));
         return true;
     }
-}
-
-/** 
- * Класс исключений компонента автозагрузки классов
- * 
- * @package Gear Framework
- * @component Loader
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 26.04.2013
- */
-class LoaderException extends GException 
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

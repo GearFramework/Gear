@@ -20,3 +20,4 @@ class ObjectPluginNotRegisteredException extends ObjectException{ public $defaul
 class ObjectInvalidBehaviorException extends ObjectException { public $defaultMessage = 'Behavior :behaviorName is invalid'; }
 class ObjectBehaviorNotExistsException extends ObjectException { public $defaultMessage = 'Behavior ":behaviorName" is not exists'; }
 class ObjectInvalidEventHandlerException extends ObjectException { public $defaultMessage = 'Invalid handler of event :eventName'; }
+class ObjectPropertyIsReadOnlyException extends ObjectException { public $defaultMessage = 'Property :propertyName is read-only'; }

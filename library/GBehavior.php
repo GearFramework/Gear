@@ -1,8 +1,6 @@
 <?php
 
 namespace gear\library;
-use gear\Core;
-use gear\library\GObject;
 use gear\interfaces\IBehavior;
 
 /** 

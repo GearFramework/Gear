@@ -1,7 +1,6 @@
 <?php
 
 namespace gear\plugins\gear\cache;
-use gear\Core;
 use gear\library\cache\GCache;
 use gear\library\GModel;
 
@@ -11,8 +10,10 @@ use gear\library\GModel;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 29.01.2014
+ * @php 5.3.x
+ * @release 1.0.0
  */
 class GMemCache extends GCache
 {
@@ -61,9 +62,8 @@ class GMemCache extends GCache
     {
         if (is_array($server))
             $server = new GModel($server);
-        else
         if (!($server instanceof GModel))
-            $this->e('Invalid server');
+            throw $this->exceptionCacheInvalidServer();
         $this->_servers[] = $server;
     }
     
@@ -225,10 +225,7 @@ class GMemCache extends GCache
      * @access public
      * @return boolean
      */
-    public function clear()
-    {
-        return $this->_cache->flush();
-    }
+    public function clear() { return $this->_cache->flush(); }
     
     /**
      * Увеличичвает значение в кэше на $step
@@ -238,10 +235,7 @@ class GMemCache extends GCache
      * @param integer $step
      * @return boolean
      */
-    public function inc($key, $step = 1)
-    {
-        return $this->_cache->increment($key, $step);
-    }
+    public function inc($key, $step = 1) { return $this->_cache->increment($key, $step); }
     
     /**
      * Уменьшает значение в кэше на $step
@@ -251,10 +245,7 @@ class GMemCache extends GCache
      * @param integer $step
      * @return boolean
      */
-    public function dec($key, $step = 1)
-    {
-        return $this->_cache->decrement($key, $step);
-    }
+    public function dec($key, $step = 1) { return $this->_cache->decrement($key, $step); }
     
     /**
      * Обработчик события конструктора класса

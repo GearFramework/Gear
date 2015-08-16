@@ -1,9 +1,7 @@
 <?php
 
 namespace gear\library\cache;
-use gear\Core;
 use gear\library\GPlugin;
-use gear\library\GException;
 
 /** 
  * Кэш 
@@ -12,8 +10,9 @@ use gear\library\GException;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 28.01.2014
+ * @php 5.3.x
  */
 abstract class GCache extends GPlugin
 {
@@ -85,21 +84,4 @@ abstract class GCache extends GPlugin
      * @return boolean
      */
     abstract public function clear();
-}
-
-/** 
- * Исключения кэша 
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 0.0.1
- * @since 28.01.2014
- */
-class CacheException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

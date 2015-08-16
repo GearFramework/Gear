@@ -1,9 +1,7 @@
 <?php
 
 namespace gear\plugins\gear\http;
-use \gear\Core;
 use \gear\library\GPlugin;
-use \gear\library\GException;
 
 /**
  * Плагин для работы данных о среде окружения приложения.
@@ -12,8 +10,10 @@ use \gear\library\GException;
  * @plugin Environment
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 03.08.2013
+ * @php 5.3.x
+ * @release 1.0.0
  */
 class GEnvironment extends GPlugin
 {
@@ -22,7 +22,7 @@ class GEnvironment extends GPlugin
     /* Protected */
     protected static $_config = array
     (
-        'dependency' => '\\gear\\library\\GApplication',
+        'dependency' => '\gear\library\GApplication',
     );
     protected static $_init = false;
     protected $_trustedProxies = array();
@@ -171,10 +171,7 @@ class GEnvironment extends GPlugin
      * @access public
      * @return integer 
      */
-    public function gid()
-    {
-        return getmygid();
-    }
+    public function gid() { return getmygid(); }
     
     /**
      * Gets PHP's process ID
@@ -182,10 +179,7 @@ class GEnvironment extends GPlugin
      * @access public
      * @return integer 
      */
-    public function pid()
-    {
-        return getmypid();
-    }
+    public function pid() { return getmypid(); }
     
     /**
      * Gets PHP script owner's UID
@@ -193,26 +187,5 @@ class GEnvironment extends GPlugin
      * @access public
      * @return integer 
      */
-    public function uid()
-    {
-        return getmyuid();
-    }
-}
-
-/**
- * Обработчик исключений класса среды окружения
- *
- * @package Gear Framework
- * @plugin Enveroment
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 03.08.2013
- */
-class EnvironmentException extends GException 
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
+    public function uid() { return getmyuid(); }
 }

@@ -130,7 +130,7 @@ class GRequest extends GPlugin
     public function setRequestHandler($requestType, $handler)
     {
         if (!is_callable($handler))
-            $this->e('Request handler is invalid');
+            throw $this->exceptionInvalidRequestHandler();
         $this->_requestHandlers[$requestType] = $handler;
         return $this;
     }
@@ -247,7 +247,7 @@ class GRequest extends GPlugin
     {
         $requestMethod = $this->is();
         if (!method_exists($this, $requestMethod))
-            $this->e('Ivalid request method :requestMethod', array('requestMethod' => strtoupper($requestMethod)));
+            throw $this->exceptionInvalidRequestMethod(array('requestMethod' => strtoupper($requestMethod)));
         return call_user_func_array(array($this, $requestMethod), func_get_args());
     }
     
@@ -306,14 +306,14 @@ class GRequest extends GPlugin
                 $files = array();
                 foreach($_FILES[$name]['name'] as $index => $fileName)
                 {
-                    $file = 
-                    [
+                    $file = array
+                    (
                         'name' => $fileName,
                         'type' => $_FILES[$name]['type'][$index],
                         'tmp_name' => $_FILES[$name]['tmp_name'][$index],
                         'error' => $_FILES[$name]['error'][$index],
                         'size' => $_FILES[$name]['size'][$index],
-                    ];
+                    );
                     if (!$filter || ($filter && ($file = $this->filtering($filter, $file))))
                         $files[] = $file;
                 }
@@ -461,25 +461,7 @@ class GRequest extends GPlugin
                 $value = $this->filtering($filterItem, $value, $default);
         }
         else
-            $this->e('Unknown filter');
+            throw $this->exceptionRequest('Unknown filter');
         return $value;
     }
-}
-
-/** 
- * Класс исключений плагина Request
- * 
- * @package Gear Framework
- * @plugin Request
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 03.08.2013
- */
-class RequestException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

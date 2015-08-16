@@ -103,21 +103,3 @@ class GView extends GPlugin
         return isset($this->_arguments[$name]) ? $this->_arguments[$name] : null;
     }
 }
-
-/** 
- * Исключения плагина отображающего представления
- * 
- * @package Gear Framework
- * @plugin View
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 02.08.2013
- */
-class ViewException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
-}

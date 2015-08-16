@@ -14,6 +14,7 @@ use gear\library\GException;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 21.04.2015
+ * @php 5.3.x
  */
 class GHelperManager extends GComponent
 {
@@ -35,7 +36,7 @@ class GHelperManager extends GComponent
     public function runHelper($name)
     {
         if (!isset($this->_helpers[$name]))
-            $this->e('Helper :helperName not found', array('helperName' => $name));
+            throw $this->exceptionHelperNotFound(array('helperName' => $name));
         if ($this->_activeHelper !== $this->_helpers[$name])
         {
             if (!is_object($this->_helpers[$name]))

@@ -3,7 +3,6 @@
 namespace gear\library\db;
 use \gear\Core;
 use \gear\library\GModel;
-use \gear\library\GException;
 
 /** 
  * Таблица
@@ -12,8 +11,9 @@ use \gear\library\GException;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 04.08.2013
+ * @php 5.3.x
  */
 abstract class GDbCollection extends GModel implements \Iterator
 {
@@ -26,6 +26,8 @@ abstract class GDbCollection extends GModel implements \Iterator
     
     public function __call($name, $args)
     {
+        if (preg_match('/^exception/', $name))
+            return call_user_func_array(array(Core, $name), $args);
         if (preg_match('/^on[A-Z]/', $name))
         {
             array_unshift($args, $name);
@@ -49,9 +51,30 @@ abstract class GDbCollection extends GModel implements \Iterator
         }
         list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
         $properties['owner'] = $this;
-        $this->_current = new $class($properties);
+        $this->current = new $class($properties);
         return call_user_func_array(array($this->_current, $name), $args);
     }
+
+    /**
+     * Установка текущего запроса выборки из коллекции
+     *
+     * @access public
+     * @param object $cursor
+     * @return object
+     */
+    public function setCurrent($cursor)
+    {
+        $this->_current = $cursor;
+        return $this;
+    }
+
+    /**
+     * Возвращает текущий запрос выборки из коллекции
+     *
+     * @access public
+     * @return object
+     */
+    public function getCurrent() { return $this->_current; }
     
     /**
      * Удаление таблицы
@@ -79,16 +102,22 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @return string
      */
     abstract public function error();
-    
+
+    /**
+     * Перемотка текущей коллекции в начало
+     *
+     * @access public
+     * @return mixed
+     */
     public function rewind()
     {
-        if (!$this->_current)
+        if (!$this->current)
         {
             list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
             $properties['owner'] = $this;
-            $this->_current = new $class($properties);
+            $this->current = new $class($properties);
         }
-        return $this->_current->find()->rewind();
+        return $this->current->find()->rewind();
     }
 
     /**
@@ -97,7 +126,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return GDbDatabase
      */
-    public function current() { return $this->_current->current(); }
+    public function current() { return $this->current->current(); }
     
     /**
      * Следующий элемент из списка
@@ -105,7 +134,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return GDbDatabase
      */
-    public function next() { return $this->_current->next(); }
+    public function next() { return $this->current->next(); }
     
     /**
      * Возвращает true если текущий элемент списка является валидной записью
@@ -113,7 +142,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return boolean
      */
-    public function valid() { return $this->_current->valid(); }
+    public function valid() { return $this->current->valid(); }
     
     /**
      * Возвращает ключ текущего элемента
@@ -121,7 +150,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return integer
      */
-    public function key() { return $this->_current->key(); }
+    public function key() { return $this->current->key(); }
 
     /**
      * Возвращает ресурс соединения с сервером базы данных
@@ -129,10 +158,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return mixed
      */
-    public function getHandler()
-    {
-        return $this->_owner->getHandler();
-    }
+    public function getHandler() { return $this->owner->getHandler(); }
     
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
@@ -140,10 +166,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return \gear\library\db\GDbDatabase
      */
-    public function getDatabase()
-    {
-        return $this->_owner;
-    }
+    public function getDatabase() { return $this->owner; }
     
     /**
      * Возвращает соединение с сервером базы данных
@@ -151,25 +174,6 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return \gear\library\db\GDbConnection
      */
-    public function getConnection()
-    {
-        return $this->_owner->getConnection();
-    }
+    public function getConnection() { return $this->owner->getConnection(); }
 }
 
-/** 
- * Исключения коллекции
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 04.08.2013
- */
-class DbCollectionException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
-}

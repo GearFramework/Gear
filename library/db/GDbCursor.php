@@ -1,9 +1,8 @@
 <?php
 
 namespace gear\library\db;
-use \gear\Core;
+
 use \gear\library\GModel;
-use \gear\library\GException;
 
 /** 
  * Курсор
@@ -12,8 +11,9 @@ use \gear\library\GException;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 04.08.2013
+ * @php 5.3.x
  */
 abstract class GDbCursor extends GModel implements \Iterator
 {
@@ -33,12 +33,12 @@ abstract class GDbCursor extends GModel implements \Iterator
      */
     public function query()
     {
-        $query = $this->_query ? $this->_query : $this->buildQuery();
-        $this->event('onRunQuery');
+        $query = $this->getQuery();
+        $this->event('onRunQuery', $query);
         if ($this->getConnection()->isPluginRegistered('trace'))
             $this->getConnection()->trace->trace($query);
         if (!$this->runQuery($query))
-            $this->e($this->error(), array('query' => $query));
+            $this->exceptionDbCursorQueryError($this->error(), array('query' => $query));
         return $this;
     }
     
@@ -187,7 +187,18 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @return $this
      */
     abstract public function right($collection, $criteria = null);
-    
+
+    /**
+     * Правое подключение таблицы
+     *
+     * @abstract
+     * @access public
+     * @param string|object $collection
+     * @param null|array $criterial
+     * @return $this
+     */
+    abstract public function outer($collection, $criteria = null);
+
     /**
      * Формирование критерия поиска
      *
@@ -296,7 +307,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @param string $class
      * @return object
      */
-    abstract public function asObject($class = '\\gear\\library\\GModel');
+    abstract public function asObject($class = '\gear\library\GModel');
 
     /**
      * Возвращает массив всех записей найденных в результате исполнения 
@@ -315,10 +326,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return array
      */
-    public function current()
-    {
-        return $this->_current;
-    }
+    public function current() { return $this->_current; }
     
     /**
      * Возвращает следующую запись из результатов запроса в виде ассоциативного
@@ -327,10 +335,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return array
      */
-    public function next()
-    {
-        return $this->_current = $this->asAssoc();
-    }
+    public function next() { return $this->_current = $this->asAssoc(); }
     
     /**
      * Возвращает 0
@@ -346,10 +351,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return boolean
      */
-    public function valid() 
-    { 
-        return $this->current() ? true : false;
-    }
+    public function valid() { return $this->current() ? true : false; }
     
     /**
      * Возвращает ресурс соединения с сервером базы данных
@@ -357,10 +359,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return mixed
      */
-    public function getHandler()
-    {
-        return $this->_owner->getHandler();
-    }
+    public function getHandler() { return $this->owner->getHandler(); }
     
     /**
      * Возвращает коллекцию, для которой создан курсор
@@ -368,10 +367,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return \gear\library\db\GDbCollection
      */
-    public function getCollection()
-    {
-        return $this->_owner;
-    }
+    public function getCollection() { return $this->owner; }
     
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
@@ -379,10 +375,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return \gear\library\db\GDbDatabase
      */
-    public function getDatabase()
-    {
-        return $this->_owner->getDatabase();
-    }
+    public function getDatabase() { return $this->owner->getDatabase(); }
     
     /**
      * Возвращает соединение с сервером базы данных
@@ -390,30 +383,5 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @return \gear\library\db\GDbConnection
      */
-    public function getConnection()
-    {
-        return $this->_owner->getConnection();
-    }
-}
-
-/** 
- * Исключения курсора
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 04.08.2013
- */
-class DbCursorException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
-    public $viewPath = array
-    (
-        1 => '\\gear\\views\\db\\exceptionHttp.html',
-        2 => '\\gear\\views\\db\\exceptionConsole.html'
-    );
+    public function getConnection() { return $this->owner->getConnection(); }
 }

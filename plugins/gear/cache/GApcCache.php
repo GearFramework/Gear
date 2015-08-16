@@ -10,8 +10,10 @@ use gear\library\cache\GCache;
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 29.01.2014
+ * @php 5.3.x
+ * @release 1.0.0
  */
 class GApcCache extends GCache
 {
@@ -127,10 +129,7 @@ class GApcCache extends GCache
      * @access public
      * @return boolean
      */
-    public function clear()
-    {
-        return apc_clear_cache();
-    }
+    public function clear() { return apc_clear_cache(); }
     
     /**
      * Увеличичвает значение в кэше на $step
@@ -140,10 +139,7 @@ class GApcCache extends GCache
      * @param integer $step
      * @return boolean
      */
-    public function inc($key, $step = 1)
-    {
-        return apc_inc($key, $step);
-    }
+    public function inc($key, $step = 1) { return apc_inc($key, $step); }
     
     /**
      * Уменьшает значение в кэше на $step
@@ -153,8 +149,5 @@ class GApcCache extends GCache
      * @param integer $step
      * @return boolean
      */
-    public function dec($key, $step = 1)
-    {
-        return apc_dec($key, $step);
-    }
+    public function dec($key, $step = 1) { return apc_dec($key, $step); }
 }

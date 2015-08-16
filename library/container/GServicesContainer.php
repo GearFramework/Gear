@@ -114,7 +114,7 @@ class GServicesContainer
     public function getRegisteredService($serviceLocation, $clone = false, $owner = null)
     {
         if (!isset($this->_services[$serviceLocation]))
-            Core::e('Service :serviceName not registered', array('serviceName' => $serviceLocation));
+            throw Core::exceptinServiceNotRegistered(array('serviceName' => $serviceLocation));
         if (!is_object($this->_services[$serviceLocation]))
         {
             list($class, $config, $properties) = Core::getRecords($this->_services[$serviceLocation]);

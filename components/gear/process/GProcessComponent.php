@@ -2,9 +2,8 @@
 
 namespace gear\components\gear\process;
 use gear\Core;
-use gear\interfaces\IProcess;
+use gear\interfaces\IProcessManager;
 use gear\library\GComponent;
-use gear\library\GException;
 
 /** 
  * Компонент обслуживающий процессы
@@ -101,7 +100,7 @@ class GProcessComponent extends GComponent
         {
             $processName = $this->getDefaultProcess();
             if (!$processName)
-                $this->e('Unknown process');
+                throw $this->exceptionProcess('Unknown process');
         }
         $processes = $this->getProcesses();
         $class = null;
@@ -220,7 +219,7 @@ class GProcessComponent extends GComponent
         if ($process instanceof IProcess || is_callable($process))
             $this->_currentProcess = $process;
         else
-            $this->e('Invalid process');
+            throw $this->exceptionProcess('Invalid process');
         return $this;
     }
     
@@ -263,22 +262,4 @@ class GProcessComponent extends GComponent
         else
             echo $e->getMessage();
     }
-}
-
-/** 
- * Класс исключений компонента
- * 
- * @package Gear Framework
- * @component ProcessComponent
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 0.0.1
- * @since 03.08.2013
- */
-class ProcessComponentException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

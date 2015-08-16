@@ -70,7 +70,7 @@ abstract class GService extends GObject implements IService
         if (is_string($config))
             $config = require(Core::resolvePath($config));
         if (!is_array($config))
-            static::e('Incorrect configuration');
+            throw static::exceptionService('Incorrect configuration');
         static::$_config = array_replace_recursive(static::$_config, $config);
         list(,,static::$_config) = Core::getRecords(static::$_config);
         if (isset(static::$_config['components']))
