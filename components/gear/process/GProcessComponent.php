@@ -2,7 +2,7 @@
 
 namespace gear\components\gear\process;
 use gear\Core;
-use gear\interfaces\IProcessManager;
+use gear\interfaces\IProcess;
 use gear\library\GComponent;
 
 /** 
