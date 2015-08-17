@@ -1,7 +1,8 @@
 <?php
 
 namespace gear\library\io;
-use gear\Core;
+
+use gear\interfaces\IIo;
 use gear\library\GModel;
 use gear\library\GException;
 
@@ -15,7 +16,7 @@ use gear\library\GException;
  * @version 1.0.0
  * @since 30.11.2014
  */
-abstract class GIo extends GModel
+abstract class GIo extends GModel implements IIo
 {
     /* Const */
     const UNKNOWN = 0;
