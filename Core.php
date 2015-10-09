@@ -16,7 +16,7 @@ defined('DEBUG') or define('DEBUG', false);
  * @version 1.0.0
  * @since 01.08.2013
  * @license MIT
- * @php 5.3.x
+ * @php 5.4.x
  */
 final class Core
 {
@@ -38,14 +38,14 @@ final class Core
     const ACCESS_PUBLIC = 2;
     /* Private */
     /* Текущая конфигурация ядра */
-    private static $_config = array
-    (
+    private static $_config =
+    [
         /* Библиотеки, модули, компоненты подключаемые на этапе инициализации */
-        'preloads' => array
-        (
+        'preloads' =>
+        [
             /* Библиотеки подключаемые на этапе инициализации */
-            'library' => array
-            (
+            'library' =>
+            [
                 '\gear\library\GException',
                 '\gear\exceptions\*',
                 '\gear\library\GEvent',
@@ -59,74 +59,74 @@ final class Core
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
                 '\gear\interfaces\ILoader',
-            ),
+            ],
             /* Модули подключаемые на этапе инициализации */
-            'modules' => array(),
+            'modules' => [],
             /* Компоненты подключаемые на этапе инициализации */
-            'components' => array
-            (
+            'components' =>
+            [
                 /* Системное логгирование */
-                'syslog' => array
-                (
-                    'class' => array('name' => '\gear\components\gear\syslog\GSyslog'),
+                'syslog' =>
+                [
+                    'class' => ['name' => '\gear\components\gear\syslog\GSyslog'],
                     'name' => 'syslog',
-                ),
+                ],
                 // Автозагрузчик классов
-                'loader' => array
-                (
-                    'class' => array('name' => '\gear\components\gear\loader\GLoader'),
+                'loader' =>
+                [
+                    'class' => ['name' => '\gear\components\gear\loader\GLoader'],
                     'name' => 'loader',
                     /* Set helpers, remove dependencies on the class name */
-                    'aliases' =>  array
-                    (
-                        'Arrays' => array('class' => 'gear\helpers\GArray'),
-                        'Calendar' => array('class' => 'gear\helpers\GCalendar'),
-                        'Html' => array('class' => 'gear\helpers\GHtml'),
-                    ),
-                ),
+                    'aliases' =>
+                    [
+                        'Arrays' => ['class' => 'gear\helpers\GArray'],
+                        'Calendar' => ['class' => 'gear\helpers\GCalendar'],
+                        'Html' => ['class' => 'gear\helpers\GHtml'],
+                    ],
+                ],
                 // Обработчик ошибок
-                'errorHandler' => array
-                (
+                'errorHandler' =>
+                [
                     'class' => '\gear\components\gear\handlers\GErrorsHandler',
                     'name' => 'errorHandler',
-                ),
+                ],
                 // Обработчик неперехваченных исключений
-                'exceptionHandler' => array
-                (
+                'exceptionHandler' =>
+                [
                     'class' => '\gear\components\gear\handlers\GExceptionsHandler',
                     'name' => 'exceptionHandler',
-                ),
-            ),
-        ),
+                ],
+            ],
+        ],
         /* Модули ядра */
-        'modules' => array(),
+        'modules' => [],
         /* Компоненты ядра */
-        'components' => array
-        (
-            'helper' => array
-            (
+        'components' =>
+        [
+            'helper' =>
+            [
                 'class' => '\gear\components\gear\helper\GHelperManager',
                 'name' => 'helper',
-            ),
-        ),
-        'helpers' => array
-        (
-            'calendar' => array('class' => '\gear\helpers\GCalendar'),
-        ),
+            ],
+        ],
+        'helpers' =>
+        [
+            'calendar' => ['class' => '\gear\helpers\GCalendar'],
+        ],
         /* Параметры работы ядра, приложения и т.п. */
-        'params' => array
-        (
+        'params' =>
+        [
             'baseDir' => GEAR, 
             'locale' => 'ru_RU',
             'encoding' => 'utf-8',
-            'services' => array('class' => '\gear\library\container\GServicesContainer'),
-            'configurator' => array('class' => '\gear\components\gear\configurator\GConfigurator'),
-            'defaultApplication' => array('class' => '\gear\library\GApplication'),
+            'services' => ['class' => '\gear\library\container\GServicesContainer'],
+            'configurator' => ['class' => '\gear\components\gear\configurator\GConfigurator'],
+            'defaultApplication' => ['class' => '\gear\library\GApplication'],
             'helperManager' => 'helper',
-        ),
-    );
+        ],
+    ];
     /* Обработчики событий */
-    private static $_events = array();
+    private static $_events = [];
     /* Режим запуска ядра */
     private static $_coreMode = null;
     /* Окружение: http или консоль */
@@ -143,19 +143,26 @@ final class Core
             if (!isset($args[0]) || is_array($args[0]))
                 array_unshift($args, null);
             array_unshift($args, $name);
-            return call_user_func_array(array(__CLASS__, 'e'), $args);
+            $result = call_user_func_array([__CLASS__, 'e'], $args);
         }
+        else
         if (self::isModuleRegistered($name))
-            return self::m($name);
+            $result = self::m($name);
+        else
         if (self::isComponentRegistered($name))
-            return self::c($name, count($args) ? $args[0] : false);
+            $result = self::c($name, count($args) ? $args[0] : false);
+        else
         if (self::isHelperRegistered($name))
         {
             array_unshift($args, $name);
-            return call_user_func_array(array(__CLASS__, 'h'), $args);
+            $result = call_user_func_array(array(__CLASS__, 'h'), $args);
         }
-        array_unshift($args, $name);
-        return call_user_func_array(array(__CLASS__, 'params'), $args);
+        else
+        {
+            array_unshift($args, $name);
+            return call_user_func_array(array(__CLASS__, 'params'), $args);
+        }
+        return $result;
     }
     
     /**
@@ -175,6 +182,8 @@ final class Core
         {
             list($class, $config, $properties) = self::getRecords($services);
             $file = self::resolvePath($class, true) . '.php';
+            if (!file_exists($file) || !is_readable($file))
+                throw self::exceptionFileNotFound(array('filename' => $file));
             require $file;
             if (method_exists($class, 'init'))
                 $class::init($config);
