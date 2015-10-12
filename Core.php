@@ -79,9 +79,9 @@ final class Core
                     /* Set helpers, remove dependencies on the class name */
                     'aliases' =>
                     [
-                        'Arrays' => ['class' => 'gear\helpers\GArray'],
-                        'Calendar' => ['class' => 'gear\helpers\GCalendar'],
-                        'Html' => ['class' => 'gear\helpers\GHtml'],
+                        'Arrays' => ['class' => '\gear\helpers\GArray'],
+                        'Calendar' => ['class' => '\gear\helpers\GCalendar'],
+                        'Html' => ['class' => '\gear\helpers\GHtml'],
                     ],
                 ],
                 // Обработчик ошибок
@@ -155,47 +155,19 @@ final class Core
         if (self::isHelperRegistered($name))
         {
             array_unshift($args, $name);
-            $result = call_user_func_array(array(__CLASS__, 'h'), $args);
+            $result = call_user_func_array([__CLASS__, 'h'], $args);
         }
         else
         {
             array_unshift($args, $name);
-            return call_user_func_array(array(__CLASS__, 'params'), $args);
+            return call_user_func_array([__CLASS__, 'params'], $args);
         }
         return $result;
-    }
-    
-    /**
-     * Возвращает инстанс менеджера сервисов
-     * 
-     * @access public
-     * @static
-     * @return object
-     */
-    public static function services()
-    {
-        $services = self::params('services');
-        if (!$services)
-            throw self::exceptionCore('Services container not defined');
-        else
-        if (!is_object($services))
-        {
-            list($class, $config, $properties) = self::getRecords($services);
-            $file = self::resolvePath($class, true) . '.php';
-            if (!file_exists($file) || !is_readable($file))
-                throw self::exceptionFileNotFound(array('filename' => $file));
-            require $file;
-            if (method_exists($class, 'init'))
-                $class::init($config);
-            $services = new $class($properties);
-            self::params('services', $services);
-        }
-        return $services;
     }
 
     /**
      * Инициализация ядра
-     * 
+     *
      * @access public
      * @static
      * @param string|array|\Closure $config path to configuration file or array of configuration or anonymous function must return array
@@ -205,7 +177,7 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        $modes = array(self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production');
+        $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
         if ($config instanceof \Closure)
             $config = $config($coreMode = self::MODE_DEVELOPMENT);
@@ -220,7 +192,7 @@ final class Core
             $config = is_file($fileConfig) ? require($fileConfig) : null;
         }
         if (!is_array($config))
-            $config = array('modules' => array('app' => self::params('defaultApplication')));
+            $config = ['modules' => ['app' => self::params('defaultApplication')]];
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
         foreach(self::$_config as $sectionName => $section)
@@ -290,8 +262,8 @@ final class Core
             if (is_file($file))
                 self::_loadFile($file);
             else
-            if (is_dir($file))
-                self::_loadPath($file, $mask);
+                if (is_dir($file))
+                    self::_loadPath($file, $mask);
         }
     }
 
@@ -309,10 +281,10 @@ final class Core
             throw self::exceptionFileNotFound(array('filename' => $file));
         require $file;
     }
-    
+
     /**
      * Подгрузка модулей и компонентов на этапе конфигурации ядра
-     * 
+     *
      * @access private
      * @static
      * @param string $sectionName
@@ -341,7 +313,35 @@ final class Core
      * @return \gear\library\GApplication
      */
     public static function app() { return self::m('app'); }
-    
+
+    /**
+     * Возвращает инстанс менеджера сервисов
+     *
+     * @access public
+     * @static
+     * @return object
+     */
+    public static function services()
+    {
+        $services = self::params('services');
+        if (!$services)
+            throw self::exceptionCore('Services container not defined');
+        else
+            if (!is_object($services))
+            {
+                list($class, $config, $properties) = self::getRecords($services);
+                $file = self::resolvePath($class, true) . '.php';
+                if (!file_exists($file) || !is_readable($file))
+                    throw self::exceptionFileNotFound(['filename' => $file]);
+                require $file;
+                if (method_exists($class, 'init'))
+                    $class::init($config);
+                $services = new $class($properties);
+                self::params('services', $services);
+            }
+        return $services;
+    }
+
     /**
      * Вызов компонента реализцющего системное протоколирование
      * Производит протоколирование оперций в случае, если такой компонент
