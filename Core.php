@@ -262,8 +262,8 @@ final class Core
             if (is_file($file))
                 self::_loadFile($file);
             else
-                if (is_dir($file))
-                    self::_loadPath($file, $mask);
+            if (is_dir($file))
+                self::_loadPath($file, $mask);
         }
     }
 
@@ -277,8 +277,8 @@ final class Core
      */
     private static function _loadFile($file)
     {
-        if (!file_exists($file))
-            throw self::exceptionFileNotFound(array('filename' => $file));
+        if (!file_exists($file) || !is_readable($file))
+            throw self::exceptionFileNotFound(['filename' => $file]);
         require $file;
     }
 
@@ -297,9 +297,7 @@ final class Core
         {
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
-            if (!file_exists($pathFile))
-                throw self::exceptionFileNotFound(array('filename' => $pathFile));
-            require $pathFile;
+            self::_loadFile($pathFile);
             $instance = $class::install($config, $properties);
             self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
         }
@@ -331,9 +329,7 @@ final class Core
             {
                 list($class, $config, $properties) = self::getRecords($services);
                 $file = self::resolvePath($class, true) . '.php';
-                if (!file_exists($file) || !is_readable($file))
-                    throw self::exceptionFileNotFound(['filename' => $file]);
-                require $file;
+                self::_loadFile($file);
                 if (method_exists($class, 'init'))
                     $class::init($config);
                 $services = new $class($properties);
@@ -373,6 +369,21 @@ final class Core
         self::$_config['params'][$name] = $value;
         return $value;
     }
+
+    /**
+     * Возвращает false если указанный сервис не зарегистрирован
+     *
+     * @access public
+     * @static
+     * @param string $name
+     * @return bool|object
+     */
+    public static function isServiceRegistered($name)
+    {
+        if (!($result = self::isModuleRegistered($name)))
+            $result = self::isComponentRegistered($name);
+        return $result;
+    }
     
     /**
      * Получение модуля
@@ -385,7 +396,7 @@ final class Core
     public static function m($name)
     {
         if (!self::isModuleRegistered($name))
-            throw self::exceptionCore('Module :moduleName not registered', array('moduleName' => $name));
+            throw self::exceptionCore('Module :moduleName not registered', ['moduleName' => $name]);
         return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
     }
     
@@ -471,8 +482,8 @@ final class Core
     public static function c($name, $instance = false)
     {
         if (!self::isComponentRegistered($name))
-            throw self::exceptionCore('Component :componentName not registered', array('componentName' => $name));
-        return self::params('services')->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
+            throw self::exceptionCore('Component :componentName not registered', ['componentName' => $name]);
+        return self::services()->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
     }
     
     /**
@@ -625,7 +636,7 @@ final class Core
      * @param object $event
      * @return mixed
      */
-    public static function on($name, $event) { return call_user_func_array(array(__CLASS__, 'event'), func_get_args()); }
+    public static function on($name, $event) { return call_user_func_array([__CLASS__, 'event'], func_get_args()); }
     
     /**
      * Добавление обработчика события
@@ -639,7 +650,7 @@ final class Core
     public static function attachEvent($eventName, $handler)
     {
         if (!is_callable($handler))
-            throw self::exceptionCore('Invalid handler of event ":eventName"', array('eventName' => $eventName));
+            throw self::exceptionCore('Invalid handler of event ":eventName"', ['eventName' => $eventName]);
         self::$_events[$eventName][] = $handler;
         return true;
     }
@@ -657,7 +668,7 @@ final class Core
     {
         $properties = self::_prepareConfig($properties);
         $class = null;
-        $config = array();
+        $config = [];
         if (isset($properties['class']))
         {
             $class = $properties['class'];
@@ -858,7 +869,7 @@ final class Core
     public static function dump($value, $renderer = null)
     {
         if ($renderer && is_callable($renderer))
-            $renderer('views\dump', array('value' => $value));
+            $renderer('views\dump', ['value' => $value]);
         else
         {
             echo '<pre>';
