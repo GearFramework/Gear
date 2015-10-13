@@ -734,15 +734,18 @@ final class Core
         }
         else
         {
-            /* Абсолютный путь */
+            // Абсолютный путь
             if (preg_match('/^[a-zA-Z]{1}\:/', $path) || $path[0] === '/')
                 $resolved = $path;
-            /* Относительный путь или пространство имён */
+            // Относительный путь или пространство имён
             else
             {
-                $resolved = GEAR . '/..';
+                //$resolved = GEAR . '/..';
+                if ($path[0] === '\\')
+                    $resolved = GEAR . '/..' . str_replace('\\', '/', $path);
+                else
                 if ($path[0] !== '\\')
-                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '/gear/');
+                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '\gear\\');
                 $resolved .= str_replace('\\', '/', $path);
             }
         }
