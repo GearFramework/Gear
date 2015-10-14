@@ -1,5 +1,8 @@
 <?php
 
+//TODO::Менять токен пользовательской сессии при каждом запросе
+//TODO::Для форм добавлять скрытое поле с рандомным названием и значением, которое меняется при ошибках запроса из формы
+
 namespace gear;
 
 defined('GEAR') or define('GEAR', __DIR__);
@@ -21,6 +24,10 @@ defined('DEBUG') or define('DEBUG', false);
 final class Core
 {
     /* Const */
+
+    /* Версия ядра */
+    const VERSION = '1.0.0';
+
     const EMERGENCY = 'EMERGENCY';
     const ALERT = 'ALERT';
     const CRITICAL = 'CRITICAL';
@@ -29,10 +36,13 @@ final class Core
     const NOTICE = 'NOTICE';
     const INFO = 'INFO';
     const DEBUG = 'DEBUG';
+
     const HTTP = 1;
     const CLI = 2;
+
     const MODE_DEVELOPMENT = 0;
     const MODE_PRODUCTION = 1;
+
     const ACCESS_PRIVATE = 0;
     const ACCESS_PROTECTED = 1;
     const ACCESS_PUBLIC = 2;
@@ -101,14 +111,8 @@ final class Core
         /* Модули ядра */
         'modules' => [],
         /* Компоненты ядра */
-        'components' =>
-        [
-            'helper' =>
-            [
-                'class' => '\gear\components\gear\helper\GHelperManager',
-                'name' => 'helper',
-            ],
-        ],
+        'components' => [],
+        /* Хелперы */
         'helpers' =>
         [
             'calendar' => ['class' => '\gear\helpers\GCalendar'],
@@ -120,19 +124,27 @@ final class Core
             'locale' => 'ru_RU',
             'encoding' => 'utf-8',
             'services' => ['class' => '\gear\library\container\GServicesContainer'],
-            'configurator' => ['class' => '\gear\components\gear\configurator\GConfigurator'],
+//            'configurator' => ['class' => '\gear\components\gear\configurator\GConfigurator'],
+            'helperManager' => ['class' => '\gear\components\gear\helper\GHelperManager'],
             'defaultApplication' => ['class' => '\gear\library\GApplication'],
-            'helperManager' => 'helper',
         ],
     ];
     /* Обработчики событий */
-    private static $_events = [];
+    private static $_events =
+    [
+        'onCoreReady' => [],
+        'onBeforeApplicationRun' => [],
+        'onAfterApplicationRun' => [],
+        'onRequest' => [],
+        'onBeforeProcessExec' => [],
+        'onAfterProcessExec' => [],
+        'onBeforeApiRun' => [],
+        'onAfterApiRun' => [],
+    ];
     /* Режим запуска ядра */
     private static $_coreMode = null;
     /* Окружение: http или консоль */
     private static $_runMode = null;
-    /* Версия ядра */
-    private static $_version = '1.0.0';
     /* Protected */
     /* Public */
     
@@ -172,7 +184,6 @@ final class Core
      * @static
      * @param string|array|\Closure $config path to configuration file or array of configuration or anonymous function must return array
      * @param integer $coreMode Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION
-     * @throws \Exception
      * @return boolean
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
@@ -180,18 +191,21 @@ final class Core
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
         if ($config instanceof \Closure)
-            $config = $config($coreMode = self::MODE_DEVELOPMENT);
-        if ($config === null)
-            $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
-        if (is_string($config))
+            $config = $config($coreMode);
+        else
         {
-            $fileConfig = self::resolvePath($config, true);
-            clearstatcache();
-            if (is_dir($fileConfig))
-                $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
-            $config = is_file($fileConfig) ? require($fileConfig) : null;
+            if (!$config)
+                $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
+            if (is_string($config))
+            {
+                $fileConfig = self::resolvePath($config, true);
+                clearstatcache();
+                if (is_dir($fileConfig))
+                    $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
+                $config = is_file($fileConfig) ? require($fileConfig) : null;
+            }
         }
-        if (!is_array($config))
+        if (!is_array($config) || (is_array($config) && !$config))
             $config = ['modules' => ['app' => self::params('defaultApplication')]];
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
@@ -217,7 +231,6 @@ final class Core
      * @access private
      * @static
      * @return bool
-     * @throws \Exception
      */
     private static function _preloads()
     {
@@ -325,16 +338,16 @@ final class Core
         if (!$services)
             throw self::exceptionCore('Services container not defined');
         else
-            if (!is_object($services))
-            {
-                list($class, $config, $properties) = self::getRecords($services);
-                $file = self::resolvePath($class, true) . '.php';
-                self::_loadFile($file);
-                if (method_exists($class, 'init'))
-                    $class::init($config);
-                $services = new $class($properties);
-                self::params('services', $services);
-            }
+        if (!is_object($services))
+        {
+            list($class, $config, $properties) = self::getRecords($services);
+            $file = self::resolvePath($class, true) . '.php';
+            self::_loadFile($file);
+            if (method_exists($class, 'init'))
+                $class::init($config);
+            $services = new $class($properties);
+            self::params('services', $services);
+        }
         return $services;
     }
 
@@ -420,7 +433,6 @@ final class Core
      * @static
      * @param string $name
      * @param array $module
-     * @throws \Exception
      * @return true
      */
     public static function registerModule($name, array $module)
@@ -506,7 +518,6 @@ final class Core
      * @static
      * @param string $name
      * @param array $module
-     * @throws \Exception
      * @return true
      */
     public static function registerComponent($name, array $component)
@@ -608,7 +619,7 @@ final class Core
      * @param object $event
      * @return mixed
      */
-    public static function event($name, $event)
+    public static function triggerEvent($name, $event = null)
     {
         $result = false;
         if (isset(self::$_events[$name]))
@@ -628,15 +639,15 @@ final class Core
     }
     
     /**
-     * генерация события
+     * Установка события
      * 
      * @access public
      * @static
      * @param string $name
-     * @param object $event
+     * @param mixed $handler callable value
      * @return mixed
      */
-    public static function on($name, $event) { return call_user_func_array([__CLASS__, 'event'], func_get_args()); }
+    public static function on($name, $handler) { return self::attachEvent($name, $handler); }
     
     /**
      * Добавление обработчика события
@@ -650,7 +661,7 @@ final class Core
     public static function attachEvent($eventName, $handler)
     {
         if (!is_callable($handler))
-            throw self::exceptionCore('Invalid handler of event ":eventName"', ['eventName' => $eventName]);
+            throw self::exceptionCore('Invalid handler of event :eventName', ['eventName' => $eventName]);
         self::$_events[$eventName][] = $handler;
         return true;
     }
@@ -789,10 +800,10 @@ final class Core
      * @static
      * @return string
      */
-    public static function getVersion() { return self::$_version; }
+    public static function getVersion() { return self::VERSION; }
 
     /**
-     * Вызов указанного исключения
+     * Создание указанного исключения
      *
      * @access public
      * @param string $exceptionName
@@ -800,74 +811,21 @@ final class Core
      * @param array $params
      * @param int $code
      * @param null|object $previous
-     * @throws \Exception
+     * @return \Exception
      */
     public function e($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
     {
         $exceptionName = '\\' . preg_replace('/^exception/', '', $exceptionName) . 'Exception';
-        if (!class_exists($exceptionName, false))
+        if (class_exists($exceptionName, false))
+            $exception = new $exceptionName($message, $code, $previous, $params);
+        else
         {
             foreach($params as $name => $value)
                 $message = str_replace(':' . $name, $value, $message);
-            return new \Exception($message, $code, $previous);
+            $exception = new \Exception($message, $code, $previous);
         }
-        return new $exceptionName($message, $code, $previous, $params);
+        return $exception;
     }
-
-    /**
-     * Генерация исключения
-     *
-     * @access public
-     * @static
-     * @param string $message
-     * @param integer $code
-     * @param \Exception $previous
-     * @param array $params
-     * @param string $class
-     * @throws \Exception|\gear\CoreException
-     * @return \Exception
-     */
-/*    public static function e($message, array $params = array(), $code = 0, $previous = null, $class = __CLASS__)
-    {
-        $count = count($args = func_get_args());
-        for($i = 1; $i < $count; ++ $i)
-        {
-            if (is_numeric($args[$i]))
-                $code = $args[$i];
-            else
-            if ($args[$i] instanceof \Exception)
-                $previous = $args[$i];
-            else
-            if (is_array($args[$i]))
-                $params = $args[$i];
-            else
-            if (is_string($args[$i]))
-                $class = $args[$i];
-        }
-        $classException = $class . 'Exception';
-        if ($class !== __CLASS__)
-        {
-            if (!class_exists($classException, false))
-            {
-                $classException = static::_e($class);
-                if (!class_exists($classException, false))
-                    $classException = static::_e(get_parent_class($class));
-            }
-        }
-        if (!class_exists($classException, false))
-        {
-            foreach($params as $name => $value)
-                $message = str_replace(':' . $name, $value, $message);
-            throw new \Exception($message, $code, $previous);
-        }
-        throw new $classException($message, $code, $previous, $params);
-    }
-
-    private static function _e($class)
-    {
-        $path = str_replace('\\', '/', $class);
-        return str_replace('/', '\\', dirname($path) . '/' . substr(basename($path), 1) . 'Exception');
-    }*/
 
     public static function dump($value, $renderer = null)
     {

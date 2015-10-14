@@ -10,7 +10,7 @@ namespace gear\library;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.3.x
+ * @php 5.4.x
  * @release 1.0.0
  */
 class GEvent
@@ -18,11 +18,11 @@ class GEvent
     /* Const */
     /* Private */
     private $_sender = null;
-    private $_args = array();
+    private $_args = [];
+    private $_stopPropagation = false;
     /* Protected */
     /* Public */
-    public $stopPropagation = false;
-    
+
     /**
      * Конструктор события
      * 
@@ -30,7 +30,7 @@ class GEvent
      * @param object $sender
      * @return GEvent
      */
-    public function __construct($sender, array $args = array())
+    public function __construct($sender, array $args = [])
     {
         $this->_sender = $sender;
         $this->_args = $args;
@@ -60,7 +60,14 @@ class GEvent
      * @param mixed $value
      * @return void
      */
-    public function __set($name, $value) { $this->_args[$name] = $value; }
+    public function __set($name, $value)
+    {
+        $setter = 'set' . ucfirst($name);
+        if (method_exists($this, $setter))
+            $this->$setter($value);
+        else
+            $this->_args[$name] = $value;
+    }
     
     /**
      * Возвращает объект, который вызвал вызвал событие
@@ -78,7 +85,28 @@ class GEvent
      */
     public function stopPropagation()
     {
-        $this->stopPropagation = true;
+        $this->_stopPropagation = true;
         return $this;
     }
+
+    /**
+     * Установка значение для stopPropagation
+     *
+     * @access public
+     * @param bool $value
+     * @return bool
+     */
+    public function setStopPropagation($value)
+    {
+        $this->_stopPropagation = (bool)$value;
+        return $this;
+    }
+
+    /**
+     * Возвращает значение stopPropagation
+     *
+     * @access public
+     * @return bool
+     */
+    public function getStopPropagation() { return $this->_stopPropagation; }
 }

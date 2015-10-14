@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+use gear\Core;
 
 /**
  * Класс исключений
@@ -10,7 +11,7 @@ namespace gear\library;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.3.x
+ * @php 5.4.x
  * @release 1.0.0
  */
 class GException extends \Exception
@@ -18,9 +19,11 @@ class GException extends \Exception
     /* Const */
     /* Private */
     /* Protected */
-    protected $_args = array();
+    protected static $_messages = '\gear\exceptions\locales';
+    protected $_section = 'exceptions';
+    protected $_args = [];
     /* Public */
-    public $defaultMessage = '';
+    public $defaultMessage = 'Exception';
 
     /**
      * Конструктор исключения
@@ -36,9 +39,17 @@ class GException extends \Exception
      * @param array $args
      * @return GException
      */
-    public function __construct($message, $code = 0, \Exception $previous = null, array $args = array())
+    public function __construct($message, $code = 0, \Exception $previous = null, array $args = [])
     {
         $message = $message !== null ?: $this->defaultMessage;
+        if (is_string(self::$_messages))
+        {
+            $locale = Core::params('locale') ?: 'en_En';
+            $path = Core::resolvePath(self::$_messages) . '/' . $locale . '.php';
+            self::$_messages = file_exists($path) && is_readable($path) ? require($path) : [];
+        }
+        if (isset(self::$_messages[$this->_section][$message]))
+            $message = self::$_messages[$this->_section][$message];
         foreach($args as $name => $value)
         {
             $this->$name = $value;
