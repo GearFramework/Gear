@@ -271,11 +271,14 @@ class GObject
      */
     public function __unset($name)
     {
-        if ($this->isEvent($name))
+        if (method_exists($this, 'isEvent') && $this->isEvent($name))
             $this->detachEvent($name);
         else
-        if ($this->isBehavior($name))
+        if (method_exists($this, 'isBehavior') && $this->isBehavior($name))
             $this->detachBehavior($name);
+        else
+        if (method_exists($this, 'isPlugin') && $this->isPluginRegistered($name))
+            $this->uninstallPlugin($name);
         else
         if (isset($this->_properties[$name]))
             unset($this->_properties[$name]);
@@ -554,9 +557,9 @@ class GObject
      * @param string $message
      * @return void
      */
-    public static function e($exceptionName, $message, $params = array(), $code = 0, \Exception $previous = null)
+    public static function e($exceptionName, $message, $params = [], $code = 0, \Exception $previous = null)
     {
-        return call_user_func_array(array(Core, $exceptionName), func_get_args());
+        return call_user_func_array([Core, $exceptionName], func_get_args());
     }
 
     /**
@@ -582,7 +585,8 @@ class GObject
     public function onConstructed()
     {
         $this->_preloading();
-        $this->attachBehaviors($this->getBehaviors());
+        if (method_exists($this, 'attachBehaviors'))
+            $this->attachBehaviors($this->getBehaviors());
         return true;
     }
     
@@ -594,8 +598,11 @@ class GObject
      */
     protected function _preloading()
     {
-        foreach($this->getPreloads('plugins') as $pluginName)
-            $this->p($pluginName);
+        if (method_exists($this, 'p'))
+        {
+            foreach($this->getPreloads('plugins') as $pluginName)
+                $this->p($pluginName);
+        }
     }
 }
 
