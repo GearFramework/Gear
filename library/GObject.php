@@ -2,6 +2,8 @@
 
 namespace gear\library;
 use \gear\Core;
+use gear\interfaces\IBehavior;
+use gear\interfaces\IPlugin;
 use \gear\library\GEvent;
 use \gear\library\GException;
 
@@ -14,7 +16,7 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
- * @php 5.3.x
+ * @php 5.4.x
  */
 class GObject
 {
@@ -25,18 +27,18 @@ class GObject
     /**
      * @var array of class configuration
      */
-    protected static $_config = array
-    (
-        'plugins' => array
-        (
-            'view' => array('class' => '\gear\plugins\gear\GView'),
-        ),
-        'behaviors' => array(),
-    );
+    protected static $_config =
+    [
+        'plugins' =>
+        [
+            'view' => ['class' => '\gear\plugins\gear\GView'],
+        ],
+        'behaviors' => [],
+    ];
     /**
      * @var array default values of object properties
      */
-    protected static $_defaultProperties = array();
+    protected static $_defaultProperties = [];
     protected $_namespace = null;
     /**
      * @var int access level to object
@@ -45,7 +47,7 @@ class GObject
     /**
      * @var array of object properties
      */
-    protected $_properties = array();
+    protected $_properties = [];
     /**
      * @var null|object owner object
      */
@@ -53,19 +55,19 @@ class GObject
     /**
      * @var array behaviors
      */
-    protected $_behaviors = array();
+    protected $_behaviors = [];
     /**
      * @var array instances plugins
      */
-    protected $_plugins = array();
+    protected $_plugins = [];
     /**
      * @var array events handlers
      */
-    protected $_events = array();
+    protected $_events = [];
     /**
      * @var array array of plugin names, for loading on construct
      */
-    protected $_preloads = array();
+    protected $_preloads = [];
     /**
      * @var string path or namespace to object views
      */
@@ -81,14 +83,14 @@ class GObject
      * @param null|object $owner
      * @return GObject
      */
-    protected function __construct(array $properties = array(), $owner = null)
+    protected function __construct(array $properties = [], $owner = null)
     {
         $this->restoreDefaultProperties();
         if ($owner)
             $this->setOwner($owner);
         foreach($properties as $name => $value)
             $this->$name = $value;
-        $this->event('onConstructed');
+        $this->trigger('onConstructed');
     }
     
     /**
@@ -98,7 +100,7 @@ class GObject
      * @access public 
      * @return void
      */
-    public function __destruct() { $this->event('onDestroy'); }
+    public function __destruct() { $this->trigger('onDestroy'); }
     
     /**
      * Запрещено клонирование
@@ -127,13 +129,14 @@ class GObject
         if (method_exists($this, $setter))
             $this->$setter($value);
         else
-        if (preg_match('/^on[A-Z]/', $name))
+        if (method_exists($this, 'attachEvent') && preg_match('/^on[A-Z]/', $name))
             $this->attachEvent($name, $value);
         else
-        if ($value instanceof \gear\interfaces\IPlugin)
+        if (method_exists($this, 'installPlugin') && $value instanceof \gear\interfaces\IPlugin)
             $this->installPlugin($name, $value);
         else
-        if (is_callable($value) || $value instanceof \gear\interfaces\IBehavior)
+        if (method_exists($this, 'attachBehavior') &&
+            (is_callable($value) || $value instanceof \gear\interfaces\IBehavior))
             $this->attachBehavior($name, $value);
         else
             $this->_properties[$name] = $value;
@@ -156,18 +159,24 @@ class GObject
     {
         $getter = 'get' . ucfirst($name);
         if (method_exists($this, $getter))
-            return $this->$getter();
+            $value = $this->$getter();
         else
-        if (preg_match('/^on[A-Z]/', $name))
-            return $this->event($name);
+        if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
+            $value = $this->trigger($name);
         else
-        if ($this->isBehavior($name))
-            return $this->b($name);
+        if (method_exists($this, 'b') && $this->isBehavior($name))
+            $value = $this->b($name);
         else
-        if ($this->isPluginRegistered($name))
-            return $this->p($name);
+        if (method_exists($this, 'p') && $this->isPluginRegistered($name))
+            $value = $this->p($name);
         else
-            return isset($this->_properties[$name]) ? $this->_properties[$name] : null;
+        {
+            if ($this instanceof IPlugin || $this instanceof IBehavior)
+                $value = $this->owner->$name;
+            else
+                $value = isset($this->_properties[$name]) ? $this->_properties[$name] : null;
+        }
+        return $value;
     }
     
     /**
@@ -175,40 +184,39 @@ class GObject
      * @param string $name
      * @param array $args
      * @return mixed
+     * @throws \Exception
      */
     public function __call($name, $args)
     {
         if (preg_match('/^exception/', $name))
-        {
-            return call_user_func_array(array(Core, $name), $args);
-/*            if (!isset($args[0]) || is_array($args[0]))
-                array_unshift($args, null);
-            array_unshift($args, $name);
-            return call_user_func_array(array($this, 'e'), $args);*/
-        }
-        if (preg_match('/^on[A-Z]/', $name))
+            $value = call_user_func_array(['Core', $name], $args);
+        else
+        if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
         {
             array_unshift($args, $name);
-            return call_user_func_array(array($this, 'event'), $args);
+            $value = call_user_func_array(array($this, 'trigger'), $args);
         }
-        if ($this->isBehavior($name))
-            return call_user_func_array(array($this, 'b'), array_merge(array($name), $args));
-        if ($this->isPluginRegistered($name))
+        else
+        if (method_exists($this, 'b') && $this->isBehavior($name))
+            $value = call_user_func_array(array($this, 'b'), array_merge(array($name), $args));
+        else
+        if (method_exists($this, 'p') && $this->isPluginRegistered($name))
         {
             $p = $this->p($name);
             if (!is_callable($p))
-                throw $this->exceptionObjectInvalidPlugin(array('pluginName' => $name));
-            return call_user_func_array($p, $args);
+                throw $this->exceptionObjectInvalidPlugin(['pluginName' => $name]);
+            $value = call_user_func_array($p, $args);
         }
+        else
         if (is_object($this->owner))
         {
             array_unshift($args, $this);
-            return call_user_func_array(array($this->owner, $name), $args);
+            $value = call_user_func_array([$this->owner, $name], $args);
         }
-        $result = $this->event('onCalled', $name, $args);
+/*        $result = $this->event('onCalled', $name, $args);
         if ($result === null)
-            throw $this->exceptionObjectMethodNotFound(array('className' => get_class($this), 'methodName' => $name));
-        return $result;
+            throw $this->exceptionObjectMethodNotFound(array('className' => get_class($this), 'methodName' => $name));*/
+        return $value;
     }
     
     /**
@@ -225,12 +233,8 @@ class GObject
         if (preg_match('/^exception[A-Z]/', $name))
         {
             return call_user_func_array(array(\Core, $name), $args);
-/*            if (!isset($args[0]) || is_array($args[0]))
-                array_unshift($args, null);
-            array_unshift($args, $name);
-            return call_user_func_array(array(__CLASS__, 'e'), $args);*/
         }
-        throw static::exceptionObjectStaticMethodNotFound(array('className' => get_called_class(), 'methodName' => $name));
+        throw static::exceptionObjectStaticMethodNotFound(['className' => get_called_class(), 'methodName' => $name]);
     }
     
     /**
@@ -246,16 +250,13 @@ class GObject
      */
     public function __isset($name)
     {
-        if ($this->isEvent($name))
-            return true;
+        if ((method_exists($this, 'isEvent') && $this->isEvent($name)) ||
+            (method_exists($this, 'isBehavior') && $this->isBehavior($name)) ||
+            (method_exists($this, 'isPluginRegistered') && $this->isPluginRegistered($name)))
+            $value = true;
         else
-        if ($this->isBehavior($name))
-            return true;
-        else
-        if ($this->isPluginRegistered($name))
-            return true;
-        else
-            return array_key_exists($name, $this->_properties);
+            $value = array_key_exists($name, $this->_properties);
+        return $value;
     }
     
     /**
@@ -409,255 +410,6 @@ class GObject
         }
         else
             static::$_config[$name] = $value;
-    }
-    
-    /**
-     * Возвращает набор поведений, описанных для данного класса
-     * 
-     * @access public
-     * @return array
-     */
-    public function getBehaviors() { return $this->i('behaviors'); }
-
-    /**
-     * Возвращает true если объект имеет поведение с указанным названием, иначе
-     * false
-     * 
-     * @access public
-     * @param string $name
-     * @return boolean
-     */
-    public function isBehavior($name) { return isset($this->_behaviors[$name]); }
-    
-    /**
-     * Подключает к объекту набор поведений
-     * 
-     * @access public
-     * @param array $behaviors
-     * @return $this
-     */
-    public function attachBehaviors(array $behaviors)
-    {
-        foreach($behaviors as $name => $behavior)
-            $this->attachBehavior($name, $behavior);
-        return $this;
-    }
-    
-    /**
-     * Подключает поедение к объекту
-     * 
-     * @access public
-     * @param string $name
-     * @param string of class name|anonymous function $behavior
-     * @return $this
-     */
-    public function attachBehavior($name, $behavior)
-    {
-        // $behavior is string of classname (class must be instance of \gear\interfaces\IBehavior)
-        if (is_string($behavior))
-            $this->_behaviors[$name] = $behavior::attach($this);
-        else
-        // $behavior is object instance of \Closure
-        if ($behavior instanceof \Closure)
-            $this->_behaviors[$name] = method_exists($behavior, 'bindTo') ? $behavior->bindTo($this, $this) : $behavior;
-        else
-        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record
-        // (release class::__invoke(), array('classname', 'methodname'))
-        if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
-            $this->_behaviors[$name] = $behavior->setOwner($this);
-        else
-            throw $this->exceptionObjectInvalidBehavior(array('behaviorName' => $name));
-        return $this;
-    }
-    
-    /**
-     * Если указанное поведение является анонимной функцией, то происходит
-     * её выполнение с возвратом результата. Если поведение объект, то
-     * возвращает его
-     * Кроме параметра $name метод может принимать дополнительные
-     * параметры, которые будут переданы в поведение, если он
-     * является анонимной функцией
-     * 
-     * @access public
-     * @param string $name
-     * @return mixed
-     */
-    public function b($name)
-    {
-        if (!$this->isBehavior($name))
-            throw $this->exceptionObjectBehaviorNotExists(array('behaviorName' => $name));
-        $args = func_get_args();
-        array_shift($args);
-        return call_user_func_array($this->_behaviors[$name], $args);
-    }
-    
-    /**
-     * Отключает поведение объекта
-     * 
-     * @access public
-     * @param string $name
-     * @return $this
-     */
-    public function detachBehavior($name)
-    {
-        if (isset($this->_behaviors[$name]))
-            unset($this->_behaviors[$name]);
-        return $this;
-    }
-    
-    /**
-     * Возвращает true, если плагин зарегистрирован в текущем классе или
-     * в родительском, иначе false 
-     * 
-     * @access public
-     * @param string $name
-     * @return boolean
-     */
-    public function isPluginRegistered($name)
-    {
-        return isset(static::$_config['plugins'][$name]) || isset(self::$_config['plugins'][$name]) || isset($this->_plugins[$name]);
-    }
-    
-    /**
-     * Возвращает инстанс плагина
-     * 
-     * @access public
-     * @param string $name
-     * @return GPlugin
-     */
-    public function p($name)
-    {
-        if (!isset($this->_plugins[$name]))
-        {
-            list($class, $config, $properties) = $this->getPluginRecord($name);
-            if (!class_exists($class, false))
-                $this->_plugins[$name] = $class::install($config, $properties, $this);
-            else
-                $this->_plugins[$name] = $class::it($properties, $this);
-        }
-        return $this->_plugins[$name];
-    }
-    
-    /**
-     * Возвращает массив описания плагина
-     * [0] - название класса плагина
-     * [1] - конфигурация класса плагина
-     * [2] - свойства плагина
-     * 
-     * @access public
-     * @param string $name
-     * @return array
-     */
-    public function getPluginRecord($name)
-    {
-        if (isset(static::$_config['plugins'][$name]))
-            $plugin = static::$_config['plugins'][$name];
-        else
-        if (isset(self::$_config['plugins'][$name]))
-            $plugin = self::$_config['plugins'][$name];
-        else
-            throw $this->exceptionObjectPluginNotRegistered(array('pluginName' => $name));
-        return Core::getRecords($plugin);
-    }
-    
-    /**
-     * Установка плагина
-     * 
-     * @access public
-     * @param string $name
-     * @param object $instance
-     * @return $this
-     */
-    public function installPlugin($name, $instance)
-    {
-        $this->_plugins[$name] = $instance;
-        return $this;
-    }
-    
-    /**
-     * Возвращает true, если у объекта есть зарегистрированные обработчики 
-     * указанного события, иначе false
-     * 
-     * @access public
-     * @param string $name
-     * @return boolean
-     */
-    public function isEvent($name)
-    {
-        return preg_match('/^on[A-Z]/', $name) && (method_exists($this, $name) || isset($this->_events[$name]));
-    }
-    
-    /**
-     * Добавление обработчика указанного события
-     * 
-     * @access public
-     * @param string $name
-     * @param callable mixed $handler
-     * @return $this
-     */
-    public function attachEvent($name, $handler)
-    {
-        if (!is_callable($handler))
-            throw $this->exceptionObjectInvalidEventHandler(array('eventName' => $name));
-        $this->_events[$name][] = $handler;
-        return $this;
-    }
-    
-    /**
-     * Вызов обработчиков указанного события
-     * 
-     * @access public
-     * @param string $name
-     * @return mxied
-     */
-    public function event($name, $event = null)
-    {
-        $args = func_get_args();
-        array_shift($args);
-        if (is_null($event) || !($event instanceof \gear\library\GEvent))
-        {
-            $event = new GEvent($this);
-            array_unshift($args, $event);
-        }
-        $result = method_exists($this, $name) ? call_user_func_array(array($this, $name), $args) : true;
-        if (isset($this->_events[$name]) && $result)
-        {
-            foreach($this->_events[$name] as $handler)
-            {
-                $result = call_user_func_array($handler, $args);
-                if (!$result)
-                    break;
-            }
-        }
-        return $result;
-    }
-    
-    /**
-     * Удаление обработчиков указанного события
-     * Если указан параметр $handler, то будет удалён только один
-     * конкретный обработчик
-     * 
-     * @access public
-     * @param string $name
-     * @param callable mixed $handler
-     * @return $this
-     */
-    public function detachEvent($name, $handler = null)
-    {
-        if (isset($this->_events[$name]))
-        {
-            if (!$handler)
-                unset($this->_events[$name]);
-            else
-            {
-                foreach($this->_events[$name] as $index => $h)
-                {
-                    if ($h === $handler)
-                        unset($this->_e[$name][$index]);
-                }
-            }
-        }
-        return $this;
     }
 
     /**
@@ -844,5 +596,280 @@ class GObject
     {
         foreach($this->getPreloads('plugins') as $pluginName)
             $this->p($pluginName);
+    }
+}
+
+trait TBehaviors
+{
+    protected $_behaviors = [];
+
+    /**
+     * Возвращает набор поведений, описанных для данного класса
+     *
+     * @access public
+     * @return array
+     */
+    public function getBehaviors() { return $this->i('behaviors'); }
+
+    /**
+     * Возвращает true если объект имеет поведение с указанным названием, иначе
+     * false
+     *
+     * @access public
+     * @param string $name
+     * @return boolean
+     */
+    public function isBehavior($name) { return isset($this->_behaviors[$name]); }
+
+    /**
+     * Подключает к объекту набор поведений
+     *
+     * @access public
+     * @param array $behaviors
+     * @return $this
+     */
+    public function attachBehaviors(array $behaviors)
+    {
+        foreach($behaviors as $name => $behavior)
+            $this->attachBehavior($name, $behavior);
+        return $this;
+    }
+
+    /**
+     * Подключает поедение к объекту
+     *
+     * @access public
+     * @param string $name
+     * @param string of class name|anonymous function $behavior
+     * @return $this
+     */
+    public function attachBehavior($name, $behavior)
+    {
+        // $behavior is string of classname (class must be instance of \gear\interfaces\IBehavior)
+        if (is_string($behavior))
+            $this->_behaviors[$name] = $behavior::attach($this);
+        else
+        // $behavior is object instance of \Closure
+        if ($behavior instanceof \Closure)
+            $this->_behaviors[$name] = $behavior->bindTo($this, $this);
+        else
+        // $behavior is object instance of \gear\interfaces\IBehavior or is callable record
+        // (release class::__invoke(), array('classname', 'methodname'))
+        if ($behavior instanceof \gear\interfaces\IBehavior || is_callable($behavior))
+            $this->_behaviors[$name] = $behavior->setOwner($this);
+        else
+            throw $this->exceptionObjectInvalidBehavior(['behaviorName' => $name]);
+        return $this;
+    }
+
+    /**
+     * Если указанное поведение является анонимной функцией, то происходит
+     * её выполнение с возвратом результата. Если поведение объект, то
+     * возвращает его
+     * Кроме параметра $name метод может принимать дополнительные
+     * параметры, которые будут переданы в поведение, если он
+     * является анонимной функцией
+     *
+     * @access public
+     * @param string $name
+     * @return mixed
+     */
+    public function b($name)
+    {
+        if (!$this->isBehavior($name))
+            throw $this->exceptionObjectBehaviorNotExists(['behaviorName' => $name]);
+        $args = func_get_args();
+        array_shift($args);
+        return call_user_func_array($this->_behaviors[$name], $args);
+    }
+
+    /**
+     * Отключает поведение объекта
+     *
+     * @access public
+     * @param string $name
+     * @return $this
+     */
+    public function detachBehavior($name)
+    {
+        if (isset($this->_behaviors[$name]))
+            unset($this->_behaviors[$name]);
+        return $this;
+    }
+}
+
+trait TPlugins
+{
+    protected $_plugins = [];
+
+    /**
+     * Возвращает true, если плагин зарегистрирован в текущем классе или
+     * в родительском, иначе false
+     *
+     * @access public
+     * @param string $name
+     * @return boolean
+     */
+    public function isPluginRegistered($name)
+    {
+        return isset($this->_plugins[$name]) || isset(static::$_config['plugins'][$name]) || isset(self::$_config['plugins'][$name]);
+    }
+
+    /**
+     * Возвращает инстанс плагина
+     *
+     * @access public
+     * @param string $name
+     * @return GPlugin
+     */
+    public function p($name)
+    {
+        if (!isset($this->_plugins[$name]))
+        {
+            list($class, $config, $properties) = $this->getPluginRecord($name);
+            if (!class_exists($class, false))
+                $this->_plugins[$name] = $class::install($config, $properties, $this);
+            else
+                $this->_plugins[$name] = $class::it($properties, $this);
+        }
+        return $this->_plugins[$name];
+    }
+
+    /**
+     * Возвращает массив описания плагина
+     * [0] - название класса плагина
+     * [1] - конфигурация класса плагина
+     * [2] - свойства плагина
+     *
+     * @access public
+     * @param string $name
+     * @return array
+     */
+    public function getPluginRecord($name)
+    {
+        if (isset(static::$_config['plugins'][$name]))
+            $plugin = static::$_config['plugins'][$name];
+        else
+        if (isset(self::$_config['plugins'][$name]))
+            $plugin = self::$_config['plugins'][$name];
+        else
+            throw $this->exceptionObjectPluginNotRegistered(['pluginName' => $name]);
+        return Core::getRecords($plugin);
+    }
+
+    /**
+     * Установка плагина
+     *
+     * @access public
+     * @param string $name
+     * @param object $instance
+     * @return $this
+     */
+    public function installPlugin($name, $instance)
+    {
+        $this->_plugins[$name] = $instance;
+        return $this;
+    }
+}
+
+trait TEvents
+{
+    protected $_events = [];
+
+    /**
+     * Возвращает true, если у объекта есть зарегистрированные обработчики
+     * указанного события, иначе false
+     *
+     * @access public
+     * @param string $name
+     * @return boolean
+     */
+    public function isEvent($name)
+    {
+        return preg_match('/^on[A-Z]/', $name) && (method_exists($this, $name) || isset($this->_events[$name]));
+    }
+
+    /**
+     * Добавление обработчика указанного события
+     *
+     * @access public
+     * @param string $name
+     * @param callable mixed $handler
+     * @return $this
+     */
+    public function attachEvent($name, $handler)
+    {
+        if (!is_callable($handler))
+            throw $this->exceptionObjectInvalidEventHandler(['eventName' => $name]);
+        $this->_events[$name][] = $handler;
+        return $this;
+    }
+
+    /**
+     * Добавление обработчика указанного события
+     *
+     * @access public
+     * @param string $name
+     * @param callable mixed $handler
+     * @return $this
+     */
+    public function on($name, $handler) { return $this->attachEvent($name, $handler); }
+
+    /**
+     * Вызов обработчиков указанного события
+     *
+     * @access public
+     * @param string $name
+     * @param GEvent $event
+     * @return mixed
+     */
+    public function trigger($name, $event = null)
+    {
+        $args = func_get_args();
+        array_shift($args);
+        if (is_null($event) || !($event instanceof \gear\library\GEvent))
+        {
+            $event = new GEvent($this);
+            array_unshift($args, $event);
+        }
+        $result = method_exists($this, $name) ? call_user_func_array([$this, $name], $args) : true;
+        if (isset($this->_events[$name]) && ($result || !$event->stopPropagation))
+        {
+            foreach($this->_events[$name] as $handler)
+            {
+                $result = call_user_func_array($handler, $args);
+                if (!$result || $event->stopPropagation)
+                    break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Удаление обработчиков указанного события
+     * Если указан параметр $handler, то будет удалён только один
+     * конкретный обработчик
+     *
+     * @access public
+     * @param string $name
+     * @param callable mixed $handler
+     * @return $this
+     */
+    public function detachEvent($name, $handler = null)
+    {
+        if (isset($this->_events[$name]))
+        {
+            if (!$handler)
+                unset($this->_events[$name]);
+            else
+            {
+                foreach($this->_events[$name] as $index => $h)
+                {
+                    if ($h === $handler)
+                        unset($this->_events[$name][$index]);
+                }
+            }
+        }
+        return $this;
     }
 }

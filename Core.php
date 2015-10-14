@@ -1,5 +1,6 @@
 <?php
 
+//Issues
 //TODO::Менять токен пользовательской сессии при каждом запросе
 //TODO::Для форм добавлять скрытое поле с рандомным названием и значением, которое меняется при ошибках запроса из формы
 
@@ -619,7 +620,7 @@ final class Core
      * @param object $event
      * @return mixed
      */
-    public static function triggerEvent($name, $event = null)
+    public static function trigger($name, $event = null)
     {
         $result = false;
         if (isset(self::$_events[$name]))
