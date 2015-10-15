@@ -1,9 +1,9 @@
 <?php
 
 namespace gear\library;
-use \gear\Core;
-use \gear\library\GComponent;
-use \gear\library\GException;
+use gear\Core;
+use gear\library\GComponent;
+use gear\library\GException;
 
 /**
  * Класс компонентов, предоставляющих функции по хранению моделей (базы данных, файлы, xml и т.п.)

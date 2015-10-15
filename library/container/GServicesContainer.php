@@ -12,14 +12,15 @@ use gear\Core;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 23.12.2014
- * @php 5.3.x
+ * @php 5.4.x
  * @release 1.0.0
  */
 class GServicesContainer
 {
+    /* Traits */
     /* Const */
     /* Private */
-    private $_services = array();
+    private $_services = [];
     /* Protected */
     /* Public */
     
@@ -68,7 +69,10 @@ class GServicesContainer
             if (method_exists($class, 'install'))
                 $service = $class::install($config, $properties);
             else
-                $service = $this->_services[$serviceLocation] = new $class($properties);
+            if (method_exists($class, 'it'))
+                $service = $class::it($properties);
+            else
+                $service = new $class($properties);
         }
         return $this->_services[$serviceLocation] = $service;
     }
@@ -96,7 +100,7 @@ class GServicesContainer
     {
         if (isset($this->_services[$serviceLocation]))
         {
-            $this->_services[$serviceLocation]->event('onUninstall');
+            $this->_services[$serviceLocation]->trigger('onUninstall');
             unset($this->_services[$serviceLocation]);
         }
         return $this;
@@ -114,7 +118,7 @@ class GServicesContainer
     public function getRegisteredService($serviceLocation, $clone = false, $owner = null)
     {
         if (!isset($this->_services[$serviceLocation]))
-            throw Core::exceptinServiceNotRegistered(array('serviceName' => $serviceLocation));
+            throw Core::exceptinServiceNotRegistered(['serviceName' => $serviceLocation]);
         if (!is_object($this->_services[$serviceLocation]))
         {
             list($class, $config, $properties) = Core::getRecords($this->_services[$serviceLocation]);

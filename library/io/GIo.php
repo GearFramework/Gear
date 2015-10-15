@@ -15,9 +15,11 @@ use gear\library\GException;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 30.11.2014
+ * @php 5.4.x
  */
 abstract class GIo extends GModel implements IIo
 {
+    /* Traits */
     /* Const */
     const UNKNOWN = 0;
     const FIFO = 1;
@@ -94,21 +96,4 @@ abstract class GIo extends GModel implements IIo
      * @return void
      */
     abstract public function close();
-}
-
-/**
- * Исключения операций ввода/вывода
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 1.0.0
- * @since 30.11.2014
- */
-class IoException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }
