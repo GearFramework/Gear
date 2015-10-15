@@ -16,7 +16,7 @@ use gear\interfaces\IService;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 25.12.2014
- * @php 5.3.x
+ * @php 5.4.x
  * @release 1.0.0
  */
 abstract class GService extends GObject implements IService
@@ -24,18 +24,10 @@ abstract class GService extends GObject implements IService
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array();
+    protected static $_config = [];
     protected static $_init = false;
     protected $_name = null;
     /* Public */
-    
-    /**
-     * Копирование сервиса
-     * 
-     * @access public
-     * @return void
-     */
-    public function __clone() {}
     
     /**
      * Установка компонента
@@ -46,14 +38,14 @@ abstract class GService extends GObject implements IService
      * @param array $properties
      * @return GService
      */
-    public static function install($config, array $properties = array())
+    public static function install($config, array $properties = [])
     {
         if (static::$_init === false)
             static::init($config);
         $args = func_get_args();
         array_shift($args);
-        $instance = call_user_func_array(array(get_called_class(), 'it'), $args);
-        $instance->event('onInstalled');
+        $instance = call_user_func_array([get_called_class(), 'it'], $args);
+        $instance->trigger('onInstalled');
         return $instance;
     }
     
@@ -64,13 +56,14 @@ abstract class GService extends GObject implements IService
      * @static
      * @param string|array $config
      * @return bool
+     * @throws GException
      */
     public static function init($config)
     {
         if (is_string($config))
             $config = require(Core::resolvePath($config));
         if (!is_array($config))
-            throw static::exceptionService('Incorrect configuration');
+            throw static::exceptionService('Incorrect configuration of service');
         static::$_config = array_replace_recursive(static::$_config, $config);
         list(,,static::$_config) = Core::getRecords(static::$_config);
         if (isset(static::$_config['components']))
@@ -82,7 +75,7 @@ abstract class GService extends GObject implements IService
     }
     
     /**
-     * Получение экхемпляра компонента
+     * Получение экземпляра компонента
      * 
      * @access public
      * @static
@@ -90,7 +83,7 @@ abstract class GService extends GObject implements IService
      * @param null|object $owner
      * @return GComponent
      */
-    public static function it(array $properties = array(), $owner = null)
+    public static function it(array $properties = [], $owner = null)
     {
         return new static($properties, $owner);
     }
@@ -134,21 +127,4 @@ abstract class GService extends GObject implements IService
      * @return string
      */
     public function name() { return $this->getName(); }
-}
-
-/** 
- * Исключения сервисов
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 0.0.1
- * @since 01.08.2013
- */
-class ServiceException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

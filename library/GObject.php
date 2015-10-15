@@ -1,11 +1,11 @@
 <?php
 
 namespace gear\library;
-use \gear\Core;
+use gear\Core;
 use gear\interfaces\IBehavior;
+use gear\interfaces\IComponent;
 use gear\interfaces\IPlugin;
-use \gear\library\GEvent;
-use \gear\library\GException;
+use gear\library\GEvent;
 
 /** 
  * Базовый класс объектов. 
@@ -29,11 +29,12 @@ class GObject
      */
     protected static $_config =
     [
+        'events' => [],
+        'behaviors' => [],
         'plugins' =>
         [
             'view' => ['class' => '\gear\plugins\gear\GView'],
         ],
-        'behaviors' => [],
     ];
     /**
      * @var array default values of object properties
@@ -132,12 +133,15 @@ class GObject
         if (method_exists($this, 'attachEvent') && preg_match('/^on[A-Z]/', $name))
             $this->attachEvent($name, $value);
         else
-        if (method_exists($this, 'installPlugin') && $value instanceof \gear\interfaces\IPlugin)
-            $this->installPlugin($name, $value);
+        if (method_exists($this, 'registerComponent') && $value instanceof IComponent)
+            $this->registerComponent($name, $value);
         else
         if (method_exists($this, 'attachBehavior') &&
             (is_callable($value) || $value instanceof \gear\interfaces\IBehavior))
             $this->attachBehavior($name, $value);
+        else
+        if (method_exists($this, 'installPlugin') && $value instanceof \gear\interfaces\IPlugin)
+            $this->installPlugin($name, $value);
         else
             $this->_properties[$name] = $value;
     }
@@ -163,6 +167,9 @@ class GObject
         else
         if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
             $value = $this->trigger($name);
+        else
+        if (method_exists($this, 'isComponentRegistered') && $this->isComponentRegistered($name))
+            $value = $this->c($name);
         else
         if (method_exists($this, 'b') && $this->isBehavior($name))
             $value = $this->b($name);
@@ -197,6 +204,9 @@ class GObject
             $value = call_user_func_array(array($this, 'trigger'), $args);
         }
         else
+        if (method_exists($this, 'c') && $this->isComponentRegistered($name))
+            $value = $this->c($name);
+        else
         if (method_exists($this, 'b') && $this->isBehavior($name))
             $value = call_user_func_array(array($this, 'b'), array_merge(array($name), $args));
         else
@@ -230,11 +240,9 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        if (preg_match('/^exception[A-Z]/', $name))
-        {
-            return call_user_func_array(array(\Core, $name), $args);
-        }
-        throw static::exceptionObjectStaticMethodNotFound(['className' => get_called_class(), 'methodName' => $name]);
+        if (!preg_match('/^exception[A-Z]/', $name))
+            throw static::exceptionObjectStaticMethodNotFound(['className' => get_called_class(), 'methodName' => $name]);
+        return call_user_func_array(['Core', $name], $args);
     }
     
     /**
@@ -585,6 +593,8 @@ class GObject
     public function onConstructed()
     {
         $this->_preloading();
+        if (method_exists($this, 'attachEvents'))
+            $this->attachEvents($this->getEvents());
         if (method_exists($this, 'attachBehaviors'))
             $this->attachBehaviors($this->getBehaviors());
         return true;
@@ -797,6 +807,29 @@ trait TEvents
     }
 
     /**
+     * Возвращает список обработчиков событий, указанных в конфигурации класса
+     *
+     * @access public
+     * @return array
+     */
+    public function getEvents() { return $this->i('events'); }
+
+
+    /**
+     * Добавление обработчика указанного события
+     *
+     * @access public
+     * @param array mixed $listEvents
+     * @return $this
+     */
+    public function attachEvents(array $listEvents)
+    {
+        foreach($listEvents as $eventName => $handler)
+            $this->attachEvent($eventName, $handler);
+        return $this;
+    }
+
+    /**
      * Добавление обработчика указанного события
      *
      * @access public
@@ -877,6 +910,52 @@ trait TEvents
                 }
             }
         }
+        return $this;
+    }
+}
+
+trait TComponents
+{
+    /**
+     * Получение компонента, зарегистрированного модулем
+     *
+     * @access public
+     * @param string $name
+     * @param boolean $instance
+     * @return IComponent
+     */
+    public function c($name, $instance = false)
+    {
+        $location = get_class($this) . '.components.' . $name;
+        if (!Core::services()->isRegisteredService($location))
+            throw $this->exceptionServiceComponentNotRegistered(array('componentName' => $name));
+        return Core::services()->getRegisteredService($location, $instance);
+    }
+
+    /**
+     * Возвращает запись о компоненте модуля, иначе false если компонент
+     * с указанным именем не зарегистрирован
+     *
+     * @access public
+     * @param string $name
+     * @return boolean
+     */
+    public function isComponentRegistered($name)
+    {
+        return Core::services()->isRegisteredService(get_class($this) . '.components.' . $name);
+    }
+
+    /**
+     * Регистрация компонента
+     *
+     * @access public
+     * @param string $name
+     * @param array $component
+     * @return $this
+     */
+    public function registerComponent($name, $component)
+    {
+        Core::services()->registerService(get_class($this) . '.components.' . $name, $component);
         return $this;
     }
 }

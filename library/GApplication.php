@@ -22,32 +22,32 @@ class GApplication extends GModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'components' => array
-        (
-            'process' => array
-            (
+    protected static $_config =
+    [
+        'components' =>
+        [
+            'process' =>
+            [
                 'class' => '\gear\components\gear\process\GProcessComponent',
                 'defaultProcess' => 'index',
-            ),
-        ),
-        'plugins' => array
-        (
+            ],
+        ],
+        'plugins' =>
+        [
             /* Плагин для работы с http-запросами */
-            'request' => array('class' => '\gear\plugins\gear\http\GRequest'),
+            'request' => ['class' => '\gear\plugins\gear\http\GRequest'],
             /* Плагин для работы с окружением */
-            'env' => array('class' => '\gear\plugins\gear\http\GEnvironment'),
+            'env' => ['class' => '\gear\plugins\gear\http\GEnvironment'],
             /* Плагин для работы с http */
-            'http' => array('class' => '\gear\plugins\gear\http\GHttp'),
+            'http' => ['class' => '\gear\plugins\gear\http\GHttp'],
             /* Плагин для протоколирования работы  */
-            'log' => array('class' => '\gear\plugins\gear\GLog'),
-        ),
-    );
+            'log' => ['class' => '\gear\plugins\gear\GLog'],
+        ],
+    ];
     protected static $_init = false;
     protected $_namespace = null;
     /* Список callback-функция для работы с выводимыми данными */
-    protected $_outputCallbacks = array();
+    protected $_outputCallbacks = [];
     /* Буфер вывода */
     protected $_outputData = null;
     /* Public */
@@ -60,13 +60,13 @@ class GApplication extends GModule
      */
     public function run($process = null, $request = null)
     {
-        if (Core::event('onBeforeApplicationRun', new GEvent($this, array('process' => $process, 'request' => $request))))
+        if (Core::trigger('onBeforeApplicationRun', new GEvent($this, ['process' => $process, 'request' => $request])))
         {
             if ($request)
                 $this->request->setData($request);
             $result = $this->c('process')->exec($process, $this->request);
             /** @var mixed $result */
-            Core::event('onAfterApplicationRun', new GEvent($this), $result);
+            Core::trigger('onAfterApplicationRun', new GEvent($this), $result);
         }
     }
 
@@ -184,18 +184,12 @@ class GApplication extends GModule
     public function onConstructed()
     {
         parent::onConstructed();
-        Core::attachEvent('onBeforeApplicationRun', array($this, 'onBeforeRun'));
-        Core::attachEvent('onAfterApplicationRun', array($this, 'onAfterRun'));
+        Core::attachEvent('onBeforeApplicationRun', [$this, 'onBeforeRun']);
+        Core::attachEvent('onAfterApplicationRun', [$this, 'onAfterRun']);
         return true;
     }
 
-    public function onBeforeRun($event)
-    {
-        return $event;
-    }
+    public function onBeforeRun($event) { return true; }
     
-    public function onAfterRun($event)
-    {
-        return $event;
-    }
+    public function onAfterRun($event) { return true; }
 }

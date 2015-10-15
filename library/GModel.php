@@ -5,6 +5,9 @@ namespace gear\library;
 use \gear\Core;
 use \gear\library\GObject;
 use \gear\library\GException;
+use gear\library\TEvents;
+use gear\library\TBehaviors;
+use gear\library\TPlugins;
 
 /**
  * Базовый класс моделей
@@ -14,11 +17,15 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
- * @php 5.3.x
+ * @php 5.4.x
  * @release 1.0.0
  */
 class GModel extends GObject
 {
+    /* Traits */
+    use TEvents;
+    use TBehaviors;
+    use TPlugins;
     /* Const */
     /* Private */
     /* Protected */
@@ -34,7 +41,7 @@ class GModel extends GObject
      * @param null|object $owner
      * @return \gear\library\GModel
      */
-    public function __construct(array $properties = array(), $owner = null) { parent::__construct($properties, $owner); }
+    public function __construct(array $properties = [], $owner = null) { parent::__construct($properties, $owner); }
 
     /**
      * Клонирование
@@ -45,7 +52,7 @@ class GModel extends GObject
     public function __clone() { parent::__clone(); }
 
     /**
-     * Установка названия поля являющимся PRIMARY LEY
+     * Установка названия поля являющимся PRIMARY KEY
      *
      * @access public
      * @param string $pk
@@ -58,7 +65,7 @@ class GModel extends GObject
     }
 
     /**
-     * Получение названия поля являющимся PRIMARY LEY
+     * Получение названия поля являющимся PRIMARY KEY
      *
      * @access public
      * @return string
@@ -75,21 +82,4 @@ class GModel extends GObject
     {
         return $this->owner instanceof \gear\library\GDbComponent ? $this->owner->getCollection() : null;
     }
-}
-
-/**
- * Исключения базовой модели
- *
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 1.0.0
- * @since 01.08.2013
- */
-class ModelException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

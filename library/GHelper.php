@@ -2,8 +2,6 @@
 
 namespace gear\library;
 
-use gear\traits\TException;
-
 /** 
  * Класс хелперов
  * 
@@ -18,12 +16,8 @@ use gear\traits\TException;
 abstract class GHelper
 {
     /* Traits */
-    use TException;
     /* Const */
     /* Private */
     /* Protected */
     /* Public */
-    
-    protected function __construct() {}
-    protected function __clone() {}
 }

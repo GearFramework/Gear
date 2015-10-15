@@ -68,7 +68,7 @@ abstract class GBehavior implements IBehavior
      * @param array $args
      * @return mixed
      */
-    public function __call($name, $args) { return call_user_func_array(array($this->_owner, $name), $args); }
+    public function __call($name, $args) { return call_user_func_array([$this->_owner, $name], $args); }
     
     /**
      * Метод, который выполняется во время подключения поведения.

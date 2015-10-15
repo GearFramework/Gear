@@ -18,6 +18,6 @@ class ServiceComponentNotRegisteredException extends ServiceException { public $
 class HelperException extends ServiceException {}
 class HelperNotFoundException extends HelperException { public $defaultMessage = 'Helper :helperName not found'; }
 class ApplicationException extends ServiceException {}
-class CacheInvalidServerException extends ServiceException { public $defaultMessage = 'Invalid server'; }
+class CacheInvalidServerException extends ServiceException { public $defaultMessage = 'Invalid cache server'; }
 class LoaderException extends ServiceException {}
 class LoaderClassFileNotFound extends LoaderException { public $defaultMessage = 'File :filename of class :className not found'; }
