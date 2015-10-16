@@ -752,13 +752,12 @@ final class Core
             // Относительный путь или пространство имён
             else
             {
-                //$resolved = GEAR . '/..';
-                if ($path[0] === '\\')
-                    $resolved = GEAR . '/..' . str_replace('\\', '/', $path);
-                else
+                $resolved = GEAR . '/..';
                 if ($path[0] !== '\\')
-                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '\gear\\');
-                $resolved .= str_replace('\\', '/', $path);
+                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '\gear') . '/' . $path;
+                else
+                    $resolved .= $path;
+                $resolved = str_replace('\\', '/', $resolved);
             }
         }
         return $resolved;

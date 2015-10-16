@@ -927,6 +927,7 @@ trait TComponents
     public function c($name, $instance = false)
     {
         $location = get_class($this) . '.components.' . $name;
+        echo "$location\n";
         if (!Core::services()->isRegisteredService($location))
             throw $this->exceptionServiceComponentNotRegistered(array('componentName' => $name));
         return Core::services()->getRegisteredService($location, $instance);
