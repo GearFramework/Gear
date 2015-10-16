@@ -15,7 +15,7 @@ use \gear\library\GEvent;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 02.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GView extends GPlugin
@@ -24,7 +24,7 @@ class GView extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_arguments = array();
+    protected $_arguments = [];
     /* Public */
 
     /**
@@ -37,7 +37,7 @@ class GView extends GPlugin
      * @return boolean|string
      * @see render()
      */
-    public function __invoke($view = null, array $arguments = array(), $return = false)
+    public function __invoke($view = null, array $arguments = [], $return = false)
     {
         return $this->render($view, $arguments, $return);
     }
@@ -51,7 +51,7 @@ class GView extends GPlugin
      * @param bool $return
      * @return boolean|string
      */
-    public function render($view = null, array $arguments = array(), $return = false)
+    public function render($view = null, array $arguments = [], $return = false)
     {
         if (!$view)
             $view = $this->getOwner()->viewPath;
@@ -61,7 +61,7 @@ class GView extends GPlugin
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
             $viewPath .= '.phtml';
-        $this->event('onBeforeRender', new GEvent($this), $viewPath, $arguments);
+        $this->trigger('onBeforeRender', new GEvent($this), $viewPath, $arguments);
         $this->_arguments = $arguments;
         extract($arguments);
         $resultRender = true;
@@ -86,7 +86,7 @@ class GView extends GPlugin
         }
         else
             require($viewPath);
-        $this->event('onAfterRender', new GEvent($this), $resultRender);
+        $this->trigger('onAfterRender', new GEvent($this), $resultRender);
         return $resultRender;
     }
     

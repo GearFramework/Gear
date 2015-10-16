@@ -12,7 +12,7 @@ use gear\library\GModel;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 18.12.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 abstract class GApi extends GModel
@@ -28,7 +28,7 @@ abstract class GApi extends GModel
      * @access public
      * @return mixed
      */
-    public function __invoke() { return call_user_func_array(array($this, 'runApi'), func_get_args()); }
+    public function __invoke() { return call_user_func_array(array($this, 'entry'), func_get_args()); }
     
     /**
      * Получение процесса из-под которого выполняется api-метод
@@ -45,5 +45,5 @@ abstract class GApi extends GModel
      * @access public
      * @return mixed
      */
-    abstract public function runApi();
+    abstract public function entry();
 }

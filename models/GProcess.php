@@ -15,7 +15,7 @@ use gear\interfaces\IProcess;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GProcess extends GModel implements IProcess
@@ -24,10 +24,10 @@ class GProcess extends GModel implements IProcess
     /* Private */
     /* Protected */
     protected $_access = Core::ACCESS_PUBLIC;
-    protected $_apis = array();
+    protected $_apis = [];
     protected $_currentApi = null;
-    protected $_request = array();
-    protected $_rules = array();
+    protected $_request = [];
+    protected $_rules = [];
     /* Public */
     public $defaultApi = 'index';
     public $name = '';
@@ -38,7 +38,7 @@ class GProcess extends GModel implements IProcess
      * @access public
      * @return mixed
      */
-    public function __invoke() { return call_user_func_array(array($this, 'entry'), func_get_args()); }
+    public function __invoke() { return call_user_func_array([$this, 'entry'], func_get_args()); }
     
     /**
      * Точка входа в процесс
@@ -63,15 +63,15 @@ class GProcess extends GModel implements IProcess
                 else
                 {
                     list($class, $config, $properties) = Core::getRecords($api);
-                    $this->_currentApi = array(new $class($properties, $this), 'runApi');
+                    $this->_currentApi = [new $class($properties, $this), 'entry'];
                 }
             }
             else
             {
                 $api = 'api' . ucfirst($apiName);
                 if (!method_exists($this, $api))
-                    throw $this->exceptionProcessApiNotExists(array('apiName' => $apiName, 'processName' => $this->name));
-                $this->_currentApi = array($this, $api);
+                    throw $this->exceptionProcessApiNotExists(['apiName' => $apiName, 'processName' => $this->name]);
+                $this->_currentApi = [$this, $api];
             }
             $arguments = $this->_prepareArguments($apiName);
             $result = call_user_func_array($this->_currentApi, $arguments);
@@ -91,7 +91,7 @@ class GProcess extends GModel implements IProcess
     protected function _prepareArguments($apiName)
     {
         $args = $this->getApiArguments($this->_currentApi);
-        $apiArguments = array();
+        $apiArguments = [];
         $request = $this->request->request();
         foreach($args as $argument)
         {
@@ -100,7 +100,7 @@ class GProcess extends GModel implements IProcess
             if ($value === null)
             {
                 if (!$argument->isOptional())
-                    throw $this->exceptionApiInvalidRequestParameter(array('apiName' => $apiName, 'argName' => $argument->name));
+                    throw $this->exceptionApiInvalidRequestParameter(['apiName' => $apiName, 'argName' => $argument->name]);
                 $value = $argument->getDefaultValue();
             }
             else
@@ -202,7 +202,7 @@ class GProcess extends GModel implements IProcess
      * @param integer $value only one: Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC
      * @return void
      */
-    public function setAccess($value) { throw $this->exceptionObjectPropertyIsReadOnly(array('preopertyName' => 'access')); }
+    public function setAccess($value) { throw $this->exceptionObjectPropertyIsReadOnly(['preopertyName' => 'access']); }
 
     /**
      * Установка правил обработки поступающих данных от пользоваля к
