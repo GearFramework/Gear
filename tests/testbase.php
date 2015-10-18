@@ -10,7 +10,7 @@ try
             'app' => ['class' => '\gear\library\GApplication'],
         ]
     ]);
-    var_dump(\gear\Core::app()->isComponentRegistered('process'));
+    echo "Test -> Set processes [" . __LINE__ . "]\n";
     \gear\Core::app()->process->setProcesses(
     [
         'index' => function()
@@ -20,6 +20,7 @@ try
         'foo' => function() { return (new \GTestProcess())->foo(); },
         'test' => ['class' => '\GTestProcess'],
     ]);
+    echo "Test -> Done set processes [" . __LINE__ . "]\n";
 }
 catch(Exception $e)
 {

@@ -117,7 +117,7 @@ class GApplication extends GModule
      * @access public
      * @return object
      */
-    public function getProcess() { return $this->c('process')->getProcess(); }
+    public function getCurrentProcess() { return $this->c('process')->getProcess(); }
 
     /**
      * Вывод данных
@@ -183,6 +183,7 @@ class GApplication extends GModule
      */
     public function onConstructed()
     {
+        $this->view->render();
         parent::onConstructed();
         Core::attachEvent('onBeforeApplicationRun', [$this, 'onBeforeRun']);
         Core::attachEvent('onAfterApplicationRun', [$this, 'onAfterRun']);

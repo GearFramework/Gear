@@ -161,28 +161,47 @@ class GObject
      */
     public function __get($name)
     {
+        echo "Object -> Get $name [" . __LINE__ . "]\n";
         $getter = 'get' . ucfirst($name);
         if (method_exists($this, $getter))
+        {
+            echo "Object -> $name have getter $getter [" . __LINE__ . "]\n";
             $value = $this->$getter();
+        }
         else
         if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
+        {
+            echo "Object -> $name is event [" . __LINE__ . "]\n";
             $value = $this->trigger($name);
+        }
         else
         if (method_exists($this, 'isComponentRegistered') && $this->isComponentRegistered($name))
+        {
+            echo "Object -> $name is registered component [" . __LINE__ . "]\n";
             $value = $this->c($name);
+            echo "Object -> $name is " . (is_object($value) ? 'valid' : 'invalid') . " component [" . __LINE__ . "]\n";
+        }
         else
         if (method_exists($this, 'b') && $this->isBehavior($name))
+        {
+            echo "Object -> $name is behavior [" . __LINE__ . "]\n";
             $value = $this->b($name);
+        }
         else
         if (method_exists($this, 'p') && $this->isPluginRegistered($name))
+        {
+            echo "Object -> $name is plugin [" . __LINE__ . "]\n";
             $value = $this->p($name);
+        }
         else
         {
+            echo "Object -> $name is other value [" . __LINE__ . "]\n";
             if ($this instanceof IPlugin || $this instanceof IBehavior)
                 $value = $this->owner->$name;
             else
                 $value = isset($this->_properties[$name]) ? $this->_properties[$name] : null;
         }
+        echo "Object -> Return of $name value [" . __LINE__ . "]\n";
         return $value;
     }
     
@@ -927,10 +946,12 @@ trait TComponents
     public function c($name, $instance = false)
     {
         $location = get_class($this) . '.components.' . $name;
-        echo "$location\n";
         if (!Core::services()->isRegisteredService($location))
-            throw $this->exceptionServiceComponentNotRegistered(array('componentName' => $name));
-        return Core::services()->getRegisteredService($location, $instance);
+            throw $this->exceptionServiceComponentNotRegistered(['componentName' => $name]);
+        echo "Trait component -> Get service $location [" . __LINE__ . "]\n";
+        $component = Core::services()->getRegisteredService($location, $instance);
+        echo "Trait component -> Returned component " . (is_object($component) ? "[DONE]" : "[ERROR]") . " [" . __LINE__ . "]\n";
+        return $component;
     }
 
     /**

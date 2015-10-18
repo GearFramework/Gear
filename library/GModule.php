@@ -33,7 +33,15 @@ abstract class GModule extends GService implements IModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static $_config =
+    [
+        'events' => [],
+        'behaviors' => [],
+        'plugins' =>
+        [
+            'view' => ['class' => '\gear\plugins\gear\GView'],
+        ],
+    ];
     protected static $_init = false;
     /* Public */
 

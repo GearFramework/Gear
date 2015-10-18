@@ -25,7 +25,15 @@ abstract class GPlugin extends GComponent implements IPlugin
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static $_config =
+    [
+        'events' => [],
+        'behaviors' => [],
+        'plugins' =>
+        [
+            'view' => ['class' => '\gear\plugins\gear\GView'],
+        ],
+    ];
     protected static $_init = false;
     /* Public */
 

@@ -56,6 +56,7 @@ class GErrorsHandler extends GComponent
         $args = array('exception' => new GException($message), 'code' => $code, 'file' => $file, 'line' => $line);
         try
         {
+            print_r(self::$_config);
             $this->view->render($this->getViewPath(), $args);
         }
         catch(\Exception $e)
