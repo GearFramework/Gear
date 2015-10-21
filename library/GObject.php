@@ -760,14 +760,17 @@ trait TPlugins
      */
     public function p($name)
     {
+        Core::syslog('Trait PLUGIN -> Get plugin ' . $name . '[' . __LINE__ . ']');
         if (!isset($this->_plugins[$name]))
         {
+            Core::syslog('Trait PLUGIN -> Plugin ' . $name . ' not instanced [' . __LINE__ . ']');
             list($class, $config, $properties) = $this->getPluginRecord($name);
             if (!class_exists($class, false))
                 $this->_plugins[$name] = $class::install($config, $properties, $this);
             else
                 $this->_plugins[$name] = $class::it($properties, $this);
         }
+        Core::syslog('Trait PLUGIN -> Return instance of plugin ' . $name . '[' . __LINE__ . ']');
         return $this->_plugins[$name];
     }
 
@@ -803,6 +806,7 @@ trait TPlugins
      */
     public function installPlugin($name, $instance)
     {
+        Core::syslog('Trait PLUGIN -> Install plugin ' . $name . ' as ' . get_class($instance) . '[' . __LINE__ . ']');
         $this->_plugins[$name] = $instance;
         return $this;
     }
@@ -843,6 +847,7 @@ trait TEvents
      */
     public function attachEvents(array $listEvents)
     {
+        Core::syslog('Trait EVENTS -> Attach events [' . __LINE__ . ']');
         foreach($listEvents as $eventName => $handler)
             $this->attachEvent($eventName, $handler);
         return $this;
@@ -860,6 +865,7 @@ trait TEvents
     {
         if (!is_callable($handler))
             throw $this->exceptionObjectInvalidEventHandler(['eventName' => $name]);
+        Core::syslog('Trait EVENTS -> Attach event ' . $name . '[' . __LINE__ . ']');
         $this->_events[$name][] = $handler;
         return $this;
     }
@@ -884,6 +890,7 @@ trait TEvents
      */
     public function trigger($name, $event = null)
     {
+        Core::syslog('Trait EVENTS -> Trigger event ' . $name . '[' . __LINE__ . ']');
         $args = func_get_args();
         array_shift($args);
         if (is_null($event) || !($event instanceof \gear\library\GEvent))
@@ -898,7 +905,10 @@ trait TEvents
             {
                 $result = call_user_func_array($handler, $args);
                 if (!$result || $event->stopPropagation)
+                {
+                    Core::syslog('Trait EVENTS -> Event ' . $name . ' break [' . __LINE__ . ']');
                     break;
+                }
             }
         }
         return $result;
@@ -945,12 +955,13 @@ trait TComponents
      */
     public function c($name, $instance = false)
     {
+        Core::syslog('Trait COMPONENTS -> Get component ' . $name . '[' . __LINE__ . ']');
         $location = get_class($this) . '.components.' . $name;
         if (!Core::services()->isRegisteredService($location))
             throw $this->exceptionServiceComponentNotRegistered(['componentName' => $name]);
-        echo "Trait component -> Get service $location [" . __LINE__ . "]\n";
+        Core::syslog('Trait COMPONENTS -> Get service location ' . $location . '[' . __LINE__ . ']');
         $component = Core::services()->getRegisteredService($location, $instance);
-        echo "Trait component -> Returned component " . (is_object($component) ? "[DONE]" : "[ERROR]") . " [" . __LINE__ . "]\n";
+        Core::syslog('Trait COMPONENTS -> Return component ' . $name . (is_object($component) ? " [DONE]" : " [ERROR]") . ' [' . __LINE__ . ']');
         return $component;
     }
 
@@ -977,7 +988,23 @@ trait TComponents
      */
     public function registerComponent($name, $component)
     {
+        Core::syslog('Trait COMPONENTS -> Register component ' . $name . '[' . __LINE__ . ']');
         Core::services()->registerService(get_class($this) . '.components.' . $name, $component);
+        return $this;
+    }
+
+    /**
+     * Установка компонента
+     *
+     * @access public
+     * @param string $name
+     * @param array $component
+     * @return $this
+     */
+    public function installComponent($name, $component)
+    {
+        Core::syslog('Trait COMPONENTS -> Install component ' . $name . '[' . __LINE__ . ']');
+        Core::services()->installService(get_class($this) . '.components.' . $name, $component);
         return $this;
     }
 }

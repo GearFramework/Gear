@@ -34,10 +34,12 @@ class GServicesContainer
      */
     public function registerService($serviceLocation, array $service)
     {
+        Core::syslog('Service container -> Register service ' . $serviceLocation . '[' . __LINE__ . ']');
         $this->_services[$serviceLocation] = $service;
         if (isset($this->_services[$serviceLocation]['#autoload']) &&
             $this->_services[$serviceLocation]['#autoload'] === true)
         {
+            Core::syslog('Service container -> Autoload service ' . $serviceLocation . '[' . __LINE__ . ']');
             unset($this->_services[$serviceLocation]['#autoload']);
             $this->getRegisteredService($serviceLocation);
         }
@@ -63,6 +65,7 @@ class GServicesContainer
      */
     public function installService($serviceLocation, $service)
     {
+        Core::syslog('Service container -> Install service ' . $serviceLocation . '[' . __LINE__ . ']');
         if (is_array($service))
         {
             list($class, $config, $properties) = Core::getRecords($service);
@@ -100,6 +103,7 @@ class GServicesContainer
     {
         if (isset($this->_services[$serviceLocation]))
         {
+            Core::syslog('Service container -> Uninstall service ' . $serviceLocation . '[' . __LINE__ . ']');
             $this->_services[$serviceLocation]->trigger('onUninstall');
             unset($this->_services[$serviceLocation]);
         }
@@ -117,17 +121,17 @@ class GServicesContainer
      */
     public function getRegisteredService($serviceLocation, $clone = false, $owner = null)
     {
-        echo "Service container -> Get service $serviceLocation" . ($clone ? " as clone" : "") . " [" . __LINE__ . "]\n";
+        Core::syslog('Service container -> Get registered service ' . $serviceLocation . ($clone ? " as clone" : "") . ' [' . __LINE__ . ']');
         if (!isset($this->_services[$serviceLocation]))
         {
-            echo "Service container -> Service $serviceLocation not found [" . __LINE__ . "]\n";
+            Core::syslog('Service container -> Service ' . $serviceLocation . ' not found[' . __LINE__ . ']');
             throw Core::exceptinServiceNotRegistered(['serviceName' => $serviceLocation]);
         }
         if (!is_object($this->_services[$serviceLocation]))
         {
-            echo "Service container -> Create instance of service $serviceLocation [" . __LINE__ . "]\n";
+            Core::syslog('Service container -> Create instance of service ' . $serviceLocation . ' [' . __LINE__ . ']');
             list($class, $config, $properties) = Core::getRecords($this->_services[$serviceLocation]);
-            echo "Service container -> Class service $serviceLocation is $class\n";
+            Core::syslog('Service container -> Class service ' . $serviceLocation . ' is ' . $class . ' [' . __LINE__ . ']');
             if (method_exists($class, 'install'))
                 $this->_services[$serviceLocation] = $class::install($config, $properties, $owner);
             else
@@ -135,7 +139,7 @@ class GServicesContainer
                 $this->_services[$serviceLocation] = $class::it($properties, $owner);
             else
                 $this->_services[$serviceLocation] = new $class($properties, $owner);
-            echo "Service container -> Created instance" . (is_object($this->_services[$serviceLocation]) ? "[DONE]" : "[ERROR]") . " [" . __LINE__ . "]\n";
+            Core::syslog('Service container -> Create instance ' . $serviceLocation . ' ' . (is_object($this->_services[$serviceLocation]) ? "[DONE]" : "[ERROR]") . ' [' . __LINE__ . ']');
         }
         return $clone ? clone $this->_services[$serviceLocation] : $this->_services[$serviceLocation];
     }

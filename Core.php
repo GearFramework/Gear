@@ -361,10 +361,11 @@ final class Core
      * @static
      * @return void
      */
-    public static function syslog()
+    public static function syslog($log)
     {
-        if (self::isComponentInstalled('syslog'))
-            call_user_func_array(self::c('syslog'), func_get_args());
+        echo $log . "\n";
+//        if (self::isComponentInstalled('syslog'))
+//            call_user_func_array(self::c('syslog'), func_get_args());
     }
     
     /**
