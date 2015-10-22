@@ -85,7 +85,10 @@ class GView extends GPlugin
             }
         }
         else
-            require($viewPath);
+        {
+            Core::syslog('View plugin -> Require template ' . $viewPath);
+            require $viewPath;
+        }
         $this->trigger('onAfterRender', new GEvent($this), $resultRender);
         return $resultRender;
     }
