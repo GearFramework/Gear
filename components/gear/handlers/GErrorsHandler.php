@@ -53,6 +53,7 @@ class GErrorsHandler extends GComponent
      */
     public function error($code, $message, $file = '', $line = 0)
     {
+        echo "Error handler -> $message\n";
         $args = array('exception' => new GException($message), 'code' => $code, 'file' => $file, 'line' => $line);
         try
         {

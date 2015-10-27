@@ -61,6 +61,7 @@ class GView extends GPlugin
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
             $viewPath .= '.phtml';
+        Core::syslog('View plugin -> ' . $viewPath);
         $this->trigger('onBeforeRender', new GEvent($this), $viewPath, $arguments);
         $this->_arguments = $arguments;
         extract($arguments);
@@ -85,7 +86,10 @@ class GView extends GPlugin
             }
         }
         else
+        {
+            Core::syslog('View plugin -> Require ' . $viewPath);
             require($viewPath);
+        }
         $this->trigger('onAfterRender', new GEvent($this), $resultRender);
         return $resultRender;
     }
