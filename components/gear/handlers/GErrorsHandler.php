@@ -57,6 +57,7 @@ class GErrorsHandler extends GComponent
         $args = array('exception' => new GException($message), 'code' => $code, 'file' => $file, 'line' => $line);
         try
         {
+            Core::syslog('Errors handler -> Render template ' . $this->getViewPath());
             $this->view->render($this->getViewPath(), $args);
         }
         catch(\Exception $e)
