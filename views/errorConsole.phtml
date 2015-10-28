@@ -1,2 +1,1 @@
-<?php echo $exception->getMessage();
-echo $exception->getTraceAsString();
+<?php echo $exception->getMessage(), "\n", $exception->getFile(), ':', $exception->getLine(), "\n", $exception->getTraceAsString();
