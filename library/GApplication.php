@@ -183,7 +183,6 @@ class GApplication extends GModule
      */
     public function onConstructed()
     {
-        $this->view->render();
         parent::onConstructed();
         Core::attachEvent('onBeforeApplicationRun', [$this, 'onBeforeRun']);
         Core::attachEvent('onAfterApplicationRun', [$this, 'onAfterRun']);

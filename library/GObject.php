@@ -56,15 +56,15 @@ class GObject
     /**
      * @var array behaviors
      */
-    protected $_behaviors = [];
+//    protected $_behaviors = [];
     /**
      * @var array instances plugins
      */
-    protected $_plugins = [];
+//    protected $_plugins = [];
     /**
      * @var array events handlers
      */
-    protected $_events = [];
+//    protected $_events = [];
     /**
      * @var array array of plugin names, for loading on construct
      */

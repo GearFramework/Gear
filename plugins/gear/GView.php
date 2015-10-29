@@ -53,10 +53,11 @@ class GView extends GPlugin
      */
     public function render($view = null, array $arguments = [], $return = false)
     {
+        Core::syslog('View plugin -> Render ' . $view);
         if (!$view)
             $view = $this->getOwner()->viewPath;
         else
-        if (!preg_match('/[\/|\\]/', $view))
+        if (!preg_match('/[\/|\\\\]/', $view))
             $view = $this->getOwner()->viewPath . '\\' . $view; 
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
