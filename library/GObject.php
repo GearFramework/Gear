@@ -72,7 +72,7 @@ class GObject
     /**
      * @var string path or namespace to object views
      */
-    protected $_viewPath = 'views';
+    protected $_viewPath = '\views';
     /* Public */
     
     /**
@@ -161,47 +161,47 @@ class GObject
      */
     public function __get($name)
     {
-        echo "Object -> Get $name [" . __LINE__ . "]\n";
+        echo "Object " . get_class($this) . " -> Get $name [" . __LINE__ . "]\n";
         $getter = 'get' . ucfirst($name);
         if (method_exists($this, $getter))
         {
-            echo "Object -> $name have getter $getter [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name have getter $getter [" . __LINE__ . "]\n";
             $value = $this->$getter();
         }
         else
         if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
         {
-            echo "Object -> $name is event [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name is event [" . __LINE__ . "]\n";
             $value = $this->trigger($name);
         }
         else
         if (method_exists($this, 'isComponentRegistered') && $this->isComponentRegistered($name))
         {
-            echo "Object -> $name is registered component [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name is registered component [" . __LINE__ . "]\n";
             $value = $this->c($name);
-            echo "Object -> $name is " . (is_object($value) ? 'valid' : 'invalid') . " component [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name is " . (is_object($value) ? 'valid' : 'invalid') . " component [" . __LINE__ . "]\n";
         }
         else
         if (method_exists($this, 'b') && $this->isBehavior($name))
         {
-            echo "Object -> $name is behavior [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name is behavior [" . __LINE__ . "]\n";
             $value = $this->b($name);
         }
         else
         if (method_exists($this, 'p') && $this->isPluginRegistered($name))
         {
-            echo "Object -> $name is plugin [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name is plugin of [" . __LINE__ . "]\n";
             $value = $this->p($name);
         }
         else
         {
-            echo "Object -> $name is other value [" . __LINE__ . "]\n";
+            echo "Object " . get_class($this) . " -> $name is other value [" . __LINE__ . "]\n";
             if ($this instanceof IPlugin || $this instanceof IBehavior)
                 $value = $this->owner->$name;
             else
                 $value = isset($this->_properties[$name]) ? $this->_properties[$name] : null;
         }
-        echo "Object -> Return of $name value [" . __LINE__ . "]\n";
+        echo "Object " . get_class($this) . " -> Return of $name value [" . __LINE__ . "]\n";
         return $value;
     }
     

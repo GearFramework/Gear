@@ -61,6 +61,7 @@ class GLoader extends GComponent implements ILoader
             $file = $this->paths[$className];
         else
             $file = GEAR . '/../' . str_replace('\\', '/', $className) . '.php';
+        Core::syslog('Loader component -> ' . $file);
         if (!file_exists($file))
             throw $this->exceptionLoaderClassFileNotFound(array('filename' => $file, 'className' => $className));
         include_once($file);

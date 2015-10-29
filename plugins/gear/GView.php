@@ -56,7 +56,7 @@ class GView extends GPlugin
         if (!$view)
             $view = $this->getOwner()->viewPath;
         else
-        if (!preg_match('/[\/|\\\\]/', $view))
+        if (!preg_match('/[\/|\\]/', $view))
             $view = $this->getOwner()->viewPath . '\\' . $view; 
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))

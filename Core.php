@@ -189,6 +189,7 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
+        Core::syslog('CORE -> Initialize...');
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
         if ($config instanceof \Closure)
@@ -222,6 +223,7 @@ final class Core
                 }
             }
         }
+        Core::syslog('CORE -> Initialize end');
         return true;
     }
 
@@ -235,8 +237,10 @@ final class Core
      */
     private static function _preloads()
     {
+        Core::syslog('CORE -> Prepare preloads');
         foreach(self::$_config['preloads']['library'] as $class)
         {
+            Core::syslog('CORE -> Preload library ' . $class);
             if (substr($class, -1) === '*')
             {
                 $pathMask = self::resolvePath($class, true);
@@ -253,7 +257,10 @@ final class Core
         }
         unset(self::$_config['preloads']['library']);
         foreach(self::$_config['preloads'] as $sectionName => $section)
+        {
+            Core::syslog('CORE -> Preload section ' . $sectionName);
             self::_preloadSection($sectionName, $section);
+        }
         return true;
     }
 
@@ -311,6 +318,7 @@ final class Core
         {
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
+            Core::syslog('CORE -> Preload class ' . $class . ' in library ' . $pathFile);
             self::_loadFile($pathFile);
             $instance = $class::install($config, $properties);
             self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
