@@ -13,7 +13,7 @@ namespace gear\interfaces;
  * @php 5.3.x
  * @release 1.0.0
  */
-interface IProcessManager
+interface IProcess
 {
     /**
      * Точка входа в процесс

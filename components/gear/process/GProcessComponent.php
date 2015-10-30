@@ -14,7 +14,7 @@ use gear\library\GComponent;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GProcessComponent extends GComponent
@@ -23,14 +23,14 @@ class GProcessComponent extends GComponent
     /* Private */
     /* Protected */
     /* Настройки компонента */
-    protected static $_config = array();
+    protected static $_config = [];
     protected static $_init = false;
     /* Объект возвращающий параметры запроса */
     protected $_request = null;
     /* Имя процесса исполняемого по-умолчанию */
     protected $_defaultProcess = 'index';
     /* Список установленных процессов */
-    protected $_processes = array();
+    protected $_processes = [];
     /* Текущий исполняемый процесс */
     protected $_currentProcess = null;
     /* Public */
@@ -72,7 +72,7 @@ class GProcessComponent extends GComponent
             if ($request && !is_object($request))
                 $request = Core::app()->request;
             $this->request = $request;
-            if ($process && ($process instanceof \gear\interfaces\IProcess || $process instanceof \Closure))
+            if ($process && ($process instanceof IProcess || $process instanceof \Closure))
                 $this->_currentProcess = $process;
             else
                 $this->_currentProcess = $this->_routing();
@@ -81,7 +81,7 @@ class GProcessComponent extends GComponent
         }
         catch(GException $e)
         {
-            $this->event('onProcessNotFound', $e);
+            $this->trigger('onProcessNotFound', $e);
             exit(404);
         }
     }
@@ -104,7 +104,7 @@ class GProcessComponent extends GComponent
         }
         $processes = $this->getProcesses();
         $class = null;
-        $properties = array();
+        $properties = [];
         if (isset($processes[$processName]))
         {
             if (is_object($processes[$processName]))
@@ -119,13 +119,13 @@ class GProcessComponent extends GComponent
                     $properties['name'] = $processName;
                 }
                 else
-                    $properties = array_merge($processes[$processName], array('name' => $processName));
+                    $properties = array_merge($processes[$processName], ['name' => $processName]);
             }
             else
-                $properties = array('name' => $processName, 'param' => $processes[$processName]);
+                $properties = ['name' => $processName, 'param' => $processes[$processName]];
         }
         else
-            $properties = array('name' => $processName);
+            $properties = ['name' => $processName];
         if (!$class)
             $class = $this->_routingClass($processName);
         return $process ? $process : new $class($properties);
