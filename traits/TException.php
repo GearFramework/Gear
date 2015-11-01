@@ -11,7 +11,8 @@ use gear\Core;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 15.08.2015
- * @php 5.3.x
+ * @php 5.4.x or higher
+ * @release 1.0.0
  */
 trait TException
 {
@@ -26,7 +27,7 @@ trait TException
     public function __call($name, $args)
     {
         if (preg_match('/^exception/', $name))
-            return call_user_func_array(array(Core, $name), $args);
+            return call_user_func_array([Core, $name], $args);
     }
 
     /**
@@ -40,6 +41,6 @@ trait TException
     public static function __callStatic($name, $args)
     {
         if (preg_match('/^exception[A-Z]/', $name))
-            return call_user_func_array(array(\Core, $name), $args);
+            return call_user_func_array([Core, $name], $args);
     }
 }

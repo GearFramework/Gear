@@ -90,6 +90,7 @@ final class Core
                     /* Set helpers, remove dependencies on the class name */
                     'aliases' =>
                     [
+                        'International' => ['class' => '\gear\helpers\GInternational'],
                         'Arrays' => ['class' => '\gear\helpers\GArray'],
                         'Calendar' => ['class' => '\gear\helpers\GCalendar'],
                         'Html' => ['class' => '\gear\helpers\GHtml'],
@@ -153,6 +154,7 @@ final class Core
     {
         if (preg_match('/^exception[A-Z]{1}/', $name))
         {
+            print_r($args);
             if (!isset($args[0]) || is_array($args[0]))
                 array_unshift($args, null);
             array_unshift($args, $name);

@@ -12,7 +12,7 @@ use gear\library\GPlugin;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 28.01.2014
- * @php 5.4.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 abstract class GCache extends GPlugin

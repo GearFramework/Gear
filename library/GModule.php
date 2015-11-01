@@ -4,7 +4,6 @@ namespace gear\library;
 
 use gear\Core;
 use gear\library\GService;
-use gear\library\GException;
 use gear\library\TEvents;
 use gear\library\TComponents;
 use gear\library\TBehaviors;
@@ -20,7 +19,7 @@ use gear\interfaces\IModule;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
- * @php 5.4.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 abstract class GModule extends GService implements IModule
@@ -44,6 +43,26 @@ abstract class GModule extends GService implements IModule
     ];
     protected static $_init = false;
     /* Public */
+
+    /**
+     * Конфигурирование модуля
+     *
+     * @access public
+     * @static
+     * @param string|array $config
+     * @return bool
+     * @throws GException
+     */
+    public static function init($config)
+    {
+        parent::init($config);
+        if (isset(static::$_config['components']))
+        {
+            foreach(static::$_config['components'] as $componentName => $component)
+                Core::services()->registerService(get_called_class() . '.components.' . $componentName, $component);
+        }
+        return static::$_init;
+    }
 
     /**
      * Возвращает true, если модуль может быть перегружен, иначе false

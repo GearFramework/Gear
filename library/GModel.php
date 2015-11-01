@@ -17,7 +17,7 @@ use gear\library\TPlugins;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
- * @php 5.4.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GModel extends GObject

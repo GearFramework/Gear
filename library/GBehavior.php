@@ -12,7 +12,7 @@ use gear\interfaces\IBehavior;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 abstract class GBehavior implements IBehavior
@@ -59,7 +59,36 @@ abstract class GBehavior implements IBehavior
      * @return mixed
      */
     public function __get($name) { return $this->_owner->$name; }
-    
+
+    /**
+     * Возвращает true если $name является:
+     * - событием, для которого имеются обработчики
+     * - зарегестрированным компонентом модуля
+     * - поведением
+     * - плагином
+     * - свойством объекта
+     * иначе возвращает false
+     *
+     * @access public
+     * @param string $name
+     * @return mixed
+     */
+    public function __isset($name) { return isset($this->_owner->$name); }
+
+    /**
+     * Метод производит удаление:
+     * - обработчиков события, если $name таковым является
+     * - деинсталлирует компонент модуля
+     * - отключает поведение, если $name является названием поведения
+     * - деинсталлирует плагин
+     * - удаляет свойство объекта, если таковое имеется
+     *
+     * @access public
+     * @param string $name
+     * @return void
+     */
+    public function __unset($name) { unset($this->_owner->$name); }
+
     /**
      * Перевод вызова несуществующей функции на владельца поведения
      * 
@@ -79,4 +108,12 @@ abstract class GBehavior implements IBehavior
      * @return GBehavior
      */
     public static function attach($owner) { return new static($owner); }
+
+    /**
+     * Возвращает владельца поведения
+     *
+     * @access public
+     * @return object
+     */
+    public function getOwner() { return $this->_owner; }
 }

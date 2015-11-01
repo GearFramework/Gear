@@ -12,25 +12,26 @@ use \gear\library\GException;
  * @component ErrorsHandler
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
- * @version 0.0.1
+ * @version 1.0.0
  * @since 02.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
+ * @release 1.0.0
  */
 class GErrorsHandler extends GComponent
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array('handler' => 'error');
+    protected static $_config = ['handler' => 'error'];
     protected static $_init = false;
-    protected $_viewPath = array
-    (
-        'mode' => array
-        (
+    protected $_viewPath =
+    [
+        'mode' =>
+        [
             Core::HTTP => '\gear\views\errorHttp',
             Core::CLI => '\gear\views\errorConsole',
-        ),
-    );
+        ],
+    ];
     /* Public */
 
     /**
@@ -53,8 +54,8 @@ class GErrorsHandler extends GComponent
      */
     public function error($code, $message, $file = '', $line = 0)
     {
-        echo "Error handler -> $message\n";
-        $args = array('exception' => new GException($message), 'code' => $code, 'file' => $file, 'line' => $line);
+        Core::syslog("Error handler -> $message");
+        $args = ['exception' => new GException($message), 'code' => $code, 'file' => $file, 'line' => $line];
         try
         {
             Core::syslog('Errors handler -> Render template ' . $this->getViewPath());
@@ -78,7 +79,7 @@ class GErrorsHandler extends GComponent
      */
     public function getSource($file, $currentLine = 0)
     {
-        $sources = array();
+        $sources = [];
         if (is_file($file) && file_exists($file) && is_readable($file))
         {
             $lines = file($file);
@@ -125,7 +126,7 @@ class GErrorsHandler extends GComponent
     {
         if (!($handlerName = $this->i('handler')))
             throw $this->exceptionService('Not specified "handler"');
-        set_error_handler(array($this, $handlerName), E_ALL);
+        set_error_handler([$this, $handlerName], E_ALL);
         return true;
     }
 }

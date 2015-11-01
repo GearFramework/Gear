@@ -13,8 +13,8 @@ use \gear\library\GException;
  * @release 1.0.0
  */
 class ObjectException extends GException {}
-class ObjectMethodNotFoundException extends ObjectException { public $defaultMessage = 'Method :className:::methodName not found'; }
-class ObjectStaticMethodNotFoundException extends ObjectException { public $defaultMessage = 'Static method :className:::methodName not found'; }
+class ClassMethodNotFoundException extends ObjectException { public $defaultMessage = 'Method :className:::methodName not found'; }
+class ClassStaticMethodNotFoundException extends ObjectException { public $defaultMessage = 'Static method :className:::methodName not found'; }
 class ObjectInvalidPluginException extends ObjectException { public $defaultMessage = 'Plugin :pluginName is not callable and cannot be use as function'; }
 class ObjectPluginNotRegisteredException extends ObjectException{ public $defaultMessage = 'Plugin :pluginName is not registered'; }
 class ObjectInvalidBehaviorException extends ObjectException { public $defaultMessage = 'Behavior :behaviorName is invalid'; }

@@ -10,7 +10,7 @@ namespace gear\library;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.4.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GEvent

@@ -16,7 +16,8 @@ use gear\interfaces\IPlugin;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 01.08.2013
- * @php 5.4.x
+ * @php 5.4.x or higher
+ * @release 1.0.0
  */
 abstract class GPlugin extends GComponent implements IPlugin
 {

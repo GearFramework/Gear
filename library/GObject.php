@@ -17,6 +17,7 @@ use gear\library\GEvent;
  * @version 1.0.0
  * @since 01.08.2013
  * @php 5.4.x or higher
+ * @release 1.0.0
  */
 class GObject
 {
@@ -40,6 +41,9 @@ class GObject
      * @var array default values of object properties
      */
     protected static $_defaultProperties = [];
+    /**
+     * @var string class namespace
+     */
     protected $_namespace = null;
     /**
      * @var int access level to object
@@ -53,18 +57,6 @@ class GObject
      * @var null|object owner object
      */
     protected $_owner = null;
-    /**
-     * @var array behaviors
-     */
-//    protected $_behaviors = [];
-    /**
-     * @var array instances plugins
-     */
-//    protected $_plugins = [];
-    /**
-     * @var array events handlers
-     */
-//    protected $_events = [];
     /**
      * @var array array of plugin names, for loading on construct
      */
@@ -143,6 +135,9 @@ class GObject
         if (method_exists($this, 'installPlugin') && $value instanceof \gear\interfaces\IPlugin)
             $this->installPlugin($name, $value);
         else
+        if ($this instanceof IBehavior || $this instanceof IPlugin)
+            $this->_owner->$name = $value;
+        else
             $this->_properties[$name] = $value;
     }
     
@@ -161,47 +156,30 @@ class GObject
      */
     public function __get($name)
     {
-        echo "Object " . get_class($this) . " -> Get $name [" . __LINE__ . "]\n";
+        $value = null;
         $getter = 'get' . ucfirst($name);
         if (method_exists($this, $getter))
-        {
-            echo "Object " . get_class($this) . " -> $name have getter $getter [" . __LINE__ . "]\n";
             $value = $this->$getter();
-        }
         else
         if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
-        {
-            echo "Object " . get_class($this) . " -> $name is event [" . __LINE__ . "]\n";
             $value = $this->trigger($name);
-        }
         else
         if (method_exists($this, 'isComponentRegistered') && $this->isComponentRegistered($name))
-        {
-            echo "Object " . get_class($this) . " -> $name is registered component [" . __LINE__ . "]\n";
             $value = $this->c($name);
-            echo "Object " . get_class($this) . " -> $name is " . (is_object($value) ? 'valid' : 'invalid') . " component [" . __LINE__ . "]\n";
-        }
         else
         if (method_exists($this, 'b') && $this->isBehavior($name))
-        {
-            echo "Object " . get_class($this) . " -> $name is behavior [" . __LINE__ . "]\n";
             $value = $this->b($name);
-        }
         else
         if (method_exists($this, 'p') && $this->isPluginRegistered($name))
-        {
-            echo "Object " . get_class($this) . " -> $name is plugin of [" . __LINE__ . "]\n";
             $value = $this->p($name);
-        }
         else
         {
-            echo "Object " . get_class($this) . " -> $name is other value [" . __LINE__ . "]\n";
-            if ($this instanceof IPlugin || $this instanceof IBehavior)
-                $value = $this->owner->$name;
+            if (array_key_exists($name, $this->_properties))
+                $value = $this->_properties[$name];
             else
-                $value = isset($this->_properties[$name]) ? $this->_properties[$name] : null;
+            if (is_object($this->_owner))
+                $value = $this->_owner->$name;
         }
-        echo "Object " . get_class($this) . " -> Return of $name value [" . __LINE__ . "]\n";
         return $value;
     }
     
@@ -224,27 +202,27 @@ class GObject
         }
         else
         if (method_exists($this, 'c') && $this->isComponentRegistered($name))
-            $value = $this->c($name);
+        {
+            $component = $this->c($name);
+            $value = is_callable($component) ? call_user_func_array($component, $args) : $component;
+        }
         else
         if (method_exists($this, 'b') && $this->isBehavior($name))
             $value = call_user_func_array(array($this, 'b'), array_merge(array($name), $args));
         else
         if (method_exists($this, 'p') && $this->isPluginRegistered($name))
         {
-            $p = $this->p($name);
-            if (!is_callable($p))
-                throw $this->exceptionObjectInvalidPlugin(['pluginName' => $name]);
-            $value = call_user_func_array($p, $args);
+            $plugin = $this->p($name);
+            $value = is_callable($plugin) ? call_user_func_array($plugin, $args) : $plugin;
         }
         else
-        if (is_object($this->owner))
+        if (is_object($this->_owner))
         {
             array_unshift($args, $this);
-            $value = call_user_func_array([$this->owner, $name], $args);
+            $value = call_user_func_array([$this->_owner, $name], $args);
         }
-/*        $result = $this->event('onCalled', $name, $args);
-        if ($result === null)
-            throw $this->exceptionObjectMethodNotFound(array('className' => get_class($this), 'methodName' => $name));*/
+        else
+            throw $this->exceptionClassMethodNotFound(array('className' => get_class($this), 'methodName' => $name));
         return $value;
     }
     
@@ -259,15 +237,23 @@ class GObject
      */
     public static function __callStatic($name, $args)
     {
-        if (!preg_match('/^exception[A-Z]/', $name))
-            throw static::exceptionObjectStaticMethodNotFound(['className' => get_called_class(), 'methodName' => $name]);
-        return call_user_func_array(['Core', $name], $args);
+        if (preg_match('/^exception[A-Z]/', $name))
+            return call_user_func_array(['Core', $name], $args);
+        else
+        if (preg_match('/^on[A-Z]/', $name) && method_exists(get_called_class(), 'trigger'))
+        {
+            array_unshift($args, $name);
+            return call_user_func_array(['Core', 'trigger'], $args);
+        }
+        throw static::exceptionClassStaticMethodNotFound(['className' => get_called_class(), 'methodName' => $name]);
     }
     
     /**
      * Возвращает true если $name является:
      * - событием, для которого имеются обработчики
+     * - зарегестрированным компонентом модуля
      * - поведением
+     * - плагином
      * - свойством объекта
      * иначе возвращает false
      * 
@@ -277,19 +263,25 @@ class GObject
      */
     public function __isset($name)
     {
+        $value = false;
         if ((method_exists($this, 'isEvent') && $this->isEvent($name)) ||
+            (method_exists($this, 'isComponentRegistered') && $this->isComponentRegistered($name)) ||
             (method_exists($this, 'isBehavior') && $this->isBehavior($name)) ||
-            (method_exists($this, 'isPluginRegistered') && $this->isPluginRegistered($name)))
+            (method_exists($this, 'isPluginRegistered') && $this->isPluginRegistered($name)) ||
+            array_key_exists($name, $this->_properties))
             $value = true;
         else
-            $value = array_key_exists($name, $this->_properties);
+        if (is_object($this->_owner))
+            $value = isset($this->_owner);
         return $value;
     }
     
     /**
      * Метод производит удаление:
      * - обработчиков события, если $name таковым является
+     * - деинсталлирует компонент модуля
      * - отключает поведение, если $name является названием поведения
+     * - деинсталлирует плагин
      * - удаляет свойство объекта, если таковое имеется
      * 
      * @access public
@@ -301,14 +293,20 @@ class GObject
         if (method_exists($this, 'isEvent') && $this->isEvent($name))
             $this->detachEvent($name);
         else
+        if (method_exists($this, 'isComponentRegistered') && $this->isComponentRegistered($name))
+            $this->uninstallComponent($name);
+        else
         if (method_exists($this, 'isBehavior') && $this->isBehavior($name))
             $this->detachBehavior($name);
         else
-        if (method_exists($this, 'isPlugin') && $this->isPluginRegistered($name))
+        if (method_exists($this, 'isPluginRegistered') && $this->isPluginRegistered($name))
             $this->uninstallPlugin($name);
         else
-        if (isset($this->_properties[$name]))
+        if (array_key_exists($name, $this->_properties))
             unset($this->_properties[$name]);
+        else
+        if (is_object($this->_owner))
+            unset($this->_owner->$name);
     }
     
     /**
@@ -428,7 +426,7 @@ class GObject
         if (is_null($name))
             return static::$_config;
         else
-        if (is_null($value))
+        if ($value === null)
         {
             $value = null;
             if (isset(static::$_config[$name]))
@@ -627,12 +625,253 @@ class GObject
      */
     protected function _preloading()
     {
-        if (method_exists($this, 'p'))
+        if (method_exists($this, 'c') || method_exists($this, 'p'))
         {
-            foreach($this->getPreloads('plugins') as $pluginName)
-                $this->p($pluginName);
+            foreach($this->preloads as $sectionName => $section)
+            {
+                foreach($section as $serviceName)
+                {
+                    if ($sectionName === 'components')
+                        $this->c($serviceName);
+                    else
+                    if ($sectionName === 'plugins')
+                        $this->p($serviceName);
+                }
+            }
         }
     }
+}
+
+trait TEvents
+{
+    /**
+     * @var array $_events
+     */
+    protected $_events = [];
+
+    /**
+     * Возвращает true, если у объекта есть зарегистрированные обработчики
+     * указанного события, иначе false
+     *
+     * @access public
+     * @param string $name
+     * @return boolean
+     */
+    public function isEvent($name)
+    {
+        return preg_match('/^on[A-Z]/', $name) && (method_exists($this, $name) || isset($this->_events[$name]));
+    }
+
+    /**
+     * Возвращает список обработчиков событий, указанных в конфигурации класса
+     *
+     * @access public
+     * @return array
+     */
+    public function getEvents()
+    {
+        Core::syslog('Trait EVENTS -> Return events from class ' . get_class($this) . ' [' . __LINE__ . ']');
+        return $this->i('events');
+    }
+
+
+    /**
+     * Добавление обработчика указанного события
+     *
+     * @access public
+     * @param array mixed $listEvents
+     * @return $this
+     */
+    public function attachEvents(array $listEvents)
+    {
+        Core::syslog('Trait EVENTS -> Attach events to class ' . get_class($this) . ' [' . __LINE__ . ']');
+        foreach($listEvents as $eventName => $handler)
+            $this->attachEvent($eventName, $handler);
+        return $this;
+    }
+
+    /**
+     * Добавление обработчика указанного события
+     *
+     * @access public
+     * @param string $name
+     * @param callable mixed $handler
+     * @return $this
+     */
+    public function attachEvent($name, $handler)
+    {
+        if (!is_callable($handler))
+            throw $this->exceptionObjectInvalidEventHandler(['eventName' => $name]);
+        Core::syslog('Trait EVENTS -> Attach event ' . $name . ' to class ' . get_class($this) . ' [' . __LINE__ . ']');
+        $this->_events[$name][] = $handler;
+        return $this;
+    }
+
+    /**
+     * Добавление обработчика указанного события
+     *
+     * @access public
+     * @param string|array $name
+     * @param null|callable $handler
+     * @return $this
+     */
+    public function on($name, $handler = null)
+    {
+        return is_array($name) ? $this->attachEvents($name) : $this->attachEvent($name, $handler);
+    }
+
+    /**
+     * Вызов обработчиков указанного события
+     *
+     * @access public
+     * @param string $name
+     * @param GEvent $event
+     * @return mixed
+     */
+    public function trigger($name, $event = null)
+    {
+        Core::syslog('Trait EVENTS -> Trigger event ' . $name . ' of class ' . get_class($this) . ' [' . __LINE__ . ']');
+        $args = func_get_args();
+        array_shift($args);
+        if (is_null($event) || !($event instanceof \gear\library\GEvent))
+        {
+            $event = new GEvent($this);
+            array_unshift($args, $event);
+        }
+        $result = method_exists($this, $name) ? call_user_func_array([$this, $name], $args) : true;
+        if (isset($this->_events[$name]) && ($result || !$event->stopPropagation))
+        {
+            foreach($this->_events[$name] as $handler)
+            {
+                $result = call_user_func_array($handler, $args);
+                if (!$result || $event->stopPropagation)
+                {
+                    Core::syslog('Trait EVENTS -> Event ' . $name . ' break [' . __LINE__ . ']');
+                    break;
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Удаление обработчиков указанного события
+     * Если указан параметр $handler, то будет удалён только один
+     * конкретный обработчик
+     *
+     * @access public
+     * @param string $name
+     * @param callable mixed $handler
+     * @return $this
+     */
+    public function detachEvent($name, $handler = null)
+    {
+        Core::syslog('Trait EVENTS -> Detach event ' . $name . ' from class ' . get_class($this) . ' [' . __LINE__ . ']');
+        if (isset($this->_events[$name]))
+        {
+            if (!$handler)
+                unset($this->_events[$name]);
+            else
+            {
+                foreach($this->_events[$name] as $index => $h)
+                {
+                    if ($h === $handler)
+                        unset($this->_events[$name][$index]);
+                }
+            }
+        }
+        return $this;
+    }
+}
+
+trait TComponents
+{
+    /**
+     * Получение компонента, зарегистрированного модулем
+     *
+     * @access public
+     * @param string $name
+     * @param boolean $instance
+     * @return IComponent
+     */
+    public function c($name, $instance = false)
+    {
+        Core::syslog('Trait COMPONENTS -> Get component ' . $name . ' from ' . get_class($this) . ' [' . __LINE__ . ']');
+        $location = $this->_getKey($name);
+        if (!Core::services()->isRegisteredService($location))
+            throw $this->exceptionServiceComponentNotRegistered(['componentName' => $name]);
+        Core::syslog('Trait COMPONENTS -> Get service location ' . $location . '[' . __LINE__ . ']');
+        $component = Core::services()->getRegisteredService($location, $instance);
+        Core::syslog('Trait COMPONENTS -> Return component ' . $name . (is_object($component) ? " [DONE]" : " [ERROR]") . ' [' . __LINE__ . ']');
+        return $component;
+    }
+
+    /**
+     * Возвращает запись о компоненте модуля, иначе false если компонент
+     * с указанным именем не зарегистрирован
+     *
+     * @access public
+     * @param string $name
+     * @return boolean
+     */
+    public function isComponentRegistered($name)
+    {
+        return Core::services()->isRegisteredService($this->_getKey($name));
+    }
+
+    /**
+     * Регистрация компонента
+     *
+     * @access public
+     * @param string $name
+     * @param array $component
+     * @return $this
+     */
+    public function registerComponent($name, $component)
+    {
+        Core::syslog('Trait COMPONENTS -> Register component ' . $name . ' to ' . get_class($this) . ' [' . __LINE__ . ']');
+        Core::services()->registerService($this->_getKey($name), $component);
+        return $this;
+    }
+
+    /**
+     * Установка компонента
+     *
+     * @access public
+     * @param string $name
+     * @param array $component
+     * @return $this
+     */
+    public function installComponent($name, $component)
+    {
+        Core::syslog('Trait COMPONENTS -> Install component ' . $name . ' to ' . get_class($this) . ' [' . __LINE__ . ']');
+        Core::services()->installService($this->_getKey($name), $component);
+        return $this;
+    }
+
+    /**
+     * Установка компонента
+     *
+     * @access public
+     * @param string $name
+     * @param array $component
+     * @return $this
+     */
+    public function uninstallComponent($name)
+    {
+        Core::syslog('Trait COMPONENTS -> Uninstall component ' . $name . ' from ' . get_class($this) . ' [' . __LINE__ . ']');
+        Core::services()->uninstallService($this->_getKey($name));
+        return $this;
+    }
+
+    /**
+     * Возвращает ключ для хранения сервисов
+     *
+     * @access protected
+     * @param string $name
+     * @return string
+     */
+    protected function _getKey($name) { return get_class($this) . '.components.' . $name; }
 }
 
 trait TBehaviors
@@ -808,203 +1047,6 @@ trait TPlugins
     {
         Core::syslog('Trait PLUGIN -> Install plugin ' . $name . ' as ' . get_class($instance) . '[' . __LINE__ . ']');
         $this->_plugins[$name] = $instance;
-        return $this;
-    }
-}
-
-trait TEvents
-{
-    protected $_events = [];
-
-    /**
-     * Возвращает true, если у объекта есть зарегистрированные обработчики
-     * указанного события, иначе false
-     *
-     * @access public
-     * @param string $name
-     * @return boolean
-     */
-    public function isEvent($name)
-    {
-        return preg_match('/^on[A-Z]/', $name) && (method_exists($this, $name) || isset($this->_events[$name]));
-    }
-
-    /**
-     * Возвращает список обработчиков событий, указанных в конфигурации класса
-     *
-     * @access public
-     * @return array
-     */
-    public function getEvents() { return $this->i('events'); }
-
-
-    /**
-     * Добавление обработчика указанного события
-     *
-     * @access public
-     * @param array mixed $listEvents
-     * @return $this
-     */
-    public function attachEvents(array $listEvents)
-    {
-        Core::syslog('Trait EVENTS -> Attach events [' . __LINE__ . ']');
-        foreach($listEvents as $eventName => $handler)
-            $this->attachEvent($eventName, $handler);
-        return $this;
-    }
-
-    /**
-     * Добавление обработчика указанного события
-     *
-     * @access public
-     * @param string $name
-     * @param callable mixed $handler
-     * @return $this
-     */
-    public function attachEvent($name, $handler)
-    {
-        if (!is_callable($handler))
-            throw $this->exceptionObjectInvalidEventHandler(['eventName' => $name]);
-        Core::syslog('Trait EVENTS -> Attach event ' . $name . '[' . __LINE__ . ']');
-        $this->_events[$name][] = $handler;
-        return $this;
-    }
-
-    /**
-     * Добавление обработчика указанного события
-     *
-     * @access public
-     * @param string $name
-     * @param callable mixed $handler
-     * @return $this
-     */
-    public function on($name, $handler) { return $this->attachEvent($name, $handler); }
-
-    /**
-     * Вызов обработчиков указанного события
-     *
-     * @access public
-     * @param string $name
-     * @param GEvent $event
-     * @return mixed
-     */
-    public function trigger($name, $event = null)
-    {
-        Core::syslog('Trait EVENTS -> Trigger event ' . $name . '[' . __LINE__ . ']');
-        $args = func_get_args();
-        array_shift($args);
-        if (is_null($event) || !($event instanceof \gear\library\GEvent))
-        {
-            $event = new GEvent($this);
-            array_unshift($args, $event);
-        }
-        $result = method_exists($this, $name) ? call_user_func_array([$this, $name], $args) : true;
-        if (isset($this->_events[$name]) && ($result || !$event->stopPropagation))
-        {
-            foreach($this->_events[$name] as $handler)
-            {
-                $result = call_user_func_array($handler, $args);
-                if (!$result || $event->stopPropagation)
-                {
-                    Core::syslog('Trait EVENTS -> Event ' . $name . ' break [' . __LINE__ . ']');
-                    break;
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Удаление обработчиков указанного события
-     * Если указан параметр $handler, то будет удалён только один
-     * конкретный обработчик
-     *
-     * @access public
-     * @param string $name
-     * @param callable mixed $handler
-     * @return $this
-     */
-    public function detachEvent($name, $handler = null)
-    {
-        if (isset($this->_events[$name]))
-        {
-            if (!$handler)
-                unset($this->_events[$name]);
-            else
-            {
-                foreach($this->_events[$name] as $index => $h)
-                {
-                    if ($h === $handler)
-                        unset($this->_events[$name][$index]);
-                }
-            }
-        }
-        return $this;
-    }
-}
-
-trait TComponents
-{
-    /**
-     * Получение компонента, зарегистрированного модулем
-     *
-     * @access public
-     * @param string $name
-     * @param boolean $instance
-     * @return IComponent
-     */
-    public function c($name, $instance = false)
-    {
-        Core::syslog('Trait COMPONENTS -> Get component ' . $name . '[' . __LINE__ . ']');
-        $location = get_class($this) . '.components.' . $name;
-        if (!Core::services()->isRegisteredService($location))
-            throw $this->exceptionServiceComponentNotRegistered(['componentName' => $name]);
-        Core::syslog('Trait COMPONENTS -> Get service location ' . $location . '[' . __LINE__ . ']');
-        $component = Core::services()->getRegisteredService($location, $instance);
-        Core::syslog('Trait COMPONENTS -> Return component ' . $name . (is_object($component) ? " [DONE]" : " [ERROR]") . ' [' . __LINE__ . ']');
-        return $component;
-    }
-
-    /**
-     * Возвращает запись о компоненте модуля, иначе false если компонент
-     * с указанным именем не зарегистрирован
-     *
-     * @access public
-     * @param string $name
-     * @return boolean
-     */
-    public function isComponentRegistered($name)
-    {
-        return Core::services()->isRegisteredService(get_class($this) . '.components.' . $name);
-    }
-
-    /**
-     * Регистрация компонента
-     *
-     * @access public
-     * @param string $name
-     * @param array $component
-     * @return $this
-     */
-    public function registerComponent($name, $component)
-    {
-        Core::syslog('Trait COMPONENTS -> Register component ' . $name . '[' . __LINE__ . ']');
-        Core::services()->registerService(get_class($this) . '.components.' . $name, $component);
-        return $this;
-    }
-
-    /**
-     * Установка компонента
-     *
-     * @access public
-     * @param string $name
-     * @param array $component
-     * @return $this
-     */
-    public function installComponent($name, $component)
-    {
-        Core::syslog('Trait COMPONENTS -> Install component ' . $name . '[' . __LINE__ . ']');
-        Core::services()->installService(get_class($this) . '.components.' . $name, $component);
         return $this;
     }
 }

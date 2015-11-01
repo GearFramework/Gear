@@ -30,7 +30,7 @@ abstract class GService extends GObject implements IService
     /* Public */
     
     /**
-     * Установка компонента
+     * Установка сервиса
      * 
      * @access public
      * @static
@@ -50,7 +50,7 @@ abstract class GService extends GObject implements IService
     }
     
     /**
-     * Конфигурирование класса компонента
+     * Конфигурирование сервиса
      * 
      * @access public
      * @static
@@ -66,16 +66,11 @@ abstract class GService extends GObject implements IService
             throw static::exceptionService('Incorrect configuration of service');
         static::$_config = array_replace_recursive(static::$_config, $config);
         list(,,static::$_config) = Core::getRecords(static::$_config);
-        if (isset(static::$_config['components']))
-        {
-            foreach(static::$_config['components'] as $componentName => $component)
-                Core::services()->registerService(get_called_class() . '.components.' . $componentName, $component);
-        }
         return static::$_init = true;
     }
     
     /**
-     * Получение экземпляра компонента
+     * Получение экземпляра сервиса
      * 
      * @access public
      * @static
@@ -89,7 +84,7 @@ abstract class GService extends GObject implements IService
     }
 
     /**
-     * Возвращает true, если компонент может быть перегружен, иначе false
+     * Возвращает true, если сервис может быть перегружен, иначе false
      * 
      * @access public
      * @return boolean

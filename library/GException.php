@@ -19,7 +19,8 @@ class GException extends \Exception
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_messages = '\gear\exceptions\locales';
+    protected static $_locationLocales = '\gear\exceptions\locales';
+    protected static $_messages = null;
     protected $_section = 'exceptions';
     protected $_args = [];
     /* Public */
@@ -41,19 +42,29 @@ class GException extends \Exception
      */
     public function __construct($message, $code = 0, \Exception $previous = null, array $args = [])
     {
-        $message = $message !== null ?: $this->defaultMessage;
-        if (is_string(self::$_messages))
+        $message = $message !== null ? $message : $this->defaultMessage;
+        Core::syslog('Exception -> Message ' . $message);
+        if (class_exists('International', true))
         {
-            $locale = Core::params('locale') ?: 'en_En';
-            $path = Core::resolvePath(self::$_messages) . '/' . $locale . '.php';
-            self::$_messages = file_exists($path) && is_readable($path) ? require($path) : [];
+            $message = International::t($message, self::$_locationLocales, $args);
+            foreach($args as $name => $value)
+                $this->$name = $value;
         }
-        if (isset(self::$_messages[$this->_section][$message]))
-            $message = self::$_messages[$this->_section][$message];
-        foreach($args as $name => $value)
+        else
         {
-            $this->$name = $value;
-            $message = str_replace(':' . $name, $value, $message);
+            if (self::$_messages === null)
+            {
+                $locale = Core::params('locale') ?: 'en_En';
+                $path = Core::resolvePath(self::$_messages) . '/' . $locale . '.php';
+                self::$_messages = file_exists($path) && is_readable($path) ? require($path) : [];
+            }
+            if (isset(self::$_messages[$this->_section][$message]))
+                $message = self::$_messages[$this->_section][$message];
+            foreach($args as $name => $value)
+            {
+                $this->$name = $value;
+                $message = str_replace(':' . $name, $value, $message);
+            }
         }
         parent::__construct($message, $code, $previous);
     }

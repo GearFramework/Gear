@@ -14,7 +14,8 @@ use gear\library\GException;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 16.07.2015
- * @php 5.3.x
+ * @php 5.4.x or higher
+ * @release 1.0.0
  */
 abstract class GStorageComponent extends GComponent
 {
