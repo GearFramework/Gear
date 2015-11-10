@@ -24,3 +24,4 @@ class DbCursorQueryError extends DbException
         Core::CLI => '\gear\views\db\exceptionConsole.html'
     );
 }
+class DbComponentNotFound extends DbException { public $defaultMessage = 'Db component :dbComponent not found'; }

@@ -16,7 +16,7 @@ use gear\interfaces\IService;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 25.12.2014
- * @php 5.4.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 abstract class GService extends GObject implements IService
@@ -78,10 +78,7 @@ abstract class GService extends GObject implements IService
      * @param null|object $owner
      * @return GComponent
      */
-    public static function it(array $properties = [], $owner = null)
-    {
-        return new static($properties, $owner);
-    }
+    public static function it(array $properties = [], $owner = null) { return new static($properties, $owner); }
 
     /**
      * Возвращает true, если сервис может быть перегружен, иначе false

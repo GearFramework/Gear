@@ -22,5 +22,6 @@ return
         'Service :serviceName not registered' => 'Service :serviceName not registered',
         'Services container not defined' => 'Services container not defined',
         'Static method :className:::methodName not found' => 'Static method :className:::methodName not found',
+        'Db component :dbComponent not found' => 'Db component :dbComponent not found',
     ],
 ];

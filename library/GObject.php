@@ -64,7 +64,7 @@ class GObject
     /**
      * @var string path or namespace to object views
      */
-    protected $_viewPath = '\views';
+    protected $_viewPath = 'views';
     /* Public */
     
     /**

@@ -19,7 +19,7 @@ use gear\interfaces\IComponent;
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.08.2013
- * @php 5.4.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 abstract class GComponent extends GService implements IComponent

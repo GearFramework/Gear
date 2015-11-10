@@ -3,7 +3,7 @@
 /**
  * Файл с реализацией компонента стандартного загрузчика
  * классов
- * PHP 5.3.x и выше
+ * PHP 5.4.x и выше
  */
 
 namespace gear\components\gear\loader;
@@ -22,7 +22,7 @@ use gear\interfaces\ILoader;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 02.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GLoader extends GComponent implements ILoader
@@ -31,14 +31,14 @@ class GLoader extends GComponent implements ILoader
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array('autoloadHandler' => 'loader');
+    protected static $_config = ['autoloadHandler' => 'loader'];
     protected static $_init = false;
-    protected $_aliases = array();
+    protected $_aliases = [];
     /* Public */
     public $usePaths = false;
-    public $paths = array();
+    public $paths = [];
     public $useResolvePaths = false;
-    public $resolvePaths = array();
+    public $resolvePaths = [];
     
     /**
      * Метод автоматической загрузки классов
@@ -63,7 +63,7 @@ class GLoader extends GComponent implements ILoader
             $file = GEAR . '/../' . str_replace('\\', '/', $className) . '.php';
         Core::syslog('Loader component -> ' . $file);
         if (!file_exists($file))
-            throw $this->exceptionLoaderClassFileNotFound(array('filename' => $file, 'className' => $className));
+            throw $this->exceptionLoaderClassFileNotFound(['filename' => $file, 'className' => $className]);
         include_once($file);
     }
     
@@ -106,7 +106,7 @@ class GLoader extends GComponent implements ILoader
      */
     public function setAlias($className, $alias)
     {
-        $this->_aliases[$alias] = array('class' => $className);
+        $this->_aliases[$alias] = ['class' => $className];
         return $this;
     }
 
@@ -156,7 +156,7 @@ class GLoader extends GComponent implements ILoader
     {
         if (!($handlerName = $this->i('autoloadHandler')))
             throw $this->exceptionService('Not specified "autoloadHandler"');
-        spl_autoload_register(array($this, $handlerName));
+        spl_autoload_register([$this, $handlerName]);
         return true;
     }
 }

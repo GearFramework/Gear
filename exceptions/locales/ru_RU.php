@@ -22,5 +22,6 @@ return
         'Service :serviceName not registered' => 'Сервис :serviceName не зарегистрирован',
         'Services container not defined' => 'Менеджер сервисов не определён',
         'Static method :className:::methodName not found' => 'Статический метод :className:::methodName не реализован',
+        'Db component :dbComponent not found' => 'Компонент подключения к базе данных :dbComponent не найден',
     ],
 ];

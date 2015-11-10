@@ -14,20 +14,18 @@ use \gear\library\GException;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 04.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
+ * @release 1.0.0
  */
 abstract class GDbConnection extends GComponent implements \Iterator
 {
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'autoConnect' => true,
-    );
+    protected static $_defaultProperties = ['autoConnect' => true];
     protected static $_init = false;
     protected $_handler = null;
-    protected $_items = array();
+    protected $_items = [];
     protected $_current = null;
     /* Public */
     
@@ -88,7 +86,7 @@ abstract class GDbConnection extends GComponent implements \Iterator
         else
         {
             list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
-            return $this->_current = $this->_items[$name] = new $class(array_merge($properties, array('owner' => $this, 'name' => $name)));
+            return $this->_current = $this->_items[$name] = new $class(array_merge($properties, ['owner' => $this, 'name' => $name]));
         }
     }
     

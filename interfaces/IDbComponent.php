@@ -24,7 +24,7 @@ interface IDbComponent extends IComponent
      * @param boolean $autoSelectCollection
      * @return \gear\library\db\GDbConnection
      */
-    public function getConnection($autoSelectDb = true, $autoSelectCollection = true);
+    public function getDbConnection($autoSelectDb = true, $autoSelectCollection = true);
 
     /**
      * Возвращает соединение
@@ -33,7 +33,7 @@ interface IDbComponent extends IComponent
      * @throws DbComponentCollection
      * @return GDbConnection || GDbDatabase || GDbCollection
      */
-    public function getDbConnection();
+    public function getConnection();
 
     /**
      * Возвращает объект базы данных

@@ -30,13 +30,5 @@ abstract class GStorageComponent extends GComponent
      * @access public
      * @return object
      */
-    public function storage() { return $this->getConnection(); }
-
-    /**
-     * Возвращает соединение с хранилищем объектов
-     *
-     * @access public
-     * @return object
-     */
-    abstract public function getConnection();
+    abstract public function storage();
 }

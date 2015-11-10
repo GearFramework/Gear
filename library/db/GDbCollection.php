@@ -13,7 +13,8 @@ use \gear\library\GModel;
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 04.08.2013
- * @php 5.3.x
+ * @php 5.4.x
+ * @release 1.0.0
  */
 abstract class GDbCollection extends GModel implements \Iterator
 {
@@ -52,7 +53,7 @@ abstract class GDbCollection extends GModel implements \Iterator
         list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
         $properties['owner'] = $this;
         $this->current = new $class($properties);
-        return call_user_func_array(array($this->_current, $name), $args);
+        return call_user_func_array([$this->_current, $name], $args);
     }
 
     /**
