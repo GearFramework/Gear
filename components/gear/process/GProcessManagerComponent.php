@@ -17,7 +17,7 @@ use gear\library\GComponent;
  * @php 5.4.x or higher
  * @release 1.0.0
  */
-class GProcessComponent extends GComponent
+class GProcessManagerComponent extends GComponent
 {
     /* Const */
     /* Private */
@@ -69,21 +69,29 @@ class GProcessComponent extends GComponent
     {
         try
         {
-            if ($request && !is_object($request))
-                $request = Core::app()->request;
-            $this->request = $request;
+            $this->request = !$request || !is_object($request) ? Core::app()->request : $request;
             if ($process && ($process instanceof IProcess || $process instanceof \Closure))
                 $this->_currentProcess = $process;
             else
                 $this->_currentProcess = $this->_routing();
-            return $this->_currentProcess instanceof \Closure
-                 ? call_user_func($this->_currentProcess, $this->request) : $this->_currentProcess->entry($this->request);
         }
         catch(GException $e)
         {
             $this->trigger('onProcessNotFound', $e);
             exit(404);
         }
+        if ($this->_currentProcess instanceof \Closure)
+        {
+            $result = false;
+            if (Core::trigger('onBeforeExec', $this->_currentProcess, $request))
+            {
+                $result = call_user_func($this->_currentProcess, $this->request);
+                Core::trigger('onAfterExec', $this->_currentProcess, $result);
+            }
+        }
+        else
+            $result = $this->_currentProcess->entry($this->request);
+        return $result;
     }
     
     /**
@@ -95,34 +103,28 @@ class GProcessComponent extends GComponent
     protected function _routing()
     {
         $process = null;
-        $processName = $this->request->get('e');
+        $processName = $this->request->get('e', $this->defaultProcess);
         if (!$processName)
-        {
-            $processName = $this->getDefaultProcess();
-            if (!$processName)
-                throw $this->exceptionProcess('Unknown process');
-        }
-        $processes = $this->getProcesses();
+            throw $this->exceptionProcess('Unknown process');
+        //$processes = $this->getProcesses();
         $class = null;
         $properties = [];
-        if (isset($processes[$processName]))
+        if (isset($this->processes[$processName]))
         {
-            if (is_object($processes[$processName]))
-                $process = $processes[$processName];
-            else
-            if (is_array($processes[$processName]))
+            $process = $this->processes[$processName];
+            if (is_array($process))
             {
-                if (isset($processes[$processName]['class']))
+                if (isset($process['class']))
                 {
                     /** @var array $config */
-                    list($class, $config, $properties) = Core::getRecords($this->_processes[$processName]);
+                    list($class, , $properties) = Core::getRecords($process);
                     $properties['name'] = $processName;
                 }
                 else
-                    $properties = array_merge($processes[$processName], ['name' => $processName]);
+                    $properties = array_merge($process, ['name' => $processName]);
             }
             else
-                $properties = ['name' => $processName, 'param' => $processes[$processName]];
+                $properties = ['name' => $processName, 'param' => $process];
         }
         else
             $properties = ['name' => $processName];
