@@ -34,7 +34,7 @@ abstract class GDbCursor extends GModel implements \Iterator
     public function query()
     {
         $query = $this->getQuery();
-        $this->event('onRunQuery', $query);
+        $this->trigger('onRunQuery', $query);
         if ($this->getConnection()->isPluginRegistered('trace'))
             $this->getConnection()->trace->trace($query);
         if (!$this->runQuery($query))
