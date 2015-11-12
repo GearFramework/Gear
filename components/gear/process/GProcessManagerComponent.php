@@ -78,7 +78,6 @@ class GProcessManagerComponent extends GComponent
         catch(GException $e)
         {
             $this->trigger('onProcessNotFound', $e);
-            exit(404);
         }
         if ($this->_currentProcess instanceof \Closure)
         {
@@ -256,12 +255,6 @@ class GProcessManagerComponent extends GComponent
 
     public function onProcessNotFound($event, \Exception $e)
     {
-        if (Core::app()->isHttp())
-        {
-            header('HTTP/1.0 404 Not Found', true, 404);
-            echo $e->getMessage();
-        }
-        else
-            echo $e->getMessage();
+        throw $this->exceptionHttpError($e->getMessage(), ['request' => $this->request], 404);
     }
 }

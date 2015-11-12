@@ -24,7 +24,6 @@ class GView extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_arguments = [];
     /* Public */
 
     /**
