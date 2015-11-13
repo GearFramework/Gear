@@ -57,6 +57,7 @@ final class Core
             /* Библиотеки подключаемые на этапе инициализации */
             'library' =>
             [
+                '\gear\traits\*',
                 '\gear\library\GException',
                 '\gear\exceptions\*',
                 '\gear\library\GEvent',
