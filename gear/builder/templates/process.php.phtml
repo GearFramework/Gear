@@ -1,0 +1,20 @@
+&lt;?php
+
+namespace <?php echo $this->appProcessNs; ?>;
+use \gear\Core;
+use \gear\library\GEvent;
+use \gear\library\GException;
+use \gear\models\GProcess;
+
+class <?php echo $this->param('appUseConfig.defaultProcessClass'); ?> extends GProcess
+{
+    /* Const */
+    /* Private */
+    /* Protected */
+    /* Public */
+    
+    public function apiIndex()
+    {
+        $this->view->render('views\\<?php echo $this->param('appUseConfig.defaultProcessName'); ?>');
+    }
+}
