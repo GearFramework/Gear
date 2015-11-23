@@ -635,7 +635,7 @@ final class Core
      */
     public static function trigger($name, $event = null)
     {
-        $result = false;
+        $result = true;
         if (isset(self::$_events[$name]))
         {
             $args = func_get_args();
@@ -674,6 +674,7 @@ final class Core
      */
     public static function attachEvent($eventName, $handler)
     {
+        self::syslog('CORE -> Attach event "' . $eventName . '" [' . __LINE__ . ']');
         if (!is_callable($handler))
             throw self::exceptionCore('Invalid handler of event :eventName', ['eventName' => $eventName]);
         self::$_events[$eventName][] = $handler;

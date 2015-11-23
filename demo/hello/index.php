@@ -1,6 +1,6 @@
 <?php
 
-define('GEAR', '/usr/share/gearteam/gear'); // Redefine this constant on your project
+define('GEAR', '/usr/share/gearteam/gear/gear'); // Redefine this constant on your project
 include GEAR . '/Core.php';
 \gear\Core::init([
         'modules' => [

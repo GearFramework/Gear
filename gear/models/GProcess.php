@@ -56,6 +56,7 @@ class GProcess extends GModel implements IProcess
         if ($this->beforeExec(new GEvent($this), $this->request))
         {
             $apiName = $this->request->get('f', $this->defaultApi, function($value) { return preg_replace('/\W/', '', $value); });
+            Core::syslog('PROCESS -> ' . get_class($this) . ' prepare api ' . $apiName . ' [' . __LINE__ . ']');
             $api = $this->getApis($apiName);
             if ($api)
             {
@@ -75,6 +76,7 @@ class GProcess extends GModel implements IProcess
                 $this->_currentApi = [$this, $api];
             }
             $arguments = $this->_prepareArguments($apiName);
+            Core::syslog('PROCESS -> ' . get_class($this) . ' run api ' . $apiName . ' [' . __LINE__ . ']');
             $result = call_user_func_array($this->_currentApi, $arguments);
             $this->afterExec(new GEvent($this), $result);
             return $result;
@@ -233,8 +235,8 @@ class GProcess extends GModel implements IProcess
     {
         parent::onConstructed();
         $process = $this;
-        Core::attachEvent('onBeforeProcessExecute', function() use($process) { $process->onBeforeExec(); });
-        Core::attachEvent('onAfterProcessExecute', function() use($process) { $process->onAfterExec(); });
+        Core::on('onBeforeProcessExecute', function($event, $request) use($process) { return $process->onBeforeExec($event, $request); });
+        Core::on('onAfterProcessExecute', function($event, $result = true) use($process) { return $process->onAfterExec($event, $result); });
         return true;
     }
 
@@ -246,7 +248,7 @@ class GProcess extends GModel implements IProcess
      * @param GEvent $event
      * @return bool
      */
-    public function beforeExec($event, $request) { return Core::on('onBeforeProcessExecute', $event, $request); }
+    public function beforeExec($event, $request) { return Core::trigger('onBeforeProcessExecute', $event, $request); }
     public function onBeforeExec($event, $request = null) { return true; }
     
     /**
@@ -258,6 +260,6 @@ class GProcess extends GModel implements IProcess
      * @param mixed $result
      * @return mixed
      */
-    public function afterExec($event, $result = true) { return Core::on('onAfterProcessExecute', $event, $result); }
+    public function afterExec($event, $result = true) { return Core::trigger('onAfterProcessExecute', $event, $result); }
     public function onAfterExec($event, $result = true) { return true; }
 }

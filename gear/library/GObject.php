@@ -686,7 +686,7 @@ trait TEvents
     public function attachEvents(array $listEvents)
     {
         Core::syslog('Trait EVENTS -> Attach events to class ' . get_class($this) . ' [' . __LINE__ . ']');
-        foreach($listEvents as $eventName => $handler)
+        foreach ($listEvents as $eventName => $handler)
             $this->attachEvent($eventName, $handler);
         return $this;
     }
@@ -701,9 +701,9 @@ trait TEvents
      */
     public function attachEvent($name, $handler)
     {
+        Core::syslog('Trait EVENTS -> Attach event ' . $name . ' to class ' . get_class($this) . ' [' . __LINE__ . ']');
         if (!is_callable($handler))
             throw $this->exceptionObjectInvalidEventHandler(['eventName' => $name]);
-        Core::syslog('Trait EVENTS -> Attach event ' . $name . ' to class ' . get_class($this) . ' [' . __LINE__ . ']');
         $this->_events[$name][] = $handler;
         return $this;
     }

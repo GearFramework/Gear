@@ -1,11 +1,12 @@
 <?php
 
 namespace gear\components\gear\process;
+
 use gear\Core;
 use gear\interfaces\IProcess;
 use gear\library\GComponent;
 
-/** 
+/**
  * Компонент обслуживающий процессы
  *
  * @package Gear Framework
@@ -67,35 +68,33 @@ class GProcessManagerComponent extends GComponent
      */
     public function exec($process = null, $request = null)
     {
-        try
-        {
+        try {
             $this->request = !$request || !is_object($request) ? Core::app()->request : $request;
             if ($process && ($process instanceof IProcess || $process instanceof \Closure))
                 $this->_currentProcess = $process;
             else
                 $this->_currentProcess = $this->_routing();
-        }
-        catch(GException $e)
-        {
+        } catch (GException $e) {
             $this->trigger('onProcessNotFound', $e);
+            return false;
         }
-        if ($this->_currentProcess instanceof \Closure)
-        {
-            $result = false;
-            if (Core::trigger('onBeforeExec', $this->_currentProcess, $request))
-            {
+        $result = false;
+        if (Core::trigger('onBeforeExec', $this->_currentProcess, $request)) {
+            if ($this->_currentProcess instanceof \Closure) {
+                Core::syslog('PROCESS MANAGER -> Execute closure process [' . __LINE__ . ']');
                 $result = call_user_func($this->_currentProcess, $this->request);
                 Core::trigger('onAfterExec', $this->_currentProcess, $result);
+            } else {
+                Core::syslog('PROCESS MANAGER -> Execute base process ' . get_class($this->_currentProcess) . ' [' . __LINE__ . ']');
+                $result = $this->_currentProcess->entry($this->request);
             }
         }
-        else
-            $result = $this->_currentProcess->entry($this->request);
         return $result;
     }
-    
+
     /**
      * Получение процесса исходя из запроса пользователя
-     * 
+     *
      * @access protected
      * @return object of \gear\interfaces\IProcess or \Closure
      */
@@ -103,38 +102,33 @@ class GProcessManagerComponent extends GComponent
     {
         $process = null;
         $processName = $this->request->get('e', $this->defaultProcess);
+        Core::syslog('PROCESS MANAGER -> Prepare request process ' . $processName . ' [' . __LINE__ . ']');
         if (!$processName)
             throw $this->exceptionProcess('Unknown process');
         //$processes = $this->getProcesses();
         $class = null;
         $properties = [];
-        if (isset($this->processes[$processName]))
-        {
+        if (isset($this->processes[$processName])) {
             $process = $this->processes[$processName];
-            if (is_array($process))
-            {
-                if (isset($process['class']))
-                {
+            if (is_array($process)) {
+                if (isset($process['class'])) {
                     /** @var array $config */
                     list($class, , $properties) = Core::getRecords($process);
                     $properties['name'] = $processName;
-                }
-                else
+                } else
                     $properties = array_merge($process, ['name' => $processName]);
-            }
-            else
+            } else
                 $properties = ['name' => $processName, 'param' => $process];
-        }
-        else
+        } else
             $properties = ['name' => $processName];
         if (!$class)
             $class = $this->_routingClass($processName);
         return $process ? $process : new $class($properties);
     }
-    
+
     /**
      * Получение имя класса процесса
-     * 
+     *
      * @access protected
      * @param string $processName
      * @return string
@@ -147,22 +141,20 @@ class GProcessManagerComponent extends GComponent
         if ($count == 1)
             $class = Core::app()->getNamespace() . '\process\P' . ucfirst($processName);
         else
-        if ($count == 2)
-        {
-            if ($processName[0] === '/')
-                $class = '\\' . $routes[0] . '\process\P' . ucfirst($routes[1]);
-            else
-                $class = Core::app()->getNamespace() . '\modules\\' . $routes[0] . '\process\P' . ucfirst($routes[1]);
-        }
-        else
-        if ($count >= 3)
-            $class = '\\' . $routes[0] . '\modules\\' . $routes[1] . '\process\P' . ucfirst($routes[2]);
+            if ($count == 2) {
+                if ($processName[0] === '/')
+                    $class = '\\' . $routes[0] . '\process\P' . ucfirst($routes[1]);
+                else
+                    $class = Core::app()->getNamespace() . '\modules\\' . $routes[0] . '\process\P' . ucfirst($routes[1]);
+            } else
+                if ($count >= 3)
+                    $class = '\\' . $routes[0] . '\modules\\' . $routes[1] . '\process\P' . ucfirst($routes[2]);
         return $class;
     }
-    
+
     /**
      * Установка описания процессов
-     * 
+     *
      * @access public
      * @param array $processes
      * @return $this
@@ -172,31 +164,34 @@ class GProcessManagerComponent extends GComponent
         $this->_processes = $processes;
         return $this;
     }
-    
+
     /**
      * Получение описания процессов
-     * 
+     *
      * @access public
      * @return array
      */
-    public function getProcesses() { return $this->_processes; }
-    
+    public function getProcesses()
+    {
+        return $this->_processes;
+    }
+
     /**
      * Добавление описания процессов
-     * 
+     *
      * @access public
      * @param array $processes
      * @return $this
      */
     public function addProcesses(array $processes)
-    { 
+    {
         $this->_processes = array_merge($this->_processes, $processes);
-        return $this; 
+        return $this;
     }
-    
+
     /**
      * Добавляет процесс в список
-     * 
+     *
      * @access public
      * @param string $name
      * @param mixed $process
@@ -223,18 +218,21 @@ class GProcessManagerComponent extends GComponent
             throw $this->exceptionProcess('Invalid process');
         return $this;
     }
-    
+
     /**
      * Возвращает текущий исполняемый процесс
-     * 
+     *
      * @access public
      * @return \gear\models\GProcess
      */
-    public function getProcess() { return $this->_currentProcess; }
-    
+    public function getProcess()
+    {
+        return $this->_currentProcess;
+    }
+
     /**
      * Установка названия процесса, исполняемого по-умолчанию
-     * 
+     *
      * @access public
      * @param string $processName
      * @return $this
@@ -244,14 +242,17 @@ class GProcessManagerComponent extends GComponent
         $this->_defaultProcess = $processName;
         return $this;
     }
-    
+
     /**
      * Получение названия процесса, исполняемого по-умолчанию
-     * 
+     *
      * @access public
      * @return string
      */
-    public function getDefaultProcess() { return $this->_defaultProcess; }
+    public function getDefaultProcess()
+    {
+        return $this->_defaultProcess;
+    }
 
     public function onProcessNotFound($event, \Exception $e)
     {
