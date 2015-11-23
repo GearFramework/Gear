@@ -30,6 +30,8 @@ class GProcessManagerComponent extends GComponent
     protected $_request = null;
     /* Имя процесса исполняемого по-умолчанию */
     protected $_defaultProcess = 'index';
+    /* Префикс классов-процессов */
+    protected $_prefixClassProcess = 'P';
     /* Список установленных процессов */
     protected $_processes = [];
     /* Текущий исполняемый процесс */
@@ -225,10 +227,7 @@ class GProcessManagerComponent extends GComponent
      * @access public
      * @return \gear\models\GProcess
      */
-    public function getProcess()
-    {
-        return $this->_currentProcess;
-    }
+    public function getProcess() { return $this->_currentProcess; }
 
     /**
      * Установка названия процесса, исполняемого по-умолчанию
@@ -249,13 +248,28 @@ class GProcessManagerComponent extends GComponent
      * @access public
      * @return string
      */
-    public function getDefaultProcess()
+    public function getDefaultProcess() { return $this->_defaultProcess; }
+
+    /**
+     * Установка прфекса для классов-процессов
+     *
+     * @access public
+     * @param string $prefix
+     * @return $this
+     */
+    public function setPrefixClassProcess($prefix)
     {
-        return $this->_defaultProcess;
+        $this->_prefixClassProcess = $prefix;
+        return $this;
     }
 
-    public function onProcessNotFound($event, \Exception $e)
-    {
-        throw $this->exceptionHttpError($e->getMessage(), ['request' => $this->request], 404);
-    }
+    /**
+     * Получение прфекса для классов-процессов
+     *
+     * @access public
+     * @return string
+     */
+    public function getPrefixClassProcess() { return $this->_prefixClassProcess; }
+
+    public function onProcessNotFound($event, \Exception $e) { throw $this->exceptionHttpError($e->getMessage(), ['request' => $this->request], 404); }
 }
