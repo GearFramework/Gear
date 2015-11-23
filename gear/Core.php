@@ -192,7 +192,7 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        Core::syslog('CORE -> Initialize...');
+        Core::syslog('CORE -> Initialize...', true);
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
         if ($config instanceof \Closure)
@@ -372,9 +372,10 @@ final class Core
      * @static
      * @return void
      */
-    public static function syslog($log)
+    public static function syslog($log, $init = false)
     {
-        echo $log . "\n";
+        file_put_contents(GEAR . '/logs/core.dump', "$log\n", $init ? 0 : FILE_APPEND);
+        //echo $log . "\n";
 //        if (self::isComponentInstalled('syslog'))
 //            call_user_func_array(self::c('syslog'), func_get_args());
     }
@@ -825,7 +826,7 @@ final class Core
      * @param null|object $previous
      * @return \Exception
      */
-    public function e($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
+    public static function e($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
     {
         $exceptionName = '\\' . preg_replace('/^exception/', '', $exceptionName) . 'Exception';
         if (class_exists($exceptionName, false))

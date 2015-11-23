@@ -14,7 +14,7 @@ use gear\library\GEvent;
  * @since 01.05.2015
  * @php 5.3.x
  */
-trait TFactory
+trait TStaticFactory
 {
     /**
      * Создание объекта

@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+
 use gear\Core;
 use gear\interfaces\IBehavior;
 use gear\interfaces\IComponent;
@@ -193,7 +194,7 @@ class GObject
     public function __call($name, $args)
     {
         if (preg_match('/^exception/', $name))
-            $value = call_user_func_array(['Core', $name], $args);
+            $value = call_user_func_array(['\gear\Core', $name], $args);
         else
         if (method_exists($this, 'trigger') && preg_match('/^on[A-Z]/', $name))
         {
@@ -238,12 +239,12 @@ class GObject
     public static function __callStatic($name, $args)
     {
         if (preg_match('/^exception[A-Z]/', $name))
-            return call_user_func_array(['Core', $name], $args);
+            return call_user_func_array(['\gear\Core', $name], $args);
         else
         if (preg_match('/^on[A-Z]/', $name) && method_exists(get_called_class(), 'trigger'))
         {
             array_unshift($args, $name);
-            return call_user_func_array(['Core', 'trigger'], $args);
+            return call_user_func_array(['\gear\Core', 'trigger'], $args);
         }
         throw static::exceptionClassStaticMethodNotFound(['className' => get_called_class(), 'methodName' => $name]);
     }

@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\models;
+
 use gear\Core;
 use gear\library\GModel;
 use gear\library\GException;
@@ -231,8 +232,9 @@ class GProcess extends GModel implements IProcess
     public function onConstructed()
     {
         parent::onConstructed();
-        Core::attachEvent('onBeforeProcessExecute', [$this, 'onBeforeExec']);
-        Core::attachEvent('onAfterProcessExecute', [$this, 'onAfterExec']);
+        $process = $this;
+        Core::attachEvent('onBeforeProcessExecute', function() use($process) { $process->onBeforeExec(); });
+        Core::attachEvent('onAfterProcessExecute', function() use($process) { $process->onAfterExec(); });
         return true;
     }
 
