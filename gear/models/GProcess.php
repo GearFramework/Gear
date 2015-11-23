@@ -29,8 +29,8 @@ class GProcess extends GModel implements IProcess
     protected $_currentApi = null;
     protected $_request = [];
     protected $_rules = [];
+    protected $_defaultApi = 'index';
     /* Public */
-    public $defaultApi = 'index';
     public $name = '';
     
     /**
@@ -40,6 +40,14 @@ class GProcess extends GModel implements IProcess
      * @return mixed
      */
     public function __invoke() { return call_user_func_array([$this, 'entry'], func_get_args()); }
+
+    public function setDefaultApi($apiName)
+    {
+        $this->_defaultApi = $apiName;
+        return $this;
+    }
+
+    public function getDefaultApi() { return $this->_defaultApi; }
     
     /**
      * Точка входа в процесс
@@ -55,7 +63,8 @@ class GProcess extends GModel implements IProcess
         $this->request = $request;
         if ($this->beforeExec(new GEvent($this), $this->request))
         {
-            $apiName = $this->request->get('f', $this->defaultApi, function($value) { return preg_replace('/\W/', '', $value); });
+            Core::syslog('PROCESS -> ' . get_class($this) . ' default api ' . $this->defaultApi . ' [' . __LINE__ . ']');
+            $apiName = $this->request->get('f', $this->defaultApi, function($value) { return preg_replace('/[^a-zA-Z0-9_]/', '', $value); });
             Core::syslog('PROCESS -> ' . get_class($this) . ' prepare api ' . $apiName . ' [' . __LINE__ . ']');
             $api = $this->getApis($apiName);
             if ($api)

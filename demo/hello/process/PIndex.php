@@ -9,6 +9,13 @@ class PIndex extends GProcess
 {
     public function apiIndex()
     {
-        echo "Hello world!\n";
+        echo "Hello World!\n";
+        return true;
+    }
+
+    public function apiView()
+    {
+        $this->view('index');
+        return true;
     }
 }

@@ -90,7 +90,8 @@ class GLoader extends GComponent implements ILoader
                 $path = GEAR . '/../';
                 if ($namespace[0] !== '\\')
                     $path .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : 'gear/');
-                $path .= str_replace('\\', '/', $namespace);
+                $path .= $namespace;
+                $path = str_replace('\\', '/', $path);
             }
         }
         return $path;

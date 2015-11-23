@@ -406,7 +406,9 @@ class GRequest extends GPlugin
                 return $this->_cliEnvironment;
             else
             if (isset($this->_cliEnvironment[$name]))
-                return $filter ? $this->filtering($filter, $this->_cliEnviroment[$name], $default) : $this->_cliEnvironment[$name];
+            {
+                return $filter ? $this->filtering($filter, $this->_cliEnvironment[$name], $default) : $this->_cliEnvironment[$name];
+            }
             else
                 return $default;
         }

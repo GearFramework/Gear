@@ -1,14 +1,15 @@
 <?php
 
 namespace gear\plugins\gear;
+
 use \gear\Core;
 use \gear\library\GPlugin;
 use \gear\library\GException;
 use \gear\library\GEvent;
 
-/** 
+/**
  * Плагин, отвечающий за отображение представлений
- * 
+ *
  * @package Gear Framework
  * @plugin View
  * @author Kukushkin Denis
@@ -40,10 +41,10 @@ class GView extends GPlugin
     {
         return $this->render($view, $arguments, $return);
     }
-    
+
     /**
      * Отображение указанного представления
-     * 
+     *
      * @access public
      * @param string $view
      * @param array $arguments
@@ -57,7 +58,7 @@ class GView extends GPlugin
             $view = $this->getOwner()->viewPath;
         else
         if (!preg_match('/[\/|\\\\]/', $view))
-            $view = $this->getOwner()->viewPath . '\\' . $view; 
+            $view = $this->owner->viewPath . '/' . $view;
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
             $viewPath .= '.phtml';
@@ -66,38 +67,32 @@ class GView extends GPlugin
         $this->_arguments = $arguments;
         extract($arguments);
         $resultRender = true;
-        if ($return)
-        {
-            if (Core::isComponentRegistered('configurator') && Core::c('configurator')->buffer)
-            {
+        if ($return) {
+            if (Core::isComponentRegistered('configurator') && Core::c('configurator')->buffer) {
                 $temp = ob_get_contents();
                 ob_clean();
                 require($viewPath);
                 $resultRender = ob_get_contents();
                 ob_clean();
                 echo $temp;
-            }
-            else
-            {
+            } else {
                 ob_start();
                 require($viewPath);
                 $resultRender = ob_get_contents();
                 ob_end_clean();
             }
-        }
-        else
-        {
+        } else {
             Core::syslog('View plugin -> Require ' . $viewPath);
             require($viewPath);
         }
         $this->trigger('onAfterRender', new GEvent($this), $resultRender);
         return $resultRender;
     }
-    
+
     /**
      * Получение значения указанного аргумента, переданного ранее в метод
      * отображения представления
-     * 
+     *
      * @access public
      * @param mixed $name
      * @return mixed
