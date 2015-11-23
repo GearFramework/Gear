@@ -1,1 +1,2 @@
+Demo example "Hello world"
 Move index.php to DOCUMENT_ROOT direactory on your web-server.
