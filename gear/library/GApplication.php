@@ -155,21 +155,27 @@ class GApplication extends GModule
      * @access public
      * @return $this
      */
-    public function setOutputCallbacks(array $callbacks)
+    public function setOutputCallbacks($callbacks)
     {
-        $this->_outputCallbacks = $callbacks;
+        if ($callbacks instanceof \Closure)
+            $this->_outputCallbacks = [$callbacks];
+        else
+            $this->_outputCallbacks = $callbacks;
         return $this;
     }
 
     /**
-     * Добавление callback-функции, работающего с выводимыми Данными
+     * Добавление callback-функций, работающего с выводимыми Данными
      *
      * @access public
      * @return $this
      */
-    public function addOutputCallbacks(array $callbacks)
+    public function addOutputCallbacks($callbacks)
     {
-        $this->_outputCallbacks = $callbacks;
+        if ($callbacks instanceof \Closure)
+            $this->_outputCallbacks[] = $callbacks;
+        else
+            $this->_outputCallbacks = array_merge($this->_outputCallbacks, $callbacks);
         return $this;
     }
 

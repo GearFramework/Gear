@@ -9,13 +9,17 @@ class PIndex extends GProcess
 {
     public function apiIndex()
     {
-        echo "Hello World!\n";
+        echo "Hello World!"; // Output Hello World!
+        Core::app()->out("Hello World!"); // Output Hello World!
+        Core::app()->setOutputCallbacks(function($value) { return strtoupper($value); }); // Set output callback function
+        Core::app()->out("Hello World!"); // Output HELLO WORLD!
         return true;
     }
 
     public function apiView()
     {
-        $this->view('index');
+        $this->view('index'); // Output <b>Hello World!</b> (path resolved as demo/hello/views/index.phtml)
+        $this->view('views/index'); // Output <b>Hello World!</b> (path resolved as demo/hello/views/index.phtml)
         return true;
     }
 }
