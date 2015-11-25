@@ -20,6 +20,7 @@ class PIndex extends GProcess
     {
         $this->view('index'); // Output <b>Hello World!</b> (path resolved as demo/hello/views/index.phtml)
         $this->view('views/index'); // Output <b>Hello World!</b> (path resolved as demo/hello/views/index.phtml)
+        $this->view($this->viewPath . '/index'); // Output <b>Hello World!</b> (path resolved as demo/hello/views/index.phtml)
         return true;
     }
 }

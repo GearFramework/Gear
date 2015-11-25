@@ -89,11 +89,44 @@ CORE -> Attach event "onBeforeProcessExecute" [677]
 CORE -> Attach event "onAfterProcessExecute" [677]
 PROCESS MANAGER -> Execute base process demo\hello\process\PIndex [90]
 PROCESS -> demo\hello\process\PIndex default api index [66]
-PROCESS -> demo\hello\process\PIndex prepare api out [68]
-PROCESS -> demo\hello\process\PIndex run api out [88]
+PROCESS -> demo\hello\process\PIndex prepare api view [68]
+PROCESS -> demo\hello\process\PIndex run api view [88]
+Trait PLUGIN -> Get plugin view[1003]
+Trait PLUGIN -> Plugin view not instanced [1006]
+Loader component -> /usr/share/gearteam/gear/gear/../gear/plugins/gear/GView.php
+Trait EVENTS -> Trigger event onConstructed of class gear\plugins\gear\GView [734]
+Trait EVENTS -> Return events from class gear\plugins\gear\GView [674]
+Trait EVENTS -> Attach events to class gear\plugins\gear\GView [688]
+Trait EVENTS -> Trigger event onInstalled of class gear\plugins\gear\GView [734]
+Trait PLUGIN -> Return instance of plugin view[1013]
+View plugin -> Render index
+Service container -> Get registered service gear\Core.components.loader [124]
+Service container -> Get registered service gear\Core.components.loader [124]
 Service container -> Get registered service gear\Core.modules.app [124]
+View plugin -> /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
+Trait EVENTS -> Trigger event onBeforeRender of class gear\plugins\gear\GView [734]
+View plugin -> Require /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
+Trait EVENTS -> Trigger event onAfterRender of class gear\plugins\gear\GView [734]
+Trait PLUGIN -> Get plugin view[1003]
+Trait PLUGIN -> Return instance of plugin view[1013]
+View plugin -> Render views/index
+Service container -> Get registered service gear\Core.components.loader [124]
+Service container -> Get registered service gear\Core.components.loader [124]
 Service container -> Get registered service gear\Core.modules.app [124]
+View plugin -> /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
+Trait EVENTS -> Trigger event onBeforeRender of class gear\plugins\gear\GView [734]
+View plugin -> Require /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
+Trait EVENTS -> Trigger event onAfterRender of class gear\plugins\gear\GView [734]
+Trait PLUGIN -> Get plugin view[1003]
+Trait PLUGIN -> Return instance of plugin view[1013]
+View plugin -> Render views/index
+Service container -> Get registered service gear\Core.components.loader [124]
+Service container -> Get registered service gear\Core.components.loader [124]
 Service container -> Get registered service gear\Core.modules.app [124]
+View plugin -> /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
+Trait EVENTS -> Trigger event onBeforeRender of class gear\plugins\gear\GView [734]
+View plugin -> Require /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
+Trait EVENTS -> Trigger event onAfterRender of class gear\plugins\gear\GView [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\syslog\GSyslog [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\loader\GLoader [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\handlers\GErrorsHandler [734]
@@ -102,3 +135,4 @@ Trait EVENTS -> Trigger event onDestroy of class demo\hello\Hello [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\process\GProcessManagerComponent [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\plugins\gear\http\GRequest [734]
 Trait EVENTS -> Trigger event onDestroy of class demo\hello\process\PIndex [734]
+Trait EVENTS -> Trigger event onDestroy of class gear\plugins\gear\GView [734]
