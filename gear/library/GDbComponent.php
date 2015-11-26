@@ -18,7 +18,7 @@ use \gear\interfaces\IDbComponent;
  * @php 5.4.x or higher
  * @release 1.0.0
  */
-abstract class GDbComponent extends GStorageComponent implements IDbComponent
+abstract class GDbComponent extends GComponent implements IStorage, IDbComponent
 {
     /* Const */
     /* Private */
