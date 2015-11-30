@@ -18,6 +18,8 @@ use \gear\library\GModel;
  */
 abstract class GDbCollection extends GModel implements \Iterator
 {
+    /* Traits */
+    use \gear\traits\TFactory;
     /* Const */
     /* Private */
     /* Protected */
@@ -63,9 +65,9 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @param object $cursor
      * @return object
      */
-    public function setCurrent($cursor)
+    public function setCursor($cursor)
     {
-        $this->_current = $cursor;
+        $this->_cursor = $cursor;
         return $this;
     }
 
@@ -75,7 +77,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return object
      */
-    public function getCurrent() { return $this->_current; }
+    public function getCursor() { return $this->_cursor; }
     
     /**
      * Удаление таблицы
@@ -103,6 +105,10 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @return string
      */
     abstract public function error();
+
+    abstract public function find($criteria = null, $fields = null);
+
+    public function findOne($criteria = null, $fields = null) { return $this->factory()->findOne($criteria, $fields); }
 
     /**
      * Перемотка текущей коллекции в начало

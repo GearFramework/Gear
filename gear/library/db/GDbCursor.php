@@ -18,6 +18,8 @@ use \gear\library\GModel;
 abstract class GDbCursor extends GModel implements \Iterator
 {
     /* Const */
+    const ASC = 1;
+    const DESC = -1;
     /* Private */
     /* Protected */
     protected $_query = null;
@@ -106,6 +108,15 @@ abstract class GDbCursor extends GModel implements \Iterator
     {
         return $this->find($criteria, $fields)->limit(1)->asAssoc();
     }
+
+    /**
+     * Возвращает первый (первые) элементы из запроса
+     *
+     * @access public
+     * @param int $count
+     * @return object
+     */
+    public function first($count = 1) { return $this->limit($count); }
     
     /**
      * Добавление в коллекцию новой записи

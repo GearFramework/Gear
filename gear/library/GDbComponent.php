@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+
 use \gear\Core;
 use \gear\library\GStorageComponent;
 use \gear\library\GException;
@@ -39,6 +40,29 @@ abstract class GDbComponent extends GComponent implements IStorage, IDbComponent
     public function storage() { return $this->getDbConnection(); }
 
     /**
+     * Возвращает компонент для соединение базой данных
+     *
+     * @access public
+     * @throws DbComponentCollection
+     * @return GDbConnection|GDbDatabase|GDbCollection
+     */
+    public function getConnection()
+    {
+        $connection = null;
+        $connectionName = $this->getConnectionName();
+        if (is_string($connectionName))
+            $connection = Core::c($connectionName);
+        else
+        if (is_array($connectionName)) {
+            list($module, $component) = $connectionName;
+            $connection = Core::m($module)->с($component);
+        }
+        if (!$connection)
+            throw $this->exceptionDbComponentNotFound(['dbComponent' => is_array($connectionName) ? implode('->', $connectionName) : $connectionName]);
+        return $connection;
+    }
+
+    /**
      * Возвращает соединение с сервером базы данных
      *
      * @access public
@@ -59,39 +83,12 @@ abstract class GDbComponent extends GComponent implements IStorage, IDbComponent
     }
 
     /**
-     * Возвращает компонент для соединение базой данных
-     *
-     * @access public
-     * @throws DbComponentCollection
-     * @return GDbConnection|GDbDatabase|GDbCollection
-     */
-    public function getConnection()
-    {
-        $connection = null;
-        $connectionName = $this->getConnectionName();
-        if (is_string($connectionName))
-            $connection = Core::c($connectionName);
-        else
-        if (is_array($connectionName))
-        {
-            list($module, $component) = $connectionName;
-            $connection = Core::m($module)->с($component);
-        }
-        if (!$connection)
-            throw $this->exceptionDbComponentNotFound(['dbComponent' => is_array($connectionName) ? implode('->', $connectionName) : $connectionName]);
-        return $connection;
-    }
-
-    /**
      * Возвращает объект базы данных
      *
      * @access public
      * @return \gear\library\db\GDbDatabase
      */
-    public function getDb()
-    {
-        return $this->getConnection(false, false)->selectDb($this->getDbName());
-    }
+    public function getDb() { return $this->getDbConnection(false, false)->selectDb($this->getDbName()); }
 
     /**
      * Возвращает объект таблицу (коллекцию)
@@ -99,19 +96,20 @@ abstract class GDbComponent extends GComponent implements IStorage, IDbComponent
      * @access public
      * @return \gear\library\db\GDbCollection
      */
-    public function getCollection()
-    {
-        return $this->getDb()->selectCollection($this->getCollectionName());
-    }
+    public function getCollection() { return $this->getDb()->selectCollection($this->getCollectionName()); }
 
     /**
      * Установка названия соединения с сервером баз данных
      *
      * @access public
      * @param string $connectionName
-     * @return void
+     * @return $this
      */
-    public function setConnectionName($connectionName) { $this->_connectionName = $connectionName; }
+    public function setConnectionName($connectionName)
+    {
+        $this->_connectionName = $connectionName;
+        return $this;
+    }
 
     /**
      * Возвращает название компонента, выполняющего соединение с сервером базы
@@ -127,9 +125,13 @@ abstract class GDbComponent extends GComponent implements IStorage, IDbComponent
      *
      * @access public
      * @param string $dbName
-     * @return void
+     * @return $this
      */
-    public function setDbName($dbName) { $this->_dbName = $dbName; }
+    public function setDbName($dbName)
+    {
+        $this->_dbName = $dbName;
+        return $this;
+    }
 
     /**
      * Возвращает название базы данных
@@ -144,9 +146,13 @@ abstract class GDbComponent extends GComponent implements IStorage, IDbComponent
      *
      * @access public
      * @param string $collectionName
-     * @return void
+     * @return $this
      */
-    public function setCollectionName($collectionName) { $this->_collectionName = $collectionName; }
+    public function setCollectionName($collectionName)
+    {
+        $this->_collectionName = $collectionName;
+        return $this;
+    }
 
     /**
      * Возвращает название таблицы
