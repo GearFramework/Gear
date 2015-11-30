@@ -12,7 +12,7 @@ defined('DEBUG') or define('DEBUG', false);
 /**
  * Ядро Gear Framework
  *
- * 
+ *
  * @package Gear Framework
  * @final
  * @author Denis Kukushkin
@@ -25,7 +25,6 @@ defined('DEBUG') or define('DEBUG', false);
 final class Core
 {
     /* Const */
-
     /* Версия ядра */
     const VERSION = '1.0.0';
 
@@ -49,14 +48,11 @@ final class Core
     const ACCESS_PUBLIC = 2;
     /* Private */
     /* Текущая конфигурация ядра */
-    private static $_config =
-    [
+    private static $_config = [
         /* Библиотеки, модули, компоненты подключаемые на этапе инициализации */
-        'preloads' =>
-        [
+        'preloads' => [
             /* Библиотеки подключаемые на этапе инициализации */
-            'library' =>
-            [
+            'library' => [
                 '\gear\traits\*',
                 '\gear\library\GException',
                 '\gear\exceptions\*',
@@ -75,22 +71,18 @@ final class Core
             /* Модули подключаемые на этапе инициализации */
             'modules' => [],
             /* Компоненты подключаемые на этапе инициализации */
-            'components' =>
-            [
+            'components' => [
                 /* Системное логгирование */
-                'syslog' =>
-                [
+                'syslog' => [
                     'class' => ['name' => '\gear\components\gear\syslog\GSyslog'],
                     'name' => 'syslog',
                 ],
                 // Автозагрузчик классов
-                'loader' =>
-                [
+                'loader' => [
                     'class' => ['name' => '\gear\components\gear\loader\GLoader'],
                     'name' => 'loader',
                     /* Set helpers, remove dependencies on the class name */
-                    'aliases' =>
-                    [
+                    'aliases' => [
                         'International' => ['class' => '\gear\helpers\GInternational'],
                         'Arrays' => ['class' => '\gear\helpers\GArray'],
                         'Calendar' => ['class' => '\gear\helpers\GCalendar'],
@@ -98,14 +90,12 @@ final class Core
                     ],
                 ],
                 // Обработчик ошибок
-                'errorHandler' =>
-                [
+                'errorHandler' => [
                     'class' => '\gear\components\gear\handlers\GErrorsHandler',
                     'name' => 'errorHandler',
                 ],
                 // Обработчик неперехваченных исключений
-                'exceptionHandler' =>
-                [
+                'exceptionHandler' => [
                     'class' => '\gear\components\gear\handlers\GExceptionsHandler',
                     'name' => 'exceptionHandler',
                 ],
@@ -116,14 +106,10 @@ final class Core
         /* Компоненты ядра */
         'components' => [],
         /* Хелперы */
-        'helpers' =>
-        [
-            'calendar' => ['class' => '\gear\helpers\GCalendar'],
-        ],
+        'helpers' => ['calendar' => ['class' => '\gear\helpers\GCalendar']],
         /* Параметры работы ядра, приложения и т.п. */
-        'params' =>
-        [
-            'baseDir' => GEAR, 
+        'params' => [
+            'baseDir' => GEAR,
             'locale' => 'ru_RU',
             'encoding' => 'utf-8',
             'services' => ['class' => '\gear\library\container\GServicesContainer'],
@@ -133,8 +119,7 @@ final class Core
         ],
     ];
     /* Обработчики событий */
-    private static $_events =
-    [
+    private static $_events = [
         'onCoreReady' => [],
         'onBeforeApplicationRun' => [],
         'onAfterApplicationRun' => [],
@@ -150,31 +135,26 @@ final class Core
     private static $_runMode = null;
     /* Protected */
     /* Public */
-    
+
     public static function __callStatic($name, $args)
     {
-        if (preg_match('/^exception[A-Z]{1}/', $name))
-        {
+        if (preg_match('/^exception[A-Z]{1}/', $name)) {
             print_r($args);
             if (!isset($args[0]) || is_array($args[0]))
                 array_unshift($args, null);
             array_unshift($args, $name);
             $result = call_user_func_array([__CLASS__, 'e'], $args);
-        }
-        else
+        } else
         if (self::isModuleRegistered($name))
             $result = self::m($name);
         else
         if (self::isComponentRegistered($name))
             $result = self::c($name, count($args) ? $args[0] : false);
         else
-        if (self::isHelperRegistered($name))
-        {
+        if (self::isHelperRegistered($name)) {
             array_unshift($args, $name);
             $result = call_user_func_array([__CLASS__, 'h'], $args);
-        }
-        else
-        {
+        } else {
             array_unshift($args, $name);
             return call_user_func_array([__CLASS__, 'params'], $args);
         }
@@ -192,17 +172,15 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        Core::syslog('CORE -> Initialize...', true);
+        Core::syslog(__CLASS__ . ' -> Initialize...', true);
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
         if ($config instanceof \Closure)
             $config = $config($coreMode);
-        else
-        {
+        else {
             if (!$config)
                 $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
-            if (is_string($config))
-            {
+            if (is_string($config)) {
                 $fileConfig = self::resolvePath($config, true);
                 clearstatcache();
                 if (is_dir($fileConfig))
@@ -214,13 +192,10 @@ final class Core
             $config = ['modules' => ['app' => self::params('defaultApplication')]];
         self::$_config = array_replace_recursive(self::$_config, $config);
         self::_preloads();
-        foreach(self::$_config as $sectionName => $section)
-        {
-            if ($sectionName != 'params' && $sectionName != 'preloads')
-            {
+        foreach (self::$_config as $sectionName => $section) {
+            if ($sectionName != 'params' && $sectionName != 'preloads') {
                 $section = self::_prepareConfig($section);
-                foreach($section as $serviceName => $service)
-                {
+                foreach ($section as $serviceName => $service) {
                     $serviceLocation = __CLASS__ . '.' . $sectionName . '.' . $serviceName;
                     self::services()->registerService($serviceLocation, $service);
                 }
@@ -241,26 +216,21 @@ final class Core
     private static function _preloads()
     {
         Core::syslog('CORE -> Prepare preloads');
-        foreach(self::$_config['preloads']['library'] as $class)
-        {
+        foreach (self::$_config['preloads']['library'] as $class) {
             Core::syslog('CORE -> Preload library ' . $class);
-            if (substr($class, -1) === '*')
-            {
+            if (substr($class, -1) === '*') {
                 $pathMask = self::resolvePath($class, true);
                 $path = dirname($pathMask);
                 $mask = basename($pathMask);
                 self::_loadPath($path, $mask);
-            }
-            else
-            {
+            } else {
                 $pathFile = self::resolvePath($class, true) . '.php';
                 self::_loadFile($pathFile);
 
             }
         }
         unset(self::$_config['preloads']['library']);
-        foreach(self::$_config['preloads'] as $sectionName => $section)
-        {
+        foreach (self::$_config['preloads'] as $sectionName => $section) {
             Core::syslog('CORE -> Preload section ' . $sectionName);
             self::_preloadSection($sectionName, $section);
         }
@@ -278,8 +248,7 @@ final class Core
     private static function _loadPath($path, $mask)
     {
         $regexpMask = '#^' . str_replace('*', '.*', $mask) . '\.php$#i';
-        foreach(scandir($path) as $file)
-        {
+        foreach (scandir($path) as $file) {
             if ($file === '.' || $file === '..' || (is_file($file) && !preg_math($regexpMask, $file)))
                 continue;
             $file = $path . '/' . $file;
@@ -317,11 +286,10 @@ final class Core
      */
     private static function _preloadSection($sectionName, array $section)
     {
-        foreach($section as $serviceName => $service)
-        {
+        foreach ($section as $serviceName => $service) {
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
-            Core::syslog('CORE -> Preload class ' . $class . ' in library ' . $pathFile);
+            Core::syslog(__CLASS__ . ' -> Preload class ' . $class . ' in library ' . $pathFile);
             self::_loadFile($pathFile);
             $instance = $class::install($config, $properties);
             self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
@@ -330,7 +298,7 @@ final class Core
 
     /**
      * Получение доступа к модулю приложения
-     * 
+     *
      * @access public
      * @static
      * @return \gear\library\GApplication
@@ -350,8 +318,7 @@ final class Core
         if (!$services)
             throw self::exceptionCore('Services container not defined');
         else
-        if (!is_object($services))
-        {
+        if (!is_object($services)) {
             list($class, $config, $properties) = self::getRecords($services);
             $file = self::resolvePath($class, true) . '.php';
             self::_loadFile($file);
@@ -364,25 +331,28 @@ final class Core
     }
 
     /**
+     * DEBUG!!!!!!!!!!!!!!!!!!!!!!!!
+     *
      * Вызов компонента реализцющего системное протоколирование
      * Производит протоколирование оперций в случае, если такой компонент
      * установлен и константа DEBUG установлена в TRUE
-     * 
+     *
      * @access public
      * @static
      * @return void
      */
     public static function syslog($log, $init = false)
     {
+        //TODO:Develop Core::syslog()
         file_put_contents(GEAR . '/logs/core.dump', "$log\n", $init ? 0 : FILE_APPEND);
         //echo $log . "\n";
 //        if (self::isComponentInstalled('syslog'))
 //            call_user_func_array(self::c('syslog'), func_get_args());
     }
-    
+
     /**
      * Получение или установка значения для глобального аргумента
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -411,10 +381,10 @@ final class Core
             $result = self::isComponentRegistered($name);
         return $result;
     }
-    
+
     /**
      * Получение модуля
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -426,10 +396,10 @@ final class Core
             throw self::exceptionCore('Module :moduleName not registered', ['moduleName' => $name]);
         return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
     }
-    
+
     /**
      * Возвращает запись модуля, если таковой зарегистрирован иначе false
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -439,10 +409,10 @@ final class Core
     {
         return self::services()->isRegisteredService(__CLASS__ . '.modules.' . $name);
     }
-    
+
     /**
      * Регистрация модуля
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -454,10 +424,10 @@ final class Core
         self::services()->registerService(__CLASS__ . '.modules.' . $name, $module);
         return true;
     }
-    
+
     /**
      * Возвращает установленный модуль или false иначе
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -467,10 +437,10 @@ final class Core
     {
         return self::services()->isInstalledService(__CLASS__ . '.modules.' . $name);
     }
-    
+
     /**
      * Установка модуля
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -482,10 +452,10 @@ final class Core
     {
         return self::services()->installService(__CLASS__ . '.modules.' . $name, $module);
     }
-    
+
     /**
      * Удаление установленного модуля
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -496,10 +466,10 @@ final class Core
         self::services()->uninstallService(__CLASS__ . '.modules.' . $name);
         return true;
     }
-    
+
     /**
      * Получение компонента
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -511,10 +481,10 @@ final class Core
             throw self::exceptionCore('Component :componentName not registered', ['componentName' => $name]);
         return self::services()->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
     }
-    
+
     /**
      * Возвращает запись компонента, если таковой зарегистрирован иначе false
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -524,10 +494,10 @@ final class Core
     {
         return self::services()->isRegisteredService(__CLASS__ . '.components.' . $name);
     }
-    
+
     /**
      * Регистрация компонента
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -539,10 +509,10 @@ final class Core
         self::services()->registerService(__CLASS__ . '.components.' . $name, $component);
         return true;
     }
-    
+
     /**
      * Возвращает установленный компонент или false иначе
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -552,10 +522,10 @@ final class Core
     {
         return self::services()->isInstalledService(__CLASS__ . '.components.' . $name);
     }
-    
+
     /**
      * Установка компонента
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -569,10 +539,10 @@ final class Core
             $properties['owner'] = $owner;
         return self::services()->installService(__CLASS__ . '.components.' . $name, $component);
     }
-    
+
     /**
      * Удаление установленного компонента
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -595,12 +565,10 @@ final class Core
     public static function h($name)
     {
         $helperManager = self::params('helperManager');
-        if (($helper = Core::isComponentInstalled($helperManager)) === false)
-        {
+        if (($helper = Core::isComponentInstalled($helperManager)) === false) {
             $helper = Core::c($helperManager);
             $helper->registerHelpers(self::$_config['helpers']);
-        }
-        else
+        } else
             $helper = Core::c($helperManager);
         return $helper->runHelper($name);
     }
@@ -616,17 +584,16 @@ final class Core
     public static function isHelperRegistered($name)
     {
         $helperManager = self::params('helperManager');
-        if (($helper = Core::isComponentInstalled($helperManager)) === false)
-        {
+        if (($helper = Core::isComponentInstalled($helperManager)) === false) {
             $helper = Core::c($helperManager);
             $helper->registerHelpers(self::$_config['helpers']);
         }
         return $helper->isHelperRegistered($name);
     }
-    
+
     /**
      * генерация события
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -636,14 +603,12 @@ final class Core
     public static function trigger($name, $event = null)
     {
         $result = true;
-        if (isset(self::$_events[$name]))
-        {
+        if (isset(self::$_events[$name])) {
             $args = func_get_args();
             array_shift($args);
             if (!$event)
                 $args[0] = new \gear\library\GEvent(null);
-            foreach(self::$_events[$name] as $handler)
-            {
+            foreach (self::$_events[$name] as $handler) {
                 $result = call_user_func_array($handler, $args);
                 if (($result instanceof \gear\library\GEvent && $result->stopPropagation === true) || !$result)
                     break;
@@ -651,10 +616,10 @@ final class Core
         }
         return $result;
     }
-    
+
     /**
      * Установка события
-     * 
+     *
      * @access public
      * @static
      * @param string $name
@@ -662,10 +627,10 @@ final class Core
      * @return mixed
      */
     public static function on($name, $handler) { return self::attachEvent($name, $handler); }
-    
+
     /**
      * Добавление обработчика события
-     * 
+     *
      * @access public
      * @static
      * @param string $eventName
@@ -680,11 +645,11 @@ final class Core
         self::$_events[$eventName][] = $handler;
         return true;
     }
-    
+
     /**
      * Получение значений класса, конфигурации и свойств из
      * специально сформированной структуры
-     * 
+     *
      * @access public
      * @static
      * @param array $properties
@@ -695,12 +660,10 @@ final class Core
         $properties = self::_prepareConfig($properties);
         $class = null;
         $config = [];
-        if (isset($properties['class']))
-        {
+        if (isset($properties['class'])) {
             $class = $properties['class'];
             unset($properties['class']);
-            if (is_array($class))
-            {
+            if (is_array($class)) {
                 $config = $class;
                 $class = $config['name'];
                 unset($config['name']);
@@ -719,32 +682,28 @@ final class Core
      */
     private static function _prepareConfig(array $config)
     {
-        if (isset($config['#import']))
-        {
+        if (isset($config['#import'])) {
             $imports = !is_array($config['#import']) ? array($config['#import']) : $config['#import'];
             unset($config['#import']);
-            foreach($imports as $param)
-            {
+            foreach ($imports as $param) {
                 $import = self::params($param);
                 $config = array_replace_recursive($config, self::_prepareConfig($import));
             }
         }
-        if (isset($config['#include']))
-        {
+        if (isset($config['#include'])) {
             $includes = !is_array($config['#include']) ? array($config['#include']) : $config['#include'];
             unset($config['#include']);
-            foreach($includes as $file)
-            {
+            foreach ($includes as $file) {
                 $file = self::resolvePath($file, true);
                 $config = array_replace_recursive($config, self::_prepareConfig(require($file)));
             }
         }
         return $config;
     }
-    
+
     /**
      * Получение физического пути для указанного пространства имён.
-     * 
+     *
      * @access public
      * @static
      * @param string $path
@@ -753,19 +712,15 @@ final class Core
     public static function resolvePath($path, $internalResolver = false)
     {
         $resolved = null;
-        if (!$internalResolver)
-        {
+        if (!$internalResolver) {
             if (self::isComponentInstalled('loader') && method_exists(Core::c('loader'), 'resolvePath'))
                 $resolved = Core::c('loader')->resolvePath($path);
-        }
-        else
-        {
+        } else {
             // Абсолютный путь
             if (preg_match('/^[a-zA-Z]{1}\:/', $path) || $path[0] === '/')
                 $resolved = $path;
             // Относительный путь или пространство имён
-            else
-            {
+            else {
                 $resolved = GEAR . '/..';
                 if ($path[0] !== '\\')
                     $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '\gear') . '/' . $path;
@@ -776,40 +731,42 @@ final class Core
         }
         return $resolved;
     }
-    
+
     /**
      * Возвращает режим запуска приложения
-     * 
+     *
      * @access public
      * @static
      * @return boolean
      */
-    public static function getMode() 
-    { 
-        return self::$_runMode ? self::$_runMode : (self::$_runMode = php_sapi_name() === 'cli' ? self::CLI : self::HTTP); 
+    public static function getMode()
+    {
+        if (!self::$_runMode)
+            self::$_runMode = php_sapi_name() === 'cli' ? self::CLI : self::HTTP;
+        return self::$_runMode;
     }
-    
+
     /**
      * Возвращает true если приложение запущено из браузера, иначе false
-     * 
+     *
      * @access public
      * @static
      * @return boolean
      */
     public static function isHttp() { return self::getMode() === self::HTTP; }
-    
+
     /**
      * Возвращает true если приложение запущено из консоли, иначе false
-     * 
+     *
      * @access public
      * @static
      * @return boolean
      */
     public static function isCli() { return self::getMode() === self::CLI; }
-    
+
     /**
      * Возвращает версию ядра фреймворка
-     * 
+     *
      * @access public
      * @static
      * @return string
@@ -832,9 +789,8 @@ final class Core
         $exceptionName = '\\' . preg_replace('/^exception/', '', $exceptionName) . 'Exception';
         if (class_exists($exceptionName, false))
             $exception = new $exceptionName($message, $code, $previous, $params);
-        else
-        {
-            foreach($params as $name => $value)
+        else {
+            foreach ($params as $name => $value)
                 $message = str_replace(':' . $name, $value, $message);
             $exception = new \Exception($message, $code, $previous);
         }
@@ -845,8 +801,7 @@ final class Core
     {
         if ($renderer && is_callable($renderer))
             $renderer('views\dump', ['value' => $value]);
-        else
-        {
+        else {
             echo '<pre>';
             if (is_array($value) || is_object($value))
                 echo print_r($value, 1);
