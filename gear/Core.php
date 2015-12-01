@@ -669,6 +669,7 @@ final class Core
         if (isset($properties['class'])) {
             $class = $properties['class'];
             unset($properties['class']);
+            var_dump($class) . '<br>';
             if (is_array($class)) {
                 $config = $class;
                 if (!isset($config['name']))
