@@ -43,8 +43,7 @@ class GException extends \Exception
     public function __construct($message, $code = 0, \Exception $previous = null, array $args = [])
     {
         $message = $message !== null ? $message : $this->defaultMessage;
-        Core::syslog('Exception -> Message ' . $message);
-        if (class_exists('International', true))
+        if (class_exists('International', false))
         {
             $message = International::t($message, self::$_locationLocales, $args);
             foreach($args as $name => $value)
@@ -67,6 +66,7 @@ class GException extends \Exception
             }
         }
         parent::__construct($message, $code, $previous);
+        Core::syslog(get_class($this) . ' -> Message ' . $message . ' in file ' . $this->getFile() . ':' . $this->getLine() . ' [' . __LINE__ . ']');
     }
 
     /**
