@@ -670,9 +670,9 @@ final class Core
             $class = $properties['class'];
             unset($properties['class']);
             if (is_array($class)) {
-                print_r($class);
-                die();
                 $config = $class;
+                if (!isset($config['name']))
+                    die(print_r($class, 1) . ' ' . print_r($properties, 1));
                 $class = $config['name'];
                 unset($config['name']);
                 $config = self::_prepareConfig($config);
