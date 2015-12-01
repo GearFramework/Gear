@@ -186,6 +186,7 @@ final class Core
                 if (is_dir($fileConfig))
                     $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
                 $config = is_file($fileConfig) ? require($fileConfig) : null;
+                self::syslog(__CLASS__ . ' -> Config file is ' . (is_file($fileConfig) ? $fileConfig : 'NULL') . ' [' . __LINE__ . ']');
             }
         }
         if (!is_array($config) || (is_array($config) && !$config))
