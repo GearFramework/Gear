@@ -90,7 +90,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @param mixed $criteria
      * @param mixed $fields
-     * @return $this
+     * @return GDbCursor
      */
     abstract public function find($criteria = null, $fields = null);
     
@@ -102,7 +102,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @access public
      * @param mixed $criteria
      * @param mixed $fields
-     * @return array
+     * @return array associate
      */
     public function findOne($criteria = null, $fields = null)
     {

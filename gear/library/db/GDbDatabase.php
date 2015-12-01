@@ -26,6 +26,27 @@ abstract class GDbDatabase extends GModel implements \Iterator
     /* Public */
 
     /**
+     * Установка текущей коллекции
+     *
+     * @access public
+     * @param object $current
+     * @return object
+     */
+    public function setCurrent($current)
+    {
+        $this->_current = $current;
+        return $this;
+    }
+
+    /**
+     * Возвращает текущую коллекцию
+     *
+     * @access public
+     * @return object
+     */
+    public function getCurrent() { return $this->_current; }
+
+    /**
      * Выбор текущей базы данных
      * 
      * @abstract

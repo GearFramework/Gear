@@ -23,41 +23,10 @@ abstract class GDbCollection extends GModel implements \Iterator
     /* Const */
     /* Private */
     /* Protected */
-    protected $_current = null;
+    protected $_cursor = null;
     protected $_lastInsertId = 0;
     /* Public */
     
-    public function __call($name, $args)
-    {
-        if (preg_match('/^exception/', $name))
-            return call_user_func_array(array(Core, $name), $args);
-        if (preg_match('/^on[A-Z]/', $name))
-        {
-            array_unshift($args, $name);
-            return call_user_func_array(array($this, 'event'), $args);
-        }
-        if (isset($this->_behaviors[$name]) && is_callable($this->_behaviors[$name]))
-            return call_user_func_array($this->_behaviors[$name], $args);
-        else
-        {
-            foreach($this->_behaviors as $b)
-            {
-                if (!($b instanceof Closure) && method_exists($b, $name))
-                    return call_user_func_array(array($b, $name), $args);
-            }
-        }
-        if ($this->isPluginRegistered($name))
-        {
-            $p = $this->p($name);
-            if (is_callable($p))
-                return call_user_func_array($p, $args);
-        }
-        list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
-        $properties['owner'] = $this;
-        $this->current = new $class($properties);
-        return call_user_func_array([$this->_current, $name], $args);
-    }
-
     /**
      * Установка текущего запроса выборки из коллекции
      *
@@ -106,9 +75,38 @@ abstract class GDbCollection extends GModel implements \Iterator
      */
     abstract public function error();
 
+    /**
+     * Поиск элементов по заданному критерию
+     *
+     * @access public
+     * @param null|array $criteria
+     * @param null|array $fields
+     * @return GDbCursor
+     */
     abstract public function find($criteria = null, $fields = null);
 
-    public function findOne($criteria = null, $fields = null) { return $this->factory()->findOne($criteria, $fields); }
+    /**
+     * Возвращает один элемент соответствующий указанному критерию
+     *
+     * @access public
+     * @param null|array $criteria
+     * @param null|array $fields
+     * @return GDbCursor
+     */
+    public function findOne($criteria = null, $fields = null)
+    {
+        $this->cursor = $this->factory();
+        return $this->cursor->findOne($criteria, $fields);
+    }
+
+    /**
+     * Возвращает первые N элементов из коллекции
+     *
+     * @access public
+     * @param int $count
+     * @return GDbCursor
+     */
+    public function first($count = 1) { return $this->find()->limit((int)$count); }
 
     /**
      * Перемотка текущей коллекции в начало
@@ -119,29 +117,25 @@ abstract class GDbCollection extends GModel implements \Iterator
     public function rewind()
     {
         if (!$this->current)
-        {
-            list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
-            $properties['owner'] = $this;
-            $this->current = new $class($properties);
-        }
-        return $this->current->find()->rewind();
+            $this->cursor = $this->factory();
+        $this->cursor->find()->rewind();
     }
 
     /**
      * Текущая элемент в списке
      * 
      * @access public
-     * @return GDbDatabase
+     * @return array
      */
-    public function current() { return $this->current->current(); }
+    public function current() { return $this->cursor->current(); }
     
     /**
      * Следующий элемент из списка
      * 
      * @access public
-     * @return GDbDatabase
+     * @return void
      */
-    public function next() { return $this->current->next(); }
+    public function next() { return $this->cursor->next(); }
     
     /**
      * Возвращает true если текущий элемент списка является валидной записью
@@ -149,7 +143,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return boolean
      */
-    public function valid() { return $this->current->valid(); }
+    public function valid() { return $this->cursor->valid(); }
     
     /**
      * Возвращает ключ текущего элемента
@@ -157,7 +151,7 @@ abstract class GDbCollection extends GModel implements \Iterator
      * @access public
      * @return integer
      */
-    public function key() { return $this->current->key(); }
+    public function key() { return $this->cursor->key(); }
 
     /**
      * Возвращает ресурс соединения с сервером базы данных
