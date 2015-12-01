@@ -175,11 +175,16 @@ final class Core
         Core::syslog(__CLASS__ . ' -> Initialize...', true);
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
-        if ($config instanceof \Closure)
+        Core::syslog(__CLASS__ . ' -> Set core mode ' . $modes[self::$_coreMode] . ' [' . __LINE__ . ']');
+        if ($config instanceof \Closure) {
+            Core::syslog(__CLASS__ . ' -> Config is \Closure [' . __LINE__ . ']');
             $config = $config($coreMode);
+        }
         else {
-            if (!$config)
+            if (!$config) {
                 $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
+                Core::syslog(__CLASS__ . ' -> Prepared default config file ' . $config . ' [' . __LINE__ . ']');
+            }
             if (is_string($config)) {
                 $fileConfig = self::resolvePath($config, true);
                 clearstatcache();
