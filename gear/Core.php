@@ -670,6 +670,8 @@ final class Core
             $class = $properties['class'];
             unset($properties['class']);
             if (is_array($class)) {
+                print_r($class);
+                die();
                 $config = $class;
                 $class = $config['name'];
                 unset($config['name']);

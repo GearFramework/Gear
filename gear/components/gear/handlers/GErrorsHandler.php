@@ -54,11 +54,11 @@ class GErrorsHandler extends GComponent
      */
     public function error($code, $message, $file = '', $line = 0)
     {
-        Core::syslog("Error handler -> $message");
+        Core::syslog(__CLASS__ . " -> Message error $message [" . __LINE__ . ']');
         $args = ['exception' => new GException($message), 'code' => $code, 'file' => $file, 'line' => $line];
         try
         {
-            Core::syslog('Errors handler -> Render template ' . $this->getViewPath());
+            Core::syslog(__CLASS__ . ' -> Render template ' . $this->getViewPath() . '[' . __LINE__ . ']');
             $this->view->render($this->getViewPath(), $args);
         }
         catch(\Exception $e)
