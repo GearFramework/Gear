@@ -22,7 +22,7 @@ abstract class GDbDatabase extends GModel implements \Iterator
     /* Private */
     /* Protected */
     protected $_current = null;
-    protected $_items = [];
+    protected $_items = null;
     /* Public */
 
     /**
@@ -82,15 +82,19 @@ abstract class GDbDatabase extends GModel implements \Iterator
      */
     public function selectCollection($name)
     {
-        if ($this->_current && $this->_current->name === $name)
-            return $this->_current;
-        else
-        if (isset($this->_items[$name]))
-            return $this->_current = $this->_items[$name];
-        else
-        {
-            list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
-            return $this->_current = $this->_items[$name] = new $class(array_merge($properties, ['owner' => $this, 'name' => $name]));
+        if ($this->trigger('onBeforeSelectCollection')) {
+            if ($this->_current && $this->_current->name === $name)
+                return $this->_current;
+            else
+            if (isset($this->_items[$name]))
+                $collection = $this->_current = $this->_items[$name];
+            else
+            {
+                list($class, $config, $properties) = Core::getRecords($this->i('classItem'));
+                $collection = $this->_current = $this->_items[$name] = new $class(array_merge($properties, ['owner' => $this, 'name' => $name]));
+            }
+            $this->trigger('onAfterSelectCollection', ['collection' => $collection]);
+            return $collection;
         }
     }
     

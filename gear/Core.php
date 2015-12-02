@@ -398,6 +398,7 @@ final class Core
      */
     public static function m($name)
     {
+        self::syslog(__CLASS__ . ' -> Request module ' . $name . ' [' . __LINE__ . ']');
         if (!self::isModuleRegistered($name))
             throw self::exceptionCore('Module :moduleName not registered', ['moduleName' => $name]);
         return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
