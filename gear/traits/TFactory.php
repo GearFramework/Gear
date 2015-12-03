@@ -25,12 +25,12 @@ trait TFactory
      */
     public function factory($properties = array())
     {
-        if ($this->event('onBeforeFactory', new GEvent(array('sender' => $this)), $properties, $this->getFactory()))
+        $object = null;
+        if ($this->onBeforeFactory($properties, $this->getFactory()))
         {
             if ($properties instanceof \Closure)
                 $properties = $properties($this->getFactory());
-            $properties = array_merge
-            (
+            $properties = array_merge(
                 $this->getFactory(),
                 array('owner' => $this),
                 $properties
@@ -39,10 +39,9 @@ trait TFactory
             if (method_exists($class, 'init'))
                 $class::init($config);
             $object = method_exists($class, 'it') ? $class::it($properties) : new $class($properties);
-            $this->event('onAfterFactory', new GEvent(array('sender' => $this)), $object);
-            return $object;
+            $this->onAfterFactory($object);
         }
-        $this->e('Error on factoring process');
+        return ;
     }
 
     /**
