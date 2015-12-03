@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\library;
+
 use gear\Core;
 
 /**
@@ -37,30 +38,28 @@ class GException extends \Exception
      *
      * @access public
      * @param string $message
+     * @param integer $code
+     * @param \Exception $previous
      * @param array $args
      * @return GException
      */
     public function __construct($message, $code = 0, \Exception $previous = null, array $args = [])
     {
         $message = $message !== null ? $message : $this->defaultMessage;
+        foreach ($args as $name => $value)
+            $this->$name = $value;
         if (class_exists('International', false))
-        {
             $message = International::t($message, self::$_locationLocales, $args);
-            foreach($args as $name => $value)
-                $this->$name = $value;
-        }
-        else
-        {
-            if (self::$_messages === null)
-            {
+        else {
+            if (self::$_messages === null) {
                 $locale = Core::params('locale') ?: 'en_En';
                 $path = Core::resolvePath(self::$_messages) . '/' . $locale . '.php';
+                Core::syslog(get_class($this) . ' -> Load file with messages ' . $path . ' [' . __LINE__ . ']');
                 self::$_messages = file_exists($path) && is_readable($path) ? require($path) : [];
             }
             if (isset(self::$_messages[$this->_section][$message]))
                 $message = self::$_messages[$this->_section][$message];
-            foreach($args as $name => $value)
-            {
+            foreach ($this->args as $name => $value) {
                 $this->$name = $value;
                 $message = str_replace(':' . $name, $value, $message);
             }
@@ -92,7 +91,11 @@ class GException extends \Exception
      * Возвращает массив аргументов
      *
      * @access public
+     * @param null|string $name
      * @return array
      */
-    public function args($name = null) { return !$name ? $this->_args : (isset($this->_args[$name]) ? $this->_args[$name] : null); }
+    public function args($name = null)
+    {
+        return !$name ? $this->_args : (isset($this->_args[$name]) ? $this->_args[$name] : null);
+    }
 }
