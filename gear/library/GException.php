@@ -48,7 +48,7 @@ class GException extends \Exception
         $message = $message !== null ? $message : $this->defaultMessage;
         foreach ($args as $name => $value)
             $this->$name = $value;
-        if (class_exists('International', false))
+        if (class_exists('International'))
             $message = International::t($message, self::$_locationLocales, $args);
         else {
             if (self::$_messages === null) {

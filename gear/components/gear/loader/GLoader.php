@@ -7,15 +7,16 @@
  */
 
 namespace gear\components\gear\loader;
+
 use gear\Core;
 use gear\library\GComponent;
 use gear\library\GException;
 use gear\library\GEvent;
 use gear\interfaces\ILoader;
 
-/** 
+/**
  * Класс стандартного компонента, занимающегося автозагрузкой классов
- * 
+ *
  * @package Gear Framework
  * @component Loader
  * @author Kukushkin Denis
@@ -39,59 +40,58 @@ class GLoader extends GComponent implements ILoader
     public $paths = [];
     public $useResolvePaths = false;
     public $resolvePaths = [];
-    
+
     /**
      * Метод автоматической загрузки классов
      * - Поддержка алиасов
      * - Поддержка пользовательских путей расположения файлов с классами
-     * 
+     *
      * @access public
      * @param string $className
      * @return void
      */
     public function loader($className)
     {
-        if (isset($this->_aliases[$className]))
-        {
+        if (isset($this->_aliases[$className]['class'])) {
             $alias = $className;
-            list($className) = Core::getRecords($this->_aliases[$className]);
+            $className = $this->_aliases[$className]['class'];
             class_alias($className, $alias);
         }
         if ($this->usePaths && isset($this->paths[$className]))
             $file = $this->paths[$className];
         else
             $file = GEAR . '/../' . str_replace('\\', '/', $className) . '.php';
-        Core::syslog('Loader component -> ' . $file);
+        Core::syslog(__CLASS__ . ' -> Resolve ' . $className . ' and load as ' . $file . ' [' . __LINE__ . ']');
         if (!file_exists($file))
             throw $this->exceptionLoaderClassFileNotFound(['filename' => $file, 'className' => $className]);
         include_once($file);
     }
-    
+
     /**
      * Получение физического пути.
-     * 
+     *
      * @access public
      * @param string $namespace
      * @return string
      */
     public function resolvePath($namespace)
     {
-        $path = false;
-        if ($this->useResolvePaths && isset($this->resolvePaths[$namespace]))
+        if ($this->useResolvePaths && isset($this->resolvePaths[$namespace])) {
             $path = $this->resolvePaths[$namespace];
-        else
-        {
+            Core::syslog(__CLASS__ . ' -> Resolve ' . $namespace . ' as ' . $path . ' from resolvePaths array [' . __LINE__ . ']');
+        } else {
             /* Абсолютный путь */
-            if (preg_match('/^[a-zA-Z]{1}\:/', $namespace) || $namespace[0] === '/')
+            if (preg_match('/^[a-zA-Z]{1}\:/', $namespace) || $namespace[0] === '/') {
                 $path = $namespace;
-            /* Относительный путь или пространство имён */
-            else
-            {
+                Core::syslog(__CLASS__ . ' -> Resolve ' . $namespace . ' as ' . $path . ' from absolute path [' . __LINE__ . ']');
+            } else {
+                /* Относительный путь или пространство имён */
                 $path = GEAR . '/../';
                 if ($namespace[0] !== '\\')
                     $path .= (Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : 'gear/');
                 $path .= $namespace;
                 $path = str_replace('\\', '/', $path);
+                Core::syslog(__CLASS__ . ' -> Resolve ' . $namespace . ' as ' . $path . ' from relative path [' . __LINE__ . ']');
             }
         }
         return $path;
@@ -109,6 +109,18 @@ class GLoader extends GComponent implements ILoader
     {
         $this->_aliases[$alias] = ['class' => $className];
         return $this;
+    }
+
+    /**
+     * Возвращает оригинальное название класса, которому соответствует указанный алиас
+     *
+     * @access public
+     * @param string $alias
+     * @return null|string
+     */
+    public function getAlias($alias)
+    {
+        return isset($this->_aliases[$alias]['class']) ? $this->_aliases[$alias]['class'] : null;
     }
 
     /**
@@ -130,7 +142,10 @@ class GLoader extends GComponent implements ILoader
      * @access public
      * @return array
      */
-    public function getAliases() { return $this->_aliases; }
+    public function getAliases()
+    {
+        return $this->_aliases;
+    }
 
     /**
      * Добавление спсика алиасов к существующим
@@ -144,11 +159,11 @@ class GLoader extends GComponent implements ILoader
         $this->aliases = array_merge($this->aliases, $aliases);
         return $this;
     }
-    
+
     /**
      * Обработчик события onInstalled по-умолчанию
      * Регистрация метода автозагрузки классов
-     * 
+     *
      * @access public
      * @param GEvent $event
      * @return void
