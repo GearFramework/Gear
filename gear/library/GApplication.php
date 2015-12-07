@@ -22,18 +22,14 @@ class GApplication extends GModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config =
-    [
-        'components' =>
-        [
-            'process' =>
-            [
+    protected static $_config = [
+        'components' => [
+            'process' => [
                 'class' => '\gear\components\gear\process\GProcessManagerComponent',
                 'defaultProcess' => 'index',
             ],
         ],
-        'plugins' =>
-        [
+        'plugins' => [
             /* Плагин для работы с http-запросами */
             'request' => ['class' => '\gear\plugins\gear\http\GRequest'],
             /* Плагин для работы с окружением */
@@ -60,8 +56,8 @@ class GApplication extends GModule
      */
     public function run($process = null, $request = null)
     {
-        if (Core::trigger('onBeforeApplicationRun', new GEvent($this, ['process' => $process, 'request' => $request])))
-        {
+        Core::syslog(get_class($this) . ' -> Run application [' . __LINE__ . ']');
+        if (Core::trigger('onBeforeApplicationRun', new GEvent($this, ['process' => $process, 'request' => $request]))) {
             if ($request)
                 $this->request->setData($request);
             $result = $this->c('process')->exec($process, $this->request);
@@ -129,8 +125,7 @@ class GApplication extends GModule
      */
     public function out($data, $buffering = false)
     {
-        foreach($this->outputCallbacks as $callback)
-        {
+        foreach($this->outputCallbacks as $callback) {
             if (is_callable($callback))
                 $data = $callback($data);
         }

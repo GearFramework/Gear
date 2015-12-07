@@ -29,28 +29,11 @@ class GArray extends GHelper
     {
         if (is_object($array) && method_exists($array, 'isAssoc'))
             return $array->isAssoc();
-        else
-        if (is_array($array))
-        {
+        else if (is_array($array)) {
             $keys = array_keys($array);
             return array_keys($keys) !== $keys;
         }
         else
-            self::e('Invalid argument');
+            throw self::eexceptionInvalidArgument();
     }
-}
-
-/** 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 1.0.0
- * @since 22.12.2014
- */
-class ArrayException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

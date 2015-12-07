@@ -32,14 +32,10 @@ abstract class GModule extends GService implements IModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config =
-    [
+    protected static $_config = [
         'events' => [],
         'behaviors' => [],
-        'plugins' =>
-        [
-            'view' => ['class' => '\gear\plugins\gear\GView'],
-        ],
+        'plugins' => ['view' => ['class' => '\gear\plugins\gear\GView']],
     ];
     protected static $_init = false;
     /* Public */
@@ -56,8 +52,7 @@ abstract class GModule extends GService implements IModule
     public static function init($config)
     {
         parent::init($config);
-        if (isset(static::$_config['components']))
-        {
+        if (isset(static::$_config['components'])) {
             foreach(static::$_config['components'] as $componentName => $component)
                 Core::services()->registerService(get_called_class() . '.components.' . $componentName, $component);
         }

@@ -3,7 +3,7 @@
 namespace demo\hello\process;
 
 use gear\Core;
-use gear\models\GProcess;
+use gear\library\GProcess;
 
 class PIndex extends GProcess
 {

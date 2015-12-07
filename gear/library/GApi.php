@@ -1,6 +1,7 @@
 <?php
 
-namespace gear\models;
+namespace gear\library;
+
 use gear\library\GModel;
 
 /** 

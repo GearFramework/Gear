@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\helpers;
+
 use gear\Core;
 use gear\library\GObject;
 use gear\interfaces\IFactory;
@@ -36,8 +37,7 @@ class GInternational extends GObject
      */
     public static function t($text, $locationLocales, $params = [])
     {
-        if (!isset(self::$_data[$locationLocales]))
-        {
+        if (!isset(self::$_data[$locationLocales])) {
             $locale = Core::params('locale') ?: 'en_En';
             $path = Core::resolvePath($locationLocales . '/' . $locale . '.php');
             if (!file_exists($path))
@@ -45,9 +45,8 @@ class GInternational extends GObject
             self::$_data[$locationLocales] = require($path);
         }
         $text = isset(self::$_data[$locationLocales][$text]) ? self::$_data[$locationLocales][$text] : '';
-        if ($params)
-        {
-            foreach($params as $paramName => $paramValue)
+        if ($params) {
+            foreach ($params as $paramName => $paramValue)
                 $text = str_replace(':' . $paramName, $paramValue, $text);
         }
         return $text;

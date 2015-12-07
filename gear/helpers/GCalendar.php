@@ -17,7 +17,7 @@ define('MONTH_SHORTNAME', 3);
  * @copyright Kukushkin Denis 2013
  * @version 1.0.0
  * @since 01.06.2014
- * @php 5.3.x
+ * @php 5.4.x or higher
  */
 class GCalendar extends GObject implements IFactory
 {
@@ -28,12 +28,11 @@ class GCalendar extends GObject implements IFactory
     const DAYS_PER_WEEK = 7;
     /* Private */
     /* Protected */
-    protected $_factory = array
-    (
+    protected $_factory = [
         'class' => '\gear\models\GDate',
         'format' => 'Y-m-d H:i:s',
         'natural' => false,
-    );
+    ];
     protected $_current = null;
     protected $_locale = 'ru_RU';
     protected $_localeNamespace = '\gear\helpers\locales';
@@ -75,7 +74,7 @@ class GCalendar extends GObject implements IFactory
      * @param array $properties
      * @return GCalendar
      */
-    public static function it(array $properties = array()) { return new static($properties); }
+    public static function it(array $properties = []) { return new static($properties); }
 
     /**
      * Создание экземпляра
@@ -84,7 +83,7 @@ class GCalendar extends GObject implements IFactory
      * @param array $properties
      * @return object
      */
-    public function factory($properties = array())
+    public function factory($properties = [])
     {
         list($class, $config, $defaultProperties) = Core::getRecords($this->_factory);
         /** @var string $class */
@@ -108,7 +107,7 @@ class GCalendar extends GObject implements IFactory
     public function tomorrow() { return $this->factory(array('timestamp' => time() + self::SECONDS_PER_DAY)); }
     
     /**
-     * Возвращает вчеращнюю дату
+     * Возвращает вчерашнюю дату
      * 
      * @access public
      * @return object

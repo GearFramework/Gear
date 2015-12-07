@@ -30,18 +30,14 @@ trait TFactory
         {
             if ($properties instanceof \Closure)
                 $properties = $properties($this->getFactory());
-            $properties = array_merge(
-                $this->getFactory(),
-                array('owner' => $this),
-                $properties
-            );
+            $properties = array_merge($this->getFactory(), ['owner' => $this], $properties);
             list($class, $config, $properties) = Core::getRecords($properties);
             if (method_exists($class, 'init'))
                 $class::init($config);
             $object = method_exists($class, 'it') ? $class::it($properties) : new $class($properties);
             $this->onAfterFactory($object);
         }
-        return ;
+        return $object;
     }
 
     /**

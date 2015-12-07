@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\models;
+namespace gear\library;
 
 use gear\Core;
 use gear\library\GModel;
@@ -8,9 +8,9 @@ use gear\library\GException;
 use gear\library\GEvent;
 use gear\interfaces\IProcess;
 
-/** 
+/**
  * Класс процессов
- * 
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
@@ -32,14 +32,17 @@ class GProcess extends GModel implements IProcess
     protected $_defaultApi = 'index';
     /* Public */
     public $name = '';
-    
+
     /**
      * Неявный вызов entry()
-     * 
+     *
      * @access public
      * @return mixed
      */
-    public function __invoke() { return call_user_func_array([$this, 'entry'], func_get_args()); }
+    public function __invoke()
+    {
+        return call_user_func_array([$this, 'entry'], func_get_args());
+    }
 
     public function setDefaultApi($apiName)
     {
@@ -48,44 +51,42 @@ class GProcess extends GModel implements IProcess
     }
 
     public function getDefaultApi() { return $this->_defaultApi; }
-    
+
     /**
      * Точка входа в процесс
-     * 
+     *
      * @access public
      * @param object $request
      * @return mixed
      */
     public function entry($request = null)
     {
+        Core::syslog(get_class($this) . ' -> Execute process [' . __LINE__ . ']');
         if ($request && !is_object($request))
             $request = Core::app()->request;
         $this->request = $request;
-        if ($this->beforeExec(new GEvent($this), $this->request))
-        {
-            Core::syslog('PROCESS -> ' . get_class($this) . ' default api ' . $this->defaultApi . ' [' . __LINE__ . ']');
-            $apiName = $this->request->get('f', $this->defaultApi, function($value) { return preg_replace('/[^a-zA-Z0-9_]/', '', $value); });
-            Core::syslog('PROCESS -> ' . get_class($this) . ' prepare api ' . $apiName . ' [' . __LINE__ . ']');
+        if ($this->beforeExec(new GEvent($this), $this->request)) {
+            Core::syslog(get_class($this) . ' -> ' . get_class($this) . ' default api ' . $this->defaultApi . ' [' . __LINE__ . ']');
+            $apiName = $this->request->get('f', $this->defaultApi, function ($value) {
+                return preg_replace('/[^a-zA-Z0-9_]/', '', $value);
+            });
+            Core::syslog(get_class($this) . ' -> ' . get_class($this) . ' prepare api ' . $apiName . ' [' . __LINE__ . ']');
             $api = $this->getApis($apiName);
-            if ($api)
-            {
+            if ($api) {
                 if ($api instanceof \Closure)
                     $this->_currentApi = $api;
-                else
-                {
+                else {
                     list($class, $config, $properties) = Core::getRecords($api);
                     $this->_currentApi = [new $class($properties, $this), 'entry'];
                 }
-            }
-            else
-            {
+            } else {
                 $api = 'api' . ucfirst($apiName);
                 if (!method_exists($this, $api))
                     throw $this->exceptionProcessApiNotExists(['apiName' => $apiName, 'processName' => $this->name]);
                 $this->_currentApi = [$this, $api];
             }
             $arguments = $this->_prepareArguments($apiName);
-            Core::syslog('PROCESS -> ' . get_class($this) . ' run api ' . $apiName . ' [' . __LINE__ . ']');
+            Core::syslog(get_class($this) . ' -> ' . get_class($this) . ' run api ' . $apiName . ' [' . __LINE__ . ']');
             $result = call_user_func_array($this->_currentApi, $arguments);
             $this->afterExec(new GEvent($this), $result);
             return $result;
@@ -95,7 +96,7 @@ class GProcess extends GModel implements IProcess
 
     /**
      * Подготовка аргументов, которые могут потребоваться api-методу
-     * 
+     *
      * @access protected
      * @param string $apiName
      * @return array
@@ -105,24 +106,20 @@ class GProcess extends GModel implements IProcess
         $args = $this->getApiArguments($this->_currentApi);
         $apiArguments = [];
         $request = $this->request->request();
-        foreach($args as $argument)
-        {
+        foreach ($args as $argument) {
             $rule = $this->getArgumentRules($apiName, $argument);
             $value = isset($request[$argument->name]) ? $request[$argument->name] : null;
-            if ($value === null)
-            {
+            if ($value === null) {
                 if (!$argument->isOptional())
                     throw $this->exceptionApiInvalidRequestParameter(['apiName' => $apiName, 'argName' => $argument->name]);
                 $value = $argument->getDefaultValue();
-            }
-            else
-            if (isset($rule['filter']))
+            } else if (isset($rule['filter']))
                 $value = $this->request->filtering($rule['filter'], $value);
             $apiArguments[] = $value;
         }
         return $apiArguments;
     }
-    
+
     /**
      * Получение списка параметров указанного метода
      *
@@ -134,17 +131,16 @@ class GProcess extends GModel implements IProcess
     {
         if ($api instanceof \Closure)
             $reflection = new \ReflectionFunction($api);
-        else
-        {
+        else {
             list($instance, $apiName) = $api;
             $reflection = new \ReflectionMethod($instance, $apiName);
         }
         return $reflection->getParameters();
     }
-    
+
     /**
      * Получение правил для указанного аргумента api-метода процесса
-     * 
+     *
      * @access public
      * @param string $apiName
      * @param \ReflectionParameter $argument
@@ -162,7 +158,10 @@ class GProcess extends GModel implements IProcess
      * @param array $apis as api list
      * @return void
      */
-    public function setApis(array $apis) { $this->_apis = $apis; }
+    public function setApis(array $apis)
+    {
+        $this->_apis = $apis;
+    }
 
     /**
      * Получение списка внешних api-функций или одной указанной
@@ -195,26 +194,35 @@ class GProcess extends GModel implements IProcess
      * @access public
      * @return object
      */
-    public function getRequest() { return $this->_request; }
+    public function getRequest()
+    {
+        return $this->_request;
+    }
 
     /**
      * Получение уровня доступа к процессу
-     * 
+     *
      * @access public
      * @return Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC
      */
-    public function getAccess() { return $this->_access; }
-    
+    public function getAccess()
+    {
+        return $this->_access;
+    }
+
     /**
      * Запрет на установку уроня доступа извне. Уровень доступа возможно
      * пописать либо непосредстве при реализации нового класса процесса,
      * либо в описании компонента, управляющего процессами
-     * 
+     *
      * @access public
      * @param integer $value only one: Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC
      * @return void
      */
-    public function setAccess($value) { throw $this->exceptionObjectPropertyIsReadOnly(['preopertyName' => 'access']); }
+    public function setAccess($value)
+    {
+        throw $this->exceptionObjectPropertyIsReadOnly(['preopertyName' => 'access']);
+    }
 
     /**
      * Установка правил обработки поступающих данных от пользоваля к
@@ -224,16 +232,22 @@ class GProcess extends GModel implements IProcess
      * @param array $rules
      * @return array
      */
-    public function setRules(array $rules) { return $this->_rules = $rules; }
+    public function setRules(array $rules)
+    {
+        return $this->_rules = $rules;
+    }
 
     /**
      * Возвращает массив правил обработки поступающих данных от пользоваля к
      * api-методам процесса
-     * 
+     *
      * @access public
      * @return array
      */
-    public function getRules() { return $this->_rules; }
+    public function getRules()
+    {
+        return $this->_rules;
+    }
 
     /**
      * @access public
@@ -244,26 +258,30 @@ class GProcess extends GModel implements IProcess
     {
         parent::onConstructed();
         $process = $this;
-        Core::on('onBeforeProcessExecute', function($event, $request) use($process) { return $process->onBeforeExec($event, $request); });
-        Core::on('onAfterProcessExecute', function($event, $result = true) use($process) { return $process->onAfterExec($event, $result); });
+        Core::on('onBeforeProcessExecute', function ($event, $request) use ($process) {
+            return $process->onBeforeExec($event, $request);
+        });
+        Core::on('onAfterProcessExecute', function ($event, $result = true) use ($process) {
+            return $process->onAfterExec($event, $result);
+        });
         return true;
     }
 
     /**
      * Обработчик по-умолчанию события возникающего перед исполнением
      * процесса
-     * 
+     *
      * @access public
      * @param GEvent $event
      * @return bool
      */
     public function beforeExec($event, $request) { return Core::trigger('onBeforeProcessExecute', $event, $request); }
     public function onBeforeExec($event, $request = null) { return true; }
-    
+
     /**
      * Обработчик по-умолчанию события возникающего после исполнения
      * процесса
-     * 
+     *
      * @access public
      * @param GEvent $event
      * @param mixed $result
