@@ -1,4 +1,5 @@
-CORE -> Initialize...
+gear\Core -> Initialize...
+gear\Core -> Set core mode production [178]
 CORE -> Prepare preloads
 CORE -> Preload library \gear\traits\*
 CORE -> Preload library \gear\library\GException
@@ -16,117 +17,91 @@ CORE -> Preload library \gear\library\GPlugin
 CORE -> Preload library \gear\interfaces\ILoader
 CORE -> Preload section modules
 CORE -> Preload section components
-CORE -> Preload class \gear\components\gear\syslog\GSyslog in library /usr/share/gearteam/gear/gear/../gear/components/gear/syslog/GSyslog.php
+gear\Core -> Preload class \gear\components\gear\syslog\GSyslog in library /usr/share/gearteam/gear/gear/../gear/components/gear/syslog/GSyslog.php
 Trait EVENTS -> Trigger event onConstructed of class gear\components\gear\syslog\GSyslog [734]
 Trait EVENTS -> Return events from class gear\components\gear\syslog\GSyslog [674]
 Trait EVENTS -> Attach events to class gear\components\gear\syslog\GSyslog [688]
 Trait EVENTS -> Trigger event onInstalled of class gear\components\gear\syslog\GSyslog [734]
-Service container -> Install service gear\Core.components.syslog[68]
-CORE -> Preload class \gear\components\gear\loader\GLoader in library /usr/share/gearteam/gear/gear/../gear/components/gear/loader/GLoader.php
+gear\library\container\GServicesContainer -> Install service gear\Core.components.syslog[70]
+gear\Core -> Preload class \gear\components\gear\loader\GLoader in library /usr/share/gearteam/gear/gear/../gear/components/gear/loader/GLoader.php
 Trait EVENTS -> Trigger event onConstructed of class gear\components\gear\loader\GLoader [734]
 Trait EVENTS -> Return events from class gear\components\gear\loader\GLoader [674]
 Trait EVENTS -> Attach events to class gear\components\gear\loader\GLoader [688]
 Trait EVENTS -> Trigger event onInstalled of class gear\components\gear\loader\GLoader [734]
-Service container -> Install service gear\Core.components.loader[68]
-CORE -> Preload class \gear\components\gear\handlers\GErrorsHandler in library /usr/share/gearteam/gear/gear/../gear/components/gear/handlers/GErrorsHandler.php
+gear\library\container\GServicesContainer -> Install service gear\Core.components.loader[70]
+gear\Core -> Preload class \gear\components\gear\handlers\GErrorsHandler in library /usr/share/gearteam/gear/gear/../gear/components/gear/handlers/GErrorsHandler.php
 Trait EVENTS -> Trigger event onConstructed of class gear\components\gear\handlers\GErrorsHandler [734]
 Trait EVENTS -> Return events from class gear\components\gear\handlers\GErrorsHandler [674]
 Trait EVENTS -> Attach events to class gear\components\gear\handlers\GErrorsHandler [688]
 Trait EVENTS -> Trigger event onInstalled of class gear\components\gear\handlers\GErrorsHandler [734]
-Service container -> Install service gear\Core.components.errorHandler[68]
-CORE -> Preload class \gear\components\gear\handlers\GExceptionsHandler in library /usr/share/gearteam/gear/gear/../gear/components/gear/handlers/GExceptionsHandler.php
+gear\library\container\GServicesContainer -> Install service gear\Core.components.errorHandler[70]
+gear\Core -> Preload class \gear\components\gear\handlers\GExceptionsHandler in library /usr/share/gearteam/gear/gear/../gear/components/gear/handlers/GExceptionsHandler.php
 Trait EVENTS -> Trigger event onConstructed of class gear\components\gear\handlers\GExceptionsHandler [734]
 Trait EVENTS -> Return events from class gear\components\gear\handlers\GExceptionsHandler [674]
 Trait EVENTS -> Attach events to class gear\components\gear\handlers\GExceptionsHandler [688]
 Trait EVENTS -> Trigger event onInstalled of class gear\components\gear\handlers\GExceptionsHandler [734]
-Service container -> Install service gear\Core.components.exceptionHandler[68]
-Service container -> Register service gear\Core.modules.app[37]
-Service container -> Register service gear\Core.helpers.calendar[37]
+gear\library\container\GServicesContainer -> Install service gear\Core.components.exceptionHandler[70]
+gear\library\container\GServicesContainer -> Register service gear\Core.modules.app[37]
+gear\library\container\GServicesContainer -> Register service gear\Core.helpers.calendar[37]
 CORE -> Initialize end
-Service container -> Get registered service gear\Core.modules.app [124]
-Service container -> Create instance of service gear\Core.modules.app [132]
-Service container -> Class service gear\Core.modules.app is \demo\hello\Hello [134]
-Loader component -> /usr/share/gearteam/gear/gear/../demo/hello/Hello.php
-Loader component -> /usr/share/gearteam/gear/gear/../gear/library/GApplication.php
-Service container -> Register service demo\hello\Hello.components.process[37]
+gear\Core -> Request module app [401]
+gear\library\container\GServicesContainer -> Get registered service gear\Core.modules.app [127]
+gear\library\container\GServicesContainer -> Create instance of service gear\Core.modules.app [133]
+gear\library\container\GServicesContainer -> Class service gear\Core.modules.app is \demo\hello\Hello [135]
+gear\components\gear\loader\GLoader -> Resolve demo\hello\Hello and load as /usr/share/gearteam/gear/gear/../demo/hello/Hello.php [64]
+gear\components\gear\loader\GLoader -> Resolve gear\library\GApplication and load as /usr/share/gearteam/gear/gear/../gear/library/GApplication.php [64]
+gear\library\container\GServicesContainer -> Register service demo\hello\Hello.components.process[37]
 Trait EVENTS -> Trigger event onConstructed of class demo\hello\Hello [734]
 Trait EVENTS -> Return events from class demo\hello\Hello [674]
 Trait EVENTS -> Attach events to class demo\hello\Hello [688]
-CORE -> Attach event "onBeforeApplicationRun" [677]
-CORE -> Attach event "onAfterApplicationRun" [677]
+CORE -> Attach event "onBeforeApplicationRun" [649]
+CORE -> Attach event "onAfterApplicationRun" [649]
 Trait EVENTS -> Trigger event onInstalled of class demo\hello\Hello [734]
-Service container -> Create instance gear\Core.modules.app [DONE] [142]
+gear\library\container\GServicesContainer -> Create instance gear\Core.modules.app [DONE] [142]
+demo\hello\Hello -> Run application [59]
 Trait COMPONENTS -> Get component process from demo\hello\Hello [800]
 Trait COMPONENTS -> Get service location demo\hello\Hello.components.process[804]
-Service container -> Get registered service demo\hello\Hello.components.process [124]
-Service container -> Create instance of service demo\hello\Hello.components.process [132]
-Service container -> Class service demo\hello\Hello.components.process is \gear\components\gear\process\GProcessManagerComponent [134]
-Loader component -> /usr/share/gearteam/gear/gear/../gear/components/gear/process/GProcessManagerComponent.php
+gear\library\container\GServicesContainer -> Get registered service demo\hello\Hello.components.process [127]
+gear\library\container\GServicesContainer -> Create instance of service demo\hello\Hello.components.process [133]
+gear\library\container\GServicesContainer -> Class service demo\hello\Hello.components.process is \gear\components\gear\process\GProcessManagerComponent [135]
+gear\components\gear\loader\GLoader -> Resolve gear\components\gear\process\GProcessManagerComponent and load as /usr/share/gearteam/gear/gear/../gear/components/gear/process/GProcessManagerComponent.php [64]
 Trait EVENTS -> Trigger event onConstructed of class gear\components\gear\process\GProcessManagerComponent [734]
 Trait EVENTS -> Return events from class gear\components\gear\process\GProcessManagerComponent [674]
 Trait EVENTS -> Attach events to class gear\components\gear\process\GProcessManagerComponent [688]
 Trait EVENTS -> Trigger event onInstalled of class gear\components\gear\process\GProcessManagerComponent [734]
-Service container -> Create instance demo\hello\Hello.components.process [DONE] [142]
+gear\library\container\GServicesContainer -> Create instance demo\hello\Hello.components.process [DONE] [142]
 Trait COMPONENTS -> Return component process [DONE] [806]
 Trait PLUGIN -> Get plugin request[1003]
 Trait PLUGIN -> Plugin request not instanced [1006]
-Loader component -> /usr/share/gearteam/gear/gear/../gear/plugins/gear/http/GRequest.php
+gear\components\gear\loader\GLoader -> Resolve gear\plugins\gear\http\GRequest and load as /usr/share/gearteam/gear/gear/../gear/plugins/gear/http/GRequest.php [64]
 Trait EVENTS -> Trigger event onConstructed of class gear\plugins\gear\http\GRequest [734]
 Trait EVENTS -> Return events from class gear\plugins\gear\http\GRequest [674]
 Trait EVENTS -> Attach events to class gear\plugins\gear\http\GRequest [688]
 Trait EVENTS -> Trigger event onInstalled of class gear\plugins\gear\http\GRequest [734]
 Trait PLUGIN -> Return instance of plugin request[1013]
 PROCESS MANAGER -> Prepare request process index [107]
-Service container -> Get registered service gear\Core.modules.app [124]
-Loader component -> /usr/share/gearteam/gear/gear/../demo/hello/process/PIndex.php
-Loader component -> /usr/share/gearteam/gear/gear/../gear/models/GProcess.php
-Loader component -> /usr/share/gearteam/gear/gear/../gear/library/GModel.php
-Loader component -> /usr/share/gearteam/gear/gear/../gear/interfaces/IProcess.php
+gear\Core -> Request module app [401]
+gear\library\container\GServicesContainer -> Get registered service gear\Core.modules.app [127]
+gear\components\gear\loader\GLoader -> Resolve demo\hello\process\PIndex and load as /usr/share/gearteam/gear/gear/../demo/hello/process/PIndex.php [64]
+gear\components\gear\loader\GLoader -> Resolve gear\library\GProcess and load as /usr/share/gearteam/gear/gear/../gear/library/GProcess.php [64]
+gear\components\gear\loader\GLoader -> Resolve gear\library\GModel and load as /usr/share/gearteam/gear/gear/../gear/library/GModel.php [64]
+gear\components\gear\loader\GLoader -> Resolve gear\interfaces\IProcess and load as /usr/share/gearteam/gear/gear/../gear/interfaces/IProcess.php [64]
 Trait EVENTS -> Trigger event onConstructed of class demo\hello\process\PIndex [734]
 Trait EVENTS -> Return events from class demo\hello\process\PIndex [674]
 Trait EVENTS -> Attach events to class demo\hello\process\PIndex [688]
-CORE -> Attach event "onBeforeProcessExecute" [677]
-CORE -> Attach event "onAfterProcessExecute" [677]
+CORE -> Attach event "onBeforeProcessExecute" [649]
+CORE -> Attach event "onAfterProcessExecute" [649]
 PROCESS MANAGER -> Execute base process demo\hello\process\PIndex [90]
-PROCESS -> demo\hello\process\PIndex default api index [66]
-PROCESS -> demo\hello\process\PIndex prepare api view [68]
-PROCESS -> demo\hello\process\PIndex run api view [88]
-Trait PLUGIN -> Get plugin view[1003]
-Trait PLUGIN -> Plugin view not instanced [1006]
-Loader component -> /usr/share/gearteam/gear/gear/../gear/plugins/gear/GView.php
-Trait EVENTS -> Trigger event onConstructed of class gear\plugins\gear\GView [734]
-Trait EVENTS -> Return events from class gear\plugins\gear\GView [674]
-Trait EVENTS -> Attach events to class gear\plugins\gear\GView [688]
-Trait EVENTS -> Trigger event onInstalled of class gear\plugins\gear\GView [734]
-Trait PLUGIN -> Return instance of plugin view[1013]
-View plugin -> Render index
-Service container -> Get registered service gear\Core.components.loader [124]
-Service container -> Get registered service gear\Core.components.loader [124]
-Service container -> Get registered service gear\Core.modules.app [124]
-View plugin -> /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
-Trait EVENTS -> Trigger event onBeforeRender of class gear\plugins\gear\GView [734]
-View plugin -> Require /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
-Trait EVENTS -> Trigger event onAfterRender of class gear\plugins\gear\GView [734]
-Trait PLUGIN -> Get plugin view[1003]
-Trait PLUGIN -> Return instance of plugin view[1013]
-View plugin -> Render views/index
-Service container -> Get registered service gear\Core.components.loader [124]
-Service container -> Get registered service gear\Core.components.loader [124]
-Service container -> Get registered service gear\Core.modules.app [124]
-View plugin -> /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
-Trait EVENTS -> Trigger event onBeforeRender of class gear\plugins\gear\GView [734]
-View plugin -> Require /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
-Trait EVENTS -> Trigger event onAfterRender of class gear\plugins\gear\GView [734]
-Trait PLUGIN -> Get plugin view[1003]
-Trait PLUGIN -> Return instance of plugin view[1013]
-View plugin -> Render views/index
-Service container -> Get registered service gear\Core.components.loader [124]
-Service container -> Get registered service gear\Core.components.loader [124]
-Service container -> Get registered service gear\Core.modules.app [124]
-View plugin -> /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
-Trait EVENTS -> Trigger event onBeforeRender of class gear\plugins\gear\GView [734]
-View plugin -> Require /usr/share/gearteam/gear/gear/../demo/hello/views/index.phtml
-Trait EVENTS -> Trigger event onAfterRender of class gear\plugins\gear\GView [734]
+demo\hello\process\PIndex -> Execute process [64]
+demo\hello\process\PIndex -> demo\hello\process\PIndex default api index [69]
+demo\hello\process\PIndex -> demo\hello\process\PIndex prepare api index [73]
+demo\hello\process\PIndex -> demo\hello\process\PIndex run api index [89]
+gear\Core -> Request module app [401]
+gear\library\container\GServicesContainer -> Get registered service gear\Core.modules.app [127]
+gear\Core -> Request module app [401]
+gear\library\container\GServicesContainer -> Get registered service gear\Core.modules.app [127]
+gear\Core -> Request module app [401]
+gear\library\container\GServicesContainer -> Get registered service gear\Core.modules.app [127]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\syslog\GSyslog [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\loader\GLoader [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\handlers\GErrorsHandler [734]
@@ -135,4 +110,3 @@ Trait EVENTS -> Trigger event onDestroy of class demo\hello\Hello [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\components\gear\process\GProcessManagerComponent [734]
 Trait EVENTS -> Trigger event onDestroy of class gear\plugins\gear\http\GRequest [734]
 Trait EVENTS -> Trigger event onDestroy of class demo\hello\process\PIndex [734]
-Trait EVENTS -> Trigger event onDestroy of class gear\plugins\gear\GView [734]

@@ -40,8 +40,7 @@ abstract class GService extends GObject implements IService
      */
     public static function install($config, array $properties = [])
     {
-        if (static::$_init === false)
-            static::init($config);
+        static::init($config);
         $args = func_get_args();
         array_shift($args);
         $instance = call_user_func_array([get_called_class(), 'it'], $args);
@@ -60,13 +59,16 @@ abstract class GService extends GObject implements IService
      */
     public static function init($config)
     {
-        if (is_string($config))
-            $config = require(Core::resolvePath($config));
-        if (!is_array($config))
-            throw static::exceptionService('Incorrect configuration of service');
-        static::$_config = array_replace_recursive(static::$_config, $config);
-        list(,,static::$_config) = Core::getRecords(static::$_config);
-        return static::$_init = true;
+        if (!static::$_init) {
+            if (is_string($config))
+                $config = require(Core::resolvePath($config));
+            if (!is_array($config))
+                throw static::exceptionService('Incorrect configuration of service');
+            static::$_config = array_replace_recursive(static::$_config, $config);
+            list(,,static::$_config) = Core::getRecords(static::$_config);
+            static::$_init = true;
+        }
+        return true;
     }
     
     /**
