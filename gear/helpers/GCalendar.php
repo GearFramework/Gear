@@ -1,9 +1,11 @@
 <?php
 
 namespace gear\helpers;
+
 use gear\Core;
 use gear\library\GObject;
-use gear\interfaces\IFactory;
+use gear\interfaces\IStaticFactory;
+use gear\traits\TStaticFactory;
 
 define('MONTH_NUMBER', 1);
 define('MONTH_FULLNAME', 2);
@@ -19,8 +21,10 @@ define('MONTH_SHORTNAME', 3);
  * @since 01.06.2014
  * @php 5.4.x or higher
  */
-class GCalendar extends GObject implements IFactory
+class GCalendar extends GObject implements IStaticFactory
 {
+    /* Traits */
+    use TStaticFactory;
     /* Const */
     const SECONDS_PER_MINUTE = 60;
     const SECONDS_PER_HOUR = 3600;
