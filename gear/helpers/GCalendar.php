@@ -316,6 +316,7 @@ class GCalendar extends GObject implements IStaticFactory
      * @access public
      * @return \gear\models\GDate
      */
+    public static function current() { return static::getCurrent(); }
     public static function getCurrent()
     {
         return static::$_current ?: static::$_current = static::now();
@@ -333,7 +334,7 @@ class GCalendar extends GObject implements IStaticFactory
     public static function setDate($date)
     {
         if (!is_object($date))
-            $date = static::factory(['timestamp' => !is_numeric($date) ? strtotime($date) : $date]);
+            $date = static::factory(['timestamp' => is_numeric($date) ? $date : strtotime($date)]);
         return static::$_current = $date;
     }
 
@@ -353,7 +354,7 @@ class GCalendar extends GObject implements IStaticFactory
             $date = static::getCurrent();
         else
         if (is_numeric($date) || is_string($date))
-            $date = static::factory(['timestamp' => !is_numeric($date) ? strtotime($date) : $date]);
+            $date = static::factory(['timestamp' => is_numeric($date) ? $date : strtotime($date)]);
         return $date;
     }
 
@@ -417,6 +418,7 @@ class GCalendar extends GObject implements IStaticFactory
      * @param null|integer|string|\gear\models\GDate $date
      * @return integer
      */
+    public static function day($date = null) { return static::getDay($date); }
     public static function getDay($date = null)
     {
         return date('d', static::getTimestamp($date));
@@ -502,6 +504,7 @@ class GCalendar extends GObject implements IStaticFactory
      * @param integer $mode
      * @return integer
      */
+    public static function month($date = null, $mode = MONTH_NUMBER) { return static::getMonth($date, $mode); }
     public static function getMonth($date = null, $mode = MONTH_NUMBER)
     {
         $class = static::$_localeNamespace . '\\' . static::$_locale;
@@ -540,6 +543,8 @@ class GCalendar extends GObject implements IStaticFactory
     public static function addMonths($date = null, $months)
     {
         $date = static::getDate($date);
+        $month = $date->month;
+        $cY = $month % 2;
         return static::setTimestamp(strtotime('+' . (int)$months . ' month', static::getTimestamp($date)), $date);
     }
 
@@ -579,7 +584,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setYear($date = null, $year)
     {
-        return $this->setTimestamp($this->mktime($date, null, null, null, null, null, $year), $date);
+        return static::setTimestamp(static::mktime($date, null, null, null, null, null, $year), $date);
     }
 
     /**
@@ -591,7 +596,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getYear($date = null)
     {
-        return date('Y', $this->getTimestamp($date));
+        return date('Y', static::getTimestamp($date));
     }
 
     /**
@@ -604,12 +609,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function addYear($date = null)
     {
-        return $this->addYears($date, 1);
+        return static::addYears($date, 1);
     }
 
     public static function addYears($date = null, $years)
     {
-        return $this->setYear($date, ($date ? $date->year : $this->current->year) + $years);
+        return static::setYear($date, ($date ? $date->year : static::current()->year) + $years);
     }
 
     /**
@@ -622,12 +627,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function subYear($date = null)
     {
-        return $this->subYears($date, 1);
+        return static::subYears($date, 1);
     }
 
     public static function subYears($date = null, $years)
     {
-        return $this->setYear($date, ($date ? $date->year : $this->current->year) - $years);
+        return static::setYear($date, ($date ? $date->year : static::current()->year) - $years);
     }
 
     /**
@@ -640,7 +645,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setHour($date = null, $hour)
     {
-        return $this->setTimestamp($this->mktime($date, $hour), $date);
+        return static::setTimestamp(static::mktime($date, $hour), $date);
     }
 
     /**
@@ -652,7 +657,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getHour($date = null)
     {
-        return date('H', $this->getTimestamp($date));
+        return date('H', static::getTimestamp($date));
     }
 
     /**
@@ -665,12 +670,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function addHour($date = null)
     {
-        return $this->addHours($date, 1);
+        return static::addHours($date, 1);
     }
 
     public static function addHours($date = null, $hours)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $hours * self::SECONDS_PER_HOUR, $date);
+        return static::setTimestamp(static::getTimestamp($date) + $hours * self::SECONDS_PER_HOUR, $date);
     }
 
     /**
@@ -683,12 +688,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function subHour($date = null)
     {
-        return $this->subHours($date, 1);
+        return static::subHours($date, 1);
     }
 
     public static function subHours($date = null, $hours)
     {
-        return $this->setTimestamp($this->getTimestamp($date) - $hours * self::SECONDS_PER_HOUR, $date);
+        return static::setTimestamp(static::getTimestamp($date) - $hours * self::SECONDS_PER_HOUR, $date);
     }
 
     /**
@@ -701,7 +706,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setMinute($date = null, $minute)
     {
-        return $this->setTimestamp($this->mktime($date, null, $minute), $date);
+        return static::setTimestamp(static::mktime($date, null, $minute), $date);
     }
 
     /**
@@ -713,7 +718,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getMinute($date = null)
     {
-        return date('i', $this->getTimestamp($date));
+        return date('i', static::getTimestamp($date));
     }
 
     /**
@@ -726,12 +731,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function addMinute($date = null)
     {
-        return $this->addMinutes($date, 1);
+        return static::addMinutes($date, 1);
     }
 
     public static function addMinutes($date = null, $minutes)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $minutes * self::SECONDS_PER_MINUTE, $date);
+        return static::setTimestamp(static::getTimestamp($date) + $minutes * self::SECONDS_PER_MINUTE, $date);
     }
 
     /**
@@ -744,12 +749,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function subMinute($date = null)
     {
-        return $this->subMinutes($date, 1);
+        return static::subMinutes($date, 1);
     }
 
     public static function subMinutes($date = null, $minutes)
     {
-        return $this->setTimestamp($this->getTimestamp($date) - $minutes * self::SECONDS_PER_MINUTE, $date);
+        return static::setTimestamp(static::getTimestamp($date) - $minutes * self::SECONDS_PER_MINUTE, $date);
     }
 
     /**
@@ -762,7 +767,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setSecond($date = null, $second)
     {
-        return $this->setTimestamp($this->mktime($date, null, null, $second), $date);
+        return static::setTimestamp(static::mktime($date, null, null, $second), $date);
     }
 
     /**
@@ -774,7 +779,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getSecond($date = null)
     {
-        return date('s', $this->getTimestamp($date));
+        return date('s', static::getTimestamp($date));
     }
 
     /**
@@ -787,12 +792,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function addSecond($date = null)
     {
-        return $this->addSeconds($date, 1);
+        return static::addSeconds($date, 1);
     }
 
     public static function addSeconds($date = null, $seconds)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $seconds, $date);
+        return static::setTimestamp(static::getTimestamp($date) + $seconds, $date);
     }
 
     /**
@@ -805,12 +810,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function subSecond($date = null)
     {
-        return $this->subSeconds($date, 1);
+        return static::subSeconds($date, 1);
     }
 
     public static function subSeconds($date = null, $seconds)
     {
-        return $this->setTimestamp($this->getTimestamp($date) - $seconds, $date);
+        return static::setTimestamp(static::getTimestamp($date) - $seconds, $date);
     }
 
     /**
@@ -823,12 +828,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function addWeek($date = null)
     {
-        return $this->addWeeks($date, 1);
+        return static::addWeeks($date, 1);
     }
 
     public static function addWeeks($date = null, $weeks)
     {
-        return $this->setTimestamp($this->getTimestamp($date) + $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
+        return static::setTimestamp(static::getTimestamp($date) + $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
     }
 
     /**
@@ -841,12 +846,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function subWeek($date = null)
     {
-        return $this->subWeeks($date, 1);
+        return static::subWeeks($date, 1);
     }
 
     public static function subWeeks($date = null, $weeks)
     {
-        return $this->setTimestamp($this->getTimestamp() - $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
+        return static::setTimestamp(static::getTimestamp() - $weeks * self::DAYS_PER_WEEK * self::SECONDS_PER_DAY, $date);
     }
 
     /**
@@ -864,15 +869,15 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getDayOfWeek($date = null, $mode = 1)
     {
-        $class = $this->localeNamespace . '\\' . $this->locale;
+        $class = static::$_localeNamespace . '\\' . static::$_locale;
         switch ($mode) {
             case 2 :
-                return $class::getFullWeek($this->getTimestamp($date));
+                return $class::getFullWeek(static::getTimestamp($date));
             case 3 :
-                return $class::getShortWeek($this->getTimestamp($date));
+                return $class::getShortWeek(static::getTimestamp($date));
             case 1 :
             default :
-                return $class::getNumberDayOfWeek($this->getTimestamp($date));
+                return $class::getNumberDayOfWeek(static::getTimestamp($date));
         }
     }
 
@@ -885,7 +890,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getNumberOfDay($date = null)
     {
-        return date('z', $this->getTimestamp($date));
+        return date('z', static::getTimestamp($date));
     }
 
     /**
@@ -897,7 +902,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getCountDaysInMonth($date = null)
     {
-        return date('t', $this->getTimestamp($date));
+        return date('t', static::getTimestamp($date));
     }
 
     /**
@@ -909,7 +914,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getCountDaysInYear($date = null)
     {
-        return date('L', $this->getTimestamp($date)) ? 366 : 365;
+        return date('L', static::getTimestamp($date)) ? 366 : 365;
     }
 
     /**
@@ -928,7 +933,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getDaysOfWeek($date = null, $mode = 1)
     {
-        $class = $this->localeNamespace . '\\' . $this->locale;
+        $class = static::localeNamespace . '\\' . static::locale;
         switch ($mode) {
             case 2 :
                 return $class::getFullWeeks();
@@ -949,14 +954,14 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getFirstDateOfWeek($date = null)
     {
-        $class = $this->localeNamespace . '\\' . $this->locale;
-        $timestamp = $this->getTimestamp($date);
+        $class = static::localeNamespace . '\\' . static::locale;
+        $timestamp = static::getTimestamp($date);
         $firstDayOfWeek = (int)$class::getFirstNumberDayOfWeek();
         $dayOfWeek = (int)$class::getNumberDayOfWeek($timestamp);
         if ($firstDayOfWeek >= $dayOfWeek)
-            return $this->factory(array('timestamp' => $timestamp));
+            return static::factory(['timestamp' => $timestamp]);
         else
-            return $this->factory(array('timestamp' => $timestamp - ($dayOfWeek - $firstDayOfWeek) * self::SECONDS_PER_DAY));
+            return static::factory(['timestamp' => $timestamp - ($dayOfWeek - $firstDayOfWeek) * self::SECONDS_PER_DAY]);
     }
 
     /**
@@ -968,14 +973,14 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getLastDateOfWeek($date = null)
     {
-        $class = $this->localeNamespace . '\\' . $this->locale;
-        $timestamp = $this->getTimestamp($date);
+        $class = static::localeNamespace . '\\' . static::locale;
+        $timestamp = static::getTimestamp($date);
         $lastDayOfWeek = (int)$class::getLastNumberDayOfWeek();
         $dayOfWeek = (int)$class::getNumberDayOfWeek($timestamp);
         if ($lastDayOfWeek <= $dayOfWeek)
-            return $this->factory(array('timestamp' => $timestamp));
+            return static::factory(['timestamp' => $timestamp]);
         else
-            return $this->factory(array('timestamp' => $timestamp + ($lastDayOfWeek - $dayOfWeek) * self::SECONDS_PER_DAY));
+            return static::factory(['timestamp' => $timestamp + ($lastDayOfWeek - $dayOfWeek) * self::SECONDS_PER_DAY]);
     }
 
     /**
@@ -987,7 +992,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getFirstDateOfMonth($date = null)
     {
-        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, null, 1)));
+        return static::factory(['timestamp' => static::mktime($date, null, null, null, null, 1)]);
     }
 
     /**
@@ -999,7 +1004,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getLastDateOfMonth($date = null)
     {
-        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, null, date('t', $this->getTimestamp($date)))));
+        return static::factory(['timestamp' => static::mktime($date, null, null, null, null, date('t', static::getTimestamp($date)))]);
     }
 
     /**
@@ -1011,7 +1016,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getFirstDateOfYear($date = null)
     {
-        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, 1, 1)));
+        return static::factory(['timestamp' => static::mktime($date, null, null, null, 1, 1)]);
     }
 
     /**
@@ -1023,8 +1028,8 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getLastDateOfYear($date = null)
     {
-//        $class = $this->localeNamespace . '\\' . $this->locale;
-        return $this->factory(array('timestamp' => $this->mktime($date, null, null, null, 12, 31)));
+//        $class = static::localeNamespace . '\\' . static::locale;
+        return static::factory(['timestamp' => static::mktime($date, null, null, null, 12, 31)]);
     }
 
     /**
@@ -1036,11 +1041,11 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getDatesOfWeek($date = null)
     {
-        $date = $this->getFirstDateOfWeek($date);
+        $date = static::getFirstDateOfWeek($date);
         $dates = array($date);
         $timestamp = $date->timestamp;
         for ($day = 1; $day < self::DAYS_PER_WEEK; ++$day)
-            $dates[] = $this->factory(array('timestamp' => $timestamp + $day * self::SECONDS_PER_DAY));
+            $dates[] = static::factory(['timestamp' => $timestamp + $day * self::SECONDS_PER_DAY]);
         return $dates;
     }
 
@@ -1053,12 +1058,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getDatesOfMonth($date = null)
     {
-        $date = $this->getFirstDateOfMonth($date);
+        $date = static::getFirstDateOfMonth($date);
         $dates = array($date);
         $timestamp = $date->timestamp;
-        $countDays = $this->getCountDaysInMonth($date);
+        $countDays = static::getCountDaysInMonth($date);
         for ($day = 1; $day < $countDays; ++$day)
-            $dates[] = $this->factory(array('timestamp' => $timestamp + $day * self::SECONDS_PER_DAY));
+            $dates[] = static::factory(['timestamp' => $timestamp + $day * self::SECONDS_PER_DAY]);
         return $dates;
     }
 
@@ -1071,12 +1076,12 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getDatesOfYear($date = null)
     {
-        $date = $this->getFirstDateOfYear($date);
+        $date = static::getFirstDateOfYear($date);
         $dates = array($date);
         $timestamp = $date->timestamp;
-        $countDays = $this->getCountDaysInYear($date);
+        $countDays = static::getCountDaysInYear($date);
         for ($day = 1; $day < $countDays; ++$day)
-            $dates[] = $this->factory(array('timestamp' => $timestamp + $day * self::SECONDS_PER_DAY));
+            $dates[] = static::factory(['timestamp' => $timestamp + $day * self::SECONDS_PER_DAY]);
         return $dates;
     }
 
@@ -1091,14 +1096,14 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getRange($from, $to, $step = '1 day', $revert = false)
     {
-        if (!is_object($from)) $from = $this->getDate($from);
-        if (!is_object($to)) $to = $this->getDate($to);
+        if (!is_object($from)) $from = static::getDate($from);
+        if (!is_object($to)) $to = static::getDate($to);
         $ranger = function ($from, $to, $step, $revert) {
             $dates = array($from);
             $last = clone $from;
             $operation = !$revert ? 'add' : 'sub';
             while (true) {
-                echo $last . "\n";
+                //echo $last . "\n";
                 foreach ($step as $name => $value)
                     $last->{$operation . ucfirst($name)}($value);
                 if ((!$revert && $last->timestamp >= $to->timestamp) ||
@@ -1111,14 +1116,13 @@ class GCalendar extends GObject implements IStaticFactory
             $dates[] = $to;
             return $dates;
         };
-        $step = $this->_prepareStep($step);
+        $step = static::_prepareStep($step);
         if ($from->timestamp === $to->timestamp)
-            $dates = array($from, $to);
+            $dates = [$from, $to];
+        else if ($from->timestamp < $to->timestamp)
+            $dates = !$revert ? $ranger($from, $to, $step, false) : $ranger($to, $from, $step, true);
         else
-            if ($from->timestamp < $to->timestamp)
-                $dates = !$revert ? $ranger($from, $to, $step, false) : $ranger($to, $from, $step, true);
-            else
-                $dates = !$revert ? $ranger($from, $to, $step, true) : $ranger($to, $from, $step, false);
+            $dates = !$revert ? $ranger($from, $to, $step, true) : $ranger($to, $from, $step, false);
         return $dates;
     }
 
@@ -1129,28 +1133,22 @@ class GCalendar extends GObject implements IStaticFactory
         $incs = array();
         if ($founds[3]) {
             foreach ($founds[3] as $i => $name) {
-                if (in_array($name, array('year', 'years')))
+                if (in_array($name, ['year', 'years']))
                     $name = 'years';
+                else if (in_array($name, ['mon', 'mons', 'month', 'months']))
+                    $name = 'months';
+                else if (in_array($name, ['week', 'weeks']))
+                    $name = 'weeks';
+                else if (in_array($name, ['day', 'days']))
+                    $name = 'days';
+                else if (in_array($name, ['hour', 'hours']))
+                    $name = 'hours';
+                else if (in_array($name, ['min', 'mins', 'minute', 'minutes']))
+                    $name = 'minutes';
+                else if (in_array($name, ['sec', 'secs', 'second', 'seconds']))
+                    $name = 'hours';
                 else
-                    if (in_array($name, array('mon', 'mons', 'month', 'months')))
-                        $name = 'months';
-                    else
-                        if (in_array($name, array('week', 'weeks')))
-                            $name = 'weeks';
-                        else
-                            if (in_array($name, array('day', 'days')))
-                                $name = 'days';
-                            else
-                                if (in_array($name, array('hour', 'hours')))
-                                    $name = 'hours';
-                                else
-                                    if (in_array($name, array('min', 'mins', 'minute', 'minutes')))
-                                        $name = 'minutes';
-                                    else
-                                        if (in_array($name, array('sec', 'secs', 'second', 'seconds')))
-                                            $name = 'hours';
-                                        else
-                                            continue;
+                    continue;
                 $incs[$name] = $founds[2][$i];
             }
         }
@@ -1168,9 +1166,9 @@ class GCalendar extends GObject implements IStaticFactory
     public static function diff($dateOne, $dateTwo)
     {
         if (!is_object($dateOne))
-            $dateOne = $this->getDate($dateOne);
+            $dateOne = static::getDate($dateOne);
         if (!is_object($dateTwo))
-            $dateTwo = $this->getDate($dateTwo);
+            $dateTwo = static::getDate($dateTwo);
         $less = $more = $dateOne;
         $dateOne->timestamp < $dateTwo->timestamp ? $more = $dateTwo : $less = $dateTwo;
         $diff = [$more->year - $less->year, 0, 0, 0, 0, 0];
@@ -1203,38 +1201,31 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function humanDiff($dateOne, $dateTwo = null)
     {
-        $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
+        $class = static::getLocaleNamespace() . '\\' . static::getLocale();
         if (!$dateTwo)
-            $dateTwo = $this->getDate();
+            $dateTwo = static::getDate();
         $mul = $dateOne->timestamp < $dateTwo->timestamp ? -1 : 1;
-        $diff = $this->diff($dateOne, $dateTwo);
+        $diff = static::diff($dateOne, $dateTwo);
         $result = '';
         if ($diff[0] > 0)
             return $class::getHumanDecline($diff[0] * $mul, 'diff', 'y');
-        else
-            if ($diff[1] > 0)
-                return $class::getHumanDecline($diff[1] * $mul, 'diff', 'm');
+        else if ($diff[1] > 0)
+            return $class::getHumanDecline($diff[1] * $mul, 'diff', 'm');
+        else if ($diff[2] > 0) {
+            if ($diff[2] < 7)
+                return $class::getHumanDecline($diff[2] * $mul, 'diff', 'd');
             else
-                if ($diff[2] > 0) {
-                    if ($diff[2] < 7)
-                        return $class::getHumanDecline($diff[2] * $mul, 'diff', 'd');
-                    else
-                        return $class::getHumanDecline((int)($diff[2] / 7) * $mul, 'diff', 'w');
-                } else
-                    if ($diff[3] > 0)
-                        return $class::getHumanDecline($diff[3] * $mul, 'diff', 'h');
-                    else
-                        if ($diff[4] > 0)
-                            return $class::getHumanDecline($diff[4] * $mul, 'diff', 'i');
-                        else
-                            if ($diff[5] > 0) {
-                                if (($diff[5] > 50 && $diff[5] <= 59) ||
-                                    ($diff[5] < -50 && $diff[5] >= -59)
-                                )
-                                    return $class::getHumanDecline(1 * $mul, 'diff', 'i');
-                                else
-                                    return $class::getHumanDecline($diff[5] * $mul, 'diff', 's');
-                            }
+                return $class::getHumanDecline((int)($diff[2] / 7) * $mul, 'diff', 'w');
+        } else if ($diff[3] > 0)
+            return $class::getHumanDecline($diff[3] * $mul, 'diff', 'h');
+        else if ($diff[4] > 0)
+            return $class::getHumanDecline($diff[4] * $mul, 'diff', 'i');
+        else if ($diff[5] > 0) {
+            if (($diff[5] > 50 && $diff[5] <= 59) || ($diff[5] < -50 && $diff[5] >= -59))
+                return $class::getHumanDecline(1 * $mul, 'diff', 'i');
+            else
+                return $class::getHumanDecline($diff[5] * $mul, 'diff', 's');
+        }
     }
 
     /**
@@ -1246,8 +1237,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setLocaleNamespace($localeNamespace)
     {
-        $this->_localeNamespace = $localeNamespace;
-        return $this;
+        static::$_localeNamespace = $localeNamespace;
     }
 
     /**
@@ -1258,7 +1248,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getLocaleNamespace()
     {
-        return $this->_localeNamespace;
+        return static::$_localeNamespace;
     }
 
     /**
@@ -1270,8 +1260,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setLocale($locale)
     {
-        $this->_locale = $locale;
-        return $this;
+        static::$_locale = $locale;
     }
 
     /**
@@ -1282,7 +1271,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getLocale()
     {
-        return $this->_locale;
+        return static::$_locale;
     }
 
     /**
@@ -1294,8 +1283,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setFormat($format)
     {
-        $this->_factory['format'] = $this->current->format = $this->_format = $format;
-        return $this;
+        static::$_factory['format'] = static::current()->format = static::$_format = $format;
     }
 
     /**
@@ -1306,7 +1294,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getFormat()
     {
-        return $this->_format;
+        return static::$_format;
     }
 
     /**
@@ -1319,8 +1307,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function setNatural($natural)
     {
-        $this->_factory['natural'] = $this->current->format = $this->_natural = (boolean)$natural;
-        return $this;
+        static::$_factory['natural'] = static::current()->format = static::$_natural = (boolean)$natural;
     }
 
     /**
@@ -1332,7 +1319,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getNatural()
     {
-        return $this->_natural;
+        return static::$_natural;
     }
 
     /**
@@ -1344,7 +1331,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getQuarter($date = null)
     {
-        return ceil($date ? $date->month : $this->current->month / 3);
+        return ceil($date ? $date->month : static::current()->month / 3);
     }
 
     /**
@@ -1356,7 +1343,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function isLeap($date = null)
     {
-        return (bool)date('L', $date ? $date->timestamp : $this->current->timestamp);
+        return (bool)date('L', static::getDate($date)->timestamp);
     }
 
     /**
@@ -1386,14 +1373,14 @@ class GCalendar extends GObject implements IStaticFactory
     public static function compare($date1, $date2, $mode = 1)
     {
         if (!is_object($date1))
-            $date1 = $this->getDate($date1);
+            $date1 = static::getDate($date1);
         if (!is_object($date2))
-            $date2 = $this->getDate($date2);
+            $date2 = static::getDate($date2);
         switch ($mode) {
             case 2 :
-                return $this->compareDate($date1, $date2);
+                return static::compareDate($date1, $date2);
             case 3 :
-                return $this->compareTime($date1, $date2);
+                return static::compareTime($date1, $date2);
             case 1 :
             default :
                 return $date1->timestamp - $date2->timestamp;
@@ -1410,10 +1397,8 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function compareDate($date1, $date2)
     {
-        if (!is_object($date1))
-            $date1 = $this->getDate($date1);
-        if (!is_object($date2))
-            $date2 = $this->getDate($date2);
+        $date1 = static::getDate($date1);
+        $date2 = static::getDate($date2);
         return strtotime($date1->format('Y-m-d')) - strtotime($date2->format('Y-m-d'));
     }
 
@@ -1450,8 +1435,7 @@ class GCalendar extends GObject implements IStaticFactory
     public static function mktime($date, $hour = null, $minute = null, $second = null, $month = null, $day = null, $year = null)
     {
         $date = static::getDate($date);
-        $timestamp = mktime
-        (
+        $timestamp = mktime(
             $hour ?: date('H', $date->timestamp),
             $minute ?: date('i', $date->timestamp),
             $second ?: date('s', $date->timestamp),
