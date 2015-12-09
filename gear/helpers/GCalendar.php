@@ -348,6 +348,7 @@ class GCalendar extends GObject implements IStaticFactory
      * @param null|integer|string $date
      * @return \gear\models\GDate
      */
+    public static function date($date = null) { return static::getDate($date); }
     public static function getDate($date = null)
     {
         if (!$date)
@@ -544,7 +545,7 @@ class GCalendar extends GObject implements IStaticFactory
     {
         $date = static::getDate($date);
         $month = $date->month;
-        $cY = $month % 2;
+        $overYears = floor($month / 12);
         return static::setTimestamp(strtotime('+' . (int)$months . ' month', static::getTimestamp($date)), $date);
     }
 
