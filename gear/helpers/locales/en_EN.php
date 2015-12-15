@@ -48,10 +48,8 @@ class en_EN
      * @param boolean $natural
      * @return string
      */
-    public static function getTokenValue($token, $time, $natural)
-    {
-        switch($token)
-        {
+    public static function getTokenValue($token, $time, $natural) {
+        switch($token) {
             case 'D' : return self::getShortWeek($time);
             case 'l' : return self::getFullWeek($time);
             case 'M' : return self::getShortMonth($time);
@@ -60,5 +58,27 @@ class en_EN
             case 'd' : return date(($natural ? 'jS' : 'd'), $time);
             case 'j' : return date('j' . ($natural ? 'S' : ''), $time);
         }
+    }
+
+    /**
+     * Возвращает количество дней в месяце
+     *
+     * @access public
+     * @param integer $timestamp
+     * @return integer
+     */
+    public static function getCountDaysInMonth($timestamp) {
+        return date('t', $timestamp);
+    }
+
+    /**
+     * Возвращает количество дней в году
+     *
+     * @access public
+     * @param integer $timestamp
+     * @return integer
+     */
+    public static function getCountDaysInYear($timestamp) {
+        return date('L', $timestamp) ? 366 : 365;
     }
 }

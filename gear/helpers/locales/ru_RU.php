@@ -191,4 +191,26 @@ class ru_RU extends GLocale
      * @return integer
      */
     public static function getNumbersDayOfWeek() { return range(1, 7); }
+
+
+    /**
+     * Возвращает количество дней в месяце
+     *
+     * @access public
+     * @param integer $timestamp
+     * @return integer
+     */
+    public static function getCountDaysInMonth($timestamp) {
+        return date('t', $timestamp);
+    }
+    /**
+     * Возвращает количество дней в году
+     *
+     * @access public
+     * @param integer $timestamp
+     * @return integer
+     */
+    public static function getCountDaysInYear($timestamp) {
+        return date('L', $timestamp) ? 366 : 365;
+    }
 }

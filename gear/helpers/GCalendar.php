@@ -1008,7 +1008,8 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function getCountDaysInYear($date = null)
     {
-        return date('L', self::getDate($date)->timestamp) ? 366 : 365;
+        $class = self::getLocaleNamespace() . '\\' . self::getLocale();
+        return $class::getCountDaysInYear(self::getDate($date)->timestamp);
     }
 
     /**
@@ -1100,7 +1101,8 @@ class GCalendar extends GObject implements IStaticFactory
     public static function getLastDateOfMonth($date = null)
     {
         $date = self::getDate($date);
-        return static::getDate(static::mktime($date, null, null, null, null, date('t', $date->timestamp)));
+        $class = self::getLocaleNamespace() . '\\' . self::getLocale();
+        return static::getDate(static::mktime($date, null, null, null, null, $class::getCountDaysInMonth($date->timestamp)));
     }
 
     /**
@@ -1200,11 +1202,10 @@ class GCalendar extends GObject implements IStaticFactory
             $operation = !$revert ? 'add' : 'sub';
             while (true) {
                 //echo $last . "\n";
-                foreach ($step as $name => $value)
+                foreach ($step as $name => $value) {
                     $last->{$operation . ucfirst($name)}($value);
-                if ((!$revert && $last->timestamp >= $to->timestamp) ||
-                    ($revert && $last->timestamp <= $to->timestamp)
-                )
+                }
+                if ((!$revert && $last->timestamp >= $to->timestamp) || ($revert && $last->timestamp <= $to->timestamp))
                     break;
                 $dates[] = $last;
                 $last = clone $last;
