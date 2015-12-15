@@ -48,12 +48,12 @@ class GView extends GPlugin
      * @access public
      * @param string $view
      * @param array $arguments
-     * @param bool $return
+     * @param bool|\Closure $return
      * @return boolean|string
      */
     public function render($view = null, array $arguments = [], $return = false)
     {
-        Core::syslog('View plugin -> Render ' . $view);
+        Core::syslog(get_class($this) . ' -> Render ' . $view . ' [' . __LINE__ . ']');
         if (!$view)
             $view = $this->getOwner()->viewPath;
         else
@@ -62,12 +62,13 @@ class GView extends GPlugin
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
             $viewPath .= '.phtml';
-        Core::syslog('View plugin -> ' . $viewPath);
+        Core::syslog(get_class($this) . ' -> ' . $viewPath . ' [' . __LINE__ . ']');
         $this->trigger('onBeforeRender', new GEvent($this), $viewPath, $arguments);
         $this->_arguments = $arguments;
         extract($arguments);
         $resultRender = true;
-        if ($return) {
+        Core::syslog(get_class($this) . ' -> Require ' . $viewPath . ' [' . __LINE__ . ']');
+        if ($return || $return instanceof \Closure) {
             if (Core::isComponentRegistered('configurator') && Core::c('configurator')->buffer) {
                 $temp = ob_get_contents();
                 ob_clean();
@@ -81,8 +82,9 @@ class GView extends GPlugin
                 $resultRender = ob_get_contents();
                 ob_end_clean();
             }
+            if ($return instanceof \Closure)
+                $resultRender = $return($return);
         } else {
-            Core::syslog('View plugin -> Require ' . $viewPath);
             require($viewPath);
         }
         $this->trigger('onAfterRender', new GEvent($this), $resultRender);

@@ -30,6 +30,7 @@ class GModel extends GObject
     /* Private */
     /* Protected */
     protected $_pk = 'id';
+    protected $_validators = [];
     /* Public */
 
     /**
@@ -71,4 +72,30 @@ class GModel extends GObject
      * @return string
      */
     public function getPk() { return $this->_pk; }
+
+    /**
+     * Валидация модели
+     *
+     * @access public
+     * @return boolean;
+     * @throws \gear\exceptions\InvalidModelException
+     */
+    public function validate() {
+        //TODO:Реализовать валидацию модели
+    }
+
+
+    /**
+     * Обработчик события, вызываемого на этапе создания объекта (из
+     * конструктора)
+     *
+     * @access public
+     * @param GEvent $event
+     * @return boolean
+     */
+    public function onConstructed()
+    {
+        $this->validate();
+        return parent::onConstructed();
+    }
 }

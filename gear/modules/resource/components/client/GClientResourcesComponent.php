@@ -47,7 +47,7 @@ class GClientResourcesComponent extends GResourceComponent
     {
         $ext = substr(strrchr($resource, '.'), 1);
         if (!$this->isPluginRegistered($ext))
-            $this->e('Unknown resource ":resourceName"', array('resourceName' => $resource));
+            throw $this->exceptionUnknownResource('Unknown resource ":resourceName"', array('resourceName' => $resource));
         return call_user_func_array(array($this->p($ext), 'publicate'), func_get_args());
     }
     
