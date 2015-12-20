@@ -1,9 +1,8 @@
 <?php
 
 namespace gear\modules\resource\library;
-use gear\Core;
+
 use gear\library\GComponent;
-use gear\library\GException;
 
 /** 
  * Базовый класс, для компонентов расширяющих фунционал модуля ресурсов 
@@ -12,8 +11,10 @@ use gear\library\GException;
  * @abstract
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis 2013
- * @version 0.0.1
+ * @version 1.0.0
  * @since 17.06.2014
+ * @php 5.4.x or higher
+ * @release 1.0.0
  */
 abstract class GResourceComponent extends GComponent
 {
@@ -50,21 +51,4 @@ abstract class GResourceComponent extends GComponent
      * @return string
      */
     public function getHash($file) { return md5($file . $this->salt); }
-}
-
-/** 
- * Исключения ресурсных компонентов 
- * 
- * @package Gear Framework
- * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 0.0.1
- * @since 17.06.2014
- */
-class ResourceComponentException extends GException
-{
-    /* Const */
-    /* Private */
-    /* Protected */
-    /* Public */
 }

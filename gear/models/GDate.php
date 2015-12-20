@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\models;
+
 use gear\Core;
 use gear\library\GModel;
 
@@ -32,6 +33,15 @@ class GDate extends GModel
     protected $_value = null;
     /* Public */
 
+    public function __call($name, $args) {
+        $owner = $this->getOwner();
+        if (method_exists($owner, $name)) {
+            array_unshift($args, $this);
+            return call_user_func_array([$owner, $name], $args);
+        }
+        return parent::__call($name, $args);
+    }
+
     /**
      * Вывод отформатированой даты
      *
@@ -46,7 +56,7 @@ class GDate extends GModel
      * @access public
      * @return object
      */
-    public function getOwner() { return $this->_owner; }
+    public function getOwner() { return $this->i('ownerCalendar'); }
 
     /**
      * Установка даты и времени в формате, понимаемом функцией strtotime()
@@ -55,8 +65,7 @@ class GDate extends GModel
      * @param string $datetime
      * @return $this
      */
-    public function setDatetime($datetime)
-    {
+    public function setDatetime($datetime) {
         $this->_datetime = $datetime;
         $this->_timestamp = strtotime($this->_datetime);
         return $this;
@@ -68,8 +77,7 @@ class GDate extends GModel
      * @access public
      * @return string
      */
-    public function getDatetime()
-    {
+    public function getDatetime() {
         if (!$this->_datetime)
             $this->_datetime = date('Y-m-d H:i:s', $this->_timestamp);
         return $this->_datetime;
@@ -82,10 +90,9 @@ class GDate extends GModel
      * @param integer $timestamp
      * @return $this
      */
-    public function setTimestamp($timestamp)
-    {
+    public function setTimestamp($timestamp) {
         $this->_timestamp = $timestamp;
-        $this->datetime = date('Y-m-d H:i:s', $this->_timestamp);
+        $this->_datetime = date('Y-m-d H:i:s', $this->_timestamp);
         return $this;
     }
 
@@ -95,82 +102,11 @@ class GDate extends GModel
      * @access public
      * @return integer
      */
-    public function getTimestamp()
-    {
+    public function getTimestamp() {
         if (!$this->_timestamp)
-            $this->_timestamp = $this->datetime ? strtotime($this->datetime) : time();
+            $this->_timestamp = $this->_datetime ? strtotime($this->_datetime) : time();
         return $this->_timestamp;
     }
-
-    /**
-     * Возвращает день
-     * 
-     * @access public
-     * @return integer
-     */
-//    public function getDay() { return $this->owner->getDay($this); }
-    
-    /**
-     * Возвращает месяц
-     * 
-     * Значения для $mode
-     * 
-     * 1 - возращает порядковый номер месяца
-     * 2 - возвращает полное название месяца
-     * 3 - возвращает сокращённое название месяца
-     * 
-     * @access public
-     * @param integer $mode
-     * @return integer
-     */
-//    public function getMonth($mode = 1) { return $this->owner->getMonth($this, $mode); }
-    
-    /**
-     * Возвращает год
-     * 
-     * @access public
-     * @return integer
-     */
-    public function getYear() { return date('Y', $this->timestamp); }
-    
-    /**
-     * Возвращает час
-     * 
-     * @access public
-     * @return integer
-     */
-//    public function getHour() { return $this->owner->getHour($this); }
-    
-    /**
-     * Возвращает минуты
-     * 
-     * @access public
-     * @return integer
-     */
-//    public function getMinute() { return $this->owner->getMinute($this); }
-    
-    /**
-     * Возвращает секунды
-     * 
-     * @access public
-     * @return integer
-     */
-//    public function getSecond() { return $this->owner->getSecond($this); }
-    
-    /**
-     * Возвращает день недели
-     * 
-     * Значения для $mode
-     * 
-     * 1 - возращает порядковый номер дня недели
-     * 2 - возвращает полное название дня недели
-     * 3 - возвращает сокращённое название дня недели
-     * 
-     * @access public
-     * @param integer $mode
-     * @return integer
-     */
-//    public function getDayOfWeek($mode = 1) { return $this->owner->getDayOfWeek($this, $mode); }
 
     /**
      * Установка формата вывода даты
@@ -201,8 +137,7 @@ class GDate extends GModel
      * @param mixed $natural
      * @return $this
      */
-    public function setNatural($natural)
-    {
+    public function setNatural($natural) {
         $this->_natural = (boolean)$natural;
         return $this;
     }
@@ -217,26 +152,14 @@ class GDate extends GModel
     public function getNatural() { return $this->_natural; }
     
     /**
-     * Возвращает номер квартала
-     * 
-     * @access public
-     * @return integer
-     */
-    public function getQuarter()
-    {
-        return $this->owner->getQuarter($this);
-    }
-
-    /**
      * Возвращает отформатированную по шаблону дату
      * 
      * @access public
-     * @param string $format
+     * @param null|string $format
      * @param bool $natural
-     * @return
+     * @return string
      */
-    public function format($format = null, $natural = null)
-    {
+    public function format($format = null, $natural = false) {
         return $this->_value = $this->_calculate($format ? $format : $this->format, $natural !== null ? $natural : $this->natural);
     }
     
@@ -247,9 +170,9 @@ class GDate extends GModel
      * @access public
      * @return string
      */
-    public function humanDiff($date = null)
-    {
-        return $this->owner->humanDiff($this, $date);
+    public function humanDiff($date = null) {
+        $owner = $this->getOwner();
+        return $owner::humanDiff($this, $date);
     }
     
     /**
@@ -259,9 +182,9 @@ class GDate extends GModel
      * @param integer|string|object $date
      * @return string
      */
-    public function diff($date, $format = 'y m d h i s')
-    {
-        $diff = $this->owner->diff($this, $date);
+    public function diff($date, $format = 'y m d h i s') {
+        $owner = $this->getOwner();
+        $diff = $owner::diff($this, $date);
         $class = $this->getLocaleNamespace() . '\\' . $this->getLocale();
         $tokens = array('y', 'm', 'd', 'h', 'i', 's');
         if ($format)

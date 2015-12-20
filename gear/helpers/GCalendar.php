@@ -7,9 +7,9 @@ use gear\library\GObject;
 use gear\interfaces\IStaticFactory;
 use gear\traits\TStaticFactory;
 
-define('MONTH_NUMBER', 1);
-define('MONTH_FULLNAME', 2);
-define('MONTH_SHORTNAME', 3);
+define('AS_NUMERIC', 1);
+define('AS_FULLNAME', 2);
+define('AS_SHORTNAME', 3);
 
 /**
  * Класс для работы с календарём
@@ -36,7 +36,10 @@ class GCalendar extends GObject implements IStaticFactory
     /* Private */
     /* Protected */
     protected static $_factory = [
-        'class' => '\gear\models\GDate',
+        'class' => [
+            'name' => '\gear\models\GDate',
+            'ownerCalendar' => __CLASS__,
+        ],
         'format' => 'Y-m-d H:i:s',
         'natural' => false,
     ];

@@ -22,17 +22,14 @@ class GResource extends GModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = array
-    (
-        'components' => array
-        (
-            'client' => array
-            (
+    protected static $_config = [
+        'components' => [
+            'client' => [
                 'class' => '\gear\modules\resource\components\client\GClientResourcesComponent',
                 'salt' => 'Rui43VbthF#',
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
     /* Public */
     
     /**
@@ -43,17 +40,15 @@ class GResource extends GModule
      * @param string $resource
      * @return string
      */
-    public function publicate($component, $resource)
-    {
+    public function publicate($component, $resource) {
         if ($this->isComponentRegistered($component) && 
-            $this->c($component) instanceof \gear\modules\resource\library\GResourceComponent)
-        {
+            $this->c($component) instanceof \gear\modules\resource\library\GResourceComponent) {
             $args = func_get_args();
             array_shift($args);
-            return call_user_func_array(array($this->c($component), 'publicate'), $args);
+            return call_user_func_array([$this->c($component), 'publicate'], $args);
         }
         else
-            $this->e('Unknown resource ":resourceName"', array('resourceName' => $resource));
+            throw $this->exceptionUnkownResource(['resourceName' => $resource]);
     }
     
     /**
@@ -64,16 +59,14 @@ class GResource extends GModule
      * @param string $hash
      * @return mixed
      */
-    public function get($component, $hash)
-    {
+    public function get($component, $hash) {
         if ($this->isComponentRegistered($component) && 
-            $this->c($component) instanceof \gear\modules\resource\library\GResourceComponent)
-        {
+            $this->c($component) instanceof \gear\modules\resource\library\GResourceComponent) {
             $args = func_get_args();
             array_shift($args);
-            return call_user_func_array(array($this->c($component), 'get'), $args);
+            return call_user_func_array([$this->c($component), 'get'], $args);
         }
         else
-            $this->e('Unknown resource ":resourceName"', array('resourceName' => $resource));
+            throw $this->exceptionUnkownResource(['resourceName' => $hash]);
     }
 }

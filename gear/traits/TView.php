@@ -19,14 +19,6 @@ trait TView
 {
     protected $_arguments = [];
 
-    public function setViewPath($path)
-    {
-        $this->_viewPath = $path;
-        return $this;
-    }
-
-    public function getViewPath() { return $this->_viewPath; }
-
     /**
      * Отображение указанного представления
      *
@@ -36,44 +28,42 @@ trait TView
      * @param bool $return
      * @return boolean|string
      */
-    public function render($view = null, array $arguments = [], $return = false)
-    {
+    public function render($view = null, array $arguments = [], $return = false) {
+        Core::syslog(get_class($this) . ' -> Render ' . $view . ' [' . __LINE__ . ']');
         if (!$view)
             $view = $this->getOwner()->viewPath;
         else
-        if (!preg_match('/[\/|\\\\]/', $view))
-            $view = $this->getOwner()->viewPath . '\\' . $view;
+            if (!preg_match('/[\/|\\\\]/', $view))
+                $view = $this->owner->viewPath . '/' . $view;
         $viewPath = Core::resolvePath($view);
         if (!pathinfo($viewPath, PATHINFO_EXTENSION))
             $viewPath .= '.phtml';
-        $resultRender = null;
-        if ($this->trigger('onBeforeRender', new GEvent($this), $viewPath, $arguments))
-        {
-            $this->_arguments = $arguments;
-            extract($arguments);
-            if ($return)
-            {
-                if (Core::isComponentRegistered('configurator') && Core::c('configurator')->buffer)
-                {
-                    $temp = ob_get_contents();
-                    ob_clean();
-                    require($viewPath);
-                    $resultRender = ob_get_contents();
-                    ob_clean();
-                    echo $temp;
-                }
-                else
-                {
-                    ob_start();
-                    require($viewPath);
-                    $resultRender = ob_get_contents();
-                    ob_end_clean();
-                }
-            }
-            else
+        Core::syslog(get_class($this) . ' -> ' . $viewPath . ' [' . __LINE__ . ']');
+        $this->trigger('onBeforeRender', new GEvent($this), $viewPath, $arguments);
+        $this->_arguments = $arguments;
+        extract($arguments);
+        $resultRender = true;
+        Core::syslog(get_class($this) . ' -> Require ' . $viewPath . ' [' . __LINE__ . ']');
+        if ($return || $return instanceof \Closure) {
+            if (Core::isComponentRegistered('configurator') && Core::c('configurator')->buffer) {
+                $temp = ob_get_contents();
+                ob_clean();
                 require($viewPath);
-            $this->trigger('onAfterRender', new GEvent($this), $resultRender);
+                $resultRender = ob_get_contents();
+                ob_clean();
+                echo $temp;
+            } else {
+                ob_start();
+                require($viewPath);
+                $resultRender = ob_get_contents();
+                ob_end_clean();
+            }
+            if ($return instanceof \Closure)
+                $resultRender = $return($return);
+        } else {
+            require($viewPath);
         }
+        $this->trigger('onAfterRender', new GEvent($this), $resultRender);
         return $resultRender;
     }
 
@@ -85,8 +75,7 @@ trait TView
      * @param mixed $name
      * @return mixed
      */
-    public function arg($name)
-    {
+    public function arg($name) {
         return isset($this->_arguments[$name]) ? $this->_arguments[$name] : null;
     }
 }
