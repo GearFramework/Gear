@@ -32,7 +32,7 @@ trait TStaticFactory
             $properties = array_merge
             (
                 static::getFactory(),
-                array('owner' => $owner),
+                $owner ? ['owner' => $owner] : [],
                 $properties
             );
             list($class, $config, $properties) = Core::getRecords($properties);

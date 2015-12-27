@@ -9,10 +9,12 @@ class PIndex extends GProcess
 {
     public function apiIndex()
     {
-        echo "Hello World!"; // Output Hello World!
-        Core::app()->out("Hello World!"); // Output Hello World!
-        Core::app()->setOutputCallbacks(function($value) { return strtoupper($value); }); // Set output callback function
-        Core::app()->out("Hello World!"); // Output HELLO WORLD!
+        Core::app()->setOutputCallbacks(function($value) { return "$value\n"; });
+        Core::app()->out(\gear\helpers\GCalendar::now());
+        //echo "Hello World!"; // Output Hello World!
+        //Core::app()->out("Hello World!"); // Output Hello World!
+        //Core::app()->setOutputCallbacks(function($value) { return strtoupper($value); }); // Set output callback function
+        //Core::app()->out("Hello World!"); // Output HELLO WORLD!
         return true;
     }
 
