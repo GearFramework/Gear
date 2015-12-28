@@ -2,19 +2,14 @@
 
 require 'd:/usr/github/gear/Core.php';
 use gear\Core;
-try
-{
-    \gear\Core::init(
-    [
-        'modules' =>
-        [
+try {
+    \gear\Core::init([
+        'modules' => [
             'app' => ['class' => '\gear\library\GApplication'],
         ]
     ]);
-    \gear\Core::app()->process->setProcesses(
-    [
-        'index' => function()
-        {
+    \gear\Core::app()->process->setProcesses([
+        'index' => function() {
             Core::h('calendar')->setFormat('d/m/Y');
             //echo Calendar::{(string)time()}() . "\n";
             $from = Calendar::{(string)time()}();
@@ -22,8 +17,7 @@ try
         },
     ]);
 }
-catch(Exception $e)
-{
+catch(Exception $e) {
     die($e->getMessage());
 }
 
