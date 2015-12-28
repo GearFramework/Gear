@@ -139,7 +139,6 @@ final class Core
     public static function __callStatic($name, $args)
     {
         if (preg_match('/^exception[A-Z]{1}/', $name)) {
-            print_r($args);
             if (!isset($args[0]) || is_array($args[0]))
                 array_unshift($args, null);
             array_unshift($args, $name);

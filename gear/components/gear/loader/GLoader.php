@@ -50,8 +50,7 @@ class GLoader extends GComponent implements ILoader
      * @param string $className
      * @return void
      */
-    public function loader($className)
-    {
+    public function loader($className) {
         if (isset($this->_aliases[$className]['class'])) {
             $alias = $className;
             $className = $this->_aliases[$className]['class'];
@@ -74,8 +73,7 @@ class GLoader extends GComponent implements ILoader
      * @param string $namespace
      * @return string
      */
-    public function resolvePath($namespace)
-    {
+    public function resolvePath($namespace) {
         if ($this->useResolvePaths && isset($this->resolvePaths[$namespace])) {
             $path = $this->resolvePaths[$namespace];
             Core::syslog(__CLASS__ . ' -> Resolve ' . $namespace . ' as ' . $path . ' from resolvePaths array [' . __LINE__ . ']');
@@ -106,6 +104,7 @@ class GLoader extends GComponent implements ILoader
      * @return $this
      */
     public function setAlias($className, $alias) {
+        Core::app()->syslog(get_class($this) . ' -> Set alias ' . $alias . ' for class ' . $className . ' [' . __LINE__ . ']');
         $this->_aliases[$alias] = ['class' => $className];
         return $this;
     }
@@ -129,6 +128,7 @@ class GLoader extends GComponent implements ILoader
      * @return $this
      */
     public function setAliases(array $aliases) {
+        Core::app()->syslog(get_class($this) . ' -> Set array aliases [' . __LINE__ . ']');
         $this->_aliases = $aliases;
         return $this;
     }
@@ -151,7 +151,7 @@ class GLoader extends GComponent implements ILoader
      * @return $this
      */
     public function appendAliases(array $aliases) {
-        Core::app()->syslog(get_class($this) . ' -> Append aliases');
+        Core::app()->syslog(get_class($this) . ' -> Append array aliases [' . __LINE__ . ']');
         $this->aliases = array_merge($this->aliases, $aliases);
         return $this;
     }

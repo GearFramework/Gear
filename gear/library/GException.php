@@ -59,13 +59,13 @@ class GException extends \Exception
             }
             if (isset(self::$_messages[$this->_section][$message]))
                 $message = self::$_messages[$this->_section][$message];
-            foreach ($this->args as $name => $value) {
+            foreach ($this->args() as $name => $value) {
                 $this->$name = $value;
                 $message = str_replace(':' . $name, $value, $message);
             }
         }
         parent::__construct($message, $code, $previous);
-        Core::syslog(get_class($this) . ' -> Message ' . $message . ' in file ' . $this->getFile() . ':' . $this->getLine() . ' [' . __LINE__ . ']');
+        Core::syslog(get_class($this) . ' -> Message "' . $message . '" in file ' . $this->getFile() . ':' . $this->getLine() . ' [' . __LINE__ . ']');
     }
 
     /**

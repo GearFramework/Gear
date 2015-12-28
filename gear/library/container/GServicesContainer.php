@@ -32,8 +32,7 @@ class GServicesContainer
      * @param array $service
      * @return $this
      */
-    public function registerService($serviceLocation, array $service)
-    {
+    public function registerService($serviceLocation, array $service) {
         Core::syslog(get_class($this) . ' -> Register service ' . $serviceLocation . '[' . __LINE__ . ']');
         $this->_services[$serviceLocation] = $service;
         if (isset($this->_services[$serviceLocation]['#autoload']) &&
@@ -52,8 +51,7 @@ class GServicesContainer
      * @param string $serviceLocation
      * @return boolean
      */
-    public function isRegisteredService($serviceLocation)
-    {
+    public function isRegisteredService($serviceLocation) {
         return isset($this->_services[$serviceLocation]);
     }
     
@@ -65,8 +63,7 @@ class GServicesContainer
      * @param array|object $service
      * @return object
      */
-    public function installService($serviceLocation, $service)
-    {
+    public function installService($serviceLocation, $service) {
         Core::syslog(get_class($this) . ' -> Install service ' . $serviceLocation . '[' . __LINE__ . ']');
         if (is_array($service)) {
             list($class, $config, $properties) = Core::getRecords($service);
@@ -91,8 +88,7 @@ class GServicesContainer
      * @param string $serviceLocation
      * @return boolean
      */
-    public function isInstalledService($serviceLocation) 
-    {
+    public function isInstalledService($serviceLocation) {
         return isset($this->_services[$serviceLocation]) && is_object($this->_services[$serviceLocation]);
     }
     
@@ -103,8 +99,7 @@ class GServicesContainer
      * @param string $serviceLocation
      * @return $this
      */
-    public function uninstallService($serviceLocation)
-    {
+    public function uninstallService($serviceLocation) {
         if (isset($this->_services[$serviceLocation])) {
             Core::syslog(get_class($this) . ' -> Uninstall service ' . $serviceLocation . '[' . __LINE__ . ']');
             $this->_services[$serviceLocation]->trigger('onUninstall');
@@ -122,8 +117,7 @@ class GServicesContainer
      * @param boolean $clone
      * @return object
      */
-    public function getRegisteredService($serviceLocation, $clone = false, $owner = null)
-    {
+    public function getRegisteredService($serviceLocation, $clone = false, $owner = null) {
         Core::syslog(get_class($this) . ' -> Get registered service ' . $serviceLocation . ($clone ? " as clone" : "") . ' [' . __LINE__ . ']');
         if (!isset($this->_services[$serviceLocation])) {
             Core::syslog(get_class($this) . ' -> Service ' . $serviceLocation . ' not found[' . __LINE__ . ']');
