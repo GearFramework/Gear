@@ -10,7 +10,16 @@ class PIndex extends GProcess
     public function apiIndex()
     {
         Core::app()->setOutputCallbacks(function($value) { return "$value\n"; });
-        Core::app()->out(\Calendar::now());
+        $now = \Calendar::now();
+        Core::app()->out('Yesterday ' . $tomorrow = $now->yesterday());
+        Core::app()->out('Now ' . $now);
+        Core::app()->out('Tomorrow ' . $tomorrow = $now->tomorrow());
+        Core::app()->out('Add 1 day ' . $now->addDay());
+        $count = rand(2, 6);
+        Core::app()->out('Add ' . $count . ' days ' . $now->subDays($count));
+        Core::app()->out('Sub 1 day ' . $now->addDay());
+        $count = rand(2, 6);
+        Core::app()->out('Sub ' . $count . ' days ' . $now->subDays($count));
         //echo "Hello World!"; // Output Hello World!
         //Core::app()->out("Hello World!"); // Output Hello World!
         //Core::app()->setOutputCallbacks(function($value) { return strtoupper($value); }); // Set output callback function
