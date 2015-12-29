@@ -31,10 +31,11 @@ class GDate extends GModel
     /* Unix-timestamp */
     protected $_timestamp = 0;
     protected $_value = null;
+    protected $_calendar = null;
     /* Public */
 
     public function __call($name, $args) {
-        $owner = $this->getOwner();
+        $owner = $this->calendar;
         if (method_exists($owner, $name)) {
             array_unshift($args, $this);
             return call_user_func_array([$owner, $name], $args);
@@ -50,13 +51,19 @@ class GDate extends GModel
      */
     public function __toString() { return $this->format($this->format); }
 
+    public function setCalendar($calendar)
+    {
+        $this->_calendar = $calendar;
+        return $this;
+    }
+
     /**
      * Возвращает владельца даты - календарь
      *
      * @access public
      * @return object
      */
-    public function getOwner() { return $this->i('ownerCalendar'); }
+    public function getCalendar() { return $this->_calendar; }
 
     /**
      * Установка даты и времени в формате, понимаемом функцией strtotime()

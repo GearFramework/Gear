@@ -143,14 +143,11 @@ final class Core
                 array_unshift($args, null);
             array_unshift($args, $name);
             $result = call_user_func_array([__CLASS__, 'e'], $args);
-        } else
-        if (self::isModuleRegistered($name))
+        } else if (self::isModuleRegistered($name)) {
             $result = self::m($name);
-        else
-        if (self::isComponentRegistered($name))
+        } else if (self::isComponentRegistered($name)) {
             $result = self::c($name, count($args) ? $args[0] : false);
-        else
-        if (self::isHelperRegistered($name)) {
+        } else if (self::isHelperRegistered($name)) {
             array_unshift($args, $name);
             $result = call_user_func_array([__CLASS__, 'h'], $args);
         } else {
@@ -171,7 +168,7 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        Core::syslog(__CLASS__ . ' -> Initialize...', true);
+        Core::syslog(__CLASS__ . ' -> Initialize core [' . __LINE__ . ']', true);
         $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
         Core::syslog(__CLASS__ . ' -> Set core mode ' . $modes[self::$_coreMode] . ' [' . __LINE__ . ']');
@@ -206,7 +203,7 @@ final class Core
                 }
             }
         }
-        Core::syslog('CORE -> Initialize end');
+        Core::syslog(__CLASS__ . ' -> End initialize core [' . __LINE__ . ']');
         return true;
     }
 
@@ -220,9 +217,9 @@ final class Core
      */
     private static function _preloads()
     {
-        Core::syslog('CORE -> Prepare preloads');
+        Core::syslog(__CLASS__ . ' -> Prepare preloads [' . __LINE__ . ']');
         foreach (self::$_config['preloads']['library'] as $class) {
-            Core::syslog('CORE -> Preload library ' . $class);
+            Core::syslog(__CLASS__ . ' -> Preload library ' . $class . '[' . __LINE__ . ']');
             if (substr($class, -1) === '*') {
                 $pathMask = self::resolvePath($class, true);
                 $path = dirname($pathMask);
@@ -236,7 +233,7 @@ final class Core
         }
         unset(self::$_config['preloads']['library']);
         foreach (self::$_config['preloads'] as $sectionName => $section) {
-            Core::syslog('CORE -> Preload section ' . $sectionName);
+            Core::syslog(__CLASS__ . ' -> Preload section ' . $sectionName . '[' . __LINE__ . ']');
             self::_preloadSection($sectionName, $section);
         }
         return true;
@@ -275,6 +272,7 @@ final class Core
      */
     private static function _loadFile($file)
     {
+        Core::syslog(__CLASS__ . ' -> Load required file ' . $file . '[' . __LINE__ . ']');
         if (!file_exists($file) || !is_readable($file))
             throw self::exceptionFileNotFound(['filename' => $file]);
         require $file;
@@ -294,7 +292,7 @@ final class Core
         foreach ($section as $serviceName => $service) {
             list($class, $config, $properties) = self::getRecords($service);
             $pathFile = self::resolvePath($class, true) . '.php';
-            Core::syslog(__CLASS__ . ' -> Preload class ' . $class . ' in library ' . $pathFile);
+            Core::syslog(__CLASS__ . ' -> Preload class ' . $class . ' in library ' . $pathFile . '[' . __LINE__ . ']');
             self::_loadFile($pathFile);
             $instance = $class::install($config, $properties);
             self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
@@ -645,7 +643,7 @@ final class Core
      */
     public static function attachEvent($eventName, $handler)
     {
-        self::syslog('CORE -> Attach event "' . $eventName . '" [' . __LINE__ . ']');
+        self::syslog(__CLASS__ . ' -> Attach event "' . $eventName . '" [' . __LINE__ . ']');
         if (!is_callable($handler))
             throw self::exceptionCore('Invalid handler of event :eventName', ['eventName' => $eventName]);
         self::$_events[$eventName][] = $handler;

@@ -51,6 +51,7 @@ class GLoader extends GComponent implements ILoader
      * @return void
      */
     public function loader($className) {
+        Core::syslog(__CLASS__ . ' -> Load class ' . $className . ' [' . __LINE__ . ']');
         if (isset($this->_aliases[$className]['class'])) {
             $alias = $className;
             $className = $this->_aliases[$className]['class'];
@@ -104,7 +105,7 @@ class GLoader extends GComponent implements ILoader
      * @return $this
      */
     public function setAlias($className, $alias) {
-        Core::app()->syslog(get_class($this) . ' -> Set alias ' . $alias . ' for class ' . $className . ' [' . __LINE__ . ']');
+        Core::syslog(get_class($this) . ' -> Set alias ' . $alias . ' for class ' . $className . ' [' . __LINE__ . ']');
         $this->_aliases[$alias] = ['class' => $className];
         return $this;
     }
@@ -128,7 +129,7 @@ class GLoader extends GComponent implements ILoader
      * @return $this
      */
     public function setAliases(array $aliases) {
-        Core::app()->syslog(get_class($this) . ' -> Set array aliases [' . __LINE__ . ']');
+        Core::syslog(get_class($this) . ' -> Set array aliases [' . __LINE__ . ']');
         $this->_aliases = $aliases;
         return $this;
     }
@@ -151,7 +152,7 @@ class GLoader extends GComponent implements ILoader
      * @return $this
      */
     public function appendAliases(array $aliases) {
-        Core::app()->syslog(get_class($this) . ' -> Append array aliases [' . __LINE__ . ']');
+        Core::syslog(get_class($this) . ' -> Append array aliases [' . __LINE__ . ']');
         $this->aliases = array_merge($this->aliases, $aliases);
         return $this;
     }

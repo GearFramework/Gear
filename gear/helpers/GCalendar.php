@@ -72,7 +72,7 @@ class GCalendar extends GObject implements IStaticFactory
             array_unshift($args, $name);
             return call_user_func_array(['\gear\Core', 'trigger'], $args);
         }
-        return static::getDate($name);
+        return self::getDate($name);
     }
 
     /**
@@ -83,7 +83,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function now()
     {
-        return static::factory(['timestamp' => time()]);
+        return self::factory(['timestamp' => time()]);
     }
 
     /**
@@ -96,7 +96,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function tomorrow()
     {
-        return static::factory(['timestamp' => time() + self::SECONDS_PER_DAY]);
+        return self::factory(['timestamp' => time() + self::SECONDS_PER_DAY]);
     }
 
     /**
@@ -109,7 +109,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function yesterday()
     {
-        return static::factory(['timestamp' => time() - self::SECONDS_PER_DAY]);
+        return self::factory(['timestamp' => time() - self::SECONDS_PER_DAY]);
     }
 
     /**
@@ -124,7 +124,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function nextDay($date = null)
     {
-        return static::addDay($date);
+        return self::addDay($date);
     }
 
     /**

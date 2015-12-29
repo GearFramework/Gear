@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\traits;
+
 use gear\Core;
 use gear\library\GEvent;
 
@@ -25,25 +26,26 @@ trait TStaticFactory
      */
     public static function factory($properties = array(), $owner = null)
     {
-        if (!$owner || ($owner && $owner->event('onBeforeFactory', new GEvent(array('sender' => $owner)), $properties, static::getFactory())))
+        Core::syslog(get_called_class() . ' -> Create instance [' . __LINE__ . ']');
+        if (!$owner || (is_object($owner) && $owner->event('onBeforeFactory', new GEvent(['sender' => $owner]), $properties, static::getFactory())))
         {
             if ($properties instanceof \Closure)
                 $properties = $properties(static::getFactory());
             $properties = array_merge
             (
                 static::getFactory(),
-                $owner ? ['owner' => $owner] : [],
+                ['calendar' => get_called_class()],
                 $properties
             );
             list($class, $config, $properties) = Core::getRecords($properties);
             if (method_exists($class, 'init'))
                 $class::init($config);
             $object = method_exists($class, 'it') ? $class::it($properties) : new $class($properties);
-            if ($owner)
+            if (is_object($owner))
                 $owner->event('onAfterFactory', new GEvent(array('sender' => $owner)), $object);
             return $object;
         }
-        static::e('Error on factoring process');
+        self::exceptionFactory('Error on factoring process');
     }
 
     /**
