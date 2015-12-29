@@ -6,6 +6,9 @@ include GEAR . '/Core.php';
         'modules' => [
             'app' => ['class' => '\demo\hello\Hello'],
         ],
+        'components' => [
+
+        ],
     ],
     \gear\Core::MODE_PRODUCTION
 );

@@ -76,7 +76,10 @@ class GException extends \Exception
      * @param mixed $value
      * @return void
      */
-    public function __set($name, $value) { $this->_args[$name] = $value; }
+    public function __set($name, $value)
+    {
+        $this->_args[$name] = $value;
+    }
 
     /**
      * Доступ к аргументам исключения
@@ -85,7 +88,10 @@ class GException extends \Exception
      * @param string $name
      * @return mixed
      */
-    public function __get($name) { return isset($this->_args[$name]) ? $this->_args[$name] : null; }
+    public function __get($name)
+    {
+        return isset($this->_args[$name]) ? $this->_args[$name] : null;
+    }
 
     /**
      * Возвращает массив аргументов

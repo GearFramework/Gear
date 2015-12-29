@@ -77,7 +77,7 @@ class GCalendar extends GObject implements IStaticFactory
      */
     public static function now()
     {
-        return (static::$_current = self::factory(['timestamp' => time()]));
+        return static::$_current = self::factory(['timestamp' => time()]);
     }
 
     /**
@@ -315,6 +315,10 @@ class GCalendar extends GObject implements IStaticFactory
         return $date ? self::setCurrent($date) : static::getCurrent();
     }
 
+    /**
+     * @see self::current()
+     * @return \gear\models\GDate
+     */
     public static function getCurrent()
     {
         return static::$_current ?: static::$_current = static::now();
@@ -351,20 +355,26 @@ class GCalendar extends GObject implements IStaticFactory
     }
 
     /**
-     * Возвращает текущую дату календаря или создаёт новую по указанному
-     * значению в параметре $date
-     * Параметр $date может принимать строку даты, которая воспринимается функцией strtotime() или
-     * числовое значение timestamp
-     *
      * @access public
-     * @param null|integer|string $date
+     * @param null|integer|string|\gear\models\GDate $date
      * @return \gear\models\GDate
+     * @see self::getDate()
      */
     public static function date($date = null)
     {
         return static::getDate($date);
     }
 
+    /**
+     * Возвращает текущую дату календаря или создаёт новую по указанному
+     * значению в параметре $date
+     * Параметр $date может принимать строку даты, которая воспринимается функцией strtotime() или
+     * числовое значение timestamp
+     *
+     * @access public
+     * @param null|integer|string|\gear\models\GDate $date
+     * @return \gear\models\GDate
+     */
     public static function getDate($date = null)
     {
         if (!$date)

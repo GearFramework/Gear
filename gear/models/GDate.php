@@ -115,6 +115,78 @@ class GDate extends GModel
         return $this->_timestamp;
     }
 
+    public function getDay()
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::getDay($this);
+    }
+
+    public function setDay($day)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::setDay($this, $day);
+    }
+
+    public function getMonth($mode = null)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::getMonth($this, $mode ?: $calendar::AS_NUMERIC);
+    }
+
+    public function setMonth($month)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::setMonth($this, $month);
+    }
+
+    public function getYear()
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::getYear($this);
+    }
+
+    public function setYear($year)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::setYear($this, $year);
+    }
+
+    public function getHour()
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::getHour($this);
+    }
+
+    public function setHour($hour)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::setHour($this, $hour);
+    }
+
+    public function getMinute()
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::getMinute($this);
+    }
+
+    public function setMinute($minute)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::setMinute($this, $minute);
+    }
+
+    public function getSecond()
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::getSecond($this);
+    }
+
+    public function setSecond($second)
+    {
+        $calendar = $this->getCalendar();
+        return $calendar::setSecond($this, $second);
+    }
+
     /**
      * Установка формата вывода даты
      * 
