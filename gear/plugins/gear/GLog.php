@@ -1,19 +1,20 @@
 <?php
 
 namespace gear\plugins\gear;
+
 use gear\Core;
 use gear\library\GPlugin;
 
-/** 
+/**
  * Плагин ведения логов
- * 
+ *
  * @package Gear Framework
  * @plugin Log
  * @author Kukushkin Denis
  * @copyright Kukushkin Denis
  * @version 1.0.0
  * @since 03.08.2013
- * @php 5.3.x
+ * @php 5.4.x or higher
  * @release 1.0.0
  */
 class GLog extends GPlugin
@@ -22,22 +23,19 @@ class GLog extends GPlugin
     /* Private */
     /* Protected */
     protected static $_init = false;
-    protected $_properties = array
-    (
+    protected $_properties = [
         'datetimeTemplate' => 'd/m/Y H:i:s',
-    );
+    ];
     /* Пути сохранения данных протоколирования */
-    protected $_routes = array
-    (
-        'fileLog' => array
-        (
+    protected $_routes = [
+        'fileLog' => [
             'class' => '\gear\plugins\gear\loggers\GFileLogger',
             'location' => 'logs',
             'templateFilename' => 'log-%Y-%m-%d.log',
-            'levels' => array(Core::DEBUG, Core::CRITICAL, Core::WARNING, Core::ERROR),
+            'levels' => [Core::DEBUG, Core::CRITICAL, Core::WARNING, Core::ERROR],
             'maxLogFileSize' => '10MB',
-        ),
-    );
+        ],
+    ];
     /* Public */
 
     /**
@@ -46,9 +44,9 @@ class GLog extends GPlugin
      * @access public
      * @return mixed
      */
-    public function __invoke($level, $message, array $context = array())
+    public function __invoke($level, $message, array $context = [])
     {
-        return call_user_func(array($this, 'log'), $level, $message, $context);
+        return call_user_func([$this, 'log'], $level, $message, $context);
     }
 
     /**
@@ -70,7 +68,10 @@ class GLog extends GPlugin
      * @access public
      * @return string
      */
-    public function getRoutes() { return $this->_routes; }
+    public function getRoutes()
+    {
+        return $this->_routes;
+    }
 
     /**
      * Запись сообщения
@@ -82,14 +83,12 @@ class GLog extends GPlugin
      * @throw SyslogException
      * @return $this
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
-        foreach($context as $param => $value)
+        foreach ($context as $param => $value)
             $message = str_replace(':' . $param, $value, $message);
-        foreach($this->_routes as $name => &$route)
-        {
-            if (!is_object($route))
-            {
+        foreach ($this->_routes as $name => &$route) {
+            if (!is_object($route)) {
                 list($class, $config, $properties) = Core::getRecords($route);
                 $route = $class::install($config, $properties, $this->owner);
             }
