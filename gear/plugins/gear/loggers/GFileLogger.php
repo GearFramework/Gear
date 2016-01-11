@@ -86,6 +86,8 @@ class GFileLogger extends GPlugin
             $handle = @fopen($fileLog, 'a');
             if ($handle) {
                 @flock($handle, LOCK_EX);
+                if (!$dateTime)
+                    $dateTime = date('d/m/Y H:i:s');
                 @fwrite($handle, "$dateTime [$level] $message\n");
                 @flock($handle, LOCK_UN);
                 fclose($handle);
@@ -117,7 +119,6 @@ class GFileLogger extends GPlugin
         $filename = Core::resolvePath($this->location . '/' . $filename);
         if (file_exists($filename) && $this->maxLogFileSize > 0 && $this->maxLogFileSize <= filesize($filename)) {
             if ($this->overheadFileSize === 'rotate') {
-                $max = $this->maxRotateFiles;
                 $this->_rotate($filename);
             } else
                 @unlink($filename);

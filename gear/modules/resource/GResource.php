@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\modules\resource;
+
 use \gear\Core;
 use \gear\library\GModule;
 use \gear\library\GEvent;
@@ -40,7 +41,8 @@ class GResource extends GModule
      * @param string $resource
      * @return string
      */
-    public function publicate($component, $resource) {
+    public function publicate($component, $resource)
+    {
         if ($this->isComponentRegistered($component) && 
             $this->c($component) instanceof \gear\modules\resource\library\GResourceComponent) {
             $args = func_get_args();
@@ -59,7 +61,8 @@ class GResource extends GModule
      * @param string $hash
      * @return mixed
      */
-    public function get($component, $hash) {
+    public function get($component, $hash)
+    {
         if ($this->isComponentRegistered($component) && 
             $this->c($component) instanceof \gear\modules\resource\library\GResourceComponent) {
             $args = func_get_args();
