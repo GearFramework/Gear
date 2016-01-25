@@ -509,6 +509,7 @@ class GObject
     public function getNamespace() {
         if (!$this->_namespace) {
             $class = get_class($this);
+            Core::syslog(__CLASS__ . ' -> Prepare namespace for ' . $class . ' [' . __LINE__ . ']');
             $this->_namespace = substr($class, 0, strrpos($class, '\\'));
         }
         return $this->_namespace;
