@@ -184,8 +184,11 @@ final class Core
             if (is_string($config)) {
                 $fileConfig = self::resolvePath($config, true);
                 clearstatcache();
-                if (is_dir($fileConfig))
+                if (is_dir($fileConfig)) {
+                    self::syslog(__CLASS__ . ' -> Resolved is dir [' . __LINE__ . ']');
                     $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
+                    self::syslog(__CLASS__ . ' -> Config into resolved dir ' . $fileConfig . ' [' . __LINE__ . ']');
+                }
                 $config = is_file($fileConfig) ? require($fileConfig) : null;
                 self::syslog(__CLASS__ . ' -> Config file is ' . (is_file($fileConfig) ? $fileConfig : 'NULL') . ' [' . __LINE__ . ']');
             }
@@ -733,7 +736,7 @@ final class Core
                 $resolved = str_replace('\\', '/', $resolved);
             }
         }
-        self::syslog(__CLASS__ . ' -> path resolved as ' . $resolved . ' [' . __LINE__ . ']');
+        self::syslog(__CLASS__ . ' -> Path resolved as ' . $resolved . ' [' . __LINE__ . ']');
         return $resolved;
     }
 
