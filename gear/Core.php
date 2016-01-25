@@ -733,6 +733,7 @@ final class Core
                 $resolved = str_replace('\\', '/', $resolved);
             }
         }
+        self::syslog(__CLASS__ . ' -> path resolved as ' . $resolved . ' [' . __LINE__ . ']');
         return $resolved;
     }
 
