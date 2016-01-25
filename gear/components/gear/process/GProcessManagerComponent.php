@@ -83,11 +83,11 @@ class GProcessManagerComponent extends GComponent
         $result = false;
         if (Core::trigger('onBeforeExec', $this->_currentProcess, $request)) {
             if ($this->_currentProcess instanceof \Closure) {
-                Core::syslog('PROCESS MANAGER -> Execute closure process [' . __LINE__ . ']');
+                Core::syslog(__CLASS__ . ' -> Execute closure process [' . __LINE__ . ']');
                 $result = call_user_func($this->_currentProcess, $this->request);
                 Core::trigger('onAfterExec', $this->_currentProcess, $result);
             } else {
-                Core::syslog('PROCESS MANAGER -> Execute base process ' . get_class($this->_currentProcess) . ' [' . __LINE__ . ']');
+                Core::syslog(__CLASS__ . ' -> Execute base process ' . get_class($this->_currentProcess) . ' [' . __LINE__ . ']');
                 $result = $this->_currentProcess->entry($this->request);
             }
         }
@@ -104,7 +104,7 @@ class GProcessManagerComponent extends GComponent
     {
         $process = null;
         $processName = $this->request->get('e', $this->defaultProcess);
-        Core::syslog('PROCESS MANAGER -> Prepare request process ' . $processName . ' [' . __LINE__ . ']');
+        Core::syslog(__CLASS__ . ' -> Prepare request process ' . $processName . ' [' . __LINE__ . ']');
         if (!$processName)
             throw $this->exceptionProcess('Unknown process');
         //$processes = $this->getProcesses();
@@ -140,8 +140,10 @@ class GProcessManagerComponent extends GComponent
         $routes = explode('/', $processName);
         $count = count($routes);
         $class = null;
-        if ($count == 1)
+        if ($count == 1) {
             $class = Core::app()->getNamespace() . '\process\P' . ucfirst($processName);
+            Core::syslog(__CLASS__ . ' -> Class routed ' . $class . ' [' . __LINE__ . ']');
+        }
         else
             if ($count == 2) {
                 if ($processName[0] === '/')
