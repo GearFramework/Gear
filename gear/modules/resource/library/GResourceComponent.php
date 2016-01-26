@@ -42,13 +42,4 @@ abstract class GResourceComponent extends GComponent
      * @return string
      */
     abstract public function get($hash);
-    
-    /**
-     * Генерация ключа для ресурса
-     * 
-     * @access public
-     * @param string $file
-     * @return string
-     */
-    public function getHash($file) { return md5($file . $this->salt); }
 }

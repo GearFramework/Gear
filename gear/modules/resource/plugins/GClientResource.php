@@ -145,4 +145,13 @@ abstract class GClientResource extends GPlugin
      * @return string
      */
     abstract public function getHtml($hash, $url = null, $params = []);
+
+    /**
+     * Генерация ключа для ресурса
+     *
+     * @access public
+     * @param string $file
+     * @return string
+     */
+    public function getHash($file) { return md5($file . $this->owner->salt); }
 }

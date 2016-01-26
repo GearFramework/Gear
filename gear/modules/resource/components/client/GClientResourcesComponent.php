@@ -66,4 +66,13 @@ class GClientResourcesComponent extends GResourceComponent
         }
         return false;
     }
+
+    /**
+     * Генерация ключа для ресурса
+     *
+     * @access public
+     * @param string $file
+     * @return string
+     */
+    public function getHash($file) { return md5($file . $this->salt); }
 }
