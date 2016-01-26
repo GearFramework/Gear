@@ -94,8 +94,6 @@ abstract class GClientResource extends GPlugin
         Core::syslog(__CLASS__ . ' -> Publicate resource ' . $resource . '[' . __LINE__ . ']');
         $resourcePath = Core::resolvePath($resource);
         Core::syslog(__CLASS__ . ' -> Resource path ' . $resourcePath . '[' . __LINE__ . ']');
-        print_r($this);
-        die();
         $hash = $this->owner->getHash($resourcePath);
         if ($render) {
             Core::syslog(__CLASS__ . ' -> Rendering resource [' . __LINE__ . ']');
