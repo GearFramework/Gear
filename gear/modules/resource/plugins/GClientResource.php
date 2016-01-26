@@ -1,8 +1,8 @@
 <?php
 
 namespace gear\modules\resource\plugins;
-
-use \gear\library\GPlugin;
+use gear\Core;
+use gear\library\GPlugin;
 
 /** 
  * Каркас для ресурсов типа javascript, css 
