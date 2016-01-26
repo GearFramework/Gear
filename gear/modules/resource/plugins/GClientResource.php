@@ -94,7 +94,7 @@ abstract class GClientResource extends GPlugin
         Core::syslog(__CLASS__ . ' -> Publicate resource ' . $resource . '[' . __LINE__ . ']');
         $resourcePath = Core::resolvePath($resource);
         Core::syslog(__CLASS__ . ' -> Resource path ' . $resourcePath . '[' . __LINE__ . ']');
-        $hash = $this->getHash($resourcePath);
+        $hash = md5($resourcePath);
         if ($render) {
             Core::syslog(__CLASS__ . ' -> Rendering resource [' . __LINE__ . ']');
             $content = $this->owner->view->render($resourcePath, array(), true);
@@ -102,6 +102,7 @@ abstract class GClientResource extends GPlugin
         if ($this->mappingFolder && $mapping !== false) {
             $file = Core::app()->env->DOCUMENT_ROOT . '/' . $this->mappingFolder . '/' . $hash . '.' . $this->getExtensionResource();
             Core::syslog(__CLASS__ . ' -> Mapping resource to ' . $file . ' [' . __LINE__ . ']');
+            die();
             if (!file_exists($file) || $render)
                 file_put_contents($file, $render ? $content : file_get_contents($resourcePath));
             $url = $this->mappingFolder . '/' . $hash . '.' . $this->getExtensionResource();
