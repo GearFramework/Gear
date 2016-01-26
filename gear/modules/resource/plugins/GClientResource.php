@@ -153,5 +153,5 @@ abstract class GClientResource extends GPlugin
      * @param string $file
      * @return string
      */
-    public function getHash($file) { return md5($file . $this->owner->salt); }
+    public function getHash($file) { return md5($file); }
 }
