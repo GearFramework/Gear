@@ -27,7 +27,7 @@ class GJsResource extends GClientResource
     /* Public */
     public $html = "<script type=\"%s\" src=\"%s\"></script>\n";
     public $url = '?e=gear/resource/get&f=client&hash=js:%s';
-    public $path = '/js';
+    public $path = 'js';
     public $temp = 'temp/resources/js';
     
     /**

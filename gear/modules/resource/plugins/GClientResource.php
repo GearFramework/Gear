@@ -29,7 +29,7 @@ abstract class GClientResource extends GPlugin
     public $html = '';
     public $url = '';
     public $path = '';
-    public $temp = 'temp/resources';
+    public $temp = 'temp\resources';
 
     /**
      * Возрвщает название папки, в которую отражаются файлы ресурсов
@@ -88,7 +88,7 @@ abstract class GClientResource extends GPlugin
      * @param boolean $mapping
      * @return string
      */
-    public function publicate($resource, $render = false, $mapping = false) {
+    public function publicate($resource, $render = false, $mapping = null) {
         if (!preg_match('/[\/|\\\\]/', $resource))
             $resource = $this->resourcesPath . '\\' . $this->path . '\\' . $resource;
         Core::syslog(__CLASS__ . ' -> Publicate resource ' . $resource . '[' . __LINE__ . ']');
@@ -99,7 +99,7 @@ abstract class GClientResource extends GPlugin
             Core::syslog(__CLASS__ . ' -> Rendering resource [' . __LINE__ . ']');
             $content = $this->owner->view->render($resourcePath, array(), true);
         }
-        if ($mapping) {
+        if ($this->mappingFolder && $mapping !== false) {
             $file = Core::app()->env->DOCUMENT_ROOT . '/' . $this->mappingFolder . '/' . $hash . '.' . $this->getExtensionResource();
             Core::syslog(__CLASS__ . ' -> Mapping resource to ' . $file . ' [' . __LINE__ . ']');
             if (!file_exists($file) || $render)
