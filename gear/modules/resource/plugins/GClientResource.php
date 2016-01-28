@@ -103,13 +103,11 @@ abstract class GClientResource extends GPlugin
         if ($this->mappingFolder && $mapping !== false) {
             $file = Core::app()->env->DOCUMENT_ROOT . '/' . $this->mappingFolder . '/' . $hash . '.' . $this->getExtensionResource();
             Core::syslog(__CLASS__ . ' -> Mapping resource to ' . $file . ' [' . __LINE__ . ']');
-            die();
             if (!file_exists($file) || $render)
                 file_put_contents($file, $render ? $content : file_get_contents($resourcePath));
             $url = $this->mappingFolder . '/' . $hash . '.' . $this->getExtensionResource();
         } else {
             Core::syslog(__CLASS__ . ' -> Use temp resource [' . __LINE__ . ']');
-            die();
             if ($this->useCache) {
                 if (!$this->cache->exists($hash) || $render)
                     $this->cache->add($hash, $render ? $content : file_get_contents($resourcePath));
