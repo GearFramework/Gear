@@ -94,7 +94,7 @@ abstract class GClientResource extends GPlugin
         Core::syslog(__CLASS__ . ' -> Publicate resource ' . $resource . '[' . __LINE__ . ']');
         $resourcePath = Core::resolvePath($resource);
         Core::syslog(__CLASS__ . ' -> Resource path ' . $resourcePath . '[' . __LINE__ . ']');
-        $hash = md5($resourcePath);
+        $hash = $this->getHash($resourcePath);
         Core::syslog(__CLASS__ . ' -> Resource hash ' . $hash . '[' . __LINE__ . ']');
         if ($render) {
             Core::syslog(__CLASS__ . ' -> Rendering resource [' . __LINE__ . ']');
@@ -155,5 +155,5 @@ abstract class GClientResource extends GPlugin
      * @param string $file
      * @return string
      */
-    public function getHash($file) { return md5($file); }
+    public function getHash($file) { return md5($file . $this->salt); }
 }
