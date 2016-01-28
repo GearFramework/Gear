@@ -562,7 +562,7 @@ class GObject
      */
     protected function _preloading() {
         if (method_exists($this, 'c') || method_exists($this, 'p')) {
-            foreach ($this->preloads as $sectionName => $section) {
+            foreach ($this->getPreloads() as $sectionName => $section) {
                 foreach ($section as $serviceName) {
                     if ($sectionName === 'components')
                         $this->c($serviceName);
