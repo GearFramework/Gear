@@ -12,7 +12,6 @@ defined('DEBUG') or define('DEBUG', false);
 /**
  * Ядро Gear Framework
  *
- *
  * @package Gear Framework
  * @final
  * @author Denis Kukushkin
@@ -47,6 +46,7 @@ final class Core
     const ACCESS_PROTECTED = 1;
     const ACCESS_PUBLIC = 2;
     /* Private */
+    private static $_modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
     /* Текущая конфигурация ядра */
     private static $_config = [
         /* Библиотеки, модули, компоненты подключаемые на этапе инициализации */
@@ -169,16 +169,14 @@ final class Core
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
         Core::syslog(__CLASS__ . ' -> Initialize core [' . __LINE__ . ']', true);
-        $modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
         self::$_coreMode = $coreMode;
-        Core::syslog(__CLASS__ . ' -> Set core mode ' . $modes[self::$_coreMode] . ' [' . __LINE__ . ']');
+        Core::syslog(__CLASS__ . ' -> Set core mode ' . self::$_modes[self::$_coreMode] . ' [' . __LINE__ . ']');
         if ($config instanceof \Closure) {
             Core::syslog(__CLASS__ . ' -> Config is \Closure [' . __LINE__ . ']');
             $config = $config($coreMode);
-        }
-        else {
+        } else {
             if (!$config) {
-                $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . $modes[self::$_coreMode] . '.php';
+                $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . self::$_modes[self::$_coreMode] . '.php';
                 Core::syslog(__CLASS__ . ' -> Prepared default config file ' . $config . ' [' . __LINE__ . ']');
             }
             if (is_string($config)) {
@@ -186,7 +184,7 @@ final class Core
                 clearstatcache();
                 if (is_dir($fileConfig)) {
                     self::syslog(__CLASS__ . ' -> Resolved is dir [' . __LINE__ . ']');
-                    $fileConfig .= '/config.' . $modes[self::$_coreMode] . '.php';
+                    $fileConfig .= '/config.' . self::$_modes[self::$_coreMode] . '.php';
                     self::syslog(__CLASS__ . ' -> Config into resolved dir ' . $fileConfig . ' [' . __LINE__ . ']');
                 }
                 $config = is_file($fileConfig) ? require($fileConfig) : null;
@@ -260,8 +258,8 @@ final class Core
             if (is_file($file))
                 self::_loadFile($file);
             else
-            if (is_dir($file))
-                self::_loadPath($file, $mask);
+                if (is_dir($file))
+                    self::_loadPath($file, $mask);
         }
     }
 
@@ -309,7 +307,10 @@ final class Core
      * @static
      * @return \gear\library\GApplication
      */
-    public static function app() { return self::m('app'); }
+    public static function app()
+    {
+        return self::m('app');
+    }
 
     /**
      * Возвращает инстанс менеджера сервисов
@@ -324,15 +325,15 @@ final class Core
         if (!$services)
             throw self::exceptionCore('Services container not defined');
         else
-        if (!is_object($services)) {
-            list($class, $config, $properties) = self::getRecords($services);
-            $file = self::resolvePath($class, true) . '.php';
-            self::_loadFile($file);
-            if (method_exists($class, 'init'))
-                $class::init($config);
-            $services = new $class($properties);
-            self::params('services', $services);
-        }
+            if (!is_object($services)) {
+                list($class, $config, $properties) = self::getRecords($services);
+                $file = self::resolvePath($class, true) . '.php';
+                self::_loadFile($file);
+                if (method_exists($class, 'init'))
+                    $class::init($config);
+                $services = new $class($properties);
+                self::params('services', $services);
+            }
         return $services;
     }
 
@@ -633,7 +634,10 @@ final class Core
      * @param mixed $handler callable value
      * @return mixed
      */
-    public static function on($name, $handler) { return self::attachEvent($name, $handler); }
+    public static function on($name, $handler)
+    {
+        return self::attachEvent($name, $handler);
+    }
 
     /**
      * Добавление обработчика события
@@ -761,7 +765,10 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function isHttp() { return self::getMode() === self::HTTP; }
+    public static function isHttp()
+    {
+        return self::getMode() === self::HTTP;
+    }
 
     /**
      * Возвращает true если приложение запущено из консоли, иначе false
@@ -770,7 +777,10 @@ final class Core
      * @static
      * @return boolean
      */
-    public static function isCli() { return self::getMode() === self::CLI; }
+    public static function isCli()
+    {
+        return self::getMode() === self::CLI;
+    }
 
     /**
      * Возвращает версию ядра фреймворка
@@ -779,7 +789,10 @@ final class Core
      * @static
      * @return string
      */
-    public static function getVersion() { return self::VERSION; }
+    public static function getVersion()
+    {
+        return self::VERSION;
+    }
 
     /**
      * Создание указанного исключения
