@@ -159,7 +159,6 @@ final class Core
 
     /**
      * Инициализация ядра
-     *
      * @access public
      * @static
      * @param string|array|\Closure $config path to configuration file or array of configuration or anonymous function must return array
