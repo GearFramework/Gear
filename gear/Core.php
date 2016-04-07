@@ -106,7 +106,9 @@ final class Core
         /* Компоненты ядра */
         'components' => [],
         /* Хелперы */
-        'helpers' => ['calendar' => ['class' => '\gear\helpers\GCalendar']],
+        'helpers' => [
+            'calendar' => ['class' => '\gear\helpers\GCalendar']
+        ],
         /* Параметры работы ядра, приложения и т.п. */
         'params' => [
             'baseDir' => GEAR,
@@ -167,16 +169,16 @@ final class Core
      */
     public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
     {
-        Core::syslog(__CLASS__ . ' -> Initialize core [' . __LINE__ . ']', true);
+        /**{@__CLASS__}: Initializing Core [{@__FILE__}: {@__LINE__}]**/
         self::$_coreMode = $coreMode;
-        Core::syslog(__CLASS__ . ' -> Set core mode ' . self::$_modes[self::$_coreMode] . ' [' . __LINE__ . ']');
+        /**{@__CLASS__}: Set Core mode <{@self::$_modes[self::$_coreMode]}> [{@__FILE__}: {@__LINE__}]**/
         if ($config instanceof \Closure) {
-            Core::syslog(__CLASS__ . ' -> Config is \Closure [' . __LINE__ . ']');
+            /**{@__CLASS__}: Config is \Closure [{@__FILE__}: {@__LINE__}]**/
             $config = $config($coreMode);
         } else {
             if (!$config) {
                 $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . self::$_modes[self::$_coreMode] . '.php';
-                Core::syslog(__CLASS__ . ' -> Prepared default config file ' . $config . ' [' . __LINE__ . ']');
+                /**{@__CLASS__}: Prepare default config file <{@$config}> [{@__FILE__}: {@__LINE__}]**/
             }
             if (is_string($config)) {
                 $fileConfig = self::resolvePath($config, true);
