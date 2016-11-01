@@ -2,49 +2,31 @@
 
 namespace gear\library;
 
-use gear\Core;
-use gear\library\GService;
-use gear\library\GException;
-use gear\library\TEvents;
-use gear\library\TBehaviors;
-use gear\library\TPlugins;
 use gear\interfaces\IComponent;
+use gear\traits\TBehaviorContained;
+use gear\traits\TPluginContained;
 
-/** 
- * Класс компонентов
- * 
+/**
+ * Базовый класс компонентов
+ *
  * @package Gear Framework
- * @abstract
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 1.0.0
- * @since 01.08.2013
- * @php 5.4.x or higher
- * @release 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
-abstract class GComponent extends GService implements IComponent
+class GComponent extends GService implements IComponent
 {
     /* Traits */
-    use TEvents;
-    use TBehaviors;
-    use TPlugins;
+    use TBehaviorContained;
+    use TPluginContained;
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
-        'events' => [],
-        'behaviors' => [],
-        'plugins' => ['view' => ['class' => '\gear\plugins\gear\GView']],
-    ];
-    protected static $_init = false;
-    /* Public */
-
-
     /**
-     * Копирование компонента
-     *
-     * @access public
-     * @return void
+     * @var bool $_initialized содержит состояние инициализации класса сервиса
      */
-    public function __clone() { parent::__clone(); }
+    protected static $_initialized = false;
+    /* Public */
 }

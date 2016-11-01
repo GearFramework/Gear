@@ -1,0 +1,744 @@
+01/11/2016 14:57:52 [INFO] Bootstrap section libraries
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 14:57:52 [INFO] Bootstrap section modules
+01/11/2016 14:57:52 [INFO] Bootstrap section components
+01/11/2016 14:57:52 [INFO] Bootstrap install component errorsHandler
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 14:57:52 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 14:57:52 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 14:57:52 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 14:57:52 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 14:57:52 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 14:57:52 [INFO] Bootstrap install component lang
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/gearteam/gear/components/international/GInternationalComponent> [836]
+01/11/2016 14:57:52 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 14:57:52 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 14:57:52 [INFO] Bootstrap install component loader
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/gearteam/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 14:57:52 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 14:57:52 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 14:57:52 [INFO] Bootstrap section libraries
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [836]
+01/11/2016 14:57:52 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 14:57:52 [INFO] Bootstrap section modules
+01/11/2016 14:57:52 [INFO] Bootstrap section components
+01/11/2016 14:57:52 [INFO] Bootstrap install component errorsHandler
+01/11/2016 14:57:52 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 14:57:52 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 14:57:52 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 14:57:52 [INFO] Create exception \CoreException
+01/11/2016 14:57:52 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 14:57:52 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 14:57:52 [INFO] Get component loader
+01/11/2016 14:57:52 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 14:57:53 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 14:57:53 [INFO] Create exception \CoreException
+01/11/2016 14:57:53 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 14:57:53 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 14:57:53 [INFO] Get component loader
+01/11/2016 14:57:53 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 14:57:53 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 14:57:53 [INFO] Create exception \CoreException
+01/11/2016 14:57:53 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 14:57:53 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 14:57:53 [INFO] Get component loader
+01/11/2016 14:57:53 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 14:57:53 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 14:57:53 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 14:57:53 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [813]
+01/11/2016 14:57:53 [INFO] Get component loader
+01/11/2016 14:57:53 [INFO] Create exception \FileNotFoundException
+01/11/2016 14:57:53 [INFO] Translate message <Throw unknown exception> from section <\gear\locales\exceptions\FileNotFound\ru_RU>
+01/11/2016 14:57:53 [INFO] Resolve path <\gear\locales\exceptions\FileNotFound\ru_RU> from resolver component <loader> [813]
+01/11/2016 14:57:53 [INFO] Get component loader
+01/11/2016 14:57:53 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> with messages
+01/11/2016 14:57:53 [WARNING] Section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> not found
+01/11/2016 16:04:34 [INFO] Bootstrap section libraries
+01/11/2016 16:04:34 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:04:34 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:04:34 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:04:34 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:04:34 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:04:35 [INFO] Bootstrap section modules
+01/11/2016 16:04:35 [INFO] Bootstrap section components
+01/11/2016 16:04:35 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GErrorsHandlerComponent> [837]
+01/11/2016 16:04:35 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:04:35 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:04:35 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GExceptionsHandlerComponent> [837]
+01/11/2016 16:04:35 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:04:35 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:04:35 [INFO] Bootstrap install component lang
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/gearteam/gear/components/international/GInternationalComponent> [837]
+01/11/2016 16:04:35 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:04:35 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:04:35 [INFO] Bootstrap install component loader
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/gearteam/gear/components/loader/GLoaderComponent> [837]
+01/11/2016 16:04:35 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:04:35 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:04:35 [INFO] Bootstrap section libraries
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:04:35 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:04:35 [INFO] Bootstrap section modules
+01/11/2016 16:04:35 [INFO] Bootstrap section components
+01/11/2016 16:04:35 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:04:35 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:04:35 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:04:35 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:04:35 [INFO] Create exception \CoreException
+01/11/2016 16:04:35 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:04:35 [INFO] Get component loader
+01/11/2016 16:04:35 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:04:35 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:04:35 [INFO] Create exception \CoreException
+01/11/2016 16:04:35 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:04:35 [INFO] Get component loader
+01/11/2016 16:04:35 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:04:35 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:04:35 [INFO] Create exception \CoreException
+01/11/2016 16:04:35 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:04:35 [INFO] Get component loader
+01/11/2016 16:04:35 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:04:35 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:04:35 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [814]
+01/11/2016 16:04:35 [INFO] Get component loader
+01/11/2016 16:04:35 [INFO] Create exception \FileNotFoundException
+01/11/2016 16:04:35 [INFO] Translate message <Throw unknown exception> from section <\gear\locales\exceptions\FileNotFound\ru_RU>
+01/11/2016 16:04:35 [INFO] Resolve path <\gear\locales\exceptions\FileNotFound\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:04:35 [INFO] Get component loader
+01/11/2016 16:04:35 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> with messages
+01/11/2016 16:04:35 [WARNING] Section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> not found
+01/11/2016 16:05:57 [INFO] Bootstrap section libraries
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:05:58 [INFO] Bootstrap section modules
+01/11/2016 16:05:58 [INFO] Bootstrap section components
+01/11/2016 16:05:58 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GErrorsHandlerComponent> [837]
+01/11/2016 16:05:58 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:05:58 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:05:58 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GExceptionsHandlerComponent> [837]
+01/11/2016 16:05:58 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:05:58 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:05:58 [INFO] Bootstrap install component lang
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/gearteam/gear/components/international/GInternationalComponent> [837]
+01/11/2016 16:05:58 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:05:58 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:05:58 [INFO] Bootstrap install component loader
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/gearteam/gear/components/loader/GLoaderComponent> [837]
+01/11/2016 16:05:58 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:05:58 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:05:58 [INFO] Bootstrap section libraries
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:05:58 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:05:58 [INFO] Bootstrap section modules
+01/11/2016 16:05:58 [INFO] Bootstrap section components
+01/11/2016 16:05:58 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:05:58 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:05:58 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:05:58 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:05:58 [INFO] Create exception \CoreException
+01/11/2016 16:05:58 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:05:58 [INFO] Get component loader
+01/11/2016 16:05:58 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:05:58 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:05:58 [INFO] Create exception \CoreException
+01/11/2016 16:05:58 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:05:58 [INFO] Get component loader
+01/11/2016 16:05:58 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:05:58 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:05:58 [INFO] Create exception \CoreException
+01/11/2016 16:05:58 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:05:58 [INFO] Get component loader
+01/11/2016 16:05:58 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:05:58 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:05:58 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [814]
+01/11/2016 16:05:58 [INFO] Get component loader
+01/11/2016 16:05:58 [INFO] Create exception \FileNotFoundException
+01/11/2016 16:05:58 [INFO] Translate message <Throw unknown exception> from section <\gear\locales\exceptions\FileNotFound\ru_RU>
+01/11/2016 16:05:58 [INFO] Resolve path <\gear\locales\exceptions\FileNotFound\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:05:58 [INFO] Get component loader
+01/11/2016 16:05:58 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> with messages
+01/11/2016 16:05:58 [WARNING] Section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> not found
+01/11/2016 16:26:01 [INFO] Bootstrap section libraries
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:26:01 [INFO] Bootstrap section modules
+01/11/2016 16:26:01 [INFO] Bootstrap section components
+01/11/2016 16:26:01 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GErrorsHandlerComponent> [837]
+01/11/2016 16:26:01 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:01 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:01 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GExceptionsHandlerComponent> [837]
+01/11/2016 16:26:01 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:01 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:01 [INFO] Bootstrap install component lang
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/gearteam/gear/components/international/GInternationalComponent> [837]
+01/11/2016 16:26:01 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:01 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:01 [INFO] Bootstrap install component loader
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/gearteam/gear/components/loader/GLoaderComponent> [837]
+01/11/2016 16:26:01 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:01 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:01 [INFO] Bootstrap section libraries
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:26:01 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:26:01 [INFO] Bootstrap section modules
+01/11/2016 16:26:01 [INFO] Bootstrap section components
+01/11/2016 16:26:01 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:26:01 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:01 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:01 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:26:01 [INFO] Create exception \CoreException
+01/11/2016 16:26:01 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:01 [INFO] Get component loader
+01/11/2016 16:26:01 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:26:01 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:26:01 [INFO] Create exception \CoreException
+01/11/2016 16:26:01 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:01 [INFO] Get component loader
+01/11/2016 16:26:01 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:26:01 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:26:01 [INFO] Create exception \CoreException
+01/11/2016 16:26:01 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:01 [INFO] Get component loader
+01/11/2016 16:26:01 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:26:01 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:01 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [814]
+01/11/2016 16:26:01 [INFO] Get component loader
+01/11/2016 16:26:01 [INFO] Create exception \FileNotFoundException
+01/11/2016 16:26:01 [INFO] Translate message <Throw unknown exception> from section <\gear\locales\exceptions\FileNotFound\ru_RU>
+01/11/2016 16:26:01 [INFO] Resolve path <\gear\locales\exceptions\FileNotFound\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:01 [INFO] Get component loader
+01/11/2016 16:26:01 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> with messages
+01/11/2016 16:26:01 [WARNING] Section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> not found
+01/11/2016 16:26:18 [INFO] Bootstrap section libraries
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:26:18 [INFO] Bootstrap section modules
+01/11/2016 16:26:18 [INFO] Bootstrap section components
+01/11/2016 16:26:18 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GErrorsHandlerComponent> [837]
+01/11/2016 16:26:18 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:18 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:18 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GExceptionsHandlerComponent> [837]
+01/11/2016 16:26:18 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:18 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:18 [INFO] Bootstrap install component lang
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/gearteam/gear/components/international/GInternationalComponent> [837]
+01/11/2016 16:26:18 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:18 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:18 [INFO] Bootstrap install component loader
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/gearteam/gear/components/loader/GLoaderComponent> [837]
+01/11/2016 16:26:18 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:18 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:18 [INFO] Bootstrap section libraries
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:26:18 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:26:18 [INFO] Bootstrap section modules
+01/11/2016 16:26:18 [INFO] Bootstrap section components
+01/11/2016 16:26:18 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:26:18 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:18 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:18 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:26:18 [INFO] Create exception \CoreException
+01/11/2016 16:26:18 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:18 [INFO] Get component loader
+01/11/2016 16:26:18 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:26:18 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:26:18 [INFO] Create exception \CoreException
+01/11/2016 16:26:18 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:18 [INFO] Get component loader
+01/11/2016 16:26:18 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:26:18 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:26:18 [INFO] Create exception \CoreException
+01/11/2016 16:26:18 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:18 [INFO] Get component loader
+01/11/2016 16:26:18 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:26:18 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:26:18 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [814]
+01/11/2016 16:26:18 [INFO] Get component loader
+01/11/2016 16:26:18 [INFO] Create exception \FileNotFoundException
+01/11/2016 16:26:18 [INFO] Translate message <Throw unknown exception> from section <\gear\locales\exceptions\FileNotFound\ru_RU>
+01/11/2016 16:26:18 [INFO] Resolve path <\gear\locales\exceptions\FileNotFound\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:26:18 [INFO] Get component loader
+01/11/2016 16:26:18 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> with messages
+01/11/2016 16:26:18 [WARNING] Section file </home/denisk/gearteam/gear/locales/exceptions/FileNotFound/ru_RU.php> not found
+01/11/2016 16:27:17 [INFO] Bootstrap section libraries
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:27:17 [INFO] Bootstrap section modules
+01/11/2016 16:27:17 [INFO] Bootstrap section components
+01/11/2016 16:27:17 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GErrorsHandlerComponent> [837]
+01/11/2016 16:27:17 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:27:17 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:27:17 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/gearteam/gear/components/handlers/GExceptionsHandlerComponent> [837]
+01/11/2016 16:27:17 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:27:17 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:27:17 [INFO] Bootstrap install component lang
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/gearteam/gear/components/international/GInternationalComponent> [837]
+01/11/2016 16:27:17 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:27:17 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:27:17 [INFO] Bootstrap install component loader
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/gearteam/gear/components/loader/GLoaderComponent> [837]
+01/11/2016 16:27:17 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:27:17 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:27:17 [INFO] Bootstrap section libraries
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/gearteam/gear/interfaces/*> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IIo.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IObject.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/interfaces/IService.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\traits\*> to </home/denisk/gearteam/gear/traits/*> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TBehaivorContained.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TComponentContained.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TGetter.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TObject.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TPluginContained.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TSetter.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/traits/TView.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GException> to </home/denisk/gearteam/gear/library/GException> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GException.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/gearteam/gear/exceptions/*> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/CoreException.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ObjectException.php
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/exceptions/ServiceException.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/gearteam/gear/library/GEvent> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GEvent.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/gearteam/gear/library/GBehavior> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GBehavior.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/gearteam/gear/library/GObject> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GObject.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GService> to </home/denisk/gearteam/gear/library/GService> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GService.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/gearteam/gear/library/GModule> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GModule.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/gearteam/gear/library/GComponent> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GComponent.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/gearteam/gear/library/GPlugin> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/library/GPlugin.php
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/gearteam/gear/plugins/templater/GView> [837]
+01/11/2016 16:27:17 [INFO] Bootstrap library /home/denisk/gearteam/gear/plugins/templater/GView.php
+01/11/2016 16:27:17 [INFO] Bootstrap section modules
+01/11/2016 16:27:17 [INFO] Bootstrap section components
+01/11/2016 16:27:17 [INFO] Bootstrap install component errorsHandler
+01/11/2016 16:27:17 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:27:17 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:27:17 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:27:17 [INFO] Create exception \CoreException
+01/11/2016 16:27:17 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:27:17 [INFO] Get component loader
+01/11/2016 16:27:17 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:27:17 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:27:17 [INFO] Create exception \CoreException
+01/11/2016 16:27:17 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:27:17 [INFO] Get component loader
+01/11/2016 16:27:17 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:27:17 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 16:27:17 [INFO] Create exception \CoreException
+01/11/2016 16:27:17 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
+01/11/2016 16:27:17 [INFO] Get component loader
+01/11/2016 16:27:17 [INFO] Prepare loading section file </home/denisk/gearteam/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 16:27:17 [INFO] Trigger event <onBeforeInstallService> [950]
+01/11/2016 16:27:17 [INFO] Trigger event <onAfterInstallService> [950]
+01/11/2016 16:27:17 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [814]
+01/11/2016 16:27:17 [INFO] Get component loader

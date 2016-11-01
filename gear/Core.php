@@ -1,835 +1,962 @@
 <?php
 
-//Issues
-//TODO::Менять токен пользовательской сессии при каждом запросе
-//TODO::Для форм добавлять скрытое поле с рандомным названием и значением, которое меняется при ошибках запроса из формы
-
 namespace gear;
 
 defined('GEAR') or define('GEAR', __DIR__);
-defined('DEBUG') or define('DEBUG', false);
+defined('ROOT') or define('ROOT', dirname(__DIR__));
 
 /**
- * Ядро Gear Framework
+ * Класс ядра фреймворка
  *
- * @package Gear Framework
  * @final
- * @author Denis Kukushkin
- * @copyright Denis Kukushkin 2013
- * @version 1.0.0
- * @since 01.08.2013
- * @license MIT
- * @php 5.4.x or higher
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
 final class Core
 {
+    /* Traits */
     /* Const */
-    /* Версия ядра */
-    const VERSION = '1.0.0';
-
-    const EMERGENCY = 'EMERGENCY';
-    const ALERT = 'ALERT';
-    const CRITICAL = 'CRITICAL';
-    const ERROR = 'ERROR';
-    const WARNING = 'WARNING';
-    const NOTICE = 'NOTICE';
-    const INFO = 'INFO';
-    const DEBUG = 'DEBUG';
-
-    const HTTP = 1;
-    const CLI = 2;
-
-    const MODE_DEVELOPMENT = 0;
-    const MODE_PRODUCTION = 1;
-
+    const CLI = 1;
+    const HTTP = 2;
+    const HTTPS = 3;
+    const AJAX = 4;
+    /**
+     * @var int Режим запуска приложения - в разработке
+     */
+    const DEVELOPMENT = 1;
+    /**
+     * @var int Режим запуска приложения - в продакшене
+     */
+    const PRODUCTION = 2;
+    /**
+     * @var int доступ к объекту, у которого свойство $object->_access имеет данное значение, закрыт для всех
+     */
     const ACCESS_PRIVATE = 0;
+    /**
+     * @var int защищённый доступ к объекту, у которого свойство $object->_access имеет данное значение,
+     * требуется проверка прав доступа
+     */
     const ACCESS_PROTECTED = 1;
+    /**
+     * @var int публичный доступ к объекту, у которого свойство $object->_access имеет данное значение
+     */
     const ACCESS_PUBLIC = 2;
+    /**
+     * @var string класс log-сообщений alert
+     */
+    const ALERT = 'alert';
+    /**
+     * @var string класс log-сообщений critical
+     */
+    const CRITICAL = 'critical';
+    /**
+     * @var string класс log-сообщений debug
+     */
+    const DEBUG = 'debug';
+    /**
+     * @var string класс log-сообщений emergency
+     */
+    const EMERGENCY = 'emergency';
+    /**
+     * @var string класс log-сообщений error
+     */
+    const ERROR = 'error';
+    /**
+     * @var string класс log-сообщений exception
+     */
+    const EXCEPTION = 'exception';
+    /**
+     * @var string класс log-сообщений info
+     */
+    const INFO = 'info';
+    /**
+     * @var string класс log-сообщений notice
+     */
+    const NOTICE = 'notice';
+    /**
+     * @var string класс log-сообщений warning
+     */
+    const WARNING = 'warning';
     /* Private */
-    private static $_modes = [self::MODE_DEVELOPMENT => 'debug', self::MODE_PRODUCTION => 'production'];
-    /* Текущая конфигурация ядра */
-    private static $_config = [
-        /* Библиотеки, модули, компоненты подключаемые на этапе инициализации */
-        'preloads' => [
-            /* Библиотеки подключаемые на этапе инициализации */
-            'library' => [
+    /* Protected */
+    /**
+     * @var array $_config конфигурация ядра и системы
+     */
+    protected static $_config = [
+        /* Элементы, которые будут загружены при инициализации ядра фреймворка */
+        'bootstrap' => [
+            /* Список загружаемых библиотек */
+            'libraries' => [
+                '\gear\interfaces\*',
                 '\gear\traits\*',
                 '\gear\library\GException',
                 '\gear\exceptions\*',
                 '\gear\library\GEvent',
-                '\gear\interfaces\IService',
-                '\gear\interfaces\IModule',
-                '\gear\interfaces\IComponent',
-                '\gear\interfaces\IPlugin',
+                '\gear\library\GBehavior',
+                '\gear\library\GObject',
                 '\gear\library\GObject',
                 '\gear\library\GService',
                 '\gear\library\GModule',
                 '\gear\library\GComponent',
                 '\gear\library\GPlugin',
-                '\gear\interfaces\ILoader',
+                '\gear\plugins\templater\GView',
             ],
-            /* Модули подключаемые на этапе инициализации */
+            /* Список загружаемых модулей */
             'modules' => [],
-            /* Компоненты подключаемые на этапе инициализации */
+            /* Список загружаемых компонентов */
             'components' => [
-                /* Системное логгирование */
-                'syslog' => [
-                    'class' => ['name' => '\gear\components\gear\syslog\GSyslog'],
-                    'name' => 'syslog',
-                ],
-                // Автозагрузчик классов
-                'loader' => [
-                    'class' => ['name' => '\gear\components\gear\loader\GLoader'],
-                    'name' => 'loader',
-                    /* Set helpers, remove dependencies on the class name */
-                    'aliases' => [
-                        'International' => ['class' => '\gear\helpers\GInternational'],
-                        'Arrays' => ['class' => '\gear\helpers\GArray'],
-                        'Calendar' => ['class' => '\gear\helpers\GCalendar'],
-                        'Html' => ['class' => '\gear\helpers\GHtml'],
-                    ],
-                ],
-                // Обработчик ошибок
-                'errorHandler' => [
-                    'class' => '\gear\components\gear\handlers\GErrorsHandler',
-                    'name' => 'errorHandler',
-                ],
-                // Обработчик неперехваченных исключений
-                'exceptionHandler' => [
-                    'class' => '\gear\components\gear\handlers\GExceptionsHandler',
-                    'name' => 'exceptionHandler',
-                ],
+                /* Обработчик ошибок */
+                'errorsHandler' => ['class' => '\gear\components\handlers\GErrorsHandlerComponent'],
+                /* Обработчик исключений */
+                'exceptionHandler' => ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'],
+                /* */
+                'lang' => ['class' => '\gear\components\international\GInternationalComponent'],
+                /* Автозагрузчик файлов с классами */
+                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
             ],
         ],
-        /* Модули ядра */
-        'modules' => [],
-        /* Компоненты ядра */
+        /* Список глобальных зарегистрированных модулей системы */
+        'modules' => [
+            /* Модуль приложения должен быть описан всегда */
+            'app' => ['class' => '\gear\library\GApplication']
+        ],
+        /* Список глобальных зарегистрированных компонентов системы */
         'components' => [],
-        /* Хелперы */
-        'helpers' => [
-            'calendar' => ['class' => '\gear\helpers\GCalendar']
-        ],
-        /* Параметры работы ядра, приложения и т.п. */
-        'params' => [
-            'baseDir' => GEAR,
+        /* Список глобальных свойств ядра */
+        'properties' => [
+            /* Режим запуска приложения */
+            'mode' => self::PRODUCTION,
+            /* Текущая локаль */
             'locale' => 'ru_RU',
-            'encoding' => 'utf-8',
-            'services' => ['class' => '\gear\library\container\GServicesContainer'],
-//            'configurator' => ['class' => '\gear\components\gear\configurator\GConfigurator'],
-            'helperManager' => ['class' => '\gear\components\gear\helper\GHelperManager'],
-            'defaultApplication' => ['class' => '\gear\library\GApplication'],
+            /* Кодировка */
+            'charset' => 'utf-8',
+            /* Файл для записи логов ядра (должен быть прямой путь к файлу) */
+            'syslog' => (__DIR__ . '/log/core/core.info.log'),
+            /* Название компонента автозагрузчика классов */
+            'loaderName' => 'loader',
+            'international' => 'lang',
         ],
     ];
-    /* Обработчики событий */
-    private static $_events = [
-        'onCoreReady' => [],
-        'onBeforeApplicationRun' => [],
-        'onAfterApplicationRun' => [],
-        'onRequest' => [],
-        'onBeforeProcessExec' => [],
-        'onAfterProcessExec' => [],
-        'onBeforeApiRun' => [],
-        'onAfterApiRun' => [],
+    /**
+     * @var string[] Строковые значения режимов запуска
+     */
+    protected static $_modes = [
+        self::DEVELOPMENT => 'development',
+        self::PRODUCTION => 'production',
     ];
-    /* Режим запуска ядра */
-    private static $_coreMode = null;
-    /* Окружение: http или консоль */
-    private static $_runMode = null;
-    /* Protected */
+    /**
+     * @var \gear\interfaces\IService[] Массив установленных сервисов (модули, компоненты)
+     */
+    protected static $_services = [];
+    /**
+     * @var array Массив обработчиков событий
+     */
+    protected static $_events = [];
+    /**
+     * @var bool по-умолчанию false, принимает true когда заканчивается инициализация ядра
+     */
+    protected static $_isInit = false;
     /* Public */
 
-    public static function __callStatic($name, $args)
+    /**
+     * Конструктор класса, закрыт
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function __construct() {}
+
+    /**
+     * Клонирование объектов класса, закрыто
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function __clone() {}
+
+    /**
+     * Сериализация закрыта
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function __sleep() {}
+
+    /**
+     * Десериализация закрыта
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function __wakeup() {}
+
+    /**
+     * В зависимости от указанных параметров метод может возвращать
+     *  - Генерация исключения, если $name начинаяется с 'exception'
+     *  - Вызов события если $name начинается с 'on' с последующей заглавной буквой
+     *  - Зарегестрированный сервис (модуль, компонент)
+     *  - Значение свойства ядра
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return \Exception|mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function __callStatic(string $name, array $arguments)
     {
-        if (preg_match('/^exception[A-Z]{1}/', $name)) {
-            if (!isset($args[0]) || is_array($args[0]))
-                array_unshift($args, null);
-            array_unshift($args, $name);
-            $result = call_user_func_array([__CLASS__, 'e'], $args);
-        } else if (self::isModuleRegistered($name)) {
-            $result = self::m($name);
-        } else if (self::isComponentRegistered($name)) {
-            $result = self::c($name, count($args) ? $args[0] : false);
-        } else if (self::isHelperRegistered($name)) {
-            array_unshift($args, $name);
-            $result = call_user_func_array([__CLASS__, 'h'], $args);
+        if ('exception' === strtolower(substr($name, 0, 9))) {
+            self::syslog(self::NOTICE, 'Magic call throw exception {exceptionName}', ['exceptionName' => $name], true);
+            return self::e($name, ...$arguments);
+        } else if (preg_match('/^on[A-Z]/', $name)) {
+            self::syslog(self::INFO, 'Magic call trigger event {eventName}', ['eventName' => $name], true);
+            return self::trigger($name, ...$arguments);
+        } else if (self::isService($name)) {
+            return self::service($name, ...$arguments);
         } else {
-            array_unshift($args, $name);
-            return call_user_func_array([__CLASS__, 'params'], $args);
+            return self::props($name, ...$arguments);
         }
-        return $result;
     }
 
     /**
-     * Инициализация ядра
-     * @access public
-     * @static
-     * @param string|array|\Closure $config path to configuration file or array of configuration or anonymous function must return array
-     * @param integer $coreMode Core::MODE_DEVELOPMENT|Core::MODE_PRODUCTION
-     * @return boolean
-     */
-    public static function init($config = null, $coreMode = self::MODE_DEVELOPMENT)
-    {
-        /**{@__CLASS__}: Initializing Core [{@__FILE__}: {@__LINE__}]**/
-        self::$_coreMode = $coreMode;
-        /**{@__CLASS__}: Set Core mode <{@self::$_modes[self::$_coreMode]}> [{@__FILE__}: {@__LINE__}]**/
-        if ($config instanceof \Closure) {
-            /**{@__CLASS__}: Config is \Closure [{@__FILE__}: {@__LINE__}]**/
-            $config = $config($coreMode);
-        } else {
-            if (!$config) {
-                $config = dirname($_SERVER['SCRIPT_FILENAME']) . '/config.' . self::$_modes[self::$_coreMode] . '.php';
-                /**{@__CLASS__}: Prepare default config file <{@$config}> [{@__FILE__}: {@__LINE__}]**/
-            }
-            if (is_string($config)) {
-                $fileConfig = self::resolvePath($config, true);
-                clearstatcache();
-                if (is_dir($fileConfig)) {
-                    self::syslog(__CLASS__ . ' -> Resolved is dir [' . __LINE__ . ']');
-                    $fileConfig .= '/config.' . self::$_modes[self::$_coreMode] . '.php';
-                    self::syslog(__CLASS__ . ' -> Config into resolved dir ' . $fileConfig . ' [' . __LINE__ . ']');
-                }
-                $config = is_file($fileConfig) ? require($fileConfig) : null;
-                self::syslog(__CLASS__ . ' -> Config file is ' . (is_file($fileConfig) ? $fileConfig : 'NULL') . ' [' . __LINE__ . ']');
-            }
-        }
-        if (!is_array($config) || (is_array($config) && !$config))
-            $config = ['modules' => ['app' => self::params('defaultApplication')]];
-        self::$_config = array_replace_recursive(self::$_config, $config);
-        self::_preloads();
-        foreach (self::$_config as $sectionName => $section) {
-            if ($sectionName != 'params' && $sectionName != 'preloads') {
-                $section = self::_prepareConfig($section);
-                foreach ($section as $serviceName => $service) {
-                    $serviceLocation = __CLASS__ . '.' . $sectionName . '.' . $serviceName;
-                    self::services()->registerService($serviceLocation, $service);
-                }
-            }
-        }
-        Core::syslog(__CLASS__ . ' -> End initialize core [' . __LINE__ . ']');
-        return true;
-    }
-
-    /**
-     * Подгрузка необходимых библиотек, модулей и компонентов на этапе
-     * конфигурации ядра
+     * Начальная загрузка необходимых дял дальнейшей работы ядра и приложения библиотек и сервисов
      *
-     * @access private
-     * @static
-     * @return bool
-     */
-    private static function _preloads()
-    {
-        Core::syslog(__CLASS__ . ' -> Prepare preloads [' . __LINE__ . ']');
-        foreach (self::$_config['preloads']['library'] as $class) {
-            Core::syslog(__CLASS__ . ' -> Preload library ' . $class . '[' . __LINE__ . ']');
-            if (substr($class, -1) === '*') {
-                $pathMask = self::resolvePath($class, true);
-                $path = dirname($pathMask);
-                $mask = basename($pathMask);
-                self::_loadPath($path, $mask);
-            } else {
-                $pathFile = self::resolvePath($class, true) . '.php';
-                self::_loadFile($pathFile);
-
-            }
-        }
-        unset(self::$_config['preloads']['library']);
-        foreach (self::$_config['preloads'] as $sectionName => $section) {
-            Core::syslog(__CLASS__ . ' -> Preload section ' . $sectionName . '[' . __LINE__ . ']');
-            self::_preloadSection($sectionName, $section);
-        }
-        return true;
-    }
-
-    /**
-     * Загрузка всех библиотек по указанному пути и маске файлов
-     *
-     * @access private
-     * @param string $path
-     * @param string $mask
      * @return void
+     * @uses self::_bootstrapLibraries()
+     * @uses self::_bootstrapModules()
+     * @uses self::_bootstrapComponents()
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    private static function _loadPath($path, $mask)
+    private static function _bootstrap()
     {
-        $regexpMask = '#^' . str_replace('*', '.*', $mask) . '\.php$#i';
-        foreach (scandir($path) as $file) {
-            if ($file === '.' || $file === '..' || (is_file($file) && !preg_math($regexpMask, $file)))
-                continue;
-            $file = $path . '/' . $file;
-            if (is_file($file))
-                self::_loadFile($file);
-            else
-                if (is_dir($file))
-                    self::_loadPath($file, $mask);
+        foreach(self::$_config['bootstrap'] as $sectionName => $section) {
+            $method = '_bootstrap' . ucfirst($sectionName);
+            if (method_exists(self::class, $method))
+                self::syslog(self::INFO, 'Bootstrap section {sectionName}', ['sectionName' => $sectionName], true);
+                self::$method($section);
         }
     }
 
     /**
-     * Загрузка указнного файла-библиотеки
+     * Загрузка компонентов
      *
-     * @access private
-     * @param string $file
-     * @throws \Exception
-     * @return void
-     */
-    private static function _loadFile($file)
-    {
-        Core::syslog(__CLASS__ . ' -> Load required file ' . $file . '[' . __LINE__ . ']');
-        if (!file_exists($file) || !is_readable($file))
-            throw self::exceptionFileNotFound(['filename' => $file]);
-        require $file;
-    }
-
-    /**
-     * Подгрузка модулей и компонентов на этапе конфигурации ядра
-     *
-     * @access private
-     * @static
-     * @param string $sectionName
      * @param array $section
      * @return void
+     * @used-by self::_bootstrap()
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    private static function _preloadSection($sectionName, array $section)
+    private static function _bootstrapComponents(array $section)
     {
-        foreach ($section as $serviceName => $service) {
-            list($class, $config, $properties) = self::getRecords($service);
-            $pathFile = self::resolvePath($class, true) . '.php';
-            Core::syslog(__CLASS__ . ' -> Preload class ' . $class . ' in library ' . $pathFile . '[' . __LINE__ . ']');
-            self::_loadFile($pathFile);
-            $instance = $class::install($config, $properties);
-            self::services()->installService(__CLASS__ . '.' . $sectionName . '.' . $serviceName, $instance);
+        foreach($section as $name => $service) {
+            self::syslog(self::INFO, 'Bootstrap install component {name}', ['name' => $name], true);
+            self::installService($name, $service, 'component');
         }
     }
 
     /**
-     * Получение доступа к модулю приложения
+     * Загрузка необходимых библиотек, интерфейсов, трейтов и пр.
      *
-     * @access public
-     * @static
-     * @return \gear\library\GApplication
+     * @param array $section
+     * @return void
+     * @used-by self::_bootstrap()
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function app()
+    private static function _bootstrapLibraries(array $section)
     {
+        foreach($section as $library) {
+            $library = self::resolvePath($library, true);
+            if (preg_match('/[*|?]/', basename($library))) {
+                foreach(glob($library) as $file) {
+                    self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file], true);
+                    require_once $file;
+                }
+            } else {
+                $file = preg_match('/\.php$/', $library) ? $library : $library . '.php';
+                self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file], true);
+                require_once $file;
+            }
+        }
+    }
+
+    /**
+     * Загрузка модулей
+     *
+     * @param array $section
+     * @return void
+     * @used-by self::_bootstrap()
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private static function _bootstrapModules(array $section)
+    {
+        foreach($section as $name => $service) {
+            self::syslog(self::INFO, 'Bootstrap module {name}', ['name' => $name], true);
+            self::installService($name, $service, 'module');
+        }
+    }
+
+    /**
+     * возвращает текущий (выполняемый в данный момент) модуль приложения
+     *
+     * @return interfaces\IModule
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function app(): \gear\interfaces\IModule
+    {
+        self::syslog(self::INFO, 'Get app module', [], true);
         return self::m('app');
     }
 
     /**
-     * Возвращает инстанс менеджера сервисов
+     * Возвращает конфигурацию объекта в виде массива из трёх элементов
      *
-     * @access public
-     * @static
-     * @return object
+     * 1. Класс объекта
+     * 2. Статические свойства класса (конфигурация класс)
+     * 3. Свойства объекта
+     *
+     * @param array $config
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function services()
+    public static function configure(array $config): array
     {
-        $services = self::params('services');
-        if (!$services)
-            throw self::exceptionCore('Services container not defined');
-        else
-            if (!is_object($services)) {
-                list($class, $config, $properties) = self::getRecords($services);
-                $file = self::resolvePath($class, true) . '.php';
-                self::_loadFile($file);
-                if (method_exists($class, 'init'))
-                    $class::init($config);
-                $services = new $class($properties);
-                self::params('services', $services);
+        $class = null;
+        $properties = $config;
+        if (isset($properties['class'])) {
+            $class = $properties['class'];
+            if (is_array($class)) {
+                if (isset($class['name'])) {
+                    $config = $class;
+                    $class = $config['name'];
+                    unset($config['name']);
+                }
             }
-        return $services;
+            unset($properties['class']);
+        } else {
+            $config = [];
+        }
+        return [$class, $config, $properties];
     }
 
     /**
-     * DEBUG!!!!!!!!!!!!!!!!!!!!!!!!
+     * Возвращает экземляр зарегистрированного компонента ядра
      *
-     * Вызов компонента реализцющего системное протоколирование
-     * Производит протоколирование оперций в случае, если такой компонент
-     * установлен и константа DEBUG установлена в TRUE
+     * @param string $name
+     * @param interfaces\IObject $owner
+     * @param bool $clone
+     * @return interfaces\IComponent
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function c(string $name, \gear\interfaces\IObject $owner = null, bool $clone = false): \gear\interfaces\IComponent
+    {
+        self::syslog(self::INFO, 'Get component {name}', ['name' => $name], true);
+        $component = self::service($name, 'component', $owner);
+        return $clone ? clone $component : $component;
+    }
+
+    /**
+     * Возвращает экземпляр исключения
      *
-     * @access public
-     * @static
+     * @param string $exceptionName
+     * @param mixed $message
+     * @param mixed $context
+     * @param mixed $code
+     * @param null|\Exception $previous
+     * @return \Exception
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function e(string $exceptionName, $message = '', $context = [], $code = 0, $previous = null): \Exception
+    {
+        $nameInt = substr($exceptionName, 9);
+        $exceptionClass =  '\\' . $nameInt . 'Exception';
+        $exception = null;
+        print_r(func_get_args());
+        if (is_array($message)) {
+            $previous = $code ?: null;
+            $code = !is_array($context) ?: 0;
+            $context = $message;
+            $message = 'Throw unknown exception';
+        }
+        self::syslog(self::INFO, 'Create exception {name}', ['name' => $exceptionClass], true);
+        if (self::isComponentInstalled(self::props('international'))) {
+            $international = self::service(self::props('international'));
+            $message = $international->tr($message, 'exceptions\\' . $nameInt);
+        }
+        foreach($context as $name => $value) {
+            $message = str_replace('{' . $name . '}', $value, $message);
+        }
+        if (!class_exists($exceptionClass, false)) {
+            $exception = new \Exception($message, $code, $previous);
+        } else {
+            $exception = new $exceptionClass($message, $code, $previous, $context);
+        }
+        return $exception;
+    }
+
+    /**
+     * Возаращает установленный сервис
+     *
+     * @param string $name
+     * @param string|null $type
+     * @return interfaces\IService
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getInstalledService(string $name, string $type = null): \gear\interfaces\IService
+    {
+        $service = [];
+        if (!$type) {
+            if (isset(self::$_services['components'][$name]))
+                $service = self::$_services['components'][$name];
+            else if (isset(self::$_services['modules'][$name]))
+                $service = self::$_services['modules'][$name];
+        } else {
+            $type .= 's';
+            if (isset(self::$_services[$type][$name]))
+                $service = self::$_services[$type][$name];
+        }
+        return $service;
+    }
+
+    /**
+     * Возаращает зарегистрированный сервис
+     *
+     * @param string $name
+     * @param string|null $type
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getRegisteredService(string $name, string $type = null): array
+    {
+        $service = [];
+        if (!$type) {
+            if (isset(self::$_config['_bootstrap']['components'][$name]))
+                $service = self::$_config['_bootstrap']['components'][$name];
+            else if (isset(self::$_config['components'][$name]))
+                $service = self::$_config['components'][$name];
+            else if (isset(self::$_config['_bootstrap']['modules'][$name]))
+                $service = self::$_config['_bootstrap']['modules'][$name];
+            else if (isset(self::$_config['modules'][$name]))
+                $service = self::$_config['modules'][$name];
+        } else {
+            $type .= 's';
+            if (isset(self::$_config['_bootstrap'][$type][$name]))
+                $service = self::$_config['_bootstrap'][$type][$name];
+            else if (isset(self::$_config[$type][$name]))
+                $service = self::$_config[$type][$name];
+        }
+        return $service;
+    }
+
+    /**
+     * Возвращает тип сервиса
+     *
+     * @param interfaces\IService $service
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getTypeService(\gear\interfaces\IService $service): string
+    {
+        $type = '';
+        if ($service instanceof \gear\interfaces\IModule)
+            $type = 'module';
+        else if ($service instanceof \gear\interfaces\IComponent)
+            $type = 'component';
+        else if ($service instanceof \gear\interfaces\IPlugin)
+            $type = 'plugin';
+        return $type;
+    }
+
+    /**
+     * Инициализация ядра. В качестве параметра метод принимает массив конфигурационных параметров или путь к
+     * конфигурационному файлу
+     *
+     * @param array|string|\Closure $config
+     * @param int $mode
+     * @throws \CoreException
      * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function syslog($log, $init = false)
+    public static function init($config = [], int $mode = 0)
     {
-        //TODO:Develop Core::syslog()
-        file_put_contents(GEAR . '/logs/core.dump', "$log\n", $init ? 0 : FILE_APPEND);
-        //echo $log . "\n";
-//        if (self::isComponentInstalled('syslog'))
-//            call_user_func_array(self::c('syslog'), func_get_args());
+        if ($config instanceof \Closure) {
+            $config = $config();
+        }
+        if (is_string($config)) {
+            $config = self::resolvePath($config, true);
+            if (is_dir($config)) {
+                $config .= '/config.' . (self::$_modes[$mode ?? self::props('mode')] ?? self::$_modes[self::PRODUCTION]) . '.php';
+            } else {
+                if (!preg_match('/\.php$/', $config))
+                    $config .= '.php';
+            }
+            if (!file_exists($config) || !is_readable($config) || !is_file($config))
+                throw self::exceptionCore('Invalid configuration file <{file}>', ['file' => $config]);
+            $config = require $config;
+        }
+        if (!is_array($config))
+            throw self::exceptionCore('Invalid configuration', ['config' => $config]);
+        self::$_config = array_replace_recursive(self::$_config, $config);
+        if ($mode)
+            self::props('mode', $mode);
+        self::_bootstrap();
+        self::$_isInit = true;
     }
 
     /**
-     * Получение или установка значения для глобального аргумента
+     * Установка компонента в ядро
      *
-     * @access public
-     * @static
      * @param string $name
-     * @param mixed $value
-     * @return mixed
+     * @param \gear\interfaces\IComponent|array $component
+     * @param interfaces\IObject|null $owner
+     * @return interfaces\IComponent
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function params($name, $value = null)
+    public static function installComponent(string $name, $component, \gear\interfaces\IObject $owner = null): \gear\interfaces\IComponent
     {
-        if ($value === null)
-            return isset(self::$_config['params'][$name]) ? self::$_config['params'][$name] : null;
-        self::$_config['params'][$name] = $value;
-        return $value;
+        return self::installService($name, $component, $owner);
     }
 
     /**
-     * Возвращает false если указанный сервис не зарегистрирован
+     * Установка компонента в ядро
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return bool|object
+     * @param \gear\interfaces\IModule|array $module
+     * @param interfaces\IObject|null $owner
+     * @return interfaces\IComponent
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function isServiceRegistered($name)
+    public static function installModule(string $name, $module, \gear\interfaces\IObject $owner = null): \gear\interfaces\IComponent
     {
-        if (!($result = self::isModuleRegistered($name)))
-            $result = self::isComponentRegistered($name);
-        return $result;
+        return self::installService($name, $module, $owner);
     }
 
     /**
-     * Получение модуля
+     * Установка сервиса в ядро
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return \gear\library\GModule
+     * @param \gear\interfaces\IService|array $service
+     * @param string|null $type
+     * @param interfaces\IObject|null $owner
+     * @throws \CoreException
+     * @return \gear\interfaces\IService
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function m($name)
+    public static function installService(string $name, $service, string $type = null, \gear\interfaces\IObject $owner = null): \gear\interfaces\IService
     {
-        self::syslog(__CLASS__ . ' -> Request module ' . $name . ' [' . __LINE__ . ']');
-        if (!self::isModuleRegistered($name))
-            throw self::exceptionCore('Module :moduleName not registered', ['moduleName' => $name]);
-        return self::services()->getRegisteredService(__CLASS__ . '.modules.' . $name);
+        if (is_array($service)) {
+            list($class, $config, $properties) = self::configure($service);
+            if (!self::isServiceInstalled(self::props('loaderName'), 'component')) {
+                $file = self::resolvePath($class, true) . '.php';
+                if (!file_exists($file) || !is_readable($file)) {
+                    throw self::exceptionCore('Class <{className}> not found in file <{filePath}>', [
+                        'className' => $class,
+                        'filePath' => $file,
+                    ]);
+                }
+                require_once($file);
+            }
+            $service = $class::install($config, $properties, $owner);
+        }
+        if (!($service instanceof \gear\interfaces\IService))
+            throw self::exceptionCore('Installed service must be an instance of interface \gear\interfaces\IService');
+        $type = (!$type ? self::getTypeService($service) : $type) . 's';
+        if (isset(self::$_services[$type][$name])) {
+            if (self::$_services[$type][$name]->props('__override__') !== true)
+                throw self::exceptionCore('Service <{name}> already installed', ['name' => $name]);
+        }
+        self::$_services[$type][$name] = $service;
+        return self::$_services[$type][$name];
     }
 
     /**
-     * Возвращает запись модуля, если таковой зарегистрирован иначе false
+     * Возвращает true, если указанный компонент установлен
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return false|array
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function isModuleRegistered($name)
+    public static function isComponentInstalled(string $name): bool
     {
-        return self::services()->isRegisteredService(__CLASS__ . '.modules.' . $name);
+        return self::isServiceInstalled($name, 'component');
     }
 
     /**
-     * Регистрация модуля
+     * Возвращает true, если указанный компонент зарегистрирован в ядре
      *
-     * @access public
-     * @static
      * @param string $name
-     * @param array $module
-     * @return true
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function registerModule($name, array $module)
+    public static function isComponentRegistered(string $name): bool
     {
-        self::services()->registerService(__CLASS__ . '.modules.' . $name, $module);
-        return true;
+        return self::isServiceRegistered($name, 'component');
     }
 
     /**
-     * Возвращает установленный модуль или false иначе
+     * Возвращает true, если указанный компонент зарегистрирован в ядре
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return null|object
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function isModuleInstalled($name)
+    public static function isModuleRegistered(string $name): bool
     {
-        return self::services()->isInstalledService(__CLASS__ . '.modules.' . $name);
+        return self::isServiceRegistered($name, 'module');
     }
 
     /**
-     * Установка модуля
+     * Возвращает true, если указанный компонент установлен
      *
-     * @access public
-     * @static
      * @param string $name
-     * @param array $module
-     * @param null|object $owner
-     * @return \gear\library\GModule
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function installModule($name, array $module)
+    public static function isModuleInstalled(string $name): bool
     {
-        return self::services()->installService(__CLASS__ . '.modules.' . $name, $module);
+        return self::isServiceInstalled($name, 'module');
     }
 
     /**
-     * Удаление установленного модуля
+     * Возвращает true, если указанный именованый сервис зергистрирован или установлен в ядро, иначе возвращает false
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return boolean
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function uninstallModule($name)
+    public static function isService(string $name): bool
     {
-        self::services()->uninstallService(__CLASS__ . '.modules.' . $name);
-        return true;
+        return self::isServiceInstalled($name) || self::isServiceRegistered($name);
     }
 
     /**
-     * Получение компонента
+     * Возвращает true, если указанный сервис зарегистрирован
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return \gear\library\GComponent
+     * @param string|null $type
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function c($name, $instance = false)
+    public function isServiceRegistered(string $name, string $type = null): bool
     {
-        if (!self::isComponentRegistered($name))
-            throw self::exceptionCore('Component :componentName not registered', ['componentName' => $name]);
-        return self::services()->getRegisteredService(__CLASS__ . '.components.' . $name, $instance);
+        if (!$type) {
+            $is = isset(self::$_config['_bootstrap']['components'][$name]) || isset(self::$_config['components'][$name]) ||
+                  isset(self::$_config['_bootstrap']['modules'][$name]) || isset(self::$_config['modules'][$name]) ?: false;
+
+        } else {
+            $type .= 's';
+            $is = isset(self::$_config['_bootstrap'][$type][$name]) || isset(self::$_config[$type][$name]);
+        }
+        return $is;
     }
 
     /**
-     * Возвращает запись компонента, если таковой зарегистрирован иначе false
+     * Возвращает true, если указанный сервис установлен
      *
-     * @access public
-     * @static
      * @param string $name
-     * @return false|array
+     * @param string|null $type
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function isComponentRegistered($name)
+    public static function isServiceInstalled(string $name, string $type = null): bool
     {
-        return self::services()->isRegisteredService(__CLASS__ . '.components.' . $name);
+        if (!$type) {
+            $is = isset(self::$_services['components'][$name]) || isset(self::$_services['modules'][$name]);
+        } else {
+            $type .= 's';
+            $is = isset(self::$_services[$type][$name]);
+        }
+        return $is;
+    }
+
+    /**
+     * @param string $name
+     * @return interfaces\IModule
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function m(string $name): \gear\interfaces\IModule
+    {
+        return self::service($name, 'module');
+    }
+
+    /**
+     * При опущенных параметрах возвращает массив свойств ядра, при указанному $name возвращает соответствующее
+     * значение свойства, при указанном $name и $value устанавливает занчение для указанного свойства ядра
+     *
+     * @param null|string $name
+     * @param null|mixed $value
+     * @return null|mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function props(string $name = null, $value = null)
+    {
+        if ($name === null && $value === null)
+             return self::$_config['properties'];
+        else if ($name) {
+            if ($value === null) {
+                if (is_array($name)) {
+                    $values = [];
+                    foreach($name as $n) {
+                        $values[$n] = self::$_config['properties'][$n] ?? null;
+                    }
+                    return $values;
+                } else {
+                    return self::$_config['properties'][$name] ?? null;
+                }
+            } else {
+                self::$_config['properties'][$name] = $value;
+            }
+        }
     }
 
     /**
      * Регистрация компонента
      *
-     * @access public
-     * @static
+     * @param string $name
+     * @param array $component
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function registerComponent(string $name, array $component)
+    {
+        self::registerService($name, $component, 'component');
+    }
+
+    /**
+     * Регистрация модуля
+     *
      * @param string $name
      * @param array $module
-     * @return true
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function registerComponent($name, array $component)
+    public static function registerModule(string $name, array $module)
     {
-        self::services()->registerService(__CLASS__ . '.components.' . $name, $component);
-        return true;
+        self::registerService($name, $module, 'module');
     }
 
     /**
-     * Возвращает установленный компонент или false иначе
+     * Регистрация сервиса
      *
-     * @access public
-     * @static
-     * @param string $name
-     * @return object|false
+     * @param string|\Closure $name anonymous function must be return string
+     * @param array|\Closure $service anonymous function must be return array
+     * @param string $type
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function isComponentInstalled($name)
+    public static function registerService($name, $service, string $type)
     {
-        return self::services()->isInstalledService(__CLASS__ . '.components.' . $name);
-    }
-
-    /**
-     * Установка компонента
-     *
-     * @access public
-     * @static
-     * @param string $name
-     * @param array $module
-     * @param null|object $owner
-     * @return \gear\library\GModule
-     */
-    public static function installComponent($name, array $component, $owner = null)
-    {
-        if ($owner)
-            $properties['owner'] = $owner;
-        return self::services()->installService(__CLASS__ . '.components.' . $name, $component);
-    }
-
-    /**
-     * Удаление установленного компонента
-     *
-     * @access public
-     * @static
-     * @param string $name
-     * @return boolean
-     */
-    public static function uninstallComponent($name)
-    {
-        self::services()->uninstallService(__CLASS__ . '.components.' . $name);
-        return true;
-    }
-
-    /**
-     * Возвращает доступ к указанному хелперу
-     *
-     * @access public
-     * @static
-     * @param string $name
-     * @return object
-     */
-    public static function h($name)
-    {
-        $helperManager = self::params('helperManager');
-        if (($helper = Core::isComponentInstalled($helperManager)) === false) {
-            $helper = Core::c($helperManager);
-            $helper->registerHelpers(self::$_config['helpers']);
-        } else
-            $helper = Core::c($helperManager);
-        return $helper->runHelper($name);
-    }
-
-    /**
-     * Возвращает true, если указанный хелпер зарегистрирован, иначе false
-     *
-     * @access public
-     * @static
-     * @param string $name
-     * @return boolean
-     */
-    public static function isHelperRegistered($name)
-    {
-        $helperManager = self::params('helperManager');
-        if (($helper = Core::isComponentInstalled($helperManager)) === false) {
-            $helper = Core::c($helperManager);
-            $helper->registerHelpers(self::$_config['helpers']);
+        if ($name instanceof \Closure) {
+            $name = $name($service, $type);
         }
-        return $helper->isHelperRegistered($name);
+        if (!is_string($name))
+            self::exceptionCore('Invalid name of registering service, name must be a string');
+        if ($service instanceof \Closure) {
+            $service = $service($name, $type);
+        }
+        if (!is_array($service))
+            self::exceptionCore('Invalid configuration record of registering service, record must be a array');
+        $type .= 's';
+        if (isset(self::$_config[$type][$name])) {
+            if (!isset(self::$_config[$type][$name]['__override__']) ||
+                !self::$_config[$type][$name]['__override__']) {
+                throw self::exceptionCore('Service <{name}> already registered', ['name' => $name]);
+            }
+        }
+        self::$_config[$type][$name] = $service;
     }
 
     /**
-     * генерация события
+     * Преобразует указанное значение пространства имён или относительный путь к файлу в
+     * абсолютный путь
      *
-     * @access public
-     * @static
+     * @param string $path
+     * @param bool $coreResolver
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function resolvePath(string $path, bool $coreResolver = false): string
+    {
+        if (!$coreResolver) {
+            if (!($resolver = self::props('resolver')))
+                $resolver = 'loader';
+            if (self::isComponentInstalled($resolver)) {
+                self::syslog(self::INFO, 'Resolve path <{path}> from resolver component <{resolver}> [{line}]', ['path' => $path, 'resolver' => $resolver, 'line' => __LINE__], true);
+                $path = self::c($resolver)->resolvePath($path);
+                return $path;
+            }
+        }
+        if (!$path) {
+            self::syslog(self::NOTICE, 'Empty path to resolve [{line}]', ['line' => __LINE__], true);
+            return $path;
+        }
+        if (!preg_match('/^([a-zA-Z]\:|\/)/', $path)) {
+            $resolve = str_replace('\\', '/', $path);
+            if ($resolve[0] == '/') {
+                $resolve = ROOT . $resolve;
+            } else {
+                if (self::isModuleInstalled('app')) {
+                    $resolve = ROOT . '/' . str_replace('\\', '/', self::app()->namespace) . '/' . $resolve;
+                } else {
+                    $resolve = GEAR . '/' . $resolve;
+                }
+            }
+        } else {
+            $resolve = $path;
+        }
+        self::syslog(self::INFO, 'Resolve path <{path}> to <{resolve}> [{line}]', ['path' => $path, 'resolve' => $resolve, 'line' => __LINE__], true);
+        return $resolve;
+    }
+
+    /**
+     * Получение сервиса по его названию, указанному при регистрации или установке
+     *
+     * @param string $name
+     * @param string|null $type
+     * @param interfaces\IObject|null $owner
+     * @throws \CoreException
+     * @return interfaces\IService
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function service(string $name, string $type = null, \gear\interfaces\IObject $owner = null): \gear\interfaces\IService
+    {
+        if (!self::isServiceInstalled($name, $type)) {
+            if (!self::isServiceRegistered($name, $type)) {
+                throw self::exceptionCore('Service <{name}> not registered', ['name' => $name]);
+            }
+            $service = self::getRegisteredService($name, $type);
+            if ($service)
+                $service = self::installService($name, $service, $type, $owner);
+            else
+                throw self::exceptionCore('Invalid configuration record for service <{service}>', ['service' => $name]);
+        } else {
+            $service = self::getInstalledService($name, $type);
+        }
+        return $service;
+    }
+
+    /**
+     * Системное протоколирование
+     *
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     * @param bool $useCoreLog
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function syslog(string $level, string $message, array $context = [], bool $useCoreLog = false)
+    {
+        if (self::props('mode') === self::DEVELOPMENT) {
+            if (!$useCoreLog && self::$_isInit && isset(self::$_services['components']['syslog'])) {
+                self::$_services['components']['syslog']->log($level, $message, $context);
+            } else {
+                $logFile = self::props('syslog');
+                foreach($context as $name => $value) {
+                    $message = str_replace('{' . $name . '}', $value, $message);
+                }
+                $log = date('d/m/Y H:i:s') . ' [' . strtoupper($level) . '] ' . $message . "\n";
+                file_put_contents($logFile, $log, file_exists($logFile) ? FILE_APPEND : 0);
+            }
+        }
+    }
+
+
+    /**
+     * Установка обработчика $handler на событие $name
+     *
+     * @param string $name
+     * @param callable $handler
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function on(string $name, $handler)
+    {
+//        self::syslog(self::INFO, 'Add handler to event <{eventName}> [{line}]', ['eventName' => $name, 'line' => __LINE__], true);
+        if (!is_callable($handler))
+            throw self::exceptionCore('Event handler must be callable');
+        !isset(self::$_events[$name]) ? self::$_events[$name] = [$handler] : self::$_events[$name][] = $handler;
+    }
+
+
+    /**
+     * Удаление всех или только указанного обработчика $handler события $name
+     *
+     * @param string $name
+     * @param callable|bool $handler
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function off(string $name, $handler = false)
+    {
+        self::syslog(self::INFO, 'Remove handlers of event <{eventName}> [{line}]', ['eventName' => $name, 'line' => __LINE__], true);
+        if (isset(self::$_events[$name])) {
+            if (!$handler)
+                unset(self::$_events[$name]);
+            else {
+                foreach (self::$_events[$name] as $i => $h) {
+                    if ($h === $handler)
+                        unset(self::$_events[$name][$i]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Вызов события
+     *
      * @param string $name
      * @param object $event
-     * @return mixed
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function trigger($name, $event = null)
+    public static function trigger(string $name, $event):bool
     {
+        self::syslog(self::INFO, 'Trigger event <{eventName}> [{line}]', ['eventName' => $name, 'line' => __LINE__], true);
         $result = true;
         if (isset(self::$_events[$name])) {
-            $args = func_get_args();
-            array_shift($args);
-            if (!$event)
-                $args[0] = new \gear\library\GEvent(null);
             foreach (self::$_events[$name] as $handler) {
-                $result = call_user_func_array($handler, $args);
-                if (($result instanceof \gear\library\GEvent && $result->stopPropagation === true) || !$result)
+                if (call_user_func($handler, $event) === false)
+                    $result = false;
+                if (!$event->bubble)
                     break;
             }
         }
         return $result;
-    }
-
-    /**
-     * Установка события
-     *
-     * @access public
-     * @static
-     * @param string $name
-     * @param mixed $handler callable value
-     * @return mixed
-     */
-    public static function on($name, $handler)
-    {
-        return self::attachEvent($name, $handler);
-    }
-
-    /**
-     * Добавление обработчика события
-     *
-     * @access public
-     * @static
-     * @param string $eventName
-     * @param mixed $handler callable value
-     * @return boolean
-     */
-    public static function attachEvent($eventName, $handler)
-    {
-        self::syslog(__CLASS__ . ' -> Attach event "' . $eventName . '" [' . __LINE__ . ']');
-        if (!is_callable($handler))
-            throw self::exceptionCore('Invalid handler of event :eventName', ['eventName' => $eventName]);
-        self::$_events[$eventName][] = $handler;
-        return true;
-    }
-
-    /**
-     * Получение значений класса, конфигурации и свойств из
-     * специально сформированной структуры
-     *
-     * @access public
-     * @static
-     * @param array $properties
-     * @return array as Array(className, configuration, properties)
-     */
-    public static function getRecords(array $properties)
-    {
-        $properties = self::_prepareConfig($properties);
-        $class = null;
-        $config = [];
-        if (isset($properties['class'])) {
-            $class = $properties['class'];
-            unset($properties['class']);
-            if (is_array($class)) {
-                $config = $class;
-                $class = $config['name'];
-                unset($config['name']);
-                $config = self::_prepareConfig($config);
-            }
-        }
-        return array($class, $config, $properties);
-    }
-
-    /**
-     * Подготовка конфигурационных параметров
-     *
-     * @access private
-     * @param array $config
-     * @return array
-     */
-    private static function _prepareConfig(array $config)
-    {
-        if (isset($config['#import'])) {
-            $imports = !is_array($config['#import']) ? array($config['#import']) : $config['#import'];
-            unset($config['#import']);
-            foreach ($imports as $param) {
-                $import = self::params($param);
-                $config = array_replace_recursive($config, self::_prepareConfig($import));
-            }
-        }
-        if (isset($config['#include'])) {
-            $includes = !is_array($config['#include']) ? array($config['#include']) : $config['#include'];
-            unset($config['#include']);
-            foreach ($includes as $file) {
-                $file = self::resolvePath($file, true);
-                $config = array_replace_recursive($config, self::_prepareConfig(require($file)));
-            }
-        }
-        return $config;
-    }
-
-    /**
-     * Получение физического пути для указанного пространства имён.
-     *
-     * @access public
-     * @static
-     * @param string $path
-     * @return null|string
-     */
-    public static function resolvePath($path, $internalResolver = false)
-    {
-        $resolved = null;
-        if (!$internalResolver) {
-            if (self::isComponentInstalled('loader') && method_exists(Core::c('loader'), 'resolvePath'))
-                $resolved = Core::c('loader')->resolvePath($path);
-        } else {
-            // Абсолютный путь
-            if (preg_match('/^[a-zA-Z]{1}\:/', $path) || $path[0] === '/')
-                $resolved = $path;
-            // Относительный путь или пространство имён
-            else {
-                $resolved = GEAR . '/..';
-                if ($path[0] !== '\\')
-                    $resolved .= (is_object(self::params('services')) && Core::isModuleInstalled('app') ? Core::app()->getNamespace() . '/' : '\gear') . '/' . $path;
-                else
-                    $resolved .= $path;
-                $resolved = str_replace('\\', '/', $resolved);
-            }
-        }
-        self::syslog(__CLASS__ . ' -> Path resolved as ' . $resolved . ' [' . __LINE__ . ']');
-        return $resolved;
-    }
-
-    /**
-     * Возвращает режим запуска приложения
-     *
-     * @access public
-     * @static
-     * @return boolean
-     */
-    public static function getMode()
-    {
-        if (!self::$_runMode)
-            self::$_runMode = php_sapi_name() === 'cli' ? self::CLI : self::HTTP;
-        return self::$_runMode;
-    }
-
-    /**
-     * Возвращает true если приложение запущено из браузера, иначе false
-     *
-     * @access public
-     * @static
-     * @return boolean
-     */
-    public static function isHttp()
-    {
-        return self::getMode() === self::HTTP;
-    }
-
-    /**
-     * Возвращает true если приложение запущено из консоли, иначе false
-     *
-     * @access public
-     * @static
-     * @return boolean
-     */
-    public static function isCli()
-    {
-        return self::getMode() === self::CLI;
-    }
-
-    /**
-     * Возвращает версию ядра фреймворка
-     *
-     * @access public
-     * @static
-     * @return string
-     */
-    public static function getVersion()
-    {
-        return self::VERSION;
-    }
-
-    /**
-     * Создание указанного исключения
-     *
-     * @access public
-     * @param string $exceptionName
-     * @param string $message
-     * @param array $params
-     * @param int $code
-     * @param null|object $previous
-     * @return \Exception
-     */
-    public static function e($exceptionName, $message, array $params = array(), $code = 0, $previous = null)
-    {
-        $exceptionName = '\\' . preg_replace('/^exception/', '', $exceptionName) . 'Exception';
-        if (class_exists($exceptionName, false))
-            $exception = new $exceptionName($message, $code, $previous, $params);
-        else {
-            foreach ($params as $name => $value)
-                $message = str_replace(':' . $name, $value, $message);
-            $exception = new \Exception($message, $code, $previous);
-        }
-        return $exception;
-    }
-
-    public static function dump($value, $renderer = null)
-    {
-        if ($renderer && is_callable($renderer))
-            $renderer('views\dump', ['value' => $value]);
-        else {
-            echo '<pre>';
-            if (is_array($value) || is_object($value))
-                echo print_r($value, 1);
-            else
-                var_dump($value);
-            echo '</pre>';
-        }
     }
 }

@@ -1,15 +1,15 @@
 <?php
 
-use \gear\library\GException;
+use gear\library\GException;
 
-/** 
- * Класс исключения ядра фреймворка
- * 
+/**
+ * Базовые исключения ядра
+ *
  * @package Gear Framework
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 1.0.0
- * @since 14.08.2015
- * @release 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
 class CoreException extends GException {}

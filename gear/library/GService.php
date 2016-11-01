@@ -3,122 +3,135 @@
 namespace gear\library;
 
 use gear\Core;
-use gear\library\GObject;
-use gear\library\GException;
+use gear\interfaces\IObject;
 use gear\interfaces\IService;
 
-/** 
- * Класс сервисов
- * 
+/**
+ * Базовый класс сервисов
+ *
  * @package Gear Framework
- * @abstract
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 1.0.0
- * @since 25.12.2014
- * @php 5.4.x or higher
- * @release 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
-abstract class GService extends GObject implements IService
+class GService extends GObject implements IService
 {
+    /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
-    protected static $_init = false;
-    protected $_name = null;
+    protected static $_initialized = false;
     /* Public */
-    
+
     /**
      * Установка сервиса
-     * 
-     * @access public
-     * @static
-     * @param string|array $config
-     * @param array $properties
-     * @return GService
+     *
+     * @param array|string|\Closure $config
+     * @param array|string|\Closure $properties
+     * @param \gear\interfaces\IObject|null $owner
+     * @return IService
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function install($config, array $properties = [])
+    public static function install($config = [], $properties = [], IObject $owner = null): IService
     {
+        static::beforeInstallService($config, $properties);
         static::init($config);
-        $args = func_get_args();
-        array_shift($args);
-        $instance = call_user_func_array([get_called_class(), 'it'], $args);
-        $instance->trigger('onInstalled');
-        return $instance;
+        $service = static::it($properties, $owner);
+        $service->afterInstallService();
+        return $service;
     }
-    
+
     /**
-     * Конфигурирование сервиса
-     * 
-     * @access public
-     * @static
-     * @param string|array $config
-     * @return bool
-     * @throws GException
+     * Инициализация сервиса
+     *
+     * @param array|string|\Closure $config
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function init($config)
+    public static function init($config = [])
     {
-        if (!static::$_init) {
-            if (is_string($config))
-                $config = require(Core::resolvePath($config));
+        if (!static::$_initialized) {
+            if ($config instanceof \Closure) {
+                $config = $config();
+            }
+            if (is_string($config)) {
+                $configFile = Core::resolvePath($config) . '.php';
+                if (!file_exists($configFile) || !is_readable($configFile))
+                    throw self::exceptionService('Configuration file <{configFile}> not found', ['configFile' => $configFile]);
+                $config = require $configFile;
+            }
             if (!is_array($config))
-                throw static::exceptionService('Incorrect configuration of service');
+                throw self::exceptionService('Invalid service configuration');
             static::$_config = array_replace_recursive(static::$_config, $config);
-            list(,,static::$_config) = Core::getRecords(static::$_config);
-            static::$_init = true;
+            static::$_initialized = true;
         }
-        return true;
     }
-    
+
     /**
      * Получение экземпляра сервиса
-     * 
-     * @access public
-     * @static
+     *
+     * @param array|string|\Closure $properties
+     * @param \gear\interfaces\IObject|null $owner
+     * @return IService
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function it($properties = [], IObject $owner = null): IService
+    {
+        return new static($properties, $owner);
+    }
+
+
+    /**
+     * Деинсталляция сервиса
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function uninstall()
+    {
+        $this->uninstallService();
+    }
+
+    /**
+     * Генерация события onBeforeInstallService перед установкой сервиса
+     *
+     * @param array $config
      * @param array $properties
-     * @param null|object $owner
-     * @return GComponent
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public static function it(array $properties = [], $owner = null) { return new static($properties, $owner); }
-
-    /**
-     * Возвращает true, если сервис может быть перегружен, иначе false
-     * 
-     * @access public
-     * @return boolean
-     */
-    public function isOverride()
+    public static function beforeInstallService($config, $properties)
     {
-        return isset($this->_properties['override']) && (bool)$this->_properties['override'] === true;
+        return Core::trigger('onBeforeInstallService', new GEvent(static::class, ['config' => &$config, 'properties' => &$properties]));
     }
 
     /**
-     * Возвращает имя сервиса
+     * Генерация события onAfterInstallService после процедуры установки сервиса
      *
-     * @access public
-     * @return string
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getName() { return $this->_name; }
-
-    /**
-     * Устанавливает имя сервиса
-     *
-     * @access public
-     * @param string $nameService
-     * @return $this
-     */
-    public function setName($nameService)
+    public function afterInstallService()
     {
-        $this->_name = $nameService;
-        return $this;
+        return Core::trigger('onAfterInstallService', new GEvent($this, ['target' => $this]));
     }
 
     /**
-     * Возвращает имя сервиса
+     * Генерация события onAfterUninstallService после процедуры деинсталляции сервиса
      *
-     * @access public
-     * @return string
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function name() { return $this->getName(); }
+    public function uninstallService()
+    {
+        return Core::trigger('onUninstallService', new GEvent($this, ['target' => $this]));
+    }
 }

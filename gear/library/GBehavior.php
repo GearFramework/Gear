@@ -1,22 +1,28 @@
 <?php
 
 namespace gear\library;
-use gear\interfaces\IBehavior;
 
-/** 
- * Класс описывающий поведение
- * 
+use gear\interfaces\IBehavior;
+use gear\interfaces\IObject;
+use gear\traits\TGetter;
+use gear\traits\TSetter;
+
+/**
+ * Общий класс поведений
+ *
+ * @property IObject owner
  * @package Gear Framework
- * @abstract
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 1.0.0
- * @since 03.08.2013
- * @php 5.4.x or higher
- * @release 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
 abstract class GBehavior implements IBehavior
 {
+    /* Traits */
+    use TSetter;
+    use TGetter;
     /* Const */
     /* Private */
     /* Protected */
@@ -26,94 +32,151 @@ abstract class GBehavior implements IBehavior
     /**
      * Конструктор поведения
      *
-     * @access protected
-     * @param object $owner
-     * @return GBehavior
+     * @param array $properties
+     * @param IObject $owner
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    protected function __construct($owner) { $this->_owner = $owner; }
+    protected function __construct(array $properties, IObject $owner)
+    {
+        $this->owner = $owner;
+        foreach($properties as $name => $value) {
+            $this->$name = $value;
+        }
+    }
 
     /**
-     * Код поведения
+     * Клонирование объекта-поведение
      *
-     * @abstract
-     * @access public
-     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    abstract public function __invoke();
-    
+    protected function __clone() {}
+
     /**
-     * Установка значения для указанного свойства владельца
-     * 
-     * @access public
-     * @param string $name
-     * @param mixed $value
+     * Исполнение вызванного поведения
+
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function __invoke()
+    {
+        return $this->execute(...func_get_args());
+    }
+
+    /**
+     * Генерация события onAfterInstallBehavior после установки поведения
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function afterInstallBehavior()
+    {
+        return $this->owner->trigger('onAfterInstallBehavior', new GEvent($this, ['target' => $this->owner, 'sender' => $this]));
+    }
+
+    /**
+     * Генерация события onAfterUninstall при деинсталляции поведения
+     *
      * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function __set($name, $value) { $this->_owner->$name = $value; }
-    
-    /**
-     * Получение значения свойства владельца
-     * 
-     * @access public
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name) { return $this->_owner->$name; }
+    public function afterUninstall()
+    {
+        return $this->owner->trigger('onAfterUninstallBehavior', new GEvent($this, ['target' => $this->owner, 'sender' => $this]));
+    }
 
     /**
-     * Возвращает true если $name является:
-     * - событием, для которого имеются обработчики
-     * - зарегестрированным компонентом модуля
-     * - поведением
-     * - плагином
-     * - свойством объекта
-     * иначе возвращает false
+     * Генерация события onBeforeInstallBehavior перед инсталляцией поведения
      *
-     * @access public
-     * @param string $name
+     * @param array $properties
+     * @param IObject $owner
      * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function __isset($name) { return isset($this->_owner->$name); }
+    public static function beforeInstallBehavior(array $properties, IObject $owner)
+    {
+        return $owner->trigger('onBeforeInstallBehavior', new GEvent(static::class, ['target' => $owner, 'sender' => static::class]));
+    }
 
     /**
-     * Метод производит удаление:
-     * - обработчиков события, если $name таковым является
-     * - деинсталлирует компонент модуля
-     * - отключает поведение, если $name является названием поведения
-     * - деинсталлирует плагин
-     * - удаляет свойство объекта, если таковое имеется
+     * Исполнение вызванного поведения
      *
-     * @access public
-     * @param string $name
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function execute();
+
+    /**
+     * Получение владельца поведения
+     *
+     * @return IObject $owner
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getOwner(): IObject
+    {
+        return $this->_owner;
+    }
+
+    /**
+     * Установка поведения
+     *
+     * @param array $properties
+     * @param IObject $owner
+     * @return IBehavior
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function install($properties = [], IObject $owner): IBehavior
+    {
+        static::beforeInstallBehavior($properties, $owner);
+        $behavior = static::it($properties, $owner);
+        $behavior->afterInstallBehavior();
+        return $behavior;
+    }
+
+    /**
+     * Создание экземпляра плагина
+     *
+     * @param array $properties
+     * @param IObject $owner
+     * @return IBehavior
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function it(array $properties = [], IObject $owner): IBehavior
+    {
+        return new static($properties, $owner);
+    }
+
+    /**
+     * Установка владельца поведения
+     *
+     * @param IObject $owner
      * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function __unset($name) { unset($this->_owner->$name); }
+    public function setOwner(IObject $owner)
+    {
+        $this->_owner = $owner;
+    }
 
     /**
-     * Перевод вызова несуществующей функции на владельца поведения
-     * 
-     * @access public
-     * @param string $name
-     * @param array $args
-     * @return mixed
-     */
-    public function __call($name, $args) { return call_user_func_array([$this->_owner, $name], $args); }
-    
-    /**
-     * Метод, который выполняется во время подключения поведения.
-     * 
-     * @access public
-     * @static
-     * @param GObject $owner
-     * @return GBehavior
-     */
-    public static function attach($owner) { return new static($owner); }
-
-    /**
-     * Возвращает владельца поведения
+     * Удаление поведения из объекта
      *
-     * @access public
-     * @return object
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getOwner() { return $this->_owner; }
+    public function uninstall()
+    {
+        return $this->afterUninstall();
+    }
 }

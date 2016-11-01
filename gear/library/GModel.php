@@ -2,100 +2,76 @@
 
 namespace gear\library;
 
-use \gear\Core;
-use \gear\library\GObject;
-use \gear\library\GException;
-use gear\library\TEvents;
-use gear\library\TBehaviors;
-use gear\library\TPlugins;
+use gear\interfaces\IModel;
+use gear\interfaces\IObject;
+use gear\traits\TBehaviorContained;
+use gear\traits\TPluginContained;
 
 /**
  * Базовый класс моделей
  *
+ * @property \gear\interfaces\IObject|null owner
  * @package Gear Framework
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis 2013
- * @version 1.0.0
- * @since 01.08.2013
- * @php 5.4.x or higher
- * @release 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
-class GModel extends GObject
+class GModel extends GObject implements IModel
 {
     /* Traits */
-    use TEvents;
-    use TBehaviors;
-    use TPlugins;
+    use TBehaviorContained;
+    use TPluginContained;
     /* Const */
     /* Private */
     /* Protected */
-    protected $_pk = 'id';
-    protected $_validators = [];
     /* Public */
 
     /**
-     * Конструктор класса
-     * Принимает ассоциативный массив свойств объекта и их значений
+     * GObject constructor.
      *
-     * @access public
-     * @param array $properties
-     * @param null|object $owner
-     * @return \gear\library\GModel
+     * @param array|\Closure $properties
+     * @param \gear\interfaces\IObject|null $owner
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function __construct(array $properties = [], $owner = null) { parent::__construct($properties, $owner); }
-
-    /**
-     * Клонирование
-     *
-     * @access public
-     * @return void
-     */
-    public function __clone() { parent::__clone(); }
-
-    /**
-     * Установка названия поля являющимся PRIMARY KEY
-     *
-     * @access public
-     * @param string $pk
-     * @return $this
-     */
-    public function setPk($pk)
+    public function __construct($properties = [], IObject $owner = null)
     {
-        $this->_pk = $pk;
-        return $this;
+        parent::__construct($properties, $owner);
     }
 
     /**
-     * Получение названия поля являющимся PRIMARY KEY
+     * Клонирование объекта
      *
-     * @access public
-     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getPk() { return $this->_pk; }
-
-    /**
-     * Валидация модели
-     *
-     * @access public
-     * @return boolean;
-     * @throws \gear\exceptions\InvalidModelException
-     */
-    public function validate() {
-        //TODO:Реализовать валидацию модели
+    public function __clone()
+    {
+        parent::__clone();
     }
 
+    /**
+     * Возвращает спискок полей объекта для сериализации
+     *
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function __sleep(): array
+    {
+        return parent::__sleep();
+    }
 
     /**
-     * Обработчик события, вызываемого на этапе создания объекта (из
-     * конструктора)
+     * Десериализация объекта
      *
-     * @access public
-     * @param GEvent $event
-     * @return boolean
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function onConstructed()
+    public function __wakeup()
     {
-        $this->validate();
-        return parent::onConstructed();
+        parent::__wakeup();
     }
 }

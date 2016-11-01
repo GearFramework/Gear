@@ -2,10 +2,11 @@
 
 namespace gear\library;
 
-use gear\interfaces\IPlugin;
+use gear\traits\TObject;
+use gear\traits\TView;
 
 /**
- * Базовый класс плагинов
+ * Класс шаблонов
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -14,15 +15,13 @@ use gear\interfaces\IPlugin;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GPlugin extends GService implements IPlugin
+class GTemplate
 {
     /* Traits */
+    use TObject;
+    use TView;
     /* Const */
     /* Private */
     /* Protected */
-    /**
-     * @var bool $_initialized содержит состояние инициализации класса сервиса
-     */
-    protected static $_initialized = false;
     /* Public */
 }

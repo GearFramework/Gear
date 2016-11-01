@@ -1,23 +1,18 @@
 <?php
 
-use \gear\library\GException;
+use gear\library\GException;
 
 /**
- * Классы исключений сервисов (модули, компоненты, плагины, хелперы)
+ * Базовые исключения сервисов
  *
  * @package Gear Framework
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @version 1.0.0
- * @since 15.08.2015
- * @release 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
 class ServiceException extends GException {}
-class ServiceNotRegisteredException extends GException { public $defualtMessage = 'Service :serviceName not registered'; }
-class ServiceComponentNotRegisteredException extends ServiceException { public $defaultMessage = 'Component :componentName is not registered'; }
-class HelperException extends ServiceException {}
-class HelperNotFoundException extends HelperException { public $defaultMessage = 'Helper :helperName not found'; }
-class ApplicationException extends ServiceException {}
-class CacheInvalidServerException extends ServiceException { public $defaultMessage = 'Invalid cache server'; }
-class LoaderException extends ServiceException {}
-class LoaderClassFileNotFound extends LoaderException { public $defaultMessage = 'File :filename of class :className not found'; }
+
+class ComponentException extends ServiceException {}
+class ComponentNotFoundException extends ComponentException {}
