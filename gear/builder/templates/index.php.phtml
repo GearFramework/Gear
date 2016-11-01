@@ -1,5 +1,0 @@
-&lt;?php
-
-require '<?php echo GEAR; ?>/Core.php';
-\gear\Core::init('<?php echo $this->param('appUseConfig.file'); ?>'<?php if ($this->param('appUseConfig.mode')) { ?>, <?php echo (int)$this->param('appUseConfig.mode') === 1 ? '\\gear\\Core::MODE_DEVELOPMENT' : '\\gear\\Core::MODE_PRODUCTION'; } ?>);
-\gear\Core::app()->run();
