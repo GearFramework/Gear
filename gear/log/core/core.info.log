@@ -994,3 +994,1443 @@
 01/11/2016 19:46:02 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [814]
 01/11/2016 19:46:02 [INFO] Get component loader
 01/11/2016 19:46:02 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:49:38 [INFO] Bootstrap section libraries
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 19:49:38 [INFO] Bootstrap section modules
+01/11/2016 19:49:38 [INFO] Bootstrap section components
+01/11/2016 19:49:38 [INFO] Bootstrap install component errorsHandler
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 19:49:38 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:49:38 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:49:38 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 19:49:38 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:49:38 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:49:38 [INFO] Bootstrap install component lang
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 19:49:38 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:49:38 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:49:38 [INFO] Bootstrap install component loader
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 19:49:38 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:49:38 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:49:38 [INFO] Bootstrap section libraries
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 19:49:38 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 19:49:38 [INFO] Bootstrap section modules
+01/11/2016 19:49:38 [INFO] Bootstrap section components
+01/11/2016 19:49:38 [INFO] Bootstrap install component errorsHandler
+01/11/2016 19:49:38 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:49:38 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:49:38 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:49:38 [INFO] Create exception <\CoreException>
+01/11/2016 19:49:38 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:49:38 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:49:38 [INFO] Create exception <\CoreException>
+01/11/2016 19:49:38 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:49:38 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:49:38 [INFO] Create exception <\CoreException>
+01/11/2016 19:49:38 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:49:38 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:49:38 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:49:38 [INFO] Create exception <\CoreException>
+01/11/2016 19:49:38 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:49:38 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:49:38 [INFO] Create exception <\CoreException>
+01/11/2016 19:49:38 [INFO] Translate message <Service <{name}> already registered> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:49:38 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:49:38 [INFO] Get component loader
+01/11/2016 19:49:38 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:55:41 [INFO] Bootstrap section libraries
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 19:55:41 [INFO] Bootstrap section modules
+01/11/2016 19:55:41 [INFO] Bootstrap section components
+01/11/2016 19:55:41 [INFO] Bootstrap install component errorsHandler
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 19:55:41 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:55:41 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:55:41 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 19:55:41 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:55:41 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:55:41 [INFO] Bootstrap install component lang
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 19:55:41 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:55:41 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:55:41 [INFO] Bootstrap install component loader
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 19:55:41 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:55:41 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:55:41 [INFO] Bootstrap section libraries
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 19:55:41 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 19:55:41 [INFO] Bootstrap section modules
+01/11/2016 19:55:41 [INFO] Bootstrap section components
+01/11/2016 19:55:41 [INFO] Bootstrap install component errorsHandler
+01/11/2016 19:55:41 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:55:41 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:55:41 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:55:41 [INFO] Create exception <\CoreException>
+01/11/2016 19:55:41 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:55:41 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:55:41 [INFO] Create exception <\CoreException>
+01/11/2016 19:55:41 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:55:41 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:55:41 [INFO] Create exception <\CoreException>
+01/11/2016 19:55:41 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:55:41 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 19:55:41 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:55:41 [INFO] Create exception <\CoreException>
+01/11/2016 19:55:41 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 19:55:41 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 19:55:41 [INFO] Create exception <\CoreException>
+01/11/2016 19:55:41 [INFO] Translate message <Service <{name}> already registered> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 19:55:41 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 19:55:41 [INFO] Get component loader
+01/11/2016 19:55:41 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:09:31 [INFO] Bootstrap section libraries
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:09:31 [INFO] Bootstrap section modules
+01/11/2016 20:09:31 [INFO] Bootstrap section components
+01/11/2016 20:09:31 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [838]
+01/11/2016 20:09:31 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:09:31 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:09:31 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [838]
+01/11/2016 20:09:31 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:09:31 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:09:31 [INFO] Bootstrap install component lang
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [838]
+01/11/2016 20:09:31 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:09:31 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:09:31 [INFO] Bootstrap install component loader
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [838]
+01/11/2016 20:09:31 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:09:31 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:09:31 [INFO] Bootstrap section libraries
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [838]
+01/11/2016 20:09:31 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:09:31 [INFO] Bootstrap section modules
+01/11/2016 20:09:31 [INFO] Bootstrap section components
+01/11/2016 20:09:31 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:09:31 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:09:31 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:09:31 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:09:31 [INFO] Create exception <\CoreException>
+01/11/2016 20:09:31 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:09:31 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:09:31 [INFO] Create exception <\CoreException>
+01/11/2016 20:09:31 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:09:31 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:09:31 [INFO] Create exception <\CoreException>
+01/11/2016 20:09:31 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:09:31 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:09:31 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:09:31 [INFO] Create exception <\CoreException>
+01/11/2016 20:09:31 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:09:31 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:09:31 [INFO] Create exception <\CoreException>
+01/11/2016 20:09:31 [INFO] Translate message <Service <{name}> already registered> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:09:31 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:09:31 [INFO] Get component loader
+01/11/2016 20:09:31 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:10:14 [INFO] Bootstrap section libraries
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:10:14 [INFO] Bootstrap section modules
+01/11/2016 20:10:14 [INFO] Bootstrap section components
+01/11/2016 20:10:14 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [838]
+01/11/2016 20:10:14 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:10:14 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:10:14 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [838]
+01/11/2016 20:10:14 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:10:14 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:10:14 [INFO] Bootstrap install component lang
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [838]
+01/11/2016 20:10:14 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:10:14 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:10:14 [INFO] Bootstrap install component loader
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [838]
+01/11/2016 20:10:14 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:10:14 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:10:14 [INFO] Bootstrap section libraries
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [838]
+01/11/2016 20:10:14 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:10:14 [INFO] Bootstrap section modules
+01/11/2016 20:10:14 [INFO] Bootstrap section components
+01/11/2016 20:10:14 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:10:14 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:10:14 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:10:14 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:10:14 [INFO] Create exception <\CoreException>
+01/11/2016 20:10:14 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:10:14 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:10:14 [INFO] Create exception <\CoreException>
+01/11/2016 20:10:14 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:10:14 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:10:14 [INFO] Create exception <\CoreException>
+01/11/2016 20:10:14 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:10:14 [INFO] Trigger event <onBeforeInstallService> [951]
+01/11/2016 20:10:14 [INFO] Trigger event <onAfterInstallService> [951]
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\views\errorConsole> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:10:14 [INFO] Create exception <\CoreException>
+01/11/2016 20:10:14 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:10:14 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:10:14 [INFO] Create exception <\CoreException>
+01/11/2016 20:10:14 [INFO] Translate message <Service <{name}> already registered> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:10:14 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [815]
+01/11/2016 20:10:14 [INFO] Get component loader
+01/11/2016 20:10:14 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:11:03 [INFO] Bootstrap section libraries
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:11:03 [INFO] Bootstrap section modules
+01/11/2016 20:11:03 [INFO] Bootstrap section components
+01/11/2016 20:11:03 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:11:03 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:11:03 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:11:03 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:11:03 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:11:03 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:11:03 [INFO] Bootstrap install component lang
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:11:03 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:11:03 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:11:03 [INFO] Bootstrap install component loader
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:11:03 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:11:03 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:11:03 [INFO] Bootstrap section libraries
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:11:03 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:11:03 [INFO] Bootstrap section modules
+01/11/2016 20:11:03 [INFO] Bootstrap section components
+01/11/2016 20:11:03 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:11:03 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:11:03 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:11:03 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:11:03 [INFO] Create exception <\CoreException>
+01/11/2016 20:11:03 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:11:03 [INFO] Get component loader
+01/11/2016 20:11:03 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:11:03 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:11:03 [INFO] Create exception <\CoreException>
+01/11/2016 20:11:03 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:11:03 [INFO] Get component loader
+01/11/2016 20:11:03 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:11:03 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:11:03 [INFO] Create exception <\CoreException>
+01/11/2016 20:11:03 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:11:03 [INFO] Get component loader
+01/11/2016 20:11:03 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:11:03 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:11:03 [INFO] Create exception <\CoreException>
+01/11/2016 20:11:03 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:11:03 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:11:03 [INFO] Get component loader
+01/11/2016 20:11:03 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:19:04 [INFO] Bootstrap section libraries
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:19:04 [INFO] Bootstrap section modules
+01/11/2016 20:19:04 [INFO] Bootstrap section components
+01/11/2016 20:19:04 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:19:04 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:19:04 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:19:04 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:19:04 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:19:04 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:19:04 [INFO] Bootstrap install component lang
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:19:04 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:19:04 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:19:04 [INFO] Bootstrap install component loader
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:19:04 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:19:04 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:19:04 [INFO] Bootstrap section libraries
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:19:04 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:19:04 [INFO] Bootstrap section modules
+01/11/2016 20:19:04 [INFO] Bootstrap section components
+01/11/2016 20:19:04 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:19:04 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:19:04 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:19:04 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:19:04 [INFO] Create exception <\CoreException>
+01/11/2016 20:19:04 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:19:04 [INFO] Get component loader
+01/11/2016 20:19:04 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:19:04 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:19:04 [INFO] Create exception <\CoreException>
+01/11/2016 20:19:04 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:19:04 [INFO] Get component loader
+01/11/2016 20:19:04 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:19:04 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:19:04 [INFO] Create exception <\CoreException>
+01/11/2016 20:19:04 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:19:04 [INFO] Get component loader
+01/11/2016 20:19:04 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:19:04 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:19:04 [INFO] Create exception <\CoreException>
+01/11/2016 20:19:04 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:19:04 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:19:04 [INFO] Get component loader
+01/11/2016 20:19:04 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:20:00 [INFO] Bootstrap section libraries
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:20:00 [INFO] Bootstrap section modules
+01/11/2016 20:20:00 [INFO] Bootstrap section components
+01/11/2016 20:20:00 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:20:00 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:20:00 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:20:00 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:20:00 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:20:00 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:20:00 [INFO] Bootstrap install component lang
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:20:00 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:20:00 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:20:00 [INFO] Bootstrap install component loader
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:20:00 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:20:00 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:20:00 [INFO] Bootstrap section libraries
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:20:00 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:20:00 [INFO] Bootstrap section modules
+01/11/2016 20:20:00 [INFO] Bootstrap section components
+01/11/2016 20:20:00 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:20:00 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:20:00 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:20:00 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:20:00 [INFO] Create exception <\CoreException>
+01/11/2016 20:20:00 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:20:00 [INFO] Get component loader
+01/11/2016 20:20:00 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:20:00 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:20:00 [INFO] Create exception <\CoreException>
+01/11/2016 20:20:00 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:20:00 [INFO] Get component loader
+01/11/2016 20:20:00 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:20:00 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:20:00 [INFO] Create exception <\CoreException>
+01/11/2016 20:20:00 [INFO] Translate message <Invalid name of registering service, name must be a string> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:20:00 [INFO] Get component loader
+01/11/2016 20:20:00 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:20:00 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:20:00 [INFO] Create exception <\CoreException>
+01/11/2016 20:20:00 [INFO] Translate message <Invalid configuration record of registering service, record must be a array> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:20:00 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:20:00 [INFO] Get component loader
+01/11/2016 20:20:00 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:21:02 [INFO] Bootstrap section libraries
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:21:02 [INFO] Bootstrap section modules
+01/11/2016 20:21:02 [INFO] Bootstrap section components
+01/11/2016 20:21:02 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:21:02 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:21:02 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:21:02 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:21:02 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:21:02 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:21:02 [INFO] Bootstrap install component lang
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:21:02 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:21:02 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:21:02 [INFO] Bootstrap install component loader
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:21:02 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:21:02 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:21:02 [INFO] Bootstrap section libraries
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:21:02 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:21:02 [INFO] Bootstrap section modules
+01/11/2016 20:21:02 [INFO] Bootstrap section components
+01/11/2016 20:21:02 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:21:02 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:21:02 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:21:02 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:21:02 [INFO] Create exception <\CoreException>
+01/11/2016 20:21:02 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:21:02 [INFO] Get component loader
+01/11/2016 20:21:02 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:21:02 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:21:02 [INFO] Create exception <\CoreException>
+01/11/2016 20:21:02 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:21:02 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:21:02 [INFO] Get component loader
+01/11/2016 20:21:02 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:27:22 [INFO] Bootstrap section libraries
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:27:22 [INFO] Bootstrap section modules
+01/11/2016 20:27:22 [INFO] Bootstrap section components
+01/11/2016 20:27:22 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:27:22 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:22 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:22 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:27:22 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:22 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:22 [INFO] Bootstrap install component lang
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:27:22 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:22 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:22 [INFO] Bootstrap install component loader
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:27:22 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:22 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:22 [INFO] Bootstrap section libraries
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:27:22 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:27:22 [INFO] Bootstrap section modules
+01/11/2016 20:27:22 [INFO] Bootstrap section components
+01/11/2016 20:27:22 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:27:22 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:22 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:22 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:27:22 [INFO] Create exception <\CoreException>
+01/11/2016 20:27:22 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:27:22 [INFO] Get component loader
+01/11/2016 20:27:22 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:27:22 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:27:22 [INFO] Create exception <\CoreException>
+01/11/2016 20:27:22 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:27:22 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:27:22 [INFO] Get component loader
+01/11/2016 20:27:22 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:27:44 [INFO] Bootstrap section libraries
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:27:44 [INFO] Bootstrap section modules
+01/11/2016 20:27:44 [INFO] Bootstrap section components
+01/11/2016 20:27:44 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:27:44 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:44 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:44 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:27:44 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:44 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:44 [INFO] Bootstrap install component lang
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:27:44 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:44 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:44 [INFO] Bootstrap install component loader
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:27:44 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:44 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:44 [INFO] Bootstrap section libraries
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:27:44 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:27:44 [INFO] Bootstrap section modules
+01/11/2016 20:27:44 [INFO] Bootstrap section components
+01/11/2016 20:27:44 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:27:44 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:27:44 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:27:44 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:27:44 [INFO] Create exception <\CoreException>
+01/11/2016 20:27:44 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:27:44 [INFO] Get component loader
+01/11/2016 20:27:44 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:27:44 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:27:44 [INFO] Create exception <\CoreException>
+01/11/2016 20:27:44 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:27:44 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:27:44 [INFO] Get component loader
+01/11/2016 20:27:44 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:28:50 [INFO] Bootstrap section libraries
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:28:50 [INFO] Bootstrap section modules
+01/11/2016 20:28:50 [INFO] Bootstrap section components
+01/11/2016 20:28:50 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:28:50 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:28:50 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:28:50 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:28:50 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:28:50 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:28:50 [INFO] Bootstrap install component lang
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:28:50 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:28:50 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:28:50 [INFO] Bootstrap install component loader
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:28:50 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:28:50 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:28:50 [INFO] Bootstrap section libraries
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:28:50 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:28:50 [INFO] Bootstrap section modules
+01/11/2016 20:28:50 [INFO] Bootstrap section components
+01/11/2016 20:28:50 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:28:50 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:28:50 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:28:50 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:28:50 [INFO] Create exception <\CoreException>
+01/11/2016 20:28:50 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:28:50 [INFO] Get component loader
+01/11/2016 20:28:50 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:28:50 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:28:50 [INFO] Create exception <\CoreException>
+01/11/2016 20:28:50 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:28:50 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:28:50 [INFO] Get component loader
+01/11/2016 20:28:50 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:29:49 [INFO] Bootstrap section libraries
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:29:49 [INFO] Bootstrap section modules
+01/11/2016 20:29:49 [INFO] Bootstrap section components
+01/11/2016 20:29:49 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\components\handlers\GErrorsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GErrorsHandlerComponent> [836]
+01/11/2016 20:29:49 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:29:49 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:29:49 [INFO] Bootstrap install component exceptionHandler
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\components\handlers\GExceptionsHandlerComponent> to </home/denisk/git/gearframework/gear/gear/components/handlers/GExceptionsHandlerComponent> [836]
+01/11/2016 20:29:49 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:29:49 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:29:49 [INFO] Bootstrap install component lang
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\components\international\GInternationalComponent> to </home/denisk/git/gearframework/gear/gear/components/international/GInternationalComponent> [836]
+01/11/2016 20:29:49 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:29:49 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:29:49 [INFO] Bootstrap install component loader
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\components\loader\GLoaderComponent> to </home/denisk/git/gearframework/gear/gear/components/loader/GLoaderComponent> [836]
+01/11/2016 20:29:49 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:29:49 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:29:49 [INFO] Bootstrap section libraries
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\interfaces\*> to </home/denisk/git/gearframework/gear/gear/interfaces/*> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IIo.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IObject.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/interfaces/IService.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\traits\*> to </home/denisk/git/gearframework/gear/gear/traits/*> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TBehaivorContained.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TComponentContained.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TGetter.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TObject.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TPluginContained.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TSetter.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/traits/TView.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GException> to </home/denisk/git/gearframework/gear/gear/library/GException> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GException.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\exceptions\*> to </home/denisk/git/gearframework/gear/gear/exceptions/*> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/CoreException.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ObjectException.php
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/exceptions/ServiceException.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GEvent> to </home/denisk/git/gearframework/gear/gear/library/GEvent> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GEvent.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GBehavior> to </home/denisk/git/gearframework/gear/gear/library/GBehavior> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GBehavior.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GObject> to </home/denisk/git/gearframework/gear/gear/library/GObject> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GObject.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GService> to </home/denisk/git/gearframework/gear/gear/library/GService> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GService.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GModule> to </home/denisk/git/gearframework/gear/gear/library/GModule> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GModule.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GComponent> to </home/denisk/git/gearframework/gear/gear/library/GComponent> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GComponent.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\library\GPlugin> to </home/denisk/git/gearframework/gear/gear/library/GPlugin> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/library/GPlugin.php
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\plugins\templater\GView> to </home/denisk/git/gearframework/gear/gear/plugins/templater/GView> [836]
+01/11/2016 20:29:49 [INFO] Bootstrap library /home/denisk/git/gearframework/gear/gear/plugins/templater/GView.php
+01/11/2016 20:29:49 [INFO] Bootstrap section modules
+01/11/2016 20:29:49 [INFO] Bootstrap section components
+01/11/2016 20:29:49 [INFO] Bootstrap install component errorsHandler
+01/11/2016 20:29:49 [INFO] Trigger event <onBeforeInstallService> [949]
+01/11/2016 20:29:49 [INFO] Trigger event <onAfterInstallService> [949]
+01/11/2016 20:29:49 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:29:49 [INFO] Create exception <\CoreException>
+01/11/2016 20:29:49 [INFO] Translate message <Service <{name}> already installed> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:29:49 [INFO] Get component loader
+01/11/2016 20:29:49 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages
+01/11/2016 20:29:49 [NOTICE] Magic call throw exception exceptionCore
+01/11/2016 20:29:49 [INFO] Create exception <\CoreException>
+01/11/2016 20:29:49 [INFO] Translate message <Invalid configuration> from section <\gear\locales\exceptions\Core\ru_RU>
+01/11/2016 20:29:49 [INFO] Resolve path <\gear\locales\exceptions\Core\ru_RU> from resolver component <loader> [813]
+01/11/2016 20:29:49 [INFO] Get component loader
+01/11/2016 20:29:49 [INFO] Prepare loading section file </home/denisk/git/gearframework/gear/gear/locales/exceptions/Core/ru_RU.php> with messages

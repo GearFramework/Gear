@@ -180,8 +180,10 @@ class GObject implements IObject
                     }
                 }
             }
-            if (isset($this->{_properties[$name]}) && $this->{_properties[$name]} instanceof \Closure) {
-                return $this->{_properties[$name]}(...$arguments);
+            if (method_exists($this, 'props') &&
+                isset($this->_properties[$name]) &&
+                $this->_properties[$name] instanceof \Closure) {
+                return $this->_properties[$name](...$arguments);
             } else if (is_object($this->owner)) {
                 return $this->owner->$name(...$arguments);
             }

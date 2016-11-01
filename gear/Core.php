@@ -387,7 +387,7 @@ final class Core
             $context = $message;
             $message = 'Throw unknown exception';
         }
-        self::syslog(self::INFO, 'Create exception {name}', ['name' => $exceptionClass], true);
+        self::syslog(self::INFO, 'Create exception <{name}>', ['name' => $exceptionClass], true);
         if (self::isComponentInstalled(self::props('international'))) {
             $international = self::service(self::props('international'));
             $message = $international->tr($message, 'exceptions\\' . $nameInt);
@@ -778,12 +778,12 @@ final class Core
             $name = $name($service, $type);
         }
         if (!is_string($name))
-            self::exceptionCore('Invalid name of registering service, name must be a string');
+            throw self::exceptionCore('Invalid name of registering service, name must be a string');
         if ($service instanceof \Closure) {
             $service = $service($name, $type);
         }
         if (!is_array($service))
-            self::exceptionCore('Invalid configuration record of registering service, record must be a array');
+            throw self::exceptionCore('Invalid configuration record of registering service, record must be a array');
         $type .= 's';
         if (isset(self::$_config[$type][$name])) {
             if (!isset(self::$_config[$type][$name]['__override__']) ||
