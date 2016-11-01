@@ -381,7 +381,6 @@ final class Core
         $nameInt = substr($exceptionName, 9);
         $exceptionClass =  '\\' . $nameInt . 'Exception';
         $exception = null;
-        print_r(func_get_args());
         if (is_array($message)) {
             $previous = $code ?: null;
             $code = !is_array($context) ?: 0;
