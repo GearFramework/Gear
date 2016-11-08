@@ -237,7 +237,7 @@ trait TRequest
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param UriInterface $uri New request URI to use.
      * @param bool $preserveHost Preserve the original state of the Host header.
-     * @return static
+     * @return RequestInterface
      * @since 0.0.1
      * @version 0.0.1
      */

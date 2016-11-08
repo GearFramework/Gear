@@ -93,7 +93,7 @@ class GApplication extends GModule
         if (!$response)
             $response = $this->response();
         if ($this->beforeRunApplication($request)) {
-            $result = $this->controllers->exec();
+            $result = $this->controllers->exec($request);
         }
         return $this->end($response, $result);
     }

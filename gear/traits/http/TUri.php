@@ -20,11 +20,16 @@ trait TUri
     protected $_fragment = null;
     protected $_userInfo = null;
 
-    public function __construct($uri)
+    /**
+     * TUri constructor.
+     * @param string $uri
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(string $uri)
     {
         $uri = parse_url($uri);
         if ($uri === false)
-            throw Core::exceptionCore('Invalid URI {uri}', ['uri' => $uri]);
+            throw \InvalidArgumentException("Invalid uri");
         foreach($uri as $name => $value) {
             $this->{'_' . $name} = $value;
         }
