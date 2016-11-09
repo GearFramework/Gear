@@ -25,19 +25,24 @@ class GControllersComponent extends GComponent
     /* Private */
     /* Protected */
     protected static $_initialized = false;
-    protected $_controllers = [];
     /**
      * @var IController $_currentController инстанс текущего контроллера
      */
     protected $_currentController = null;
+    /**
+     * @var array $_mapControllers карта контроллеров
+     */
     protected $_mapControllers = [];
+    /**
+     * @var IRequest $_request пользовательский запрос
+     */
     protected $_request = null;
     /* Public */
 
     public function getCurrentController(): IController
     {
         if (!($this->_currentController instanceof IController)) {
-
+            
         }
         return $this->_currentController;
     }
