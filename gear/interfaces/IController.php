@@ -49,12 +49,19 @@ interface IApi
 {
     /**
      * Вызов метода $this->exec();
-     * 
+     *
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
     public function __invoke();
 
+    /**
+     * Вызов api-метода
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function exec();
 }
