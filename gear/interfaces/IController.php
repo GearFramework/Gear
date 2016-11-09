@@ -14,8 +14,24 @@ namespace gear\interfaces;
  */
 interface IController
 {
+    /**
+     * Вызов метода $this->exec()
+     *
+     * @param IRequest|null $request
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function __invoke(IRequest $request = null);
 
+    /**
+     * Запуск контроллера
+     *
+     * @param IRequest|null $request
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function exec(IRequest $request = null);
 }
 
@@ -31,6 +47,13 @@ interface IController
  */
 interface IApi
 {
+    /**
+     * Вызов метода $this->exec();
+     * 
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function __invoke();
 
     public function exec();
