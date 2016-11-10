@@ -39,26 +39,6 @@ class GControllersComponent extends GComponent
     protected $_request = null;
     /* Public */
 
-    public function getCurrentController(): IController
-    {
-        if (!($this->_currentController instanceof IController)) {
-            
-        }
-        return $this->_currentController;
-    }
-
-    public function getRequest(): IRequest
-    {
-        if ($this->_request === null) {
-            if (is_object($this->owner)) {
-                $this->_request = $this->owner->request();
-            } else {
-                $this->_request = Core::app()->request();
-            }
-        }
-        return $this->_request;
-    }
-
     /**
      * Получение и запуск нужного контроллера
      *
@@ -77,6 +57,26 @@ class GControllersComponent extends GComponent
             $controller($request);
         }
         return $result;
+    }
+
+    public function getCurrentController(): IController
+    {
+        if (!($this->_currentController instanceof IController)) {
+            $path = $this->request->r;
+        }
+        return $this->_currentController;
+    }
+
+    public function getRequest(): IRequest
+    {
+        if ($this->_request === null) {
+            if (is_object($this->owner)) {
+                $this->_request = $this->owner->request();
+            } else {
+                $this->_request = Core::app()->request();
+            }
+        }
+        return $this->_request;
     }
 
     public function setCurrentController($controller)
