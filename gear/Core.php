@@ -91,6 +91,7 @@ final class Core
         'bootstrap' => [
             /* Список загружаемых библиотек */
             'libraries' => [
+                '\Psr\Http\Message\*',
                 '\gear\interfaces\*',
                 '\gear\traits\*',
                 '\gear\library\GException',
