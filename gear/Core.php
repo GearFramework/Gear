@@ -275,8 +275,10 @@ final class Core
             $library = self::resolvePath($library, true);
             if (preg_match('/[*|?]/', basename($library))) {
                 foreach(glob($library) as $file) {
-                    self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file], true);
-                    require_once $file;
+                    if (is_file($file) && is_readable($file)) {
+                        self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file], true);
+                        require_once $file;
+                    }
                 }
             } else {
                 $file = preg_match('/\.php$/', $library) ? $library : $library . '.php';
