@@ -662,7 +662,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function isServiceRegistered(string $name, string $type = null): bool
+    public static function isServiceRegistered(string $name, string $type = null): bool
     {
         if (!$type) {
             $is = isset(self::$_config['_bootstrap']['components'][$name]) || isset(self::$_config['components'][$name]) ||
