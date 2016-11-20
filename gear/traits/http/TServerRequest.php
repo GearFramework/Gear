@@ -70,7 +70,14 @@ trait TServerRequest
      */
     public function getQueryParams()
     {
-        // TODO: Implement getQueryParams() method.
+        if (is_array($this->_queryParams)) {
+            return $this->_queryParams;
+        }
+        if ($this->_uri === null) {
+            return [];
+        }
+        parse_str($this->_uri->getQuery(), $this->_queryParams); // <-- URL decodes data
+        return $this->queryParams;
     }
 
     /**

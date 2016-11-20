@@ -45,6 +45,17 @@ trait TRequest
      * @var UriInterface $_uri the URI instance
      */
     protected $_uri = null;
+    protected $_validMethods = ['GET', 'POST'];
+
+    public function setValidMethods(array $methods)
+    {
+        $this->_validMethods = $methods;
+    }
+
+    public function getValidMethods(): array
+    {
+        return $this->_validMethods;
+    }
 
     /**
      * Retrieves the message's request target.
@@ -116,11 +127,16 @@ trait TRequest
     public function withRequestTarget($requestTarget): RequestInterface
     {
         if (preg_match('/\s/', $requestTarget)) {
-            throw new \InvalidArgumentException('Invalid request target; must be a string and cannot contain whitespace');
+            throw self::exceptionInvalidArgument('Invalid request target. Must be a string and cannot contain whitespace');
         }
         $request = clone $this;
         $request->requestTarget = $requestTarget;
         return $request;
+    }
+
+    public function isValidMethod(string $method): bool
+    {
+        return in_array($method, $this->_validMethods, true) !== false;
     }
 
     /**
@@ -133,7 +149,7 @@ trait TRequest
     public function getMethod(): string
     {
         if ($method = $this->getHeaderLine('X-Http-Method-Override')) {
-            $this->_method = $method;
+            $this->method = $method;
         }
         return $this->_method;
     }
@@ -142,12 +158,17 @@ trait TRequest
      * Set the HTTP method of the request.
      *
      * @param string $method
+     * @throws \InvalidArgumentException for invalid HTTP methods.
      * @return RequestInterface
      * @since 0.0.1
      * @version 0.0.1
      */
     public function setMethod(string $method): RequestInterface
     {
+        $method = strtoupper($method);
+        if (!$this->isValidMethod($method)) {
+            throw self::exceptionInvalidArgument('Unsupported HTTP method <:method> provided', ['method' => $method]);
+        }
         $this->_method = $method;
         return $this;
     }
@@ -164,7 +185,7 @@ trait TRequest
      * changed request method.
      *
      * @param string $method Case-sensitive method.
-     * @return static
+     * @return RequestInterface
      * @throws \InvalidArgumentException for invalid HTTP methods.
      * @since 0.0.1
      * @version 0.0.1
@@ -173,6 +194,9 @@ trait TRequest
     {
         $request = $this;
         if ($this->method !== $method) {
+            if (!$this->isValidMethod($method)) {
+                throw self::exceptionInvalidArgument('Unsupported HTTP method <:method> provided', ['method' => $method]);
+            }
             $request = clone $this;
             $request->method = $method;
         }
