@@ -337,11 +337,11 @@ class GObject implements IObject
     /**
      * Возвращает владельца объекта
      *
-     * @return \gear\interfaces\IObject
+     * @return null|\gear\interfaces\IObject
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getOwner(): IObject
+    public function getOwner()
     {
         return $this->_owner;
     }
