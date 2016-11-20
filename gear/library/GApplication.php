@@ -87,6 +87,7 @@ class GApplication extends GModule
      */
     public function run(IRequest $request = null, IResponse $response = null)
     {
+        Core::syslog(Core::INFO, 'Run application <{app}>', ['app' => get_class($this), '__func__' => __METHOD__, '__line__' => __LINE__]);
         $result = null;
         if (!$request)
             $request = $this->request();

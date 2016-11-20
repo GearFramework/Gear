@@ -43,8 +43,8 @@ class GInternationalComponent extends GComponent
             $section = (Core::isModuleInstalled('app') ? Core::app()->namespace : '\gear') . '\locales\\' . $section . '\\' . Core::props('locale');
         }
         Core::syslog(Core::INFO, 'Translate message <{message}> from section <{section}>', ['message' => $message, 'section' => $section]);
-        if (!isset($this->messages[$section])) {
-            $sectionFileMessages = Core::resolvePath($section) . '.php';
+        if (!($messages = $this->getMessages($section))) {
+            $sectionFileMessages = Core::resolvePath($section, !self::isComponentInstalled(Core::props('loaderName'))) . '.php';
             $messages = [];
             Core::syslog(Core::INFO, 'Prepare loading section file <{file}> with messages', ['file' => $sectionFileMessages]);
             if (file_exists($sectionFileMessages)) {

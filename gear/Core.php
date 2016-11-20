@@ -136,7 +136,17 @@ final class Core
             /* Кодировка */
             'charset' => 'utf-8',
             /* Файл для записи логов ядра (должен быть прямой путь к файлу) */
-            'syslog' => (__DIR__ . '/log/core/core.info.log'),
+            'syslog' => [
+                self::ALERT => GEAR . '/log/core/core.alert.log',
+                self::CRITICAL =>  GEAR . '/log/core/core.critical.log',
+                self::DEBUG =>  GEAR . '/log/core/core.debug.log',
+                self::EMERGENCY => GEAR . '/log/core/core.emergency.log',
+                self::ERROR => GEAR . '/log/core/core.error.log',
+                self::EXCEPTION => GEAR . '/log/core/core.exception.log',
+                self::INFO => GEAR . '/log/core/core.info.log',
+                self::NOTICE => GEAR . '/log/core/core.notice.log',
+                self::WARNING => GEAR . '/log/core/core.warning.log',
+            ],
             /* Название компонента автозагрузчика классов */
             'loaderName' => 'loader',
             'international' => 'lang',
@@ -160,7 +170,7 @@ final class Core
     /**
      * @var bool по-умолчанию false, принимает true когда заканчивается инициализация ядра
      */
-    protected static $_isInit = false;
+    protected static $_initialized = false;
     /* Public */
 
     /**
@@ -211,10 +221,10 @@ final class Core
     public static function __callStatic(string $name, array $arguments)
     {
         if ('exception' === strtolower(substr($name, 0, 9))) {
-            self::syslog(self::NOTICE, 'Magic call throw exception {exceptionName}', ['exceptionName' => $name], true);
+            self::syslog(self::NOTICE, 'Magic call throw exception {exceptionName}', ['exceptionName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             return self::e($name, ...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {
-            self::syslog(self::INFO, 'Magic call trigger event {eventName}', ['eventName' => $name], true);
+            self::syslog(self::INFO, 'Magic call trigger event {eventName}', ['eventName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             return self::trigger($name, ...$arguments);
         } else if (self::isService($name)) {
             return self::service($name, ...$arguments);
@@ -238,7 +248,7 @@ final class Core
         foreach(self::$_config['bootstrap'] as $sectionName => $section) {
             $method = '_bootstrap' . ucfirst($sectionName);
             if (method_exists(self::class, $method))
-                self::syslog(self::INFO, 'Bootstrap section {sectionName}', ['sectionName' => $sectionName], true);
+                self::syslog(self::INFO, 'Bootstrap section {sectionName}', ['sectionName' => $sectionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                 self::$method($section);
         }
     }
@@ -255,7 +265,7 @@ final class Core
     private static function _bootstrapComponents(array $section)
     {
         foreach($section as $name => $service) {
-            self::syslog(self::INFO, 'Bootstrap install component {name}', ['name' => $name], true);
+            self::syslog(self::INFO, 'Bootstrap install component {name}', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             self::installService($name, $service, 'component');
         }
     }
@@ -276,13 +286,13 @@ final class Core
             if (preg_match('/[*|?]/', basename($library))) {
                 foreach(glob($library) as $file) {
                     if (is_file($file) && is_readable($file)) {
-                        self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file], true);
+                        self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                         require_once $file;
                     }
                 }
             } else {
                 $file = preg_match('/\.php$/', $library) ? $library : $library . '.php';
-                self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file], true);
+                self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                 require_once $file;
             }
         }
@@ -300,7 +310,7 @@ final class Core
     private static function _bootstrapModules(array $section)
     {
         foreach($section as $name => $service) {
-            self::syslog(self::INFO, 'Bootstrap module {name}', ['name' => $name], true);
+            self::syslog(self::INFO, 'Bootstrap module {name}', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             self::installService($name, $service, 'module');
         }
     }
@@ -314,7 +324,7 @@ final class Core
      */
     public static function app(): \gear\interfaces\IModule
     {
-        self::syslog(self::INFO, 'Get app module', [], true);
+        self::syslog(self::INFO, 'Get app module', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         return self::m('app');
     }
 
@@ -362,7 +372,7 @@ final class Core
      */
     public static function c(string $name, \gear\interfaces\IObject $owner = null, bool $clone = false): \gear\interfaces\IComponent
     {
-        self::syslog(self::INFO, 'Get component {name}', ['name' => $name], true);
+        self::syslog(self::INFO, 'Get component {name}', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $component = self::service($name, 'component', $owner);
         return $clone ? clone $component : $component;
     }
@@ -390,7 +400,7 @@ final class Core
             $context = $message;
             $message = 'Throw unknown exception';
         }
-        self::syslog(self::INFO, 'Create exception <{name}>', ['name' => $exceptionClass], true);
+        self::syslog(self::INFO, 'Create exception <{name}> with message <{message}>', ['name' => $exceptionClass, 'message' => $message, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (self::isComponentInstalled(self::props('international'))) {
             $international = self::service(self::props('international'));
             $message = $international->tr($message, 'exceptions\\' . $nameInt);
@@ -417,7 +427,8 @@ final class Core
      */
     public static function getInstalledService(string $name, string $type = null): \gear\interfaces\IService
     {
-        $service = [];
+        self::syslog(self::INFO, 'Get installed service <{name}> type <{type}>', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        $service = null;
         if (!$type) {
             if (isset(self::$_services['components'][$name]))
                 $service = self::$_services['components'][$name];
@@ -442,6 +453,7 @@ final class Core
      */
     public static function getRegisteredService(string $name, string $type = null): array
     {
+        self::syslog(self::INFO, 'Get registered service <{name}> type <{type}>', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $service = [];
         if (!$type) {
             if (isset(self::$_config['_bootstrap']['components'][$name]))
@@ -495,6 +507,7 @@ final class Core
      */
     public static function init($config = [], int $mode = 0)
     {
+        self::syslog(self::INFO, 'Starting initialize Gear core', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         if ($config instanceof \Closure) {
             $config = $config();
         }
@@ -508,6 +521,7 @@ final class Core
             }
             if (!file_exists($config) || !is_readable($config) || !is_file($config))
                 throw self::exceptionCore('Invalid configuration file <{file}>', ['file' => $config]);
+            self::syslog(self::INFO, 'Load core configuration from file <{file}>', ['file' => $config, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             $config = require $config;
         }
         if (!is_array($config))
@@ -515,8 +529,10 @@ final class Core
         self::$_config = array_replace_recursive(self::$_config, $config);
         if ($mode)
             self::props('mode', $mode);
+        self::syslog(self::INFO, 'Bootstraping core', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         self::_bootstrap();
-        self::$_isInit = true;
+        self::$_initialized = true;
+        self::syslog(self::INFO, 'Initialize Gear core well done', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
     }
 
     /**
@@ -564,6 +580,7 @@ final class Core
     public static function installService(string $name, $service, string $type = null, \gear\interfaces\IObject $owner = null): \gear\interfaces\IService
     {
         if (is_array($service)) {
+            self::syslog(self::INFO, 'Installing service <{name}> type <{type}> from array', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             list($class, $config, $properties) = self::configure($service);
             if (!self::isServiceInstalled(self::props('loaderName'), 'component')) {
                 $file = self::resolvePath($class, true) . '.php';
@@ -576,6 +593,8 @@ final class Core
                 require_once($file);
             }
             $service = $class::install($config, $properties, $owner);
+        } else {
+            self::syslog(self::INFO, 'Installing service <{name}> type <{type}>', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         }
         if (!($service instanceof \gear\interfaces\IService))
             throw self::exceptionCore('Installed service must be an instance of interface \gear\interfaces\IService');
@@ -585,6 +604,7 @@ final class Core
                 throw self::exceptionCore('Service <{name}> already installed', ['name' => $name]);
         }
         self::$_services[$type][$name] = $service;
+        self::syslog(self::INFO, 'Service <{name}> type <{type}> is installed well done', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return self::$_services[$type][$name];
     }
 
@@ -664,6 +684,7 @@ final class Core
      */
     public static function isServiceRegistered(string $name, string $type = null): bool
     {
+        self::syslog(self::INFO, 'Cheking service <{name}> type <{type}> is registered', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (!$type) {
             $is = isset(self::$_config['_bootstrap']['components'][$name]) || isset(self::$_config['components'][$name]) ||
                   isset(self::$_config['_bootstrap']['modules'][$name]) || isset(self::$_config['modules'][$name]) ?: false;
@@ -686,6 +707,7 @@ final class Core
      */
     public static function isServiceInstalled(string $name, string $type = null): bool
     {
+        self::syslog(self::INFO, 'Checking service <{name}> type <{type}> as installed', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (!$type) {
             $is = isset(self::$_services['components'][$name]) || isset(self::$_services['modules'][$name]);
         } else {
@@ -813,13 +835,13 @@ final class Core
             if (!($resolver = self::props('resolver')))
                 $resolver = 'loader';
             if (self::isComponentInstalled($resolver)) {
-                self::syslog(self::INFO, 'Resolve path <{path}> from resolver component <{resolver}> [{line}]', ['path' => $path, 'resolver' => $resolver, 'line' => __LINE__], true);
+                self::syslog(self::INFO, 'Resolve path <{path}> from resolver component <{resolver}>', ['path' => $path, 'resolver' => $resolver, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                 $path = self::c($resolver)->resolvePath($path);
                 return $path;
             }
         }
         if (!$path) {
-            self::syslog(self::NOTICE, 'Empty path to resolve [{line}]', ['line' => __LINE__], true);
+            self::syslog(self::NOTICE, 'Empty path to resolve', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
             return $path;
         }
         if (!preg_match('/^([a-zA-Z]\:|\/)/', $path)) {
@@ -836,7 +858,7 @@ final class Core
         } else {
             $resolve = $path;
         }
-        self::syslog(self::INFO, 'Resolve path <{path}> to <{resolve}> [{line}]', ['path' => $path, 'resolve' => $resolve, 'line' => __LINE__], true);
+        self::syslog(self::INFO, 'Resolve path <{path}> to <{resolve}>', ['path' => $path, 'resolve' => $resolve, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return $resolve;
     }
 
@@ -853,8 +875,11 @@ final class Core
      */
     public static function service(string $name, string $type = null, \gear\interfaces\IObject $owner = null): \gear\interfaces\IService
     {
+        self::syslog(self::INFO, 'Get service <{name}> type <{type}>', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (!self::isServiceInstalled($name, $type)) {
+            self::syslog(self::INFO, 'Service <{name}> type <{type}> not installed', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             if (!self::isServiceRegistered($name, $type)) {
+                self::syslog(self::WARNING, 'Service <{name}> type <{type}> not registered', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                 throw self::exceptionCore('Service <{name}> not registered', ['name' => $name]);
             }
             $service = self::getRegisteredService($name, $type);
@@ -882,12 +907,21 @@ final class Core
     public static function syslog(string $level, string $message, array $context = [], bool $useCoreLog = false)
     {
         if (self::props('mode') === self::DEVELOPMENT) {
-            if (!$useCoreLog && self::$_isInit && isset(self::$_services['components']['syslog'])) {
+            if (!$useCoreLog && self::$_initialized && isset(self::$_services['components']['syslog'])) {
                 self::$_services['components']['syslog']->log($level, $message, $context);
             } else {
-                $logFile = self::props('syslog');
+                $logFiles = self::props('syslog');
+                $logFile = isset($logFiles[$level]) ? $logFiles[$level] : GEAR . '/core/core.log';
                 foreach($context as $name => $value) {
                     $message = str_replace('{' . $name . '}', $value, $message);
+                }
+                if (isset($context['__func__']) || isset($context['__line__'])) {
+                    $info = [];
+                    if (isset($context['__func__']))
+                        $info[] = $context['__func__'] . '()';
+                    if (isset($context['__line__']))
+                        $info[] = $context['__line__'];
+                    $message .= ' [' . implode(':', $info) . ']';
                 }
                 $log = date('d/m/Y H:i:s') . ' [' . strtoupper($level) . '] ' . $message . "\n";
                 file_put_contents($logFile, $log, file_exists($logFile) ? FILE_APPEND : 0);
@@ -907,7 +941,7 @@ final class Core
      */
     public static function on(string $name, $handler)
     {
-//        self::syslog(self::INFO, 'Add handler to event <{eventName}> [{line}]', ['eventName' => $name, 'line' => __LINE__], true);
+//        self::syslog(self::INFO, 'Add handler to event <{eventName}> [{line}]', ['eventName' => $name, '__line__' => __LINE__], true);
         if (!is_callable($handler))
             throw self::exceptionCore('Event handler must be callable');
         !isset(self::$_events[$name]) ? self::$_events[$name] = [$handler] : self::$_events[$name][] = $handler;
@@ -925,7 +959,7 @@ final class Core
      */
     public static function off(string $name, $handler = false)
     {
-        self::syslog(self::INFO, 'Remove handlers of event <{eventName}> [{line}]', ['eventName' => $name, 'line' => __LINE__], true);
+        self::syslog(self::INFO, 'Remove handlers of event <{eventName}> [{line}]', ['eventName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (isset(self::$_events[$name])) {
             if (!$handler)
                 unset(self::$_events[$name]);
@@ -947,9 +981,9 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function trigger(string $name, $event):bool
+    public static function trigger(string $name, $event): bool
     {
-        self::syslog(self::INFO, 'Trigger event <{eventName}> [{line}]', ['eventName' => $name, 'line' => __LINE__], true);
+        self::syslog(self::INFO, 'Trigger event <{eventName}>', ['eventName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $result = true;
         if (isset(self::$_events[$name])) {
             foreach (self::$_events[$name] as $handler) {
