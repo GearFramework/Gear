@@ -28,7 +28,8 @@ interface UploadedFileInterface
      * @throws \RuntimeException in cases when no stream is available or can be
      *     created.
      */
-    public function getStream();
+    public function getStream(): StreamInterface;
+
     /**
      * Move the uploaded file to a new location.
      *
@@ -60,8 +61,9 @@ interface UploadedFileInterface
      * @throws \InvalidArgumentException if the $targetPath specified is invalid.
      * @throws \RuntimeException on any error during the move operation, or on
      *     the second or subsequent call to the method.
+     * @return void
      */
-    public function moveTo($targetPath);
+    public function moveTo(string $targetPath);
 
     /**
      * Retrieve the file size.
@@ -88,7 +90,7 @@ interface UploadedFileInterface
      * @see http://php.net/manual/en/features.file-upload.errors.php
      * @return int One of PHP's UPLOAD_ERR_XXX constants.
      */
-    public function getError();
+    public function getError(): int;
 
     /**
      * Retrieve the filename sent by the client.
