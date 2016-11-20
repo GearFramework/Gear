@@ -2,6 +2,8 @@
 
 namespace gear\traits\http;
 
+use Psr\Http\Messages\ServerRequestInterface;
+
 trait TServerRequest
 {
 
@@ -13,8 +15,10 @@ trait TServerRequest
      * REQUIRED to originate from $_SERVER.
      *
      * @return array
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getServerParams()
+    public function getServerParams(): array
     {
         // TODO: Implement getServerParams() method.
     }
@@ -28,8 +32,10 @@ trait TServerRequest
      * superglobal.
      *
      * @return array
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
         // TODO: Implement getCookieParams() method.
     }
@@ -50,8 +56,10 @@ trait TServerRequest
      *
      * @param array $cookies Array of key/value pairs representing cookies.
      * @return static
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): ServerRequestInterface
     {
         // TODO: Implement withCookieParams() method.
     }
@@ -67,8 +75,10 @@ trait TServerRequest
      * or from the `QUERY_STRING` server param.
      *
      * @return array
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
         if (is_array($this->_queryParams)) {
             return $this->_queryParams;
@@ -101,8 +111,10 @@ trait TServerRequest
      * @param array $query Array of query string arguments, typically from
      *     $_GET.
      * @return static
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): ServerRequestInterface
     {
         // TODO: Implement withQueryParams() method.
     }
@@ -118,8 +130,10 @@ trait TServerRequest
      *
      * @return array An array tree of UploadedFileInterface instances; an empty
      *     array MUST be returned if no data is present.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
         // TODO: Implement getUploadedFiles() method.
     }
@@ -134,8 +148,10 @@ trait TServerRequest
      * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
      * @return static
      * @throws \InvalidArgumentException if an invalid structure is provided.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
         // TODO: Implement withUploadedFiles() method.
     }
@@ -154,6 +170,8 @@ trait TServerRequest
      *
      * @return null|array|object The deserialized body parameters, if any.
      *     These will typically be an array or object.
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function getParsedBody()
     {
@@ -187,8 +205,10 @@ trait TServerRequest
      * @return static
      * @throws \InvalidArgumentException if an unsupported argument type is
      *     provided.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withParsedBody($data)
+    public function withParsedBody($data): ServerRequestInterface
     {
         // TODO: Implement withParsedBody() method.
     }
@@ -203,8 +223,10 @@ trait TServerRequest
      * will be application and request specific, and CAN be mutable.
      *
      * @return array Attributes derived from the request.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         // TODO: Implement getAttributes() method.
     }
@@ -223,8 +245,10 @@ trait TServerRequest
      * @param string $name The attribute name.
      * @param mixed $default Default value to return if the attribute does not exist.
      * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getAttribute($name, $default = null)
+    public function getAttribute(string $name, $default = null)
     {
         // TODO: Implement getAttribute() method.
     }
@@ -243,8 +267,10 @@ trait TServerRequest
      * @param string $name The attribute name.
      * @param mixed $value The value of the attribute.
      * @return static
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withAttribute($name, $value)
+    public function withAttribute(string $name, $value): ServerRequestInterface
     {
         // TODO: Implement withAttribute() method.
     }
@@ -262,8 +288,10 @@ trait TServerRequest
      * @see getAttributes()
      * @param string $name The attribute name.
      * @return static
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withoutAttribute($name)
+    public function withoutAttribute(string $name): ServerRequestInterface
     {
         // TODO: Implement withoutAttribute() method.
     }

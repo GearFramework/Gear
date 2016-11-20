@@ -44,8 +44,10 @@ trait TStream
      *
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
      * @return string
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return (string)$this->getContents(null, 0);
@@ -73,6 +75,8 @@ trait TStream
      * Closes the stream and any underlying resources.
      *
      * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function close()
     {
@@ -113,9 +117,11 @@ trait TStream
      * Returns the current position of the file read/write pointer
      *
      * @return int Position of the file pointer
-     * @throws \RuntimeException on error.
+     * @throws RuntimeException
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function tell()
+    public function tell(): int
     {
         if (!$this->isAttached() || ($pos = ftell($this->_stream)) === false) {
             throw new RuntimeException('Could not get the position of the pointer in stream');
@@ -127,8 +133,10 @@ trait TStream
      * Returns true if the stream is at the end of the stream.
      *
      * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function eof()
+    public function eof(): bool
     {
         return $this->isAttached() ? feof($this->_stream) : true;
     }
@@ -137,8 +145,10 @@ trait TStream
      * Returns whether or not the stream is seekable.
      *
      * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return (bool)$this->getMetadata('seekable');
     }
@@ -154,8 +164,11 @@ trait TStream
      *     offset bytes SEEK_CUR: Set position to current location plus offset
      *     SEEK_END: Set position to end-of-stream plus offset.
      * @throws \RuntimeException on failure.
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek(int $offset, int $whence = SEEK_SET)
     {
         if (!$this->isSeekable())
             throw new \RuntimeException('Stream is not seekable');
@@ -172,6 +185,9 @@ trait TStream
      * @see seek()
      * @see http://www.php.net/manual/en/function.fseek.php
      * @throws \RuntimeException on failure.
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function rewind()
     {
@@ -182,8 +198,10 @@ trait TStream
      * Returns whether or not the stream is writable.
      *
      * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         $writable = false;
         if ($this->isAttached()) {
@@ -198,9 +216,11 @@ trait TStream
      *
      * @param string $string The string that is to be written.
      * @return int Returns the number of bytes written to the stream.
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function write($string)
+    public function write(string $string): int
     {
         if (!$this->isAttached())
             throw new \RuntimeException('Unable write to not attached stream');
@@ -215,8 +235,10 @@ trait TStream
      * Returns whether or not the stream is readable.
      *
      * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function isReadable()
+    public function isReadable(): int
     {
         $readable = false;
         if ($this->isAttached()) {
@@ -235,8 +257,10 @@ trait TStream
      * @return string Returns the data read from the stream, or an empty string
      *     if no bytes are available.
      * @throws \RuntimeException if an error occurs.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function read($length)
+    public function read(int $length): string
     {
         if (!$this->isAttached())
             throw new \RuntimeException('Unable to read from not attached stream');
@@ -251,8 +275,10 @@ trait TStream
      * @return string
      * @throws \RuntimeException if unable to read.
      * @throws \RuntimeException if error occurs while reading.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getContents($maxLength = null, $offset = null)
+    public function getContents(int $maxLength = null, int $offset = null): string
     {
         $contents = stream_get_contents($this->_stream, $maxLength, $offset);
         if ($contents === false) {
@@ -272,10 +298,12 @@ trait TStream
      * @return array|mixed|null Returns an associative array if no key is
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getMetadata($key = null)
+    public function getMetadata(string $key = '')
     {
         $this->_metadata = stream_get_meta_data($this->_stream);
-        return $key === null ? $this->_metadata : (isset($this->meta[$key]) ? $this->meta[$key] : null);
+        return $key === '' ? $this->_metadata : (isset($this->meta[$key]) ? $this->meta[$key] : null);
     }
 }

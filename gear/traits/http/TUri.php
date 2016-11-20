@@ -2,6 +2,8 @@
 
 namespace gear\traits\http;
 
+use Psr\Http\Messages\UriInterface;
+
 trait TUri
 {
     /**
@@ -22,8 +24,11 @@ trait TUri
 
     /**
      * TUri constructor.
+     *
      * @param string $uri
      * @throws \InvalidArgumentException
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function __construct(string $uri)
     {
@@ -61,8 +66,10 @@ trait TUri
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
      * @return string
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->compileUri();
     }
@@ -80,8 +87,10 @@ trait TUri
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      * @return string The URI scheme.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->_scheme;
     }
@@ -100,8 +109,10 @@ trait TUri
      * @param string $scheme The scheme to use with the new instance.
      * @return static A new instance with the specified scheme.
      * @throws \InvalidArgumentException for invalid or unsupported schemes.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withScheme($scheme)
+    public function withScheme(string $scheme): UriInterface
     {
         $uri = $this;
         if ($scheme !== $this->getScheme()) {
@@ -111,7 +122,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutScheme()
+    public function withoutScheme(): UriInterface
     {
         $uri = $this;
         if ($this->getScheme()) {
@@ -138,8 +149,10 @@ trait TUri
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      * @return string The URI authority, in "[user-info@]host[:port]" format.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getAuthority()
+    public function getAuthority(): string
     {
         $authority = $this->getHost();
         if (($userInfo = $this->getUserInfo())) {
@@ -150,12 +163,12 @@ trait TUri
         return $authority;
     }
 
-    public function getUser()
+    public function getUser(): string
     {
         return $this->_user;
     }
 
-    public function withUser($user)
+    public function withUser(string $user): UriInterface
     {
         $uri = $this;
         if ($user !== $this->getUser()) {
@@ -165,7 +178,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutUser()
+    public function withoutUser(): UriInterface
     {
         $uri = $this;
         if ($this->getUser()) {
@@ -176,12 +189,12 @@ trait TUri
         return $uri;
     }
 
-    public function getPass()
+    public function getPass(): string
     {
         return $this->_pass;
     }
 
-    public function withPass($pass)
+    public function withPass(string $pass): UriInterface
     {
         $uri = $this;
         if ($pass !== $this->getPass() && $this->getUser()) {
@@ -191,7 +204,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutPass()
+    public function withoutPass(): UriInterface
     {
         $uri = $this;
         if ($this->getPass()) {
@@ -215,8 +228,10 @@ trait TUri
      * NOT be added.
      *
      * @return string The URI user information, in "username[:password]" format.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getUserInfo()
+    public function getUserInfo(): string
     {
         return $this->_userInfo;
     }
@@ -234,8 +249,10 @@ trait TUri
      * @param string $user The user name to use for authority.
      * @param null|string $password The password associated with $user.
      * @return static A new instance with the specified user information.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo(string $user, string $password = null): UriInterface
     {
         $uri = $this;
         $userInfo = $user . ($password ? ':' . $password : '');
@@ -248,7 +265,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutUserInfo()
+    public function withoutUserInfo(): UriInterface
     {
         $uri = $this;
         if ($this->getUserInfo()) {
@@ -270,8 +287,10 @@ trait TUri
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      * @return string The URI host.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->_host;
     }
@@ -287,8 +306,10 @@ trait TUri
      * @param string $host The hostname to use with the new instance.
      * @return static A new instance with the specified host.
      * @throws \InvalidArgumentException for invalid hostnames.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withHost($host)
+    public function withHost(string $host): UriInterface
     {
         $uri = $this;
         if ($host !== $this->getHost()) {
@@ -312,6 +333,8 @@ trait TUri
      * the standard port for that scheme, but SHOULD return null.
      *
      * @return null|int The URI port.
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function getPort()
     {
@@ -334,8 +357,10 @@ trait TUri
      *     removes the port information.
      * @return static A new instance with the specified port.
      * @throws \InvalidArgumentException for invalid ports.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withPort($port)
+    public function withPort(int $port): UriInterface
     {
         $uri = $this;
         if ($port !== $this->getPort()) {
@@ -345,7 +370,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutPort()
+    public function withoutPort(): UriInterface
     {
         $uri = $this;
         if ($this->getPort()) {
@@ -379,8 +404,10 @@ trait TUri
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string The URI path.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->_path;
     }
@@ -406,8 +433,10 @@ trait TUri
      * @param string $path The path to use with the new instance.
      * @return static A new instance with the specified path.
      * @throws \InvalidArgumentException for invalid paths.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withPath($path)
+    public function withPath(string $path): UriInterface
     {
         $uri = $this;
         if ($path !== $this->getPath()) {
@@ -417,7 +446,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutPath()
+    public function withoutPath(): UriInterface
     {
         $uri = $this;
         if ($this->getPath()) {
@@ -446,8 +475,10 @@ trait TUri
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @return string The URI query string.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->_query;
     }
@@ -466,8 +497,10 @@ trait TUri
      * @param string $query The query string to use with the new instance.
      * @return static A new instance with the specified query string.
      * @throws \InvalidArgumentException for invalid query strings.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withQuery($query)
+    public function withQuery(string $query): UriInterface
     {
         if (is_array($query)) {
             $temp = [];
@@ -488,7 +521,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutQuery()
+    public function withoutQuery(): UriInterface
     {
         $uri = $this;
         if ($this->getQuery()) {
@@ -513,8 +546,10 @@ trait TUri
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @return string The URI fragment.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getFragment()
+    public function getFragment(): string
     {
         return $this->_fragment;
     }
@@ -532,8 +567,10 @@ trait TUri
      *
      * @param string $fragment The fragment to use with the new instance.
      * @return static A new instance with the specified fragment.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function withFragment($fragment)
+    public function withFragment(string $fragment): UriInterface
     {
         $uri = $this;
         if ($fragment !== $this->getFragment()) {
@@ -543,7 +580,7 @@ trait TUri
         return $uri;
     }
 
-    public function withoutFragment()
+    public function withoutFragment(): UriInterface
     {
         $uri = $this;
         if ($this->getFragment()) {
@@ -553,7 +590,7 @@ trait TUri
         return $uri;
     }
 
-    public function compileUri()
+    public function compileUri(): string
     {
         $uri = $this->getAuthority();
         if ($scheme = $this->getScheme())

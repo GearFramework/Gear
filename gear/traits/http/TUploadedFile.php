@@ -2,7 +2,7 @@
 
 namespace gear\traits\http;
 
-use gear\interfaces\StreamInterface;
+use Psr\Http\Messages\StreamInterface;
 
 trait TUploadedFile
 {
@@ -39,8 +39,10 @@ trait TUploadedFile
      * @return StreamInterface Stream representation of the uploaded file.
      * @throws \RuntimeException in cases when no stream is available or can be
      *     created.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getStream()
+    public function getStream(): StreamInterface
     {
         // TODO: Implement getStream() method.
     }
@@ -81,8 +83,10 @@ trait TUploadedFile
      * @throws \InvalidArgumentException if the $targetPath specified is invalid.
      * @throws \RuntimeException on any error during the move operation, or on
      *     the second or subsequent call to the method.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function moveTo($targetPath)
+    public function moveTo(string $targetPath)
     {
         if ($this->isMoved()) {
             throw new RuntimeException('Uploaded file already moved');
@@ -128,6 +132,8 @@ trait TUploadedFile
      * on the actual size transmitted.
      *
      * @return int|null The file size in bytes or null if unknown.
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function getSize()
     {
@@ -147,8 +153,10 @@ trait TUploadedFile
      *
      * @see http://php.net/manual/en/features.file-upload.errors.php
      * @return int One of PHP's UPLOAD_ERR_XXX constants.
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getError()
+    public function getError(): int
     {
         return $this->_error;
     }
@@ -165,6 +173,8 @@ trait TUploadedFile
      *
      * @return string|null The filename sent by the client or null if none
      *     was provided.
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function getClientFilename()
     {
@@ -183,6 +193,8 @@ trait TUploadedFile
      *
      * @return string|null The media type sent by the client or null if none
      *     was provided.
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function getClientMediaType()
     {
