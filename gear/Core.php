@@ -91,20 +91,20 @@ final class Core
         'bootstrap' => [
             /* Список загружаемых библиотек */
             'libraries' => [
-//                '\Psr\Http\Message\*',
-//                '\gear\interfaces\*',
-//                '\gear\traits\*',
-//                '\gear\library\GException',
-//                '\gear\exceptions\*',
-//                '\gear\library\GEvent',
-//                '\gear\library\GBehavior',
-//                '\gear\library\GObject',
-//                '\gear\library\GObject',
-//                '\gear\library\GService',
-//                '\gear\library\GModule',
-//                '\gear\library\GComponent',
-//                '\gear\library\GPlugin',
-//                '\gear\plugins\templater\GView',
+                '\Psr\Http\Message\*',
+                '\gear\interfaces\*',
+                '\gear\traits\*',
+                '\gear\library\GException',
+                '\gear\exceptions\*',
+                '\gear\library\GEvent',
+                '\gear\library\GBehavior',
+                '\gear\library\GObject',
+                '\gear\library\GObject',
+                '\gear\library\GService',
+                '\gear\library\GModule',
+                '\gear\library\GComponent',
+                '\gear\library\GPlugin',
+                '\gear\plugins\templater\GView',
             ],
             /* Список загружаемых модулей */
             'modules' => [],
@@ -130,23 +130,26 @@ final class Core
         /* Список глобальных свойств ядра */
         'properties' => [
             /* Режим запуска приложения */
-            'mode' => self::PRODUCTION,
+            'mode' => self::DEVELOPMENT,
             /* Текущая локаль */
             'locale' => 'ru_RU',
             /* Кодировка */
             'charset' => 'utf-8',
-            /* Файл для записи логов ядра (должен быть прямой путь к файлу) */
+            /* Файлы для записи логов ядра (должен быть прямой путь к файлу) */
             'syslog' => [
-                self::ALERT => GEAR . '/log/core/core.alert.log',
-                self::CRITICAL =>  GEAR . '/log/core/core.critical.log',
-                self::DEBUG =>  GEAR . '/log/core/core.debug.log',
-                self::EMERGENCY => GEAR . '/log/core/core.emergency.log',
-                self::ERROR => GEAR . '/log/core/core.error.log',
-                self::EXCEPTION => GEAR . '/log/core/core.exception.log',
-                self::INFO => GEAR . '/log/core/core.info.log',
-                self::NOTICE => GEAR . '/log/core/core.notice.log',
-                self::WARNING => GEAR . '/log/core/core.warning.log',
+                self::ALERT => GEAR . '/logs/core/core.alert.log',
+                self::CRITICAL =>  GEAR . '/logs/core/core.critical.log',
+                self::DEBUG =>  GEAR . '/logs/core/core.debug.log',
+                self::EMERGENCY => GEAR . '/logs/core/core.emergency.log',
+                self::ERROR => GEAR . '/logs/core/core.error.log',
+                self::EXCEPTION => GEAR . '/logs/core/core.exception.log',
+                self::INFO => GEAR . '/logs/core/core.info.log',
+                self::NOTICE => GEAR . '/logs/core/core.notice.log',
+                self::WARNING => GEAR . '/logs/core/core.warning.log',
+                0 => GEAR . '/logs/core/core.log',
             ],
+            /* Разделять логи по файлам в зависимости от типа или всё писать в один общий лог */
+            'splitLogs' => false,
             /* Название компонента автозагрузчика классов */
             'loaderName' => 'loader',
             'international' => 'lang',
@@ -391,6 +394,7 @@ final class Core
      */
     public static function e(string $exceptionName, $message = '', $context = [], $code = 0, $previous = null): \Exception
     {
+        self::syslog(self::EXCEPTION, 'Request to create exception <{name}>', ['name' => $exceptionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $nameInt = substr($exceptionName, 9);
         $exceptionClass =  '\\' . $nameInt . 'Exception';
         $exception = null;
@@ -400,8 +404,10 @@ final class Core
             $context = $message;
             $message = 'Throw unknown exception';
         }
-        self::syslog(self::INFO, 'Create exception <{name}> with message <{message}>', ['name' => $exceptionClass, 'message' => $message, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        self::syslog(self::EXCEPTION, 'Response exception class <{name}> with message <{message}>', ['name' => $exceptionClass, 'message' => $message, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        self::syslog(self::EXCEPTION, 'Check translater <{tr}>', ['tr' => self::props('international'), '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (self::isComponentInstalled(self::props('international'))) {
+            self::syslog(self::EXCEPTION, 'Translate message to locale <{locale}>', ['locale' => self::props('locale'), '__func__' => __METHOD__, '__line__' => __LINE__], true);
             $international = self::service(self::props('international'));
             $message = $international->tr($message, 'exceptions\\' . $nameInt);
         }
@@ -413,6 +419,7 @@ final class Core
         } else {
             $exception = new $exceptionClass($message, $code, $previous, $context);
         }
+        self::syslog(self::EXCEPTION, 'Created exception class <{name}> width message <{message}>', ['name' => get_class($exception), 'message' => $message, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return $exception;
     }
 
@@ -529,8 +536,10 @@ final class Core
         if (!is_array($config))
             throw self::exceptionCore('Invalid configuration', ['config' => $config]);
         self::$_config = array_replace_recursive(self::$_config, $config);
-        if ($mode)
+        if ($mode && $mode !== (int)self::props('mode')) {
             self::props('mode', $mode);
+            self::syslog(self::INFO, 'Turn Core to <{mode}> mode', ['mode' => self::$_modes[$mode], '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        }
         self::syslog(self::INFO, 'Bootstraping core', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         self::_bootstrap();
         self::$_initialized = true;
@@ -801,6 +810,7 @@ final class Core
      */
     public static function registerService($name, $service, string $type)
     {
+        self::syslog(self::INFO, 'Register service <{name}> as type <{type}>', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if ($name instanceof \Closure) {
             $name = $name($service, $type);
         }
@@ -818,6 +828,7 @@ final class Core
                 throw self::exceptionCore('Service <{name}> already registered', ['name' => $name]);
             }
         }
+        self::syslog(self::INFO, 'Register service <{name}> in section <{type}> well done', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         self::$_config[$type][$name] = $service;
     }
 
@@ -913,7 +924,7 @@ final class Core
                 self::$_services['components']['syslog']->log($level, $message, $context);
             } else {
                 $logFiles = self::props('syslog');
-                $logFile = isset($logFiles[$level]) ? $logFiles[$level] : GEAR . '/core/core.log';
+                $logFile = (bool)self::props('splitLogs') === true && isset($logFiles[$level]) ? $logFiles[$level] : $logFiles[0];
                 foreach($context as $name => $value) {
                     $message = str_replace('{' . $name . '}', $value, $message);
                 }

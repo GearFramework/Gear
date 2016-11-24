@@ -46,8 +46,6 @@ class GErrorsHandlerComponent extends GComponent
      */
     public function error(int $code, string $message, string $file = '', int $line = 0)
     {
-        print_r(func_get_args());
-        die();
         try {
             if (php_sapi_name() !== 'cli' && !empty(ob_get_status()))
                 ob_end_clean();

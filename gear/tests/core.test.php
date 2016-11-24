@@ -14,12 +14,12 @@ function testConfig($config, $mode = \gear\Core::DEVELOPMENT, $short = false, $r
         $r = \gear\Core::init($config, $mode);
         echo !$short ? "Result " . (!$exceptionResult || ($result !== null && $r === $result) ? "[OK]\n" : "[ERROR]\n") : '';
         $r = !$exceptionResult || ($result !== null && $r === $result);
+        echo (!$short ? "Result "  : "") . ($r ? "[OK]\n" : "[ERROR]\n");
     } catch(\Throwable $e) {
         echo !$short ? "Exception message: " . $e->getMessage() . " [" . get_class($e) . "]\n" : '';
         $r = $exceptionResult;
         echo !$short ? "Result " . ($exceptionResult ? "[OK]\n" : "[ERROR]\n") : '';
     }
-    echo (!$short ? "Result "  : "") . ($r ? "[OK]\n" : "[ERROR]\n");
     return $r;
 }
 
@@ -39,11 +39,29 @@ function testServicesRegister($name, $service, $type, $result = null)
     }
 }
 
+function testFunction(\Closure $function )
+{
+    try {
+        $r = $function();
+        return true;
+    } catch(\Throwable $e) {
+        echo "Exception message: " . $e->getMessage() . " [" . get_class($e) . "]\n";
+        return false;
+    }
+}
+
 //testConfig('', 1, true, null, true);
 //testConfig([], 1, true);
-testConfig(function() { return []; }, 1, true);
-//testConfig(1, 1, true, null, true);
+//testConfig(function() { return []; }, 1, true);
+//testConfig(1, 1, false, null, false);
 
+testConfig([
+], \gear\Core::DEVELOPMENT, true, null, false);
+testServicesRegister('errorsHandler', ['class' => '\gear\components\handlers\GErrorsHandlerComponent'], 'component');
+testServicesRegister('exceptionsHandler', ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'], 'component');
+testFunction(function() { \gear\Core::c('errorsHandler'); });
+testFunction(function() { \gear\Core::c('errorsHandler')->error(1, 'Test error 1', __FILE__, __LINE__); });
+testFunction(function() { trigger_error('Test error 2'); });
 //echo "Result " . (testServicesRegister('test', ['class' => '\Test'], 'component') ? "[OK]\n" : "[ERROR]\n");
 //echo "Result " . (testServicesRegister(function() { return 'Test1'; }, ['class' => '\Test'], 'component') ? "[OK]\n" : "[ERROR]\n");
 //echo "Result " . (testServicesRegister('test1', function() { return ['class' => '\Test']; }, 'component') ? "[OK]\n" : "[ERROR]\n");
