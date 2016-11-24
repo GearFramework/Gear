@@ -39,10 +39,10 @@ function testServicesRegister($name, $service, $type, $result = null)
     }
 }
 
-testConfig('', 1, true, null, true);
-testConfig([], 1, true);
+//testConfig('', 1, true, null, true);
+//testConfig([], 1, true);
 testConfig(function() { return []; }, 1, true);
-testConfig(1, 1, true, null, true);
+//testConfig(1, 1, true, null, true);
 
 //echo "Result " . (testServicesRegister('test', ['class' => '\Test'], 'component') ? "[OK]\n" : "[ERROR]\n");
 //echo "Result " . (testServicesRegister(function() { return 'Test1'; }, ['class' => '\Test'], 'component') ? "[OK]\n" : "[ERROR]\n");

@@ -91,39 +91,39 @@ final class Core
         'bootstrap' => [
             /* Список загружаемых библиотек */
             'libraries' => [
-                '\Psr\Http\Message\*',
-                '\gear\interfaces\*',
-                '\gear\traits\*',
-                '\gear\library\GException',
-                '\gear\exceptions\*',
-                '\gear\library\GEvent',
-                '\gear\library\GBehavior',
-                '\gear\library\GObject',
-                '\gear\library\GObject',
-                '\gear\library\GService',
-                '\gear\library\GModule',
-                '\gear\library\GComponent',
-                '\gear\library\GPlugin',
-                '\gear\plugins\templater\GView',
+//                '\Psr\Http\Message\*',
+//                '\gear\interfaces\*',
+//                '\gear\traits\*',
+//                '\gear\library\GException',
+//                '\gear\exceptions\*',
+//                '\gear\library\GEvent',
+//                '\gear\library\GBehavior',
+//                '\gear\library\GObject',
+//                '\gear\library\GObject',
+//                '\gear\library\GService',
+//                '\gear\library\GModule',
+//                '\gear\library\GComponent',
+//                '\gear\library\GPlugin',
+//                '\gear\plugins\templater\GView',
             ],
             /* Список загружаемых модулей */
             'modules' => [],
             /* Список загружаемых компонентов */
             'components' => [
                 /* Обработчик ошибок */
-                'errorsHandler' => ['class' => '\gear\components\handlers\GErrorsHandlerComponent'],
+//                'errorsHandler' => ['class' => '\gear\components\handlers\GErrorsHandlerComponent'],
                 /* Обработчик исключений */
-                'exceptionHandler' => ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'],
+//                'exceptionHandler' => ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'],
                 /* */
-                'lang' => ['class' => '\gear\components\international\GInternationalComponent'],
+//                'lang' => ['class' => '\gear\components\international\GInternationalComponent'],
                 /* Автозагрузчик файлов с классами */
-                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
+//                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */
         'modules' => [
             /* Модуль приложения должен быть описан всегда */
-            'app' => ['class' => '\gear\library\GApplication']
+//            'app' => ['class' => '\gear\library\GApplication']
         ],
         /* Список глобальных зарегистрированных компонентов системы */
         'components' => [],
@@ -221,10 +221,10 @@ final class Core
     public static function __callStatic(string $name, array $arguments)
     {
         if ('exception' === strtolower(substr($name, 0, 9))) {
-            self::syslog(self::NOTICE, 'Magic call throw exception {exceptionName}', ['exceptionName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+            self::syslog(self::NOTICE, 'Magic call throw exception <{exceptionName}>', ['exceptionName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             return self::e($name, ...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {
-            self::syslog(self::INFO, 'Magic call trigger event {eventName}', ['eventName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+            self::syslog(self::INFO, 'Magic call trigger event <{eventName}>', ['eventName' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             return self::trigger($name, ...$arguments);
         } else if (self::isService($name)) {
             return self::service($name, ...$arguments);
@@ -234,7 +234,7 @@ final class Core
     }
 
     /**
-     * Начальная загрузка необходимых дял дальнейшей работы ядра и приложения библиотек и сервисов
+     * Начальная загрузка необходимых библиотек и сервисов для дальнейшей работы ядра и приложения
      *
      * @return void
      * @uses self::_bootstrapLibraries()
@@ -509,9 +509,11 @@ final class Core
     {
         self::syslog(self::INFO, 'Starting initialize Gear core', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         if ($config instanceof \Closure) {
+            self::syslog(self::INFO, 'Config as closure', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
             $config = $config();
         }
         if (is_string($config)) {
+            self::syslog(self::INFO, 'Config as string', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
             $config = self::resolvePath($config, true);
             if (is_dir($config)) {
                 $config .= '/config.' . (self::$_modes[$mode ?? self::props('mode')] ?? self::$_modes[self::PRODUCTION]) . '.php';
