@@ -296,6 +296,9 @@ final class Core
             } else {
                 $file = preg_match('/\.php$/', $library) ? $library : $library . '.php';
                 self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+                if (!file_exists($file)) {
+                    throw self::exceptionCore('Bootstrap library <{lib}> not found', ['lib' => $file]);
+                }
                 require_once $file;
             }
         }
