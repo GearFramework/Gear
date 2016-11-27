@@ -427,6 +427,24 @@ final class Core
     }
 
     /**
+     * Возвращает конфигурацию ядра
+     *
+     * @param string $section
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getConfiguration(string $section = ''): array
+    {
+        if ($section !== '') {
+            $c = isset(self::$_config[$section]) ? self::$_config[$section] : [];
+        } else {
+            $c = self::$_config;
+        }
+        return $c;
+    }
+
+    /**
      * Возаращает установленный сервис
      *
      * @param string $name
@@ -450,6 +468,20 @@ final class Core
                 $service = self::$_services[$type][$name];
         }
         return $service;
+    }
+
+    /**
+     * Возвращает целочисленный режим запуска ядра, если $asString установлено в true, то возвращается
+     * строковое значение режима
+     *
+     * @param bool $asString
+     * @return int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getMode(bool $asString = false)
+    {
+        return !$asString ? self::props('mode') : self::$_modes[self::props('mode')];
     }
 
     /**

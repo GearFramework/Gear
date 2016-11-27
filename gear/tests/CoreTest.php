@@ -17,12 +17,9 @@ class CoreTest extends TestCase
             [1],
             [''],
             [
-                'bootstrap' => [
-                    'libraries' => [
-                        '\gear\library\Test',
-                    ],
-                ],
+                ['bootstrap' => ['libraries' => ['\gear\library\Test']]],
             ],
+            [],
         ];
     }
 
@@ -41,5 +38,6 @@ class CoreTest extends TestCase
     public function testInitWithException($config = [], $mode = \gear\Core::DEVELOPMENT)
     {
         \gear\Core::init($config, $mode);
+        $this->assertEquals(true, in_array('\gear\library\Test', \gear\Core::getConfiguration('bootstrap')['libraries']));
     }
 }
