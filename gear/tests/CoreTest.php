@@ -40,4 +40,10 @@ class CoreTest extends TestCase
         \gear\Core::init($config, $mode);
         $this->assertEquals(true, in_array('\gear\library\Test', \gear\Core::getConfiguration('bootstrap')['libraries']));
     }
+
+    public function testRegisterService($name, $service, $type)
+    {
+        \gear\Core::registerService($name, $service, $type);
+        $this->assertEquals(true, \gear\Core::isServiceRegistered($name, $type));
+    }
 }
