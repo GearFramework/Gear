@@ -845,17 +845,17 @@ final class Core
      */
     public static function registerService($name, $service, string $type)
     {
-        self::syslog(self::INFO, 'Register service <{name}> as type <{type}>', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if ($name instanceof \Closure) {
             $name = $name($service, $type);
         }
-        if (!is_string($name))
+        if (!is_string($name) || trim($name) === '')
             throw self::exceptionCore('Invalid name of registering service, name must be a string');
         if ($service instanceof \Closure) {
             $service = $service($name, $type);
         }
-        if (!is_array($service))
+        if (!is_array($service) || empty($service))
             throw self::exceptionCore('Invalid configuration record of registering service, record must be a array');
+        self::syslog(self::INFO, 'Register service <{name}> as type <{type}>', ['name' => is_string($name) ? $name : '', 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $type .= 's';
         if (isset(self::$_config[$type][$name])) {
             if (!isset(self::$_config[$type][$name]['__override__']) ||

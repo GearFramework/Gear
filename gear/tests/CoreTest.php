@@ -23,6 +23,26 @@ class CoreTest extends TestCase
         ];
     }
 
+    public function addDataProviderRegService()
+    {
+        return [
+            ['handlerError', ['class' => '\gear\components\handlers\GErrorsHandlerComponent'], 'component'],
+            ['handlerException', ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'], 'component'],
+        ];
+    }
+
+    public function addDataProviderRegServiceWithException()
+    {
+        return [
+            ['', ['class' => '\gear\components\laoder\GLoaderComponent'], 'component'],
+            [function() { return false; }, ['class' => '\gear\components\laoder\GLoaderComponent'], 'component'],
+            ['test', [], 'component'],
+            ['test', '', 'component'],
+            ['test', function() { return false; }, 'component'],
+            ['handlerException', ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'], 'component'],
+        ];
+    }
+
     /**
      * @dataProvider addDataProvider
      */
@@ -41,9 +61,21 @@ class CoreTest extends TestCase
         $this->assertEquals(true, in_array('\gear\library\Test', \gear\Core::getConfiguration('bootstrap')['libraries']));
     }
 
+    /**
+     * @dataProvider addDataProviderRegService
+     */
     public function testRegisterService($name, $service, $type)
     {
         \gear\Core::registerService($name, $service, $type);
         $this->assertEquals(true, \gear\Core::isServiceRegistered($name, $type));
+    }
+
+    /**
+     * @dataProvider addDataProviderRegServiceWithException
+     * @expectedException Exception
+     */
+    public function testRegisterServiceWithException($name, $service, $type)
+    {
+        \gear\Core::registerService($name, $service, $type);
     }
 }
