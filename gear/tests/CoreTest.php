@@ -28,6 +28,7 @@ class CoreTest extends TestCase
         return [
             ['handlerError', ['class' => '\gear\components\handlers\GErrorsHandlerComponent'], 'component'],
             ['handlerException', ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'], 'component'],
+            ['loader', ['class' => '\gear\components\loader\GLoaderComponent'], 'component'],
         ];
     }
 
@@ -40,6 +41,14 @@ class CoreTest extends TestCase
             ['test', '', 'component'],
             ['test', function() { return false; }, 'component'],
             ['handlerException', ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'], 'component'],
+        ];
+    }
+
+    public function addDataProviderInstallService()
+    {
+        return [
+            ['handlerError', ['class' => '\gear\components\handlers\GErrorsHandlerComponent'], 'component'],
+            ['apps', ['class' => '\demo\hello\Hello'], 'module'],
         ];
     }
 
@@ -77,5 +86,14 @@ class CoreTest extends TestCase
     public function testRegisterServiceWithException($name, $service, $type)
     {
         \gear\Core::registerService($name, $service, $type);
+    }
+
+    /**
+     * @dataProvider addDataProviderInstallService
+     */
+    public function testInstallService($name, $service, $type = null, $owner = null)
+    {
+        \gear\Core::installService($name, $service, $type, $owner);
+        $this->assertEquals(true, \gear\Core::isServiceInstalled($name, $type));
     }
 }

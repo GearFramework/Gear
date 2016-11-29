@@ -591,9 +591,9 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function installComponent(string $name, $component, \gear\interfaces\IObject $owner = null): \gear\interfaces\IComponent
+    public static function installComponent(string $name, $component, $owner = null): \gear\interfaces\IComponent
     {
-        return self::installService($name, $component, $owner);
+        return self::installService($name, $component, 'component', $owner);
     }
 
     /**
@@ -606,9 +606,9 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function installModule(string $name, $module, \gear\interfaces\IObject $owner = null): \gear\interfaces\IComponent
+    public static function installModule(string $name, $module): \gear\interfaces\IComponent
     {
-        return self::installService($name, $module, $owner);
+        return self::installService($name, $module, 'module');
     }
 
     /**
@@ -623,7 +623,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function installService(string $name, $service, string $type = null, \gear\interfaces\IObject $owner = null): \gear\interfaces\IService
+    public static function installService(string $name, $service, string $type = '', $owner = null): \gear\interfaces\IService
     {
         if (is_array($service)) {
             self::syslog(self::INFO, 'Installing service <{name}> type <{type}> from array', ['name' => $name, 'type' => $type, '__func__' => __METHOD__, '__line__' => __LINE__], true);
