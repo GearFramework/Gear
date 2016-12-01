@@ -175,12 +175,4 @@ class CoreTest extends TestCase
         \gear\Core::unregisterService($name, $type);
         $this->assertEquals(false, \gear\Core::isServiceRegistered($name, $type));
     }
-
-    public function testApplicationRun()
-    {
-        $this->assertEquals(true, \gear\Core::isServiceInstalled('app', 'module'));
-        $app = \gear\Core::app();
-        $this->assertEquals(true, $app instanceof \gear\interfaces\IModule);
-        $app->run();
-    }
 }
