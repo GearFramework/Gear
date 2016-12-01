@@ -7,6 +7,7 @@ use gear\interfaces\IController;
 use gear\interfaces\IRequest;
 use gear\library\GComponent;
 use gear\library\GController;
+use gear\library\GEvent;
 
 /**
  * Роутинг контроллеров
@@ -99,5 +100,10 @@ class GControllersComponent extends GComponent
     public function setRequest(IRequest $request)
     {
         $this->_request = $request;
+    }
+
+    public function beforeExecRouting($request)
+    {
+        return Core::trigger('onBeforeExecRouting', new GEvent($this, ['target' => $this, 'request' => $request]));
     }
 }

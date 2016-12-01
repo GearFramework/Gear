@@ -76,7 +76,7 @@ class GLoaderComponent extends GComponent
                     $resolve = ROOT . $resolve;
                 } else {
                     if (Core::isModuleInstalled('app')) {
-                        $resolve = ROOT . '/' . str_replace('\\', '/', self::app()->namespace) . '/' . $resolve;
+                        $resolve = ROOT . '/' . str_replace('\\', '/', Core::app()->namespace) . '/' . $resolve;
                     } else {
                         $resolve = GEAR . '/' . $resolve;
                     }

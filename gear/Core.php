@@ -2,6 +2,8 @@
 
 namespace gear;
 
+use gear\library\GEvent;
+
 defined('GEAR') or define('GEAR', __DIR__);
 defined('ROOT') or define('ROOT', dirname(__DIR__));
 
@@ -96,7 +98,7 @@ final class Core
                 '\gear\traits\*',
                 '\gear\library\GException',
                 '\gear\exceptions\*',
-                '\gear\library\GEvent',
+                '\gear\library\GEvent' => 'GEvent',
                 '\gear\library\GBehavior',
                 '\gear\library\GObject',
                 '\gear\library\GObject',
@@ -284,22 +286,40 @@ final class Core
      */
     private static function _bootstrapLibraries(array $section)
     {
-        foreach($section as $library) {
-            $library = self::resolvePath($library, true);
+        foreach($section as $key => $library) {
             if (preg_match('/[*|?]/', basename($library))) {
+                $library = self::resolvePath($library, true);
                 foreach(glob($library) as $file) {
                     if (is_file($file) && is_readable($file)) {
-                        self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+                        self::syslog(self::INFO, 'Bootstrap library <{name}>', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                         require_once $file;
                     }
                 }
             } else {
-                $file = preg_match('/\.php$/', $library) ? $library : $library . '.php';
-                self::syslog(self::INFO, 'Bootstrap library {name}', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+                if (!is_numeric($key)) {
+                    $alias = $library;
+                    $library = $key;
+                    self::syslog(self::INFO, 'Find alias <{alias}>', ['alias' => $alias, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+                } else {
+                    $alias = null;
+                }
+                if (preg_match('/\.php$/i', $library)) {
+                    $file = $library;
+                    $class = null;
+                } else {
+                    $class = $library;
+                    $file = $library . '.php';
+                }
+                $file = self::resolvePath($file, true);
+                self::syslog(self::INFO, 'Bootstrap library <{name}>', ['name' => $file, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                 if (!file_exists($file)) {
                     throw self::exceptionCore('Bootstrap library <{lib}> not found', ['lib' => $file]);
                 }
                 require_once $file;
+                if ($alias !== null && $class !== null) {
+                    self::syslog(self::INFO, 'Set alias <{alias}> for class <{class}>', ['alias' => $alias, 'class' => $class, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+                    class_alias($class, $alias);
+                }
             }
         }
     }
@@ -1042,5 +1062,63 @@ final class Core
             }
         }
         return $result;
+    }
+
+    public function uninstallComponent($name)
+    {
+        self::uninstallService($name, 'component');
+    }
+
+    public function uninstallModule($name)
+    {
+        self::uninstallService($name, 'module');
+    }
+
+    public function uninstallService($name, string $type = '')
+    {
+        if ($name instanceof \Closure) {
+            $name = $name($type);
+        }
+        if (!is_string($name))
+            self::exceptionCore('Invalis name of service; must be a string');
+        if (!self::isServiceRegistered($name, $type))
+            self::exceptionCore('Error uninstalling <{name}> service; service not found', ['name' => $name]);
+        if (!$type) {
+            $service = self::getInstalledService($name);
+            $type = self::getTypeService($service) . 's';
+        } else {
+            $type .= 's';
+            $service = self::$_services[$type][$name];
+        }
+        unset(self::$_services[$type][$name]);
+        $service->uninstall();
+    }
+
+    public static function unregisterComponent($name)
+    {
+        self::unregisterService($name, 'component');
+    }
+
+    public static function unregisterModule($name)
+    {
+        self::unregisterService($name, 'module');
+    }
+
+    public static function unregisterService($name, string $type)
+    {
+        if ($name instanceof \Closure) {
+            $name = $name($type);
+        }
+        if (!is_string($name))
+            self::exceptionCore('Invalis name of service; must be a string');
+        if (!self::isServiceRegistered($name, $type))
+            self::exceptionCore('Error unregistering <{name}> service; service not found', ['name' => $name]);
+        $type .= 's';
+        if (isset(self::$_config['_bootstrap'][$type][$name])) {
+            unset(self::$_config['_bootstrap'][$type][$name]);
+        } else if (isset(self::$_config[$type][$name])) {
+            unset(self::$_config[$type][$name]);
+        }
+        self::trigger('onUnregisteredService', new GEvent(self::class, ['serviceName' => $name]));
     }
 }
