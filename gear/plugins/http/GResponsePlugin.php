@@ -19,6 +19,11 @@ class GResponsePlugin extends GPlugin implements IResponse
     protected static $_initialized = false;
     /* Public */
 
+    public function __invoke()
+    {
+        return $this;
+    }
+
     /**
      * Отправляет клиенту данные
      *
