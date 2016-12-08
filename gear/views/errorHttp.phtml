@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Gear Framework PHP Error</title>
+        <link href='http://fonts.googleapis.com/css?family=Didact+Gothic&subset=latin,cyrillic' rel='stylesheet' type='text/css' />
+        <style>
+            body, div { padding: 0px; margin: 0px; }
+            .title { font-family: 'Verdana'; font-size: 14px; color: white; background-color: #0072bc; height: 48px; line-height: 48px; padding-left: 52px; box-shadow: 0px 0px 5px black; border-bottom: 3px solid #004e80; }
+            .title img { position: absolute; top: 16px; left: 24px; }
+            .title .company { font-weight: bold; float: left; margin-right: 32px; }
+            .title .version { background-color: #007ed0; float: left; padding-left: 24px; padding-right: 24px; }
+            .description { font-family: 'Georgia', 'Times New Roman'; font-size: 12px; background-color: #f0f0f0; padding: 0px 12px 0px 12px; border-top: 1px solid white; padding-bottom: 32px; }
+            .description .message { font-size: 18px; padding: 32px 0px 8px 0px; font-weight: bold; }
+            .description .path { height: 48px; line-height: 48px; float: left; background-color: #e0e0e0; padding-right: 32px; padding-left: 12px; }
+            .description .line { height: 48px; line-height: 48px; float: left; background-color: #f46d00; width: 48px; text-align: center; color: white; }
+            .file { font-family: 'Georgia', 'Times New Roman'; font-size: 12px; background-color: #e0e0e0; height: 48px; line-height: 48px; margin-bottom: 0px; }
+            .file .button { float: left; margin-left: 12px; margin-right: 12px; }
+            .file .button .round { cursor: pointer; border: 3px solid #888888; width: 14px; height: 14px; border-radius: 14px; margin-top: 14px; line-height: 14px; font-weight: bold; font-family: 'Arial Black'; font-size: 14px; color: #888888; text-align: center; }
+            .file .button .round:hover { background-color: #888888; color: #e0e0e0; }
+            .file .button .round.selected { background-color: #888888; color: #e0e0e0; }
+            .file .path { float: left; margin-right: 12px; font-weight: bold; }
+            .file .line { float: right; background-color: #f46d00; width: 48px; text-align: center; color: white; }
+            .source { overflow: auto; font-family: 'Courier New'; font-size: 12px; height: 0px; margin-bottom: 1px; border-top: 1px dotted #c0c0c0; }
+            .source .line {  border-bottom: 1px dotted #f0f0f0; height: 20px; line-height: 20px; }
+            .source .line-number { float: left; width: 48px; margin: 0px; background-color: #a5cde8; color: black; padding-left: 12px; }
+            .source .source-line { float: left; display: block; margin: 0px; }
+            .source .current-line { background-color: #daebf6; }
+            .source .current-line-number { background-color: #0e8de0; color: white; }
+            .source .arrow { float: left; border-top: 10px solid transparent; border-left: 5px solid #a5cde8; border-bottom: 10px solid transparent; height:0; width:0; font:0 }
+            .source .arrow-current { border-left: 5px solid #0e8de0; }
+            .trace-description { font-family: 'courier New'; font-size: 12px; background-color: #f6f6f6; padding: 12px 12px 12px 44px; font-style: italic; }
+            .clearfix { clear: both; }
+        </style>
+        <script>
+            function sourceView(button) {
+                if (button.className.split(' ')[1] === undefined) {
+                    button.className = 'round selected';
+                    button.innerHTML = '&ndash;';
+                    document.getElementById('source$' + button.id.split('$')[1]).style.height = 'auto';
+                } else {
+                    button.className = 'round';
+                    button.innerHTML = '+';
+                    document.getElementById('source$' + button.id.split('$')[1]).style.height = '0px';
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <div class="title">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAACXBIWXMAAAsTAAALEwEAmpwYAAABNmlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjarY6xSsNQFEDPi6LiUCsEcXB4kygotupgxqQtRRCs1SHJ1qShSmkSXl7VfoSjWwcXd7/AyVFwUPwC/0Bx6uAQIYODCJ7p3MPlcsGo2HWnYZRhEGvVbjrS9Xw5+8QMUwDQCbPUbrUOAOIkjvjB5ysC4HnTrjsN/sZ8mCoNTIDtbpSFICpA/0KnGsQYMIN+qkHcAaY6addAPAClXu4vQCnI/Q0oKdfzQXwAZs/1fDDmADPIfQUwdXSpAWpJOlJnvVMtq5ZlSbubBJE8HmU6GmRyPw4TlSaqo6MukP8HwGK+2G46cq1qWXvr/DOu58vc3o8QgFh6LFpBOFTn3yqMnd/n4sZ4GQ5vYXpStN0ruNmAheuirVahvAX34y/Axk/96FpPYgAAACBjSFJNAAB6JQAAgIMAAPn/AACA6AAAUggAARVYAAA6lwAAF2/XWh+QAAABAklEQVR42qyUMUpDQRCG/yfkDBYSSRGwSmOlNgkpxBPkBFYWIYXYCVrYeIbELrfwBDbprCMpoiAIFkKafCnc9xjHHQ3GH4Y3O7P7v5l/hy0AbYqtH3LHkkjW/CvJqfGH6Xsu6VlS7ctOoLQdPvEG9PmOR7euzhZGk6WkYk0ZniQ1cu0MggMzSR8udhG1I+DFlDtyuaFr5xroABXJYdKixMIRlLbIaFWReIwDkvscSXTF20G8ZfyppF2ryQlw5f7Qc1WcmdyrzflyLx3RAzAA7jJttHNzojTi62Iiaf+3sX/PxG6NfxDNyR4wBY7Sem7KvwluTIoSybqGpB7tK/7jPVkNAESZ7Y0u6zOCAAAAAElFTkSuQmCC"/>
+            <div class="company">Gear Framework</div> <div class="version">версия <?=\gear\Core::getVersion()?></div><div class="unfloat"></div>
+        </div>
+        <div class="description">
+            <div class="message"><?=$message?></div>
+            <div class="path"><?=$file?></div><div class="line"><?=$line?></div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="file">
+            <div class="button"><div id="button$<?=0?>" class="round" onclick="sourceView(this)">+</div></div><div class="path"><?php echo $file; ?></div><div class="line"><?php echo $line; ?></div></div><div class="unfloat"></div>
+        <div class="trace-description">
+        </div>
+        <div id="source$<?=0?>" class="source">
+            <?php
+            $sources = $this->getSource($file, $line);
+            foreach($sources as $sline => $source) { ?>
+                <div class="line<?=$sline == $line ? ' current-line' : ''?>">
+                    <div class="line-number<?=$sline == $line ? ' current-line-number' : ''?>"><?=$sline?></div>
+                    <div class="arrow<?=$sline == $line ? ' arrow-current' : ''?>"></div>
+                    <div class="source-line"><?=preg_replace('#\<span style\="color\: \#0000BB"\>\&lt\;\?php#', '<span style="color: #0000BB">', $this->highlight('<?php ' . rtrim($source)))?></div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                <?php
+            }
+            ?>
+        </div>
+    </body>
+</html>

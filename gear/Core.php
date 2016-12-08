@@ -113,13 +113,13 @@ final class Core
             /* Список загружаемых компонентов */
             'components' => [
                 /* Обработчик ошибок */
-//                'errorsHandler' => ['class' => '\gear\components\handlers\GErrorsHandlerComponent'],
+                'errorsHandler' => ['class' => '\gear\components\handlers\GErrorsHandlerComponent'],
                 /* Обработчик исключений */
-//                'exceptionHandler' => ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'],
+                'exceptionHandler' => ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'],
                 /* */
-//                'lang' => ['class' => '\gear\components\international\GInternationalComponent'],
+                'lang' => ['class' => '\gear\components\international\GInternationalComponent'],
                 /* Автозагрузчик файлов с классами */
-//                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
+                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */

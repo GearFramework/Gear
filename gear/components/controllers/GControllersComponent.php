@@ -27,6 +27,10 @@ class GControllersComponent extends GComponent
     /* Protected */
     protected static $_initialized = false;
     /**
+     * @var string $_defaultControllerName название контроллера исполняемого по-умолчанию
+     */
+    protected $_defaultControllerName = 'index';
+    /**
      * @var IController $_currentController инстанс текущего контроллера
      */
     protected $_currentController = null;
@@ -60,14 +64,53 @@ class GControllersComponent extends GComponent
         return $result;
     }
 
+    /**
+     * Возвращает экземпляр текущего контроллера
+     *
+     * @return IController
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getCurrentController(): IController
     {
         if (!($this->_currentController instanceof IController)) {
-            $path = $this->request->r;
+            $path = trim((string)$this->request->r);
+            $this->_currentController = $this->getRouteController($path);
         }
         return $this->_currentController;
     }
 
+    /**
+     * Возвращает название контроллера, исполняемого по-умолчанию
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDefaultControllerName(): string
+    {
+        return $this->_defaultControllerName;
+    }
+
+    /**
+     * Возвращает карту путей к контроллерам
+     *
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getMapControllers(): array
+    {
+        return $this->_mapControllers;
+    }
+
+    /**
+     * Возвращает экземпляр запроса
+     *
+     * @return IRequest
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getRequest(): IRequest
     {
         if ($this->_request === null) {
@@ -80,6 +123,77 @@ class GControllersComponent extends GComponent
         return $this->_request;
     }
 
+    /**
+     * Возвращает контроллер согласно пути из запроса
+     *
+     * @param string $path
+     * @return IController
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRouteController(string $path): IController
+    {
+        list($controllerPath,) = explode('/', $path);
+        if ($controllerPath) {
+            $elems = explode('_', $controllerPath);
+            $c = count($elems);
+        } else {
+            $c = 0;
+            $elems = [];
+        }
+        $name = $c > 0 ? array_pop($elems) : $this->defaultControllerName;
+        $class = ucfirst($name) . 'Controller';
+        $properties = ['name' => $name];
+        if ($c === 0 || $c === 1) {
+            $map = $this->existsInMapControllers($name, true);
+            if ($map instanceof \Closure) {
+                $properties = ['name' => $name, 'bindingClosure' => $map];
+                $controller = 'GController';
+            } else {
+                if ($map) {
+                    $controller = $map;
+                } else {
+                    $controller = Core::app()->namespace . '\controllers\\' . $class;
+                }
+            }
+        } else if ($c > 1) {
+            $p = implode('\\', $elems);
+            if ($controllerPath{0} === '_') {
+                $controller = '\\' . $p . '\controllers\\' . $class;
+            } else {
+                $namespace = Core::app()->namespace;
+                $controller = $namespace . '\\' . $p . '\controllers\\' . $class;
+            }
+        }
+        $controller = new $controller($properties, $this);
+        return $controller;
+    }
+
+    /**
+     * Возвращает true, если контроллер присутствует в карте, иначе false
+     *
+     * @param string $name
+     * @param bool $returnPath
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function existsInMapControllers(string $name, bool $returnPath = false)
+    {
+        if ($returnPath) {
+            return isset($this->_mapControllers[$name]) ? $this->_mapControllers[$name] : false;
+        } else {
+            return in_array($name, $this->_mapControllers, true);
+        }
+    }
+
+    /**
+     * Установка текущего контроллера
+     *
+     * @param \Closure|array|IController $controller
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function setCurrentController($controller)
     {
         if ($controller instanceof \Closure) {
@@ -93,8 +207,34 @@ class GControllersComponent extends GComponent
         if ($controller instanceof IController) {
             $this->_currentController = $controller;
         } else {
-            $this->exceptionController('Invalid current controller');
+            $this->exceptionController('Invalid controller');
         }
+    }
+
+    /**
+     * Устанавливает название контроллера, исполняемого по-умолчанию
+     *
+     * @param string $defaultControllerName
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setDefaultControllerName(string $defaultControllerName)
+    {
+        $this->_defaultControllerName = $defaultControllerName;
+    }
+
+    /**
+     * Устанавливает карту путей к контроллерам
+     *
+     * @param array $mapControllers
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setMapControllers(array $mapControllers)
+    {
+        $this->_mapControllers = $mapControllers;
     }
 
     public function setRequest(IRequest $request)

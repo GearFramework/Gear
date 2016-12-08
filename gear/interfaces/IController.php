@@ -17,22 +17,22 @@ interface IController
     /**
      * Вызов метода $this->exec()
      *
-     * @param IRequest|null $request
+     * @param IRequest $request
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function __invoke(IRequest $request = null);
+    public function __invoke(IRequest $request);
 
     /**
      * Запуск контроллера
      *
-     * @param IRequest|null $request
+     * @param IRequest $request
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function exec(IRequest $request = null);
+    public function exec(IRequest $request);
 }
 
 /**
