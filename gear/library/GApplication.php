@@ -90,9 +90,9 @@ class GApplication extends GModule
         Core::syslog(Core::INFO, 'Run application <{app}>', ['app' => get_class($this), '__func__' => __METHOD__, '__line__' => __LINE__]);
         $result = null;
         if (!$request)
-            $request = $this->request();
+            $request = $this->request;
         if (!$response)
-            $response = $this->response();
+            $response = $this->response;
         if ($this->beforeRunApplication($request)) {
             $result = $this->controllers->exec($request);
         }

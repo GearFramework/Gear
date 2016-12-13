@@ -1,6 +1,7 @@
 <?php
 
 namespace gear\traits;
+use gear\Core;
 
 /**
  * Трэйт для добавления объектам базовых свойств и методов
@@ -161,22 +162,23 @@ trait TObject
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function validate(string $name = '', $value = null, $default = null)
+    public function validate(string $name = '', $value = null, $default = null, $validator = null)
     {
-        if (!$name) {
-            foreach($this->props() as $name => $value) {
-                $this->validate($name, $value, $default);
+        if ($validator) {
+            if (is_callable($validator)) {
+                return $validator($value);
+            } else if (class_exists($validator)) {
+                $validator = new $validator();
+                return $validator->validateValue($value);
             }
-        } else {
-            if (self::$_validators) {
-                foreach($this->getValidator() as $validator) {
-                    if (!$name) {
-                        $validator->validateObject($this);
-                    } else if ($name && $value === null) {
-                        $validator->validateProperty($this, $name, $default);
-                    } else if ($name && $value !== null) {
-                        $validator->validateValue($name, $value, $default);
-                    }
+        } else if (self::$_validators) {
+            foreach($this->getValidator() as $validator) {
+                if (!$name) {
+                    $validator->validateObject($this);
+                } else if ($name && $value === null) {
+                    $validator->validateProperty($this, $name, $default);
+                } else if ($name && $value !== null) {
+                    $validator->validateValue($value);
                 }
             }
         }
