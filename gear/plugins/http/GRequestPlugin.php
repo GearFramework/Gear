@@ -51,8 +51,13 @@ class GRequestPlugin extends GPlugin implements IRequest
             $this->_variablesOrder = preg_split('//', ini_get('variables_order'), -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach($this->_variablesOrder as $sym) {
+            echo "$name - $sym " . $this->_orders[$sym] . '<br>';
             if (isset($this->_orders[$sym])) {
-                if (isset(${'_' . $this->_orders[$sym]}[$name])) {
+                $data = '_' . $this->_orders[$sym];
+                echo "$data<br>";
+                print_r($_GET);
+                if (isset($$data[$name])) {
+                    echo "Isset $name<br>";
                     $method = strtolower($this->_orders[$sym]);
                     return $this->$method($name);
                 }
@@ -202,16 +207,22 @@ class GRequestPlugin extends GPlugin implements IRequest
 
     public function post(string $name = '')
     {
+        if (!$name)
+            return $_POST;
         // TODO: Implement post() method.
     }
 
-    public function cookie()
+    public function cookie($name = null)
     {
+        if (!$name)
+            return $_COOKIE;
         // TODO: Implement cookie() method.
     }
 
     public function session(string $name = '', $value = null)
     {
+        if (!$name)
+            return $_SESSION;
         // TODO: Implement session() method.
     }
 

@@ -162,7 +162,7 @@ trait TObject
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function validate(string $name = '', $value = null, $default = null, $validator = null)
+    public function validate($name = null, $value = null, $default = null, $validator = null)
     {
         if ($validator) {
             if (is_callable($validator)) {
