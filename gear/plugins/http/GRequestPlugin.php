@@ -2,6 +2,7 @@
 
 namespace gear\plugins\http;
 
+use gear\Core;
 use gear\interfaces\IRequest;
 use gear\library\GModel;
 use gear\library\GPlugin;
@@ -27,6 +28,9 @@ class GRequestPlugin extends GPlugin implements IRequest
     const POST = 'POST';
     const PUT = 'PUT';
     const DELETE = 'DELETE';
+    const SESSION = 'SESSION';
+    const COOKIE = 'COOKIE';
+    const FILES = 'FILES';
     /* Private */
     /* Protected */
     protected static $_initialized = false;
@@ -34,6 +38,8 @@ class GRequestPlugin extends GPlugin implements IRequest
     protected $_cli = null;
     protected $_variablesOrder = null;
     protected $_orders = ['G' => 'GET', 'P' => 'POST', 'C' => 'COOKIE', 'S' => 'SESSION'];
+    protected $_requestHandlers = [];
+    protected $_files = null;
     /* Public */
 
     public function __invoke(string $name = '')
@@ -51,14 +57,10 @@ class GRequestPlugin extends GPlugin implements IRequest
             $this->_variablesOrder = preg_split('//', ini_get('variables_order'), -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach($this->_variablesOrder as $sym) {
-            echo "$name - $sym " . $this->_orders[$sym] . '<br>';
             if (isset($this->_orders[$sym])) {
-                $data = '_' . $this->_orders[$sym];
-                echo "$data<br>";
-                print_r($_GET);
-                if (isset($$data[$name])) {
-                    echo "Isset $name<br>";
-                    $method = strtolower($this->_orders[$sym]);
+                $method = strtolower($this->_orders[$sym]);
+                $inMethod = 'in' . ucfirst(strtolower($this->_orders[$sym]));
+                if (method_exists($this, $inMethod) && $this->$inMethod($name)) {
                     return $this->$method($name);
                 }
             }
@@ -68,6 +70,10 @@ class GRequestPlugin extends GPlugin implements IRequest
 
     public function cli(string $name = '', $default = null)
     {
+        if ($this->isRequestHandler(self::CLI)) {
+            $handler = $this->getRequestHandler(self::CLI);
+            return $handler($name);
+        }
         if ($this->_cli === null) {
             $short = '';
             $long = [];
@@ -93,12 +99,37 @@ class GRequestPlugin extends GPlugin implements IRequest
         return $value;
     }
 
+    public function cookie(string $name = '')
+    {
+        if ($this->isRequestHandler(self::COOKIE)) {
+            $handler = $this->getRequestHandler(self::COOKIE);
+            return $handler($name);
+        }
+        if (!$name) {
+            return $this->getData($_COOKIE);
+        }
+    }
+
     public function get(string $name = '', $default = null)
     {
+        if ($this->isCli()) {
+            return $this->cli($name);
+        }
+        if ($this->isRequestHandler(self::POST)) {
+            $handler = $this->getRequestHandler(self::POST);
+            return $handler($name);
+        }
+        return $this->getData($_GET);
+    }
+
+    public function getData(array &$data, string $name = '', $value = null)
+    {
         if (!$name) {
-            $value = new GModel($_GET, $this);
-        } else if (isset($_GET[$name])) {
-            $value = $_GET[$name];
+            $value = new GModel($data, $this);
+        } else if (isset($data[$name]) && $value === null) {
+            $value = $data[$name];
+        } else if ($name && $value !== null) {
+            $data[$name] = $value;
         }
         return $value;
     }
@@ -131,6 +162,76 @@ class GRequestPlugin extends GPlugin implements IRequest
             $method = $_SERVER['REQUEST_METHOD'];
         }
         return strtoupper($method);
+    }
+
+    /**
+     * Возвращает обработчик указанного метода запроса
+     *
+     * @param string $name
+     * @return mixed|null
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRequestHandler(string $name)
+    {
+        $handler = null;
+        $name = strtoupper($name);
+        if (isset($this->_requestHandlers[$name])) {
+            if (!is_callable($this->_requestHandlers[$name])) {
+                if (is_array($this->_requestHandlers[$name])) {
+                    list($class,, $properties) = Core::configure($this->_requestHandlers[$name]);
+                    $handler = new $class($properties);
+                    if (!is_callable($handler)) {
+                        throw self::exceptionInvalidRequestHandler(['method' => $name]);
+                    }
+                    $this->_requestHandlers[$name] = $handler;
+                }
+            } else {
+                $handler = $this->_requestHandlers[$name];
+            }
+        }
+        return $handler;
+    }
+
+    /**
+     * Возвращает массив установленных обработчиков запросов (GET, POST, PUT, DELETE)
+     *
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRequestHandlers(): array
+    {
+        return $this->_requestHandlers;
+    }
+
+    public function inCli(string $name)
+    {
+    }
+
+    public function inCookie(string $name): bool
+    {
+        return array_key_exists($name, $_COOKIE);
+    }
+
+    public function inGet(string $name): bool
+    {
+        return array_key_exists($name, $_GET);
+    }
+
+    public function inFiles(string $name): bool
+    {
+        return array_key_exists($name, $_FILES);
+    }
+
+    public function inPost(string $name): bool
+    {
+        return array_key_exists($name, $_POST);
+    }
+
+    public function inSession(string $name): bool
+    {
+        return array_key_exists($name, $_SESSION);
     }
 
     /**
@@ -205,25 +306,56 @@ class GRequestPlugin extends GPlugin implements IRequest
         return $this->method === self::POST;
     }
 
-    public function post(string $name = '')
+    /**
+     * Возвращает true, если сущеуствует обработчик указанного запроса
+     *
+     * @param string $methodName
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isRequestHandler(string $methodName): bool
     {
-        if (!$name)
-            return $_POST;
-        // TODO: Implement post() method.
+        return isset($this->_requestHandlers[$methodName]);
     }
 
-    public function cookie($name = null)
+    /**
+     * Нормализация массив $_FILES
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function normalizeFiles()
     {
-        if (!$name)
-            return $_COOKIE;
-        // TODO: Implement cookie() method.
+        $this->_files = [];
+        foreach($_FILES as $uploadName => $section) {
+            foreach($section as $sectionName => $values) {
+                foreach($values as $index => $value)
+                    $this->_files[$uploadName][$index][$sectionName] = $value;
+            }
+        }
+    }
+
+    public function post(string $name = '')
+    {
+        if ($this->isCli()) {
+            return $this->cli($name);
+        }
+        if ($this->isRequestHandler(self::POST)) {
+            $handler = $this->getRequestHandler(self::POST);
+            return $handler($name);
+        }
+        return $this->getData($_POST);
     }
 
     public function session(string $name = '', $value = null)
     {
-        if (!$name)
-            return $_SESSION;
-        // TODO: Implement session() method.
+        if ($this->isRequestHandler(self::SESSION)) {
+            $handler = $this->getRequestHandler(self::SESSION);
+            return $handler($name);
+        }
+        return $this->getData($_SESSION, $name, $value);
     }
 
     /**
@@ -239,8 +371,27 @@ class GRequestPlugin extends GPlugin implements IRequest
         $this->_defaultMethod = $defaultMethod;
     }
 
+    /**
+     * Установка массива обработчиков запросов
+     *
+     * @param array $handlers
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setRequestHandlers(array $handlers)
+    {
+        $this->_requestHandlers = $handlers;
+    }
+
     public function uploads(string $name = '')
     {
-        // TODO: Implement uploads() method.
+        if ($this->isRequestHandler(self::FILES)) {
+            $handler = $this->getRequestHandler(self::FILES);
+            return $handler($name);
+        }
+        if ($this->_files === null) {
+            $this->normalizeFiles();
+        }
+        return $this->getData($this->_files, $name);
     }
 }
