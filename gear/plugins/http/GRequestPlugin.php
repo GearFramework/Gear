@@ -37,7 +37,7 @@ class GRequestPlugin extends GPlugin implements IRequest
     protected $_defaultMethod = self::GET;
     protected $_cli = null;
     protected $_variablesOrder = null;
-    protected $_orders = ['G' => 'GET', 'P' => 'POST', 'C' => 'COOKIE', 'S' => 'SESSION'];
+    protected $_orders = ['G' => 'GET', 'P' => 'POST', 'C' => 'COOKIE', 'S' => 'SESSION', 'CLI' => 'CLI'];
     protected $_requestHandlers = [];
     protected $_files = null;
     /* Public */
@@ -54,7 +54,11 @@ class GRequestPlugin extends GPlugin implements IRequest
     public function __get(string $name)
     {
         if (!$this->_variablesOrder) {
-            $this->_variablesOrder = preg_split('//', ini_get('variables_order'), -1, PREG_SPLIT_NO_EMPTY);
+            if ($this->isCli()) {
+                $this->_variablesOrder = ['CLI'];
+            } else {
+                $this->_variablesOrder = preg_split('//', ini_get('variables_order'), -1, PREG_SPLIT_NO_EMPTY);
+            }
         }
         foreach($this->_variablesOrder as $sym) {
             if (isset($this->_orders[$sym])) {
@@ -115,11 +119,11 @@ class GRequestPlugin extends GPlugin implements IRequest
         if ($this->isCli()) {
             return $this->cli($name);
         }
-        if ($this->isRequestHandler(self::POST)) {
-            $handler = $this->getRequestHandler(self::POST);
+        if ($this->isRequestHandler(self::GET)) {
+            $handler = $this->getRequestHandler(self::GET);
             return $handler($name);
         }
-        return $this->getData($_GET);
+        return $this->getData($_GET, $name);
     }
 
     public function getData(array &$data, string $name = '', $value = null)
