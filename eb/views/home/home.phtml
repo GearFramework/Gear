@@ -5,17 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <title><?=$this->caption?></title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic" rel="stylesheet">
+        <script src="/js/jquery-3.1.1.min.js"></script>
     </head>
     <body>
-        <div class="container pc-12">
-            <div class="row">
-                <div class="col pc-1 light big"></div>
-                <div class="col pc-10 light xlbig text-uppercase"><?=$this->caption?></div>
-                <div class="col pc-1 light big"></div>
+    <div class="top">
+        <div class="top-area">
+            <div class="logo-area"></div>
+            <div class="search-area">
+                <input type="text">
             </div>
+            <div class="basket-area"><div class="text-main">Корзина</div><div class="text-sub">пусто</div></div>
+            <div class="client-area"><div class="text-main">Кабинет</div><div class="text-sub">войти</div></div>
         </div>
-        <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,700&amp;subset=cyrillic" rel="stylesheet">
-        <link href="/css/framework.css" rel="stylesheet" type="text/css" />
-        <script src="/js/jquery-3.1.1.min.js"></script>
+        <div class="mainmenu-area">
+            <div class="main-item">платы</div>
+            <div class="main-item selected">модули</div>
+            <div class="main-item">датчики</div>
+            <div class="main-item">экраны</div>
+            <div class="main-item">радиодетали</div>
+            <div class="main-item">разное</div>
+            <div class="main-item">библиотеки</div>
+        </div>
+    </div>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic" rel="stylesheet">
+    <?=\gear\Core::m('resources')->publicate('resources/css/framework.css')?>
+    <?=\gear\Core::m('resources')->publicate('resources/css/main.css')?>
     </body>
 </html>

@@ -51,8 +51,10 @@ class GLoaderComponent extends GComponent
             $file = $this->paths[$className];
         else
             $file = ROOT . '/' . str_replace('\\', '/', $className) . '.php';
-        if (file_exists($file) && is_readable($file))
+
+        if (file_exists($file) && is_readable($file)) {
             include_once($file);
+        }
     }
 
     /**
@@ -166,11 +168,9 @@ class GLoaderComponent extends GComponent
     public function afterInstallService()
     {
         if (!($handlerName = static::i('autoloadHandler'))) {
-            Core::syslog(Core::CRITICAL, 'Not specified <{handler}> property', ['handler' => $handlerName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             throw self::exceptionService('Not specified <{handler}> property', ['handler' => 'autoloadHandler']);
         }
         spl_autoload_register([$this, $handlerName]);
-        Core::syslog(Core::INFO, 'Loader component registered autoload handler <{handler}>', ['handler' => $handlerName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return parent::afterInstallService();
     }
 }

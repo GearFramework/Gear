@@ -63,11 +63,11 @@ class GView extends GPlugin
      * @param array $__render__context__
      * @param bool $__render__buffered__
      * @throws \FileNotFoundException
-     * @return bool|string
+     * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function renderFile(string $__render__filePath__, array $__render__context__ = [], bool $__render__buffered__ = false)
+    public function renderFile(string $__render__filePath__, array $__render__context__ = [], bool $__render__buffered__ = false): string
     {
         if (!file_exists($__render__filePath__) || !is_readable($__render__filePath__)) {
             throw self::exceptionFileNotFound(['filePath' => $__render__filePath__]);
@@ -75,17 +75,19 @@ class GView extends GPlugin
         if ($__render__context__) {
             extract($__render__context__);
         }
-        $__result__view__rendered__ = true;
+        $__result__view__rendered__ = '';
         if ($__render__buffered__) {
             $__old__data__ = null;
+            $__buffer__is__started = false;
             if (!empty(ob_get_status())) {
                 $__old__data__ = ob_get_contents();
-                ob_end_clean();
+                @ob_end_clean();
+                $__buffer__is__started = true;
             }
             ob_start();
             require $__render__filePath__;
-            $__result__view__rendered__ = ob_get_clean();
-            $__old__data__ !== null ? print $__old__data__ : ob_end_clean();
+            $__result__view__rendered__ = ob_get_contents();
+            $__buffer__is__started ? print $__old__data__ : ob_end_clean();
         } else {
             require $__render__filePath__;
         }

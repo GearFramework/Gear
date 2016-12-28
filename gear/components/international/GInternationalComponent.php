@@ -42,15 +42,11 @@ class GInternationalComponent extends GComponent
         } else {
             $section = (Core::isModuleInstalled('app') ? Core::app()->namespace : '\gear') . '\locales\\' . $section . '\\' . Core::props('locale');
         }
-        Core::syslog(Core::INFO, 'Translate message <{message}> from section <{section}>', ['message' => $message, 'section' => $section]);
         if (!($messages = $this->getMessages($section))) {
             $sectionFileMessages = Core::resolvePath($section, !self::isComponentInstalled(Core::props('loaderName'))) . '.php';
             $messages = [];
-            Core::syslog(Core::INFO, 'Prepare loading section file <{file}> with messages', ['file' => $sectionFileMessages]);
             if (file_exists($sectionFileMessages)) {
                 $messages = require $sectionFileMessages;
-            } else {
-                Core::syslog(Core::WARNING, 'Section file <{file}> not found', ['file' => $sectionFileMessages]);
             }
             $this->attachSection($section, $messages);
         }

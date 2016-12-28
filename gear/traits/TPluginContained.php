@@ -26,9 +26,10 @@ trait TPluginContained
     public function p($name)
     {
         if (!($plugin = $this->isPluginInstalled($name))) {
-            if (!($plugin = $this->isPluginRegistered($name)))
+            if (!($plugin = $this->isPluginRegistered($name))) {
                 throw static::exceptionPluginNotAllowed(['name' => $name, 'class' => get_class($this), 'file' => __FILE__, 'line' => __LINE__]);
-            $plugin = $this->installPlugin($name, $plugin);
+            }
+            $plugin = $this->installPlugin($name, $plugin, $this);
         }
         return $plugin;
     }
