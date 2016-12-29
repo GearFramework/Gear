@@ -21,7 +21,15 @@ trait TComponentContained
      */
     protected $_components = [];
 
-    protected function _preloadComponents($components)
+    /**
+     * Автозагрузка необходимых компонентов во время создания объекта-контейнера
+     *
+     * @param array $components
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _bootstrapComponents(array $components)
     {
         foreach($components as $name => $component) {
             $this->installComponent($name, $component);
@@ -30,6 +38,7 @@ trait TComponentContained
 
     /**
      * Возвращает установелнный компонент
+     *
      * @param string $name
      * @param IObject|null $owner
      * @throws \ComponentNotFoundException
@@ -47,6 +56,14 @@ trait TComponentContained
         return $component;
     }
 
+    /**
+     * Проверка на наличие указанного компонента. Возвращает инстанс компонента или false, если такой не был найден
+     *
+     * @param string $name
+     * @return bool|IComponent
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function isComponent(string $name)
     {
         if (!($component = isset($this->_components[$name]))) {
@@ -115,7 +132,7 @@ trait TComponentContained
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function installComponent(string $name, $component, IObject $owner = null): IComponent
+    public function installComponent(string $name, $component, $owner = null): IComponent
     {
         if ($component instanceof \Closure) {
             $component = $component($name, $owner);

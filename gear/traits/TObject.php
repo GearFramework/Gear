@@ -184,11 +184,19 @@ trait TObject
         }
     }
 
+    /**
+     * генератор валидаторов объекта
+     * 
+     * @return \Generator
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getValidator()
     {
         foreach(self::$_validators as $name => $validator) {
             if (is_string($validator)) {
                 $validator = new $validator();
+                self::$_validators[$name] = $validator;
             }
             yield $validator;
         }

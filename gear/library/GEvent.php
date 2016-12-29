@@ -27,6 +27,7 @@ class GEvent
     /* Private */
     /* Protected */
     protected $_bubble = true;
+    protected $_sender = null;
     /* Public */
 
     /**
@@ -46,6 +47,30 @@ class GEvent
     }
 
     /**
+     * Получение состояния всплытия события
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getBubble(): bool
+    {
+        return $this->_bubble;
+    }
+
+    /**
+     * Возвращает поставщика события
+     *
+     * @return null|IObject
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getSender()
+    {
+        return $this->_sender;
+    }
+
+    /**
      * Установка или отмена всплытия события
      *
      * @param bool $value
@@ -59,15 +84,16 @@ class GEvent
     }
 
     /**
-     * Получение состояния всплытия события
+     * Установка поставщика события
      *
-     * @return bool
+     * @param string|IObject $sender
+     * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getBubble(): bool
+    public function setSender($sender)
     {
-        return $this->_bubble;
+        $this->_sender = $sender;
     }
 
     /**

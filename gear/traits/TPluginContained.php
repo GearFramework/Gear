@@ -1,6 +1,8 @@
 <?php
 
 namespace gear\traits;
+use gear\interfaces\IObject;
+use gear\interfaces\IPlugin;
 
 /**
  * Трэйт для объектов, которым необходимо поддерживать плагины
@@ -14,16 +16,35 @@ namespace gear\traits;
  */
 trait TPluginContained
 {
+    /**
+     * @var array $_plugins список установленных компонентов
+     */
     protected $_plugins = [];
 
-    protected function _preloadPlugins($plugins)
+    /**
+     * Автозагрузка необходимых плагинов во время создания объекта-контейнера
+     *
+     * @param array $plugins
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _bootstrapPlugins($plugins)
     {
         foreach($plugins as $name => $plugin) {
             $this->installPlugin($name, $plugin, $this);
         }
     }
 
-    public function p($name)
+    /**
+     * Возвращает инстанс плагина по его названию
+     *
+     * @param string $name
+     * @return IPlugin
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function p(string $name): IPlugin
     {
         if (!($plugin = $this->isPluginInstalled($name))) {
             if (!($plugin = $this->isPluginRegistered($name))) {
@@ -34,7 +55,15 @@ trait TPluginContained
         return $plugin;
     }
 
-    public function isPlugin($name)
+    /**
+     * Проверка на наличие указанного плагина. Возвращает инстанс плагина или false, если такой не был найден
+     *
+     * @param string $name
+     * @return bool|IPlugin
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isPlugin(string $name)
     {
         if (!($plugin = isset($this->_plugins[$name]))) {
             $plugin = static::i('plugins');
@@ -43,7 +72,15 @@ trait TPluginContained
         return $plugin;
     }
 
-    public function isPluginRegistered($name)
+    /**
+     * Возвращает конфигурационную запись плагина или false, если указанный плагин не зарегистрирован
+     *
+     * @param string $name
+     * @return bool|array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isPluginRegistered(string $name)
     {
         if (isset(static::$_config['plugins'][$name]))
             $plugin = static::$_config['plugins'][$name];
@@ -54,7 +91,16 @@ trait TPluginContained
         return $plugin;
     }
 
-    public function registerPlugin($name, $plugin)
+    /**
+     * Регистрация плагина
+     *
+     * @param string $name
+     * @param array|\Closure $plugin
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function registerPlugin(string $name, $plugin)
     {
         if ($plugin instanceof \Closure)
             $plugin = $plugin($name);
@@ -63,12 +109,30 @@ trait TPluginContained
         static::$_config['plugins'][$name] = $plugin;
     }
 
-    public function isPluginInstalled($name)
+    /**
+     * Возвращает инстанс установленного плагина или false, если указанный плагин не установлен
+     *
+     * @param string $name
+     * @return bool|IPlugin
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isPluginInstalled(string $name)
     {
         return isset($this->_plugins[$name]) ? $this->_plugins[$name] : false;
     }
 
-    public function installPlugin($name, $plugin, $owner = null)
+    /**
+     * Установка плагина
+     *
+     * @param string $name
+     * @param array|IPlugin $plugin
+     * @param null|IObject $owner
+     * @return IPlugin
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function installPlugin(string $name, $plugin, $owner = null): IPlugin
     {
         if (is_array($plugin)) {
             list($class, $config, $properties) = \gear\Core::configure($plugin);
@@ -81,7 +145,15 @@ trait TPluginContained
         return $plugin;
     }
 
-    public function uninstallPlugin($name)
+    /**
+     * Удаление установленного плагина
+     *
+     * @param string $name
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function uninstallPlugin(string $name)
     {
         if (isset($this->_plugins[$name])) {
             $this->p($name)->uninstall();
@@ -89,7 +161,14 @@ trait TPluginContained
         }
     }
 
-    public function getPlugins()
+    /**
+     * Возвращает массив установленных плагинов
+     *
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getPlugins(): array
     {
         return $this->_plugins;
     }

@@ -126,10 +126,11 @@ class GController extends GModel implements IController
     public function existsInMapApi(string $name, bool $returnPath = false)
     {
         if ($returnPath) {
-            return isset($this->_mapApi[$name]) ? $this->_mapApi[$name] : false;
+            $result = isset($this->_mapApi[$name]) ? $this->_mapApi[$name] : false;
         } else {
-            return in_array($name, $this->_mapApi, true);
+            $result = in_array($name, $this->_mapApi, true);
         }
+        return $result;
     }
 
     /**
