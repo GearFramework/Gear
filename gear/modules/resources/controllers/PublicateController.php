@@ -2,12 +2,38 @@
 
 namespace gear\modules\resources\controllers;
 
+use gear\Core;
 use gear\library\GController;
 
+/**
+ * Контроллер менеджера публикации пользовательских ресурсов
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
+ */
 class PublicateController extends GController
 {
-    public function apiGet(string $hash)
+    /* Traits */
+    /* Const */
+    /* Private */
+    /* Protected */
+    /* Public */
+
+    /**
+     * Возвращает контент ресурса
+     *
+     * @param string $hash
+     * @param string $type
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function apiGet(string $hash, string $type)
     {
-        
+        (string)Core::m('resources')->get($hash, $type, true);
     }
 }

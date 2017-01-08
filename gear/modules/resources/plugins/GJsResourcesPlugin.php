@@ -21,10 +21,10 @@ class GJsResourcesPlugin extends GResourcePlugin
     /* Private */
     /* Protected */
     protected static $_initialized = false;
-    protected $_viewPath = '\gear\modules\resources\views';
     protected $_allowedExtensions = ['js'];
     protected $_mappingFolder = null;
-    protected $_template = 'js.phtml';
+    protected $_typeResource = 'js';
+    protected $_mime = 'text/javascript';
     /* Public */
 
     /**
@@ -38,6 +38,10 @@ class GJsResourcesPlugin extends GResourcePlugin
      */
     public function makeHtml(string $url, array $options = []): string
     {
-        return $this->owner->view($this->viewPath . '/' . $this->template, ['url' => $url, 'options' => $options], true);
+        $opt = [];
+        foreach($options as $param => $value) {
+            $opt[] = $param . "=\"$value\"";
+        }
+        return '<script href="' . $url . '" ' . implode(' ', $opt) . " />\n";
     }
 }

@@ -4,6 +4,7 @@ namespace gear\library\io\filesystem;
 
 use gear\Core;
 use gear\interfaces\IFile;
+use gear\interfaces\IFileSystem;
 
 /**
  * Класс файлов
@@ -24,65 +25,49 @@ class GFile extends GFileSystem implements IFile
     /* Public */
 
     /**
-     * Возвращает путь к файлу
+     * Возвращает контент элемента файловой системы
      *
+     * @param null|string|\Closure $prepareHandler
      * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function __toString(): string
+    public function content($prepareHandler = null): string
     {
-        return $this->path;
+        $data = $this->getContent();
+        return $prepareHandler && is_callable($prepareHandler) ? $prepareHandler($data) : $data;
     }
 
     /**
-     * Возращает timestamp доступа к файла
+     * Копирование элемента файловой системы
      *
-     * @param string $format
-     * @return int|string
+     * @param string|IFile $destination
+     * @return IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function atime(string $format = '')
+    public function copy($destination): IFile
     {
-        return $this->getAtime($format);
+        $result = copy($this, Core::resolvePath($destination));
+        if (!$result) {
+            throw static::exceptionErrorFileCopy(['source' => $this, 'destination' => $destination]);
+        }
+        return $destination instanceof IFile ? $destination : GFileSystem::factory(['path' => $destination]);
     }
 
     /**
-     * Возвращает имя файла с расширением
+     * Создание файла
      *
-     * @return string
+     * @return IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function basename(): string
+    public function create(): IFile
     {
-        return $this->getBasename();
-    }
-
-    /**
-     * Возращает timestamp создания файла
-     *
-     * @param string $format
-     * @return int|string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function ctime(string $format = '')
-    {
-        return $this->getCtime($format);
-    }
-
-    /**
-     * Возвращает название папки, в которой лежит файл
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function dirname(): string
-    {
-        return $this->getDirname();
+        if (!touch($this)) {
+            throw self::exceptionFileNotCreated(['file' => $this]);
+        }
+        return $this;
     }
 
     /**
@@ -110,53 +95,19 @@ class GFile extends GFileSystem implements IFile
     }
 
     /**
-     * Возращает timestamp доступа к файла
-     *
-     * @param string $format
-     * @return int|string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getAtime(string $format = '')
-    {
-        return $format ? date($format, fileatime($this)) : fileatime($this);
-    }
-
-    /**
-     * Возвращает имя файла с расширением
+     * Возвращает контент файла
      *
      * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getBasename(): string
+    public function getContent(): string
     {
-        return basename($this->path);
-    }
-
-    /**
-     * Возращает timestamp создания файла
-     *
-     * @param string $format
-     * @return int|string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getCtime(string $format = '')
-    {
-        return $format ? date($format, filectime($this)) : filectime($this);
-    }
-
-    /**
-     * Возвращает название папки, в которой лежит файл
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getDirname(): string
-    {
-        return dirname($this->path);
+        $data = @file_get_contents($this);
+        if ($data === false) {
+            $data = '';
+        }
+        return $data;
     }
 
     /**
@@ -184,65 +135,76 @@ class GFile extends GFileSystem implements IFile
     }
 
     /**
-     * Возращает timestamp модификации файла
-     *
-     * @param string $format
-     * @return int|string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getMtime(string $format = '')
-    {
-        return $format ? date($format, filemtime($this)) : filemtime($this);
-    }
-
-    /**
-     * Возвращает имя файла без расширения
+     * Возвращает mime-тип файла
      *
      * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getName(): string
+    public function getMime(): string 
     {
-        return pathinfo($this->path, PATHINFO_FILENAME);
+        return self::$_mimes[$this->ext()] ?? 'text/plain';
     }
 
     /**
-     * Возращает timestamp модификации файла
+     * Возвращает true, если элемент файловой системы пустой, иначе false
      *
-     * @param string $format
-     * @return int|string
+     * @return bool
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function mtime(string $format = '')
+    public function isEmpty(): bool
     {
-        return $this->getMtime($format);
+        return (bool)filesize($this);
     }
 
     /**
-     * Возвращает имя файла без расширения
+     * Возвращает контент элемента файловой системы
      *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function name(): string
-    {
-        return $this->getName();
-    }
-
-    /**
-     * Установка пути файла
-     *
-     * @param string $path
+     * @param string $content
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setPath(string $path)
+    public function setContent(string $content)
     {
-        $this->props('path', Core::resolvePath($path));
+        if (!@file_put_contents($this, $content)) {
+            throw static::exceptionErrorSetContent(['file' => $this]);
+        }
+    }
+
+    /**
+     * Возвращает размер элемента файловой системы
+     * $format может принимать строку в котором возвратить размер файла
+     *      '%01d %s'
+     * или массив
+     * Array (
+     *      '%01d %s',
+     *      'kb'
+     * )
+     * @param string|array $format
+     * @return int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function size($format = '')
+    {
+        $size = filesize($this);
+        if ($format) {
+            $size = is_array($format) ? $this->formatSize($size, ... $format) : $this->formatSize($size, $format);
+        }
+        return $size;
+    }
+
+    /**
+     * Возвращает строковое значение соответствующее типу элемента
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function type()
+    {
+        return filetype($this->path);
     }
 }

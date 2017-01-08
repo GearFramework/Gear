@@ -37,7 +37,49 @@ class GResourcesModule extends GModule
     ];
     protected static $_initialized = false;
     protected $_resources = ['js', 'css'];
+    protected $_cacheName = 'cache';
     /* Public */
+
+    /**
+     * Возвращает ресурс или контент ресурса по указанному хэшу
+     *
+     * @param string $hash
+     * @param string $type
+     * @param bool $send
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function get(string $hash, string $type, bool $send = false)
+    {
+        $resource = '';
+        foreach($this->resources as $resourceName) {
+            if ($this->p($resourceName)->isAllowedTypeResource($type)) {
+                $resource = $this->p($resourceName)->get($hash);
+                if ($send) {
+                    $this->p($resourceName)->send($resource);
+                }
+                break;
+            }
+        }
+        return $resource;
+    }
+
+    /**
+     * Возвращает инстанс плагина для работы с кэшем или null, таковой не зарегистрирован
+     *
+     * @return null|ICache
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCache()
+    {
+        $cache = null;
+        if ($this->isPluginRegistered($this->_cache)) {
+            $cache = $this->p($this->_cache);
+        }
+        return $cache;
+    }
 
     /**
      * Возвращает список плагинов-публикаторов ресурсов
@@ -107,5 +149,18 @@ class GResourcesModule extends GModule
     public function setResources(array $resources)
     {
         $this->_resources = $resources;
+    }
+
+    /**
+     * Установка название плагина для работы с кэшем
+     *
+     * @param string $name
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setCacheName(string $name)
+    {
+        $this->_cacheName = $name;
     }
 }

@@ -2,63 +2,70 @@
 
 namespace gear\plugins\gear\cache;
 
-use gear\Core;
-use gear\library\GModel;
-use gear\library\cache\GCache;
+use gear\interfaces\ICache;
+use gear\plugins\cache\GCache;
 
 /**
  * Плагин для Memcache
  *
  * @package Gear Framework
  * @author Kukushkin Denis
- * @copyright Kukushkin Denis
- * @license MIT
- * @since 28.06.2016
- * @version 1.0.0
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
  */
-class GMemcache extends GCache
+class GMemcache extends GCache implements ICache
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
+    protected $_cache = null;
     protected $_servers = [];
-    protected $_serializer = 'serialize';
-    protected $_unserializer = 'unserialize';
     protected $_defaultHost = '127.0.0.1';
     protected $_defaultPort = 11211;
+    protected $_isMemcached = false;
     /* Public */
 
     /**
-     * Установка списка серверов
+     * Добавление нового значения в кэш
      *
-     * @access public
-     * @return array
-     * @since 1.0.0
+     * @param string $key
+     * @param mixed $value
+     * @param integer $expire
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function setServers(array $servers)
+    protected function _add(string $key, $value, int $expire)
     {
-        $this->_servers = $servers;
+        return $this->_cache->add($key, $value, 0, $expire);
     }
 
     /**
-     * Возвращает список серверов
+     * Добавление сервера
      *
-     * @access public
-     * @return array
-     * @since 1.0.0
+     * @param array|object $server
+     * @throws \CacheInvalidServerException
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function getServers()
+    public function addServer($server)
     {
-        return $this->_servers;
+        if (is_array($server))
+            $server = new GModel($server);
+        if (!($server instanceof GModel))
+            throw static::exceptionCacheInvalidServer();
+        $this->_servers[] = $server;
     }
 
     /**
      * Установка списка серверов
      *
-     * @access public
      * @param array $servers
-     * @since 1.0.0
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function addServers(array $servers)
     {
@@ -67,222 +74,164 @@ class GMemcache extends GCache
     }
 
     /**
-     * Добавление сервера
+     * Очистка кэша
      *
-     * @access public
-     * @param array|object $server
-     * @throws \CacheException
-     * @since 1.0.0
+     * @return boolean
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function addServer($server)
+    protected function _clear(): bool
     {
-        if (is_array($server))
-            $server = new GModel($server);
-        if (!($server instanceof GModel))
-            throw $this->exceptionCacheInvalidServer();
-        $this->_servers[] = $server;
+        return $this->_cache->flush();
     }
 
     /**
-     * Добавление значения в кэш
+     * Уменьшает значение в кэше на $step
      *
-     * @access public
-     * @param string|array $key array as array(key => value, key => value, ...)
-     * @param mixed $value as $expire when $key is array
-     * @param integer $expire
-     * @return boolean
-     * @since 1.0.0
+     * @param string $key
+     * @param int $step
+     * @return bool|int
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function add($key, $value = null, $expire = 30, $serializer = false)
+    protected function _dec(string $key, int $step)
     {
-        if (is_array($key)) {
-            $args = func_get_args();
-            $expire = isset($args[1]) ? (int)$args[1] : 30;
-            if (isset($args[2]))
-                $serializer = is_callable($args[2]) ? $args[2] : ($args[2] === true ? $this->_serializer : false);
-            else
-                $serializer = false;
-            $size = $result = count($key);
-            foreach ($key as $k => $v) {
-                if ($serializer)
-                    $v = $serializer($v);
-                $result = $this->_cache->add($k, $v, 0, $expire ? time() + $expire : 0) ? $result - 1 : $result;
-            }
-            return !$result ? true : ($size === $result ? false : $result);
-        }
-        if ($serializer === true)
-            $value = call_user_func($this->_serializer, $value);
-        else
-            if (is_callable($serializer))
-                $value = $serializer($value);
-        return $this->_cache->add($key, $value, 0, $expire ? time() + $expire : 0);
+        return $this->_cache->decrement($key, $step);
+    }
+
+    /**
+     * Проверка на наличие в кэше значения под указанным ключём
+     *
+     * @param string $key
+     * @return boolean
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function _exists(string $key): bool 
+    {
+        return $this->_cache->get($key) !== false ? true : false;
+    }
+
+    /**
+     * Получение значения из кэша
+     *
+     * @param string $key
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _get(string $key)
+    {
+        return $this->_get($key);
+    }
+
+    /**
+     * Возвращает true, если используется Memcached
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getIsMemcached(): bool
+    {
+        return $this->_isMemcached;
+    }
+
+    /**
+     * Возвращает список серверов
+     *
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getServers(): array
+    {
+        return $this->_servers;
+    }
+
+    /**
+     * Увеличичвает значение в кэше на $step
+     *
+     * @param string|array $key
+     * @param int $step
+     * @return bool|int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _inc(string $key, int $step)
+    {
+        return $this->_cache->increment($key, $step);
+    }
+
+    /**
+     * Удаление значения из кэша
+     *
+     * @param string|array $key
+     * @return bool|array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _remove(string $key): bool
+    {
+        return $this->_cache->delete($key);
     }
 
     /**
      * Добавление значения или обновление существующего в
      * кэше
      *
-     * @access public
      * @param string|array $key array as array(key => value, key => value, ...)
      * @param mixed $value as $expire when $key is array
-     * @param integer $expire
-     * @param boolean|callable $serializer
-     * @return boolean
+     * @param int $expire
+     * @return bool
      * @since 1.0.0
      */
-    public function set($key, $value = null, $expire = 30, $serializer = false)
+    protected function _set(string $key, $value, int $expire): bool
     {
-        if (is_array($key)) {
-            $args = func_get_args();
-            $expire = isset($args[1]) ? (int)$args[1] : 30;
-            if (isset($args[2]))
-                $serializer = is_callable($args[2]) ? $args[2] : ($args[2] === true ? $this->_serializer : false);
-            else
-                $serializer = false;
-            $size = $result = count($key);
-            foreach ($key as $k => $v) {
-                if ($serializer)
-                    $v = $serializer($v);
-                $result = $this->_cache->set($k, $v, 0, $expire ? time() + $expire : 0) ? $result - 1 : $result;
-            }
-            return !$result ? true : ($size === $result ? false : $result);
-        }
-        if ($serializer === true)
-            $value = call_user_func($this->_serializer, $value);
-        else if (is_callable($serializer))
-            $value = $serializer($value);
-        return $this->_cache->set($key, $value, 0, $expire ? time() + $expire : 0);
+        return $this->_cache->set($key, $value, 0, $expire);
     }
 
     /**
-     * Получение значения из кэша
+     * Устанавливает будет ли использоваться Memcached или нет
      *
-     * @access public
-     * @param string|array $key
-     * @param boolean|closure $unserializer
-     * @return mixed
-     * @since 1.0.0
+     * @param bool $isMemcached
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function get($key, $unserializer = false)
+    public function setIsMemcached(bool $isMemcached)
     {
-        if (is_array($key)) {
-            $result = array();
-            foreach ($key as $k => $uns) {
-                if (is_bool($uns) || is_callable($uns))
-                    $keyName = $k;
-                else {
-                    $keyName = $uns;
-                    $uns = $unserializer;
-                }
-                if ($value = $this->_cache->get($keyName)) {
-                    if ($uns === true)
-                        $result[] = call_user_func($this->_unserializer, $value);
-                    else if (is_callable($uns))
-                        $result[] = $uns($value);
-                    else
-                        $result[] = $value;
-                }
-            }
-            return $result;
-        }
-        $value = $this->_cache->get($key);
-        if ($value && $unserializer)
-            $value = !$unserializer ? $value : (is_callable($unserializer) ? $unserializer($value) : call_user_func($this->_unserializer, $value));
-        return $value;
+        $this->_isMemcached = $isMemcached;
     }
 
     /**
-     * Проверка на наличие в кэше значения под указанным ключём
+     * Установка списка серверов
      *
-     * @access public
-     * @param string|array $key
-     * @return boolean|array
-     * @since 1.0.0
+     * @param array $servers
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public function exists($key)
+    public function setServers(array $servers)
     {
-        if (is_array($key)) {
-            $result = array();
-            foreach ($key as $k)
-                $result[$k] = $this->_cache->get($k) !== false ? true : false;
-        }
-        return $this->_cache->get($key) !== false ? true : false;
-    }
-
-    /**
-     * Удаление значения из кэша
-     *
-     * @access public
-     * @param string|array $key
-     * @return boolean
-     * @since 1.0.0
-     */
-    public function remove($key)
-    {
-        if (is_array($key)) {
-            $size = $result = count($key);
-            foreach ($key as $k)
-                $result = $this->_cache->delete($k) ? $result - 1 : $result;
-            return !$result ? true : ($result === $size ? false : $result);
-        }
-        return $this->_cache->delete($key);
-    }
-
-    /**
-     * Очистка кэша
-     *
-     * @access public
-     * @return boolean
-     * @since 1.0.0
-     */
-    public function clear()
-    {
-        return $this->_cache->flush();
-    }
-
-    /**
-     * Увеличичвает значение в кэше на $step
-     *
-     * @access public
-     * @param string $key
-     * @param integer $step
-     * @return boolean
-     * @since 1.0.0
-     */
-    public function inc($key, $step = 1)
-    {
-        return $this->_cache->increment($key, $step);
-    }
-
-    /**
-     * Уменьшает значение в кэше на $step
-     *
-     * @access public
-     * @param string $key
-     * @param integer $step
-     * @return boolean
-     * @since 1.0.0
-     */
-    public function dec($key, $step = 1)
-    {
-        return $this->_cache->decrement($key, $step);
+        $this->_servers = $servers;
     }
 
     /**
      * Обработчик события конструктора класса
      *
-     * @access public
      * @return boolean
-     * @since 1.0.0
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public function onAfterConstruct()
     {
-        $this->_cache = new \Memcache();
+        $this->_cache = $this->isMemcached ? new \Memcached() : new \Memcache();
         if ($this->_servers) {
             foreach ($this->_servers as $server)
                 $this->_cache->addServer($server->host, $server->port);
-        } else
+        } else {
             $this->_cache->addServer($this->defaultHost, $this->defaultPort);
+        }
         return true;
     }
 }

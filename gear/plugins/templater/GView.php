@@ -79,9 +79,9 @@ class GView extends GPlugin
         if ($__render__buffered__) {
             $__old__data__ = null;
             $__buffer__is__started = false;
-            if (!empty(ob_get_status())) {
+            if (ob_get_status()) {
                 $__old__data__ = ob_get_contents();
-                @ob_end_clean();
+                ob_end_clean();
                 $__buffer__is__started = true;
             }
             ob_start();

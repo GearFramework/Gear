@@ -21,10 +21,10 @@ class GCssResourcesPlugin extends GResourcePlugin
     /* Private */
     /* Protected */
     protected static $_initialized = false;
-    protected $_viewPath = '\gear\modules\resources\views';
     protected $_allowedExtensions = ['css'];
     protected $_mappingFolder = null;
-    protected $_template = 'css.phtml';
+    protected $_typeResource = 'css';
+    protected $_mime = 'text/css';
     /* Public */
 
     /**
@@ -38,6 +38,10 @@ class GCssResourcesPlugin extends GResourcePlugin
      */
     public function makeHtml(string $url, array $options = []): string
     {
-        return $this->owner->p('view')->render($this->viewPath . '/' . $this->template, ['url' => $url, 'options' => $options], true);
+        $opt = [];
+        foreach($options as $param => $value) {
+            $opt[] = $param . "=\"$value\"";
+        }
+        return '<link href="' . $url . '" ' . implode(' ', $opt) . " rel=\"stylesheet\" />\n";
     }
 }
