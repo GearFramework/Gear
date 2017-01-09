@@ -46,20 +46,35 @@ class GDirectory extends GFileSystem implements IDirectory
      */
     public function copy($destination): IDirectory
     {
+        if (is_string($destination)) {
+            $destination = GFileSystem::factory(['path' => $destination]);
+        }
+        if (!$destination->exists()) {
+            $destination->create();
+        }
+        foreach(scandir($this) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+        }
         return $destination instanceof IDirectory ? $destination : GFileSystem::factory(['path' => $destination]);
     }
 
     /**
      * Создание директории
-     * 
+     *
+     * @param null|int|string $mode
      * @return $this|IDirectory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create(): IDirectory
+    public function create($mode = null): IDirectory
     {
         if (!@mkdir($this)) {
             throw self::exceptionDirectoryNotCreated(['file' => $this]);
+        }
+        if ($mode) {
+            $this->chmod($mode);
         }
         return $this;
     }

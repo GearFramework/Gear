@@ -21,6 +21,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
     /* Traits */
     use TFactory;
     /* Const */
+    const DEFAULT_MODE = 0664;
     /* Private */
     /* Protected */
     protected static $_mimes = [
@@ -1100,11 +1101,12 @@ abstract class GFileSystem extends GIo implements IFileSystem
     /**
      * Создание элемента файловой системы
      *
+     * @param null|int|string $mode $mode
      * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function create(): IFileSystem;
+    abstract public function create($mode = null): IFileSystem;
 
     /**
      * Возращает timestamp создания элемента файловой системы

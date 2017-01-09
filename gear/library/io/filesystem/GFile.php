@@ -58,14 +58,18 @@ class GFile extends GFileSystem implements IFile
     /**
      * Создание файла
      *
+     * @param null|int|string $mode
      * @return IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create(): IFile
+    public function create($mode = null): IFile
     {
         if (!touch($this)) {
             throw self::exceptionFileNotCreated(['file' => $this]);
+        }
+        if ($mode) {
+            $this->chmod($mode);
         }
         return $this;
     }
