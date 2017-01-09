@@ -56,8 +56,29 @@ class GDirectory extends GFileSystem implements IDirectory
             if ($item === '.' || $item === '..') {
                 continue;
             }
+            $item = $this . '/' . $item;
+            $dest = $destination . '/' . $this;
+            is_dir($item) ? $this->_copyDirectory($item, $dest) : $this->_copyFile($item, $dest);
         }
-        return $destination instanceof IDirectory ? $destination : GFileSystem::factory(['path' => $destination]);
+        return $destination;
+    }
+
+    private function _copyDirectory($directory, $destination)
+    {
+        if (is_string($destination)) {
+            $destination = GFileSystem::factory(['path' => $destination]);
+        }
+        if (!$destination->exists()) {
+            $destination->create();
+        }
+        foreach(scandir($directory) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+            $item = $directory . '/' . $item;
+            $dest = $destination . '/' . $this;
+            is_dir($item) ? $this->_copyDirectory($item, $destination . '/' . $directory) : $this->_copyFile($item, $destination . '/' . $directory);
+        }
     }
 
     /**
