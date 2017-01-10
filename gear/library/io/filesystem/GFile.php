@@ -42,11 +42,12 @@ class GFile extends GFileSystem implements IFile
      * Копирование элемента файловой системы
      *
      * @param string|IFile $destination
+     * @param array $options
      * @return IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function copy($destination): IFile
+    public function copy($destination, array $options = []): IFile
     {
         $result = copy($this, Core::resolvePath($destination));
         if (!$result) {
@@ -58,20 +59,24 @@ class GFile extends GFileSystem implements IFile
     /**
      * Создание файла
      *
-     * @param null|int|string $mode
-     * @return IFile
+     * @param array $options
+     * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create($mode = null): IFile
+    public function create(array $options = [])
     {
+        if ($this->exists()) {
+            if (isset($options['overwrite']) && $options['overwrite']) {
+                $this->remove();
+            }
+        }
         if (!touch($this)) {
-            throw self::exceptionFileNotCreated(['file' => $this]);
+            throw self::exceptionFileNotCreated('File <{file}> already exists', ['file' => $this]);
         }
-        if ($mode) {
-            $this->chmod($mode);
+        if (isset($options['mode'])) {
+            $this->chmod($options['mode']);
         }
-        return $this;
     }
 
     /**
@@ -160,6 +165,20 @@ class GFile extends GFileSystem implements IFile
     public function isEmpty(): bool
     {
         return (bool)filesize($this);
+    }
+
+    /**
+     * Удаление файла
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function remove()
+    {
+        if (!@unlink($this)) {
+            throw self::exceptionFileRemove('Failed to delete file <{file}>', ['file' => $this]);
+        }
     }
 
     /**

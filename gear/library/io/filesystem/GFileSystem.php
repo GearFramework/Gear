@@ -1092,21 +1092,22 @@ abstract class GFileSystem extends GIo implements IFileSystem
      * Копирование элемента файловой системы
      *
      * @param string|IFileSystem $destination
+     * @param array $options
      * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function copy($destination): IFileSystem;
+    abstract public function copy($destination, array $options = []): IFileSystem;
 
     /**
      * Создание элемента файловой системы
      *
-     * @param null|int|string $mode $mode
+     * @param array $options
      * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function create($mode = null): IFileSystem;
+    abstract public function create(array $options = []): IFileSystem;
 
     /**
      * Возращает timestamp создания элемента файловой системы
@@ -1410,6 +1411,15 @@ abstract class GFileSystem extends GIo implements IFileSystem
     {
         return $this->getName();
     }
+
+    /**
+     * Удаление элемента файловой системы
+     * 
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function remove();
 
     /**
      * Возвращает контент элемента файловой системы
