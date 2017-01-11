@@ -34,7 +34,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     public function close()
     {
         if ($this->isOpened()) {
-            closedir($this->_handler);
+            @closedir($this->_handler);
         }
     }
 
@@ -131,7 +131,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
      */
     public function getIterator()
     {
-        return $this->content();
+        return new \ArrayIterator($this->content());
     }
 
     /**

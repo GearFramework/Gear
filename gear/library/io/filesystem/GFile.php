@@ -16,7 +16,7 @@ use gear\interfaces\IFileSystem;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GFile extends GFileSystem implements IFile
+class GFile extends GFileSystem implements IFile, \IteratorAggregate
 {
     /* Traits */
     /* Const */
@@ -42,12 +42,12 @@ class GFile extends GFileSystem implements IFile
      * Копирование элемента файловой системы
      *
      * @param string|IFile $destination
-     * @param array $options
+     * @param array|GFileSystemOptions $options
      * @return IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function copy($destination, array $options = []): IFile
+    public function copy($destination, $options = []): IFile
     {
         $result = copy($this, Core::resolvePath($destination));
         if (!$result) {
@@ -59,12 +59,12 @@ class GFile extends GFileSystem implements IFile
     /**
      * Создание файла
      *
-     * @param array $options
+     * @param array|GFileSystemOptions $options
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create(array $options = [])
+    public function create($options = [])
     {
         if ($this->exists()) {
             if (isset($options['overwrite']) && $options['overwrite']) {
@@ -101,6 +101,17 @@ class GFile extends GFileSystem implements IFile
     public function extension(): string
     {
         return $this->getExtension();
+    }
+
+    /**
+     * Возвращает массив строк из файла
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function file(): array
+    {
+        return file($this, FILE_IGNORE_NEW_LINES);
     }
 
     /**
@@ -141,6 +152,18 @@ class GFile extends GFileSystem implements IFile
     public function getExtension(): string
     {
         return pathinfo($this->path, PATHINFO_EXTENSION);
+    }
+
+    /**
+     * Retrieve an external iterator
+     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or
+     * <b>Traversable</b>
+     * @since 5.0.0
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->file());
     }
 
     /**
@@ -190,7 +213,7 @@ class GFile extends GFileSystem implements IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setContent(string $content)
+    public function setContent($content)
     {
         if (!@file_put_contents($this, $content)) {
             throw static::exceptionErrorSetContent(['file' => $this]);
