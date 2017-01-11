@@ -66,8 +66,9 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      */
     public function create($options = [])
     {
+        $options = $this->_prepareOptions($options);
         if ($this->exists()) {
-            if (isset($options['overwrite']) && $options['overwrite']) {
+            if ($options->overwrite) {
                 $this->remove();
             }
         }
