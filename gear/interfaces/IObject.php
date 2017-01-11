@@ -144,3 +144,78 @@ interface IBehavior
  * @version 0.0.1
  */
 interface IDependent {}
+
+/**
+ * Интерфейс событий
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
+ */
+interface IEvent
+{
+    /**
+     * Получение состояния всплытия события
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getBubble(): bool;
+
+    /**
+     * Возвращает поставщика события
+     *
+     * @return null|IObject
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getSender();
+
+    /**
+     * Установка или отмена всплытия события
+     *
+     * @param bool $value
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setBubble(bool $value);
+
+    /**
+     * Установка поставщика события
+     *
+     * @param string|IObject $sender
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setSender($sender);
+    /**
+     * Останавливает всплытие события
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function stopPropagation();
+}
+
+
+/**
+ * Интерфейс классов-обработчиков событий
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
+ */
+interface IEventHandler
+{
+    public function __invoke();
+}

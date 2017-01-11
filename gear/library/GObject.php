@@ -6,6 +6,7 @@ use gear\Core;
 use gear\interfaces\IObject;
 use gear\traits\TBehaviorContained;
 use gear\traits\TObject;
+use gear\traits\TProperties;
 use gear\traits\TView;
 
 /**
@@ -24,6 +25,7 @@ class GObject implements IObject
 {
     /* Traits */
     use TObject;
+    use TProperties;
     use TView;
     /* Const */
     /* Private */
@@ -42,10 +44,6 @@ class GObject implements IObject
      */
     protected static $_sleepProperties = ['access', 'owner'];
     /**
-     * @var array $_events события класса и их обработчики
-     */
-    protected static $_events = [];
-    /**
      * @var int $_access режим доступа к объекту
      */
     protected $_access = Core::ACCESS_PUBLIC;
@@ -53,34 +51,7 @@ class GObject implements IObject
      * @var null|string пространство имён класса объекта
      */
     protected $_namespace = null;
-    /**
-     * @var null|object владелец объекта
-     */
-    protected $_owner = null;
     /* Public */
-
-    /**
-     * GObject constructor.
-     *
-     * @param array|\Closure $properties
-     * @param \gear\interfaces\IObject|null $owner
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    protected function __construct($properties = [], IObject $owner = null)
-    {
-        $this->beforeConstruct($properties);
-        if ($properties instanceof \Closure)
-            $properties = $properties($this);
-        if (!is_array($properties))
-            $properties = [];
-        if ($owner)
-            $this->owner = $owner;
-        foreach ($properties as $name => $value) {
-            $this->$name = $value;
-        }
-        $this->afterConstruct();
-    }
 
     /**
      * Клонирование объекта
@@ -319,34 +290,6 @@ class GObject implements IObject
     }
 
     /**
-     * Установка владельца объекта
-     *
-     * @param \gear\interfaces\IObject $owner
-     * @throws \ObjectException
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setOwner(IObject $owner)
-    {
-        if (!is_object($owner))
-            throw $this->exceptionObject('Owner must be a object');
-        $this->_owner = $owner;
-    }
-
-    /**
-     * Возвращает владельца объекта
-     *
-     * @return null|\gear\interfaces\IObject
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getOwner()
-    {
-        return $this->_owner;
-    }
-
-    /**
      * Установка уровня доступа к объекту
      *
      * @param int $value одно из значений Core::ACCESS_PRIVATE|Core::ACCESS_PROTECTED|Core::ACCESS_PUBLIC
@@ -388,82 +331,6 @@ class GObject implements IObject
             $this->_namespace = substr($class, 0, strrpos($class, '\\'));
         }
         return $this->_namespace;
-    }
-
-    /**
-     * Удаление обработчика/ов указанного события
-     *
-     * @param string|array $eventName
-     * @param null|array|callable|\Closure $handler
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function off(string $eventName, $handler = null)
-    {
-        if ($handler === null && isset($this->_events[$eventName]))
-            unset($this->_events[$eventName]);
-        else if (isset($this->_events[$eventName])) {
-            foreach ($this->_events[$eventName] as $h) {
-                if ($h === $handler)
-                    unset($this->_events[$eventName]);
-            }
-        }
-    }
-
-    /**
-     * Установка обработчика/ов на событие
-     *
-     * @param string|array $eventName
-     * @param null|array|callable|\Closure $handler
-     * @throws \ObjectException
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function on(string $eventName, $handler)
-    {
-        if (is_array($eventName)) {
-            foreach ($eventName as $event => $handler) {
-                $this->on($event, $handler);
-            }
-        } else if (is_array($handler)) {
-            foreach ($handler as $callable) {
-                $this->on($eventName, $callable);
-            }
-        } else {
-            if (!is_callable($handler))
-                throw self::exceptionObject('Event handler must be is callable');
-            !isset($this->_events[$eventName]) ? $this->_events[$eventName] = [$handler] : $this->_events[$eventName][] = $handler;
-        }
-    }
-
-    /**
-     * Генерация события
-     *
-     * @param string $eventName
-     * @param \gear\library\GEvent $event
-     * @return bool
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function trigger(string $eventName, GEvent $event)
-    {
-        $result = true;
-        if (method_exists($this, $eventName)) {
-            $result = $this->$eventName($event);
-            if (!$event->bubble)
-                return $result;
-        }
-        if (isset(self::$_events[$eventName])) {
-            foreach(self::$_events[$eventName] as $handler) {
-                if (call_user_func($handler, $event) === false)
-                    $result = false;
-                if (!$event->bubble)
-                    break;
-            }
-        }
-        return $result;
     }
 
     /**

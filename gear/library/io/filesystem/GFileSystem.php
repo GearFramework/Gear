@@ -2,6 +2,7 @@
 
 namespace gear\library\io\filesystem;
 
+use gear\interfaces\IDirectory;
 use gear\interfaces\IFileSystem;
 use gear\library\io\GIo;
 use gear\traits\TFactory;
@@ -1077,6 +1078,11 @@ abstract class GFileSystem extends GIo implements IFileSystem
         }
         return $result;
     }
+    
+    public function chown()
+    {
+        
+    }
 
     /**
      * Возвращает контент элемента файловой системы
@@ -1092,22 +1098,22 @@ abstract class GFileSystem extends GIo implements IFileSystem
      * Копирование элемента файловой системы
      *
      * @param string|IFileSystem $destination
-     * @param array $options
+     * @param array|GFileSystemOptions $options
      * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function copy($destination, array $options = []): IFileSystem;
+    abstract public function copy($destination, $options = []): IFileSystem;
 
     /**
      * Создание элемента файловой системы
      *
-     * @param array $options
+     * @param array|GFileSystemOptions $options
      * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function create(array $options = []): IFileSystem;
+    abstract public function create($options = []): IFileSystem;
 
     /**
      * Возращает timestamp создания элемента файловой системы
@@ -1120,6 +1126,17 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function ctime(string $format = '')
     {
         return $this->getCtime($format);
+    }
+
+    /**
+     * Возвращает инстанс владельца элемента файловой системы
+     * @return IDirectory
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function dir(): IDirectory
+    {
+        return $this->getOwner();
     }
 
     /**
@@ -1295,6 +1312,21 @@ abstract class GFileSystem extends GIo implements IFileSystem
     }
 
     /**
+     * Возвращает владельца элемента файловой системы
+     *
+     * @return IDirectory
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getOwner(): IDirectory
+    {
+        if ($this->_owner === null) {
+            $this->owner = $this->factory(['path' => $this->dirname()]);
+        }
+        return $this->_owner;
+    }
+
+    /**
      * Возвращает размер элемента файловой системы
      *
      * @return int
@@ -1349,6 +1381,18 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function isLink(): bool
     {
         return is_link($this->path);
+    }
+
+    /**
+     * Возвращает true, если директория открыта, иначе - false
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isOpened(): bool
+    {
+        return is_resource($this->_handler);
     }
 
     /**
@@ -1413,23 +1457,39 @@ abstract class GFileSystem extends GIo implements IFileSystem
     }
 
     /**
-     * Удаление элемента файловой системы
-     * 
-     * @return mixed
+     * Подготовка объекта-параметров из массива
+     *
+     * @param $options
+     * @return GFileSystemOptions
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function remove();
+    protected function _prepareOptions($options): GFileSystemOptions
+    {
+        if (is_array($options)) {
+            $options = new GFileSystemOptions($options);
+        }
+        return $options;
+    }
+
+    /**
+     * Удаление элемента файловой системы
+     *
+     * @param array $options
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function remove($options = []);
 
     /**
      * Возвращает контент элемента файловой системы
      *
-     * @param string $content
+     * @param mixed $content
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function setContent(string $content);
+    abstract public function setContent($content);
 
     /**
      * Установка пути элемента файловой системы
@@ -1453,10 +1513,10 @@ abstract class GFileSystem extends GIo implements IFileSystem
      *      '%01d %s',
      *      'kb'
      * )
-     * @param string $format
+     * @param array|GFileSystemOptions $options
      * @return int|string
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function size($format = '');
+    abstract public function size($options = []);
 }

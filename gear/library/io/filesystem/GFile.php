@@ -156,7 +156,7 @@ class GFile extends GFileSystem implements IFile
     }
 
     /**
-     * Возвращает true, если элемент файловой системы пустой, иначе false
+     * Возвращает true, если файл пустой, иначе false
      *
      * @return bool
      * @since 0.0.1
@@ -170,14 +170,15 @@ class GFile extends GFileSystem implements IFile
     /**
      * Удаление файла
      *
-     * @return void
+     * @param array $options
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function remove()
+    public function remove($options = [])
     {
+        $options = $this->_prepareOptions($options);
         if (!@unlink($this)) {
-            throw self::exceptionFileRemove('Failed to delete file <{file}>', ['file' => $this]);
+            throw self::exceptionFileSystem('Failed to delete file <{file}>', ['file' => $this]);
         }
     }
 
@@ -202,19 +203,20 @@ class GFile extends GFileSystem implements IFile
      *      '%01d %s'
      * или массив
      * Array (
-     *      '%01d %s',
-     *      'kb'
+     *      'format' => '%01d %s',
+     *      'force' => 'kb'
      * )
-     * @param string|array $format
+     * @param array|GFileSystemOptions $options
      * @return int|string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function size($format = '')
+    public function size($options = ['format' => ''])
     {
+        $options = $this->_prepareOptions($options);
         $size = filesize($this);
-        if ($format) {
-            $size = is_array($format) ? $this->formatSize($size, ... $format) : $this->formatSize($size, $format);
+        if ($options->format) {
+            $size = $this->formatSize($size, $options->format, $options->force);
         }
         return $size;
     }

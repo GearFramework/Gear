@@ -2,9 +2,10 @@
 
 namespace gear\library;
 
+use gear\interfaces\IEvent;
 use gear\interfaces\IObject;
 use gear\traits\TGetter;
-use gear\traits\TObject;
+use gear\traits\TProperties;
 use gear\traits\TSetter;
 
 /**
@@ -17,10 +18,10 @@ use gear\traits\TSetter;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GEvent
+class GEvent implements IEvent
 {
     /* Traits */
-    use TObject;
+    use TProperties;
     use TGetter;
     use TSetter;
     /* Const */
