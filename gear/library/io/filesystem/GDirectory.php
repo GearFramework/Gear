@@ -65,25 +65,21 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     {
         $options = $this->_prepareOptions($options);
         if (is_string($destination)) {
-            $destination = GFileSystem::factory(['path' => $destination]);
+            $destination = $this->factory(['path' => Core::resolvePath($destination)]);
         }
-        if (!$destination->exists()) {
-            $destination->create();
-        }
-        $result = GFileSystem::factory(['path' => $destination . '/' . $this]);
-        if (!$result->exists()) {
-            $result->create($options);
-        } else if (!$options->overwrite) {
-            throw self::exceptionFileCopyError('Destination directory <{dest}> alreadey exists', ['dest' => $result]);
+        $target = $this->factory(['path' => $destination . '/' . $this->basename()]);
+        $this->beforeCopy($destination, $target, $options);
+        if (!$target->exists()) {
+            $target->create();
         }
         foreach(scandir($this) as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
             $item = GFileSystem::factory(['path' => $this . '/' . $item]);
-            $item->copy($result);
+            $item->copy($target);
         }
-        return $result;
+        return $target;
     }
 
     /**
@@ -97,17 +93,11 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     public function create($options = [])
     {
         $options = $this->_prepareOptions($options);
-        if ($this->exists() && !$options->overwrite) {
-            throw self::exceptionFileSystem('Directory <{dir}> alreadey exists', ['dir' => $this]);
-        } else {
-            $this->remove();
-        }
+        $this->beforeCreate($options);
         if (!@mkdir($this)) {
             throw self::exceptionFileSystem('Failed to create directory <{dir}>', ['dir' => $this]);
         }
-        if (isset($options['mode'])) {
-            $this->chmod($options['mode']);
-        }
+        $this->afterCreate($options);
     }
 
     /**
@@ -198,9 +188,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     public function remove($options = [])
     {
         $options = $this->_prepareOptions($options);
-        if (!$this->isEmpty() && !$options->recursive) {
-            throw self::exceptionFileSystem('Deleting directory <{dir}> is not empty', ['dir' => $this]);
-        }
+        $this->beforeRemove($options);
         foreach($this as $item) {
             if ($item === '.' || $item === '..') {
                 continue;

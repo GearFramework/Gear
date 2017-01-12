@@ -3,6 +3,7 @@
 namespace gear\library\io\filesystem;
 
 use gear\Core;
+use gear\interfaces\IDirectory;
 use gear\interfaces\IFile;
 use gear\interfaces\IFileSystem;
 
@@ -41,7 +42,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     /**
      * Копирование элемента файловой системы
      *
-     * @param string|IFile $destination
+     * @param string|IDirectory $destination
      * @param array|GFileSystemOptions $options
      * @return IFile
      * @since 0.0.1
@@ -49,11 +50,17 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      */
     public function copy($destination, $options = []): IFile
     {
-        $result = copy($this, Core::resolvePath($destination));
-        if (!$result) {
-            throw static::exceptionErrorFileCopy(['source' => $this, 'destination' => $destination]);
+        $options = $this->_prepareOptions($options);
+        if (is_string($destination)) {
+            $destination = $this->factory(['path' => Core::resolvePath($destination)]);
         }
-        return $destination instanceof IFile ? $destination : GFileSystem::factory(['path' => $destination]);
+        $target = $this->factory(['path' => $destination . '/' . $this->basename()]);
+        $this->beforeCopy($destination, $target, $options);
+        $result = @copy($this, $target);
+        if (!$result) {
+            throw static::exceptionFileSystem('Failed to copy from <{source}> to <{destination}>', ['source' => $this, 'destination' => $target]);
+        }
+        return $target;
     }
 
     /**
@@ -67,17 +74,11 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     public function create($options = [])
     {
         $options = $this->_prepareOptions($options);
-        if ($this->exists()) {
-            if ($options->overwrite) {
-                $this->remove();
-            }
-        }
+        $this->beforeCreate($options);
         if (!touch($this)) {
-            throw self::exceptionFileNotCreated('File <{file}> already exists', ['file' => $this]);
+            throw self::exceptionFileSystem('Failed to crete file <{file}>', ['file' => $this]);
         }
-        if (isset($options['mode'])) {
-            $this->chmod($options['mode']);
-        }
+        $this->afterCreate($options);
     }
 
     /**
@@ -106,13 +107,15 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
 
     /**
      * Возвращает массив строк из файла
+     * @param array $options
      * @return array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function file(): array
+    public function file($options = []): array
     {
-        return file($this, FILE_IGNORE_NEW_LINES);
+        $options = $this->_prepareOptions($options);
+        return file($this, $options->ignoreNewLines ? FILE_IGNORE_NEW_LINES : 0);
     }
 
     /**
@@ -164,7 +167,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->file());
+        return new \ArrayIterator($this->file(['ignoreNewLines' => true]));
     }
 
     /**
@@ -217,7 +220,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     public function setContent($content)
     {
         if (!@file_put_contents($this, $content)) {
-            throw static::exceptionErrorSetContent(['file' => $this]);
+            throw static::exceptionFileSystem('Failed set content to file <{file}>', ['file' => $this]);
         }
     }
 

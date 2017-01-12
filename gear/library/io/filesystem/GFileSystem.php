@@ -2,8 +2,10 @@
 
 namespace gear\library\io\filesystem;
 
+use gear\Core;
 use gear\interfaces\IDirectory;
 use gear\interfaces\IFileSystem;
+use gear\library\GEvent;
 use gear\library\io\GIo;
 use gear\traits\TFactory;
 
@@ -1028,6 +1030,25 @@ abstract class GFileSystem extends GIo implements IFileSystem
     }
 
     /**
+     * Генерация события, возникающего после создания элемента файловой системы
+     *
+     * @param GFileSystemOptions $options
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function afterCreate(GFileSystemOptions $options)
+    {
+        if ($options->mode) {
+            $this->chmod($options->mode);
+        }
+        if ($options->own) {
+            $this->chown($options->own);
+        }
+        return $this->trigger('onAfterCreate', new GEvent($this, ['target' => $this, 'options' => $options]));
+    }
+
+    /**
      * Возращает timestamp доступа к элементу файловой системы
      *
      * @param string $format
@@ -1050,6 +1071,60 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function basename(): string
     {
         return $this->getBasename();
+    }
+
+    /**
+     * Подготовка и генерация события, возникающего перед копированием элемента файловой системы
+     *
+     * @param IDirectory $destination
+     * @param IFileSystem $target
+     * @param GFileSystemOptions $options
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function beforeCopy(IDirectory $destination, IFileSystem $target, GFileSystemOptions $options)
+    {
+        if (!$destination->exists()) {
+            $destination->create();
+        }
+        if ($target->exists() && !$options->overwrite) {
+            throw self::exceptionFileSystem('Destination <{dest}> alreadey exists', ['dest' => $target]);
+        }
+        return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $destination, 'options' => $options]));
+    }
+
+    /**
+     * Подготовка и генерация события, возникающего перед созданием элемента файловой системы
+     *
+     * @param GFileSystemOptions $options
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function beforeCreate(GFileSystemOptions $options)
+    {
+        if ($this->exists() && !$options->overwrite) {
+            throw self::exceptionFileSystem('Directory <{dir}> alreadey exists', ['dir' => $this]);
+        }
+        $this->remove();
+        return $this->trigger('onBeforeCreate', new GEvent($this, ['target' => $this, 'options' => $options]));
+    }
+
+    /**
+     * Подготовка и генерация события, возникающего перед удалением элемента файловой системы
+     *
+     * @param GFileSystemOptions $options
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function beforeRemove(GFileSystemOptions $options)
+    {
+        if ($this instanceof IDirectory && !$this->isEmpty() && !$options->recursive) {
+            throw self::exceptionFileSystem('Deleting directory <{dir}> is not empty', ['dir' => $this]);
+        }
+        return $this->trigger('onBeforeRemove', new GEvent($this, ['target' => $this, 'options' => $options]));
     }
 
     /**
@@ -1480,6 +1555,15 @@ abstract class GFileSystem extends GIo implements IFileSystem
      * @version 0.0.1
      */
     abstract public function remove($options = []);
+
+    /**
+     * Переименование/перемещение элемента файловой системы
+     *
+     * @param array $options
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function rename($destination, $options = []);
 
     /**
      * Возвращает контент элемента файловой системы

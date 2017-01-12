@@ -18,11 +18,14 @@ class GFileSystemOptions
     protected $_properties = [
         'overwrite' => false,
         'mode' => null,
+        'own' => null,
         'append' => false,
         'skip' => false,
         'recursive' => false,
         'format' => '%01d %s',
         'force' => '',
+        'append' => false,
+        'ignoreNewLines' => false,
     ];
     /* Public */
 }
