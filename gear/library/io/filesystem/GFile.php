@@ -26,6 +26,20 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     /* Public */
 
     /**
+     * Закрывает файл
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function close()
+    {
+        if ($this->isOpened()) {
+            fclose($this->_handler);
+        }
+    }
+
+    /**
      * Возвращает контент элемента файловой системы
      *
      * @param null|string|\Closure $prepareHandler
@@ -195,6 +209,39 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     }
 
     /**
+     * Открывает файл чтения/записи
+     *
+     * @param array $options
+     * @return IFile
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function open($options = []): IFile
+    {
+        if (!$this->isOpened()) {
+            $options = $this->_prepareOptions($options);
+            $this->_handler = fopen($this, $options->mode);
+        }
+        return $this;
+    }
+
+    /**
+     * Читение из файла
+     *
+     * @param int $length
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function read($length = 0)
+    {
+        if (!$this->isOpened()) {
+            $this->open();
+        }
+        return fread($this->_handler, $length);
+    }
+
+    /**
      * Удаление файла
      *
      * @param array $options
@@ -207,6 +254,36 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
         if (!@unlink($this)) {
             throw self::exceptionFileSystem('Failed to delete file <{file}>', ['file' => $this]);
         }
+    }
+
+    /**
+     * Переименование/перемещение файла
+     *
+     * @param string|IFileSystem $destination
+     * @param array|GFileSystemOptions $options
+     * @return IFile
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function rename($destination, $options = []): IFile
+    {
+        $options = $this->_prepareOptions($options);
+        if (is_string($destination)) {
+            $destination = $this->factory(['path' => Core::resolvePath($destination)]);
+        }
+        $this->beforeRename($destination, $options);
+        if (!@rename($this, $destination)) {
+            throw static::exceptionFileSystem('Failed rename from <{source}> to <{destination}>', ['source' => $this, 'destination' => $destination]);
+        }
+        return $destination;
+    }
+
+    public function seek($offset)
+    {
+        if (!$this->isOpened()) {
+            $this->open();
+        }
+        fseek($this->_handler, $offset);
     }
 
     /**
@@ -258,5 +335,13 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     public function type()
     {
         return filetype($this->path);
+    }
+
+    public function write($data, $length = 0)
+    {
+        if (!$this->isOpened()) {
+            $this->open();
+        }
+        return fwrite($this->_handler, $data, $length);
     }
 }

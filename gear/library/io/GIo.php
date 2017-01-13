@@ -32,6 +32,8 @@ abstract class GIo extends GObject implements IIo
     ];
     /* Public */
 
+    abstract public function close();
+
     /**
      * При $type равным
      * NULL - возращает тип элемента соответствующее одному из значений
@@ -47,7 +49,7 @@ abstract class GIo extends GObject implements IIo
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function isa($type = null)
+    public function isA($type = null)
     {
         $result = false;
         if ($type === null)
@@ -59,6 +61,12 @@ abstract class GIo extends GObject implements IIo
         return $result;
     }
 
+    abstract public function open($options = []);
+
+    abstract public function read($length = 8192);
+
+    abstract public function seek($offset);
+
     /**
      * Возвращает строковое значение соответствующее типу элемента
      *
@@ -67,4 +75,6 @@ abstract class GIo extends GObject implements IIo
      * @version 0.0.1
      */
     abstract public function type();
+
+    abstract public function write($data, $length = 0);
 }

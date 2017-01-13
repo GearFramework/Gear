@@ -18,6 +18,7 @@ class GFileSystemOptions
     protected $_properties = [
         'overwrite' => false,
         'mode' => null,
+        'permission' => null,
         'own' => null,
         'append' => false,
         'skip' => false,
@@ -26,6 +27,8 @@ class GFileSystemOptions
         'force' => '',
         'append' => false,
         'ignoreNewLines' => false,
+        'group' => null,
+        'user' => null,
     ];
     /* Public */
 }

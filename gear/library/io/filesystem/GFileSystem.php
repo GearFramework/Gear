@@ -1030,6 +1030,22 @@ abstract class GFileSystem extends GIo implements IFileSystem
     }
 
     /**
+     * Подготовка объекта-параметров из массива
+     *
+     * @param $options
+     * @return GFileSystemOptions
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _prepareOptions($options): GFileSystemOptions
+    {
+        if (is_array($options)) {
+            $options = new GFileSystemOptions($options);
+        }
+        return $options;
+    }
+
+    /**
      * Генерация события, возникающего после создания элемента файловой системы
      *
      * @param GFileSystemOptions $options
@@ -1091,6 +1107,23 @@ abstract class GFileSystem extends GIo implements IFileSystem
         if ($target->exists() && !$options->overwrite) {
             throw self::exceptionFileSystem('Destination <{dest}> alreadey exists', ['dest' => $target]);
         }
+        return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $target, 'options' => $options]));
+    }
+
+    /**
+     * Подготовка и генерация события, возникающего перед переименованием элемента файловой системы
+     *
+     * @param IFileSystem $destination
+     * @param GFileSystemOptions $options
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function beforeRename(IFileSystem $destination, GFileSystemOptions $options)
+    {
+        if ($destination->exists() && !$options->overwrite) {
+            throw self::exceptionFileSystem('Destination <{dest}> alreadey exists', ['dest' => $destination]);
+        }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $destination, 'options' => $options]));
     }
 
@@ -1135,7 +1168,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function chmod($permission): bool
+    public function chmod($options = []): bool
     {
         if (is_numeric($permission)) {
             $result = @chmod($this->path, $permission);
@@ -1153,10 +1186,40 @@ abstract class GFileSystem extends GIo implements IFileSystem
         }
         return $result;
     }
-    
-    public function chown()
+
+    /**
+     * Меняет владельца (пользователя/группу) элемента файловой системы
+     * $this->chown(1001);
+     * $this->chown('user');
+     * $this->chown('user:group');
+     * $this->chown(':group');
+     * $this->chown('1001:50');
+     * $this->chown(':50');
+     * $this->chown(['user' => 1001, 'group' => 50]);
+     * и т.п.
+     *
+     * @param string|int|array|GFileSystemOptions $options
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function chown($options = [])
     {
-        
+        if (is_string($options) ||is_numeric($options)) {
+            if (($pos = strpos($options, ':')) !== false) {
+                $own = explode(':', $options);
+                $options = $pos === 0 ? ['group' => $own[0]] : ['user' => $own[0], 'group' => $own[1]];
+            } else {
+                $options = ['user' => $options];
+            }
+        }
+        $options = $this->_prepareOptions($options);
+        if ($options->user !== null) {
+            @chown($this, $options->user);
+        }
+        if ($options->group !== null) {
+            @chgrp($this, $options->group);
+        }
     }
 
     /**
@@ -1414,6 +1477,23 @@ abstract class GFileSystem extends GIo implements IFileSystem
     }
 
     /**
+     * Возвращает идентификатор группы элемента файловой системы
+     *
+     * @param bool $asName
+     * @return int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function gid(bool $asName = false)
+    {
+        $gid = filegroup($this);
+        if ($asName) {
+            $gid = posix_getgrgid($gid)['name'];
+        }
+        return $gid;
+    }
+
+    /**
      * Возвращает true, если элемент файловой системы пустой, иначе false
      * 
      * @return bool
@@ -1532,22 +1612,6 @@ abstract class GFileSystem extends GIo implements IFileSystem
     }
 
     /**
-     * Подготовка объекта-параметров из массива
-     *
-     * @param $options
-     * @return GFileSystemOptions
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    protected function _prepareOptions($options): GFileSystemOptions
-    {
-        if (is_array($options)) {
-            $options = new GFileSystemOptions($options);
-        }
-        return $options;
-    }
-
-    /**
      * Удаление элемента файловой системы
      *
      * @param array $options
@@ -1559,12 +1623,13 @@ abstract class GFileSystem extends GIo implements IFileSystem
     /**
      * Переименование/перемещение элемента файловой системы
      *
-     * @param array $options
+     * @param string|IFileSystem $destination
+     * @param array|GFileSystemOptions $options
      * @since 0.0.1
      * @version 0.0.1
      */
     abstract public function rename($destination, $options = []);
-
+    
     /**
      * Возвращает контент элемента файловой системы
      *
@@ -1603,4 +1668,21 @@ abstract class GFileSystem extends GIo implements IFileSystem
      * @version 0.0.1
      */
     abstract public function size($options = []);
+
+    /**
+     * Возвращает идентификатор или имя владельца элемента файловой системы
+     *
+     * @param bool $asName
+     * @return int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function uid(bool $asName = false)
+    {
+        $uid = fileowner($this);
+        if ($asName) {
+            $uid = posix_getpwuid($uid)['name'];
+        }
+        return $uid;
+    }
 }

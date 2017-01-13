@@ -25,6 +25,37 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     /* Public */
 
     /**
+     * Меняет владельца (пользователя/группу) элемента файловой системы
+     *
+     * @param int|string|array|GFileSystemOptions $options
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function chown($options = [])
+    {
+        if (is_string($options) ||is_numeric($options)) {
+            if (($pos = strpos($options, ':')) !== false) {
+                $own = explode(':', $options);
+                $options = $pos === 0 ? ['group' => $own[0]] : ['user' => $own[0], 'group' => $own[1]];
+            } else {
+                $options = ['user' => $options];
+            }
+        }
+        $options = $this->_prepareOptions($options);
+        parent::chown($options);
+        if ($this->isDir() && $options->recursive) {
+            foreach($this as $item) {
+                if ($item === '.' || $item === '..') {
+                    continue;
+                }
+                $item = $this->factory(['path' => $this . '/' . $item]);
+                $item->chown($options);
+            }
+        }
+    }
+
+    /**
      * Закрывает директорию
      *
      * @return void
@@ -164,13 +195,14 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     }
 
     /**
-     * Читайте дочерние элементы из директории
+     * Чтение дочерних элементов из директории
      *
+     * @param int $length
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function read()
+    public function read($length = 0)
     {
         if (!$this->isOpened()) {
             $this->open();
@@ -200,6 +232,30 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
             throw self::exceptionFileSystem('Failed to delete directory <{dir}>', ['dir' => $this]);
         }
     }
+
+    /**
+     * Переименование/перемещение дирeктории
+     *
+     * @param string|IFileSystem $destination
+     * @param array|GFileSystemOptions $options
+     * @return IDirectory
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function rename($destination, $options = []): IDirectory
+    {
+        $options = $this->_prepareOptions($options);
+        if (is_string($destination)) {
+            $destination = $this->factory(['path' => Core::resolvePath($destination)]);
+        }
+        $this->beforeRename($destination, $options);
+        if (!@rename($this, $destination)) {
+            throw static::exceptionFileSystem('Failed rename from <{source}> to <{destination}>', ['source' => $this, 'destination' => $destination]);
+        }
+        return $destination;
+    }
+
+    public function seek($offset) {}
 
     /**
      * Возвращает контент элемента файловой системы
@@ -264,4 +320,6 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     {
         return filetype($this->path);
     }
+
+    public function write($data, $length = 0) {}
 }
