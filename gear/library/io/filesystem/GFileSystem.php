@@ -1163,26 +1163,34 @@ abstract class GFileSystem extends GIo implements IFileSystem
     /**
      * Смена прав доступа к элементу
      *
-     * @param integer|string $permission
+     * @param integer|string|array|GFileSystemOptions $options
      * @return bool
      * @since 0.0.1
      * @version 0.0.1
      */
     public function chmod($options = []): bool
     {
-        if (is_numeric($permission)) {
-            $result = @chmod($this->path, $permission);
-        } else if (is_string($permission)) {
-            $permission = str_replace(' ', '', $permission);
+        if (!is_array($options) && !is_object($options)) {
+            $options = ['chmode' => $options];
+        }
+        $options = $this->_prepareOptions($options);
+        if (is_numeric($options->permission)) {
+            $result = chmod($this->path, $options->permission);
+        } else if (is_string($options->permission)) {
+            $permission = str_replace(' ', '', $options->permission);
+            $permissions = explode(',', $permission);
+            foreach($permissions as $permission) {
+            }
+
             if (strpos($permission, ','))
                 $permission = $this->_chmodRelative(explode(',', $permission));
             else if ($permission[0] === 'u' || $permission[0] === 'g' || $permission[0] === 'o' || $permission[0] === 'a')
                 $permission = $this->_chmodRelative([$permission]);
             else
                 $permission = $this->_chmodTarget($permission);
-            $result = @chmod($this->path, $permission);
+            $result = chmod($this->path, $permission);
         } else {
-            static::exceptionFileSystem('Invalid value of permission <{permission}>', ['permission' => $permission]);
+            static::exceptionFileSystem('Invalid value of permission <{permission}>', ['permission' => $options->permission]);
         }
         return $result;
     }
@@ -1215,10 +1223,10 @@ abstract class GFileSystem extends GIo implements IFileSystem
         }
         $options = $this->_prepareOptions($options);
         if ($options->user !== null) {
-            @chown($this, $options->user);
+            chown($this, $options->user);
         }
         if ($options->group !== null) {
-            @chgrp($this, $options->group);
+            chgrp($this, $options->group);
         }
     }
 

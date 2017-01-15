@@ -65,7 +65,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     public function close()
     {
         if ($this->isOpened()) {
-            @closedir($this->_handler);
+            closedir($this->_handler);
         }
     }
 
@@ -125,7 +125,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
     {
         $options = $this->_prepareOptions($options);
         $this->beforeCreate($options);
-        if (!@mkdir($this)) {
+        if (!mkdir($this)) {
             throw self::exceptionFileSystem('Failed to create directory <{dir}>', ['dir' => $this]);
         }
         $this->afterCreate($options);
@@ -228,7 +228,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
             $item = $this->factory(['path' => $this . '/' . $item]);
             $item->remove();
         }
-        if (!@rmdir($this)) {
+        if (!rmdir($this)) {
             throw self::exceptionFileSystem('Failed to delete directory <{dir}>', ['dir' => $this]);
         }
     }
@@ -249,7 +249,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
             $destination = $this->factory(['path' => Core::resolvePath($destination)]);
         }
         $this->beforeRename($destination, $options);
-        if (!@rename($this, $destination)) {
+        if (!rename($this, $destination)) {
             throw static::exceptionFileSystem('Failed rename from <{source}> to <{destination}>', ['source' => $this, 'destination' => $destination]);
         }
         return $destination;

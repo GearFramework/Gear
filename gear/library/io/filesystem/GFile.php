@@ -70,7 +70,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
         }
         $target = $this->factory(['path' => $destination . '/' . $this->basename()]);
         $this->beforeCopy($destination, $target, $options);
-        $result = @copy($this, $target);
+        $result = copy($this, $target);
         if (!$result) {
             throw static::exceptionFileSystem('Failed to copy from <{source}> to <{destination}>', ['source' => $this, 'destination' => $target]);
         }
@@ -141,7 +141,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      */
     public function getContent(): string
     {
-        $data = @file_get_contents($this);
+        $data = file_get_contents($this);
         if ($data === false) {
             $data = '';
         }
@@ -251,7 +251,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
     public function remove($options = [])
     {
         $options = $this->_prepareOptions($options);
-        if (!@unlink($this)) {
+        if (!unlink($this)) {
             throw self::exceptionFileSystem('Failed to delete file <{file}>', ['file' => $this]);
         }
     }
@@ -272,7 +272,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
             $destination = $this->factory(['path' => Core::resolvePath($destination)]);
         }
         $this->beforeRename($destination, $options);
-        if (!@rename($this, $destination)) {
+        if (!rename($this, $destination)) {
             throw static::exceptionFileSystem('Failed rename from <{source}> to <{destination}>', ['source' => $this, 'destination' => $destination]);
         }
         return $destination;
@@ -296,7 +296,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      */
     public function setContent($content)
     {
-        if (!@file_put_contents($this, $content)) {
+        if (!file_put_contents($this, $content)) {
             throw static::exceptionFileSystem('Failed set content to file <{file}>', ['file' => $this]);
         }
     }
