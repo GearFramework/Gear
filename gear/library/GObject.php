@@ -5,6 +5,7 @@ namespace gear\library;
 use gear\Core;
 use gear\interfaces\IObject;
 use gear\traits\TBehaviorContained;
+use gear\traits\TEvent;
 use gear\traits\TObject;
 use gear\traits\TProperties;
 use gear\traits\TView;
@@ -26,6 +27,7 @@ class GObject implements IObject
     /* Traits */
     use TObject;
     use TProperties;
+    use TEvent;
     use TView;
     /* Const */
     /* Private */

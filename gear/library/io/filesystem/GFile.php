@@ -62,7 +62,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function copy($destination, $options = []): IFile
+    public function copy($destination, $options = []): IFileSystem
     {
         $options = $this->_prepareOptions($options);
         if (is_string($destination)) {
@@ -81,11 +81,11 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      * Создание файла
      *
      * @param array|GFileSystemOptions $options
-     * @return void
+     * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create($options = [])
+    public function create($options = []): IFileSystem
     {
         $options = $this->_prepareOptions($options);
         $this->beforeCreate($options);
@@ -93,6 +93,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
             throw self::exceptionFileSystem('Failed to crete file <{file}>', ['file' => $this]);
         }
         $this->afterCreate($options);
+        return $this;
     }
 
     /**
@@ -216,7 +217,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function open($options = []): IFile
+    public function open($options = []): IFileSystem
     {
         if (!$this->isOpened()) {
             $options = $this->_prepareOptions($options);
@@ -265,7 +266,7 @@ class GFile extends GFileSystem implements IFile, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function rename($destination, $options = []): IFile
+    public function rename($destination, $options = []): IFileSystem
     {
         $options = $this->_prepareOptions($options);
         if (is_string($destination)) {

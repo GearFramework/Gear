@@ -34,6 +34,7 @@ class PublicateController extends GController
      */
     public function apiGet(string $hash, string $type)
     {
-        (string)Core::m('resources')->get($hash, $type, true);
+        Core::m('resources')->get($hash, $type, true);
+        die();
     }
 }

@@ -11,5 +11,9 @@ body, div, p, ul, li { margin: 0; padding: 0; box-sizing: border-box; position: 
 .top>.top-area .text-sub { font-size: 11px; font-weight: 600; text-transform: uppercase; color: white; }
 
 .top>.mainmenu-area { height: 64px; width: 100%; padding-top: 32px; }
-.top>.mainmenu-area .main-item { font-family: 'Open Sans'; color: black; font-weight: 800; font-size: 12px; text-transform: uppercase; padding: 0 48px; float: left; height: 32px; line-height: 32px; }
+.top>.mainmenu-area .main-item { color: black; padding: 0 24px; float: left; height: 32px; line-height: 32px; }
+.top>.mainmenu-area .main-item:hover { cursor: pointer; background-color: #a0d468; color: white; }
 .top>.mainmenu-area .main-item.selected { background-color: #a0d468; color: white; }
+
+.top>.submenu-area { background-color: #a0d468; color: white; line-height: 32px; }
+.top>.submenu-area .submenu-item { padding: 0; height: 32px; line-height: inherit; width: 160px; }

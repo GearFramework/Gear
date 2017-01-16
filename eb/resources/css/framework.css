@@ -19,6 +19,8 @@ body, div, ul, li, td, p, aside { position: relative; padding: 0; margin: 0; }
 .text-capitalize { text-transform: capitalize; }
 .text-hide { font: 0/0 a; color: transparent; text-shadow: none; }
 
+.xxsmall { font-size: 10px; }
+.xsmall { font-size: 11px; }
 .small { font-size: 12px; }
 .middle { font-size: 14px; }
 .big { font-size: 18px; }

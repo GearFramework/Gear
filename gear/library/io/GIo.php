@@ -3,9 +3,9 @@
 namespace gear\library\io;
 
 use gear\interfaces\IIo;
-use gear\library\GObject;
+use gear\library\GModel;
 
-abstract class GIo extends GObject implements IIo
+abstract class GIo extends GModel implements IIo
 {
     /* Traits */
     /* Const */

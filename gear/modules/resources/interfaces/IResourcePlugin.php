@@ -20,11 +20,11 @@ interface IResourcePlugin
      * Возвращает ресурс соответствующего указанному хэшу
      * 
      * @param string $hash
-     * @return IFile
+     * @return string|IFile
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function get(string $hash): IFile;
+    public function get(string $hash);
 
     /**
      * Генерирует html для вставки на страницу

@@ -92,7 +92,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function copy($destination, $options = []): IDirectory
+    public function copy($destination, $options = []): IFileSystem
     {
         $options = $this->_prepareOptions($options);
         if (is_string($destination)) {
@@ -117,11 +117,11 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
      * Создание директории
      *
      * @param array|GFileSystemOptions $options
-     * @return void
+     * @return IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create($options = [])
+    public function create($options = []): IFileSystem
     {
         $options = $this->_prepareOptions($options);
         $this->beforeCreate($options);
@@ -129,6 +129,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
             throw self::exceptionFileSystem('Failed to create directory <{dir}>', ['dir' => $this]);
         }
         $this->afterCreate($options);
+        return $this;
     }
 
     /**
@@ -185,7 +186,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function open($options = []): IDirectory
+    public function open($options = []): IFileSystem
     {
         if (!$this->isOpened()) {
             $options = $this->_prepareOptions($options);
@@ -242,7 +243,7 @@ class GDirectory extends GFileSystem implements IDirectory, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function rename($destination, $options = []): IDirectory
+    public function rename($destination, $options = []): IFileSystem
     {
         $options = $this->_prepareOptions($options);
         if (is_string($destination)) {
