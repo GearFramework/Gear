@@ -42,6 +42,6 @@ class GJsResourcesPlugin extends GResourcePlugin
         foreach($options as $param => $value) {
             $opt[] = $param . "=\"$value\"";
         }
-        return '<script href="' . $url . '" ' . implode(' ', $opt) . " />\n";
+        return '<script src="' . $url . '" ' . implode(' ', $opt) . "></script>\n";
     }
 }

@@ -76,38 +76,38 @@ body, div, p, ul, li {
     color: white;
 }
 
-.top > .mainmenu-area {
+.top > #mainMenu .mainmenu-area {
     height: 64px;
     width: 100%;
     padding-top: 32px;
 }
 
-.top > .mainmenu-area .main-item {
+.top > #mainMenu .mainmenu-area .main-item {
     color: black;
     padding: 0 24px;
     float: left;
     height: 32px;
     line-height: 32px;
-}
-
-.top > .mainmenu-area .main-item:hover {
     cursor: pointer;
+}
+
+.top > #mainMenu .mainmenu-area .main-item:hover {
     background-color: #a0d468;
     color: white;
 }
 
-.top > .mainmenu-area .main-item.selected {
+.top > #mainMenu .mainmenu-area .main-item.selected {
     background-color: #a0d468;
     color: white;
 }
 
-.top > .submenu-area {
+.top > #mainMenu .submenu-area {
     background-color: #a0d468;
     color: white;
     line-height: 32px;
 }
 
-.top > .submenu-area .submenu-item {
+.top > #mainMenu .submenu-area .submenu-item {
     padding: 0;
     height: 32px;
     line-height: inherit;
