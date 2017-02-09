@@ -36,7 +36,7 @@ class GModel extends GObject implements IModel
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function __construct($properties = [], IObject $owner = null)
+    public function __construct($properties = [], $owner = null)
     {
         parent::__construct($properties, $owner);
     }

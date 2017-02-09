@@ -47,6 +47,10 @@ body, div, p, ul, li {
     float: right;
     height: inherit;
     font-family: 'Open Sans', sans-serif;
+    cursor: pointer;
+}
+.top > .top-area .client-area:hover {
+    background-color: #a0d468;
 }
 
 .top > .top-area .basket-area {
@@ -55,6 +59,10 @@ body, div, p, ul, li {
     float: right;
     height: inherit;
     font-family: 'Open Sans', sans-serif;
+    cursor: pointer;
+}
+.top > .top-area .basket-area:hover {
+    background-color: #a0d468;
 }
 
 .top > .top-area .basket-area:after {
@@ -112,4 +120,9 @@ body, div, p, ul, li {
     height: 32px;
     line-height: inherit;
     width: 160px;
+    cursor: pointer;
+}
+
+.top > #mainMenu .submenu-area .submenu-item:hover {
+    border-bottom: 3px solid #8dc153;
 }
