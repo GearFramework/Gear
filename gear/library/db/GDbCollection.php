@@ -2,7 +2,7 @@
 
 namespace gear\library\db;
 
-use gear\library\GObject;
+use gear\library\GModel;
 
 /**
  * Библиотека коллекций (таблиц)
@@ -14,7 +14,7 @@ use gear\library\GObject;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbCollection extends GDbDatabase
+abstract class GDbCollection extends GModel implements \IteratorAggregate
 {
     /* Traits */
     use TFactory;
@@ -40,6 +40,15 @@ abstract class GDbCollection extends GDbDatabase
     }
 
     /**
+     * Удаление базы данных
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function drop();
+
+    /**
      * Возвращает соединение с сервером базы данных
      *
      * @return GDbConnection
@@ -52,30 +61,6 @@ abstract class GDbCollection extends GDbDatabase
     }
 
     /**
-     * Возвращает базу данных, в которой находится коллекция курсора
-     *
-     * @return GDbDatabase
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-
-    public function getDatabase(): GDbDatabase
-    {
-        return $this->owner;
-    }
-    /**
-     * Возвращает ресурс соединения с сервером базы данных
-     *
-     * @return resource
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getHandler()
-    {
-        return $this->owner->getHandler();
-    }
-
-    /**
      * Возвращает текущий выполняемый запрос
      *
      * @return GDbCursor
@@ -85,6 +70,42 @@ abstract class GDbCollection extends GDbDatabase
     public function getCurrent(): GDbCursor
     {
         return $this->_current;
+    }
+
+    /**
+     * Возвращает инстанс курсора для работы с запросами
+     *
+     * @return null|GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCursor()
+    {
+        return $this->_cursor;
+    }
+
+    /**
+     * Возвращает базу данных, в которой находится коллекция курсора
+     *
+     * @return GDbDatabase
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDatabase(): GDbDatabase
+    {
+        return $this->owner;
+    }
+
+    /**
+     * Возвращает ресурс соединения с сервером базы данных
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getHandler()
+    {
+        return $this->owner->getHandler();
     }
 
     /**
@@ -111,6 +132,15 @@ abstract class GDbCollection extends GDbDatabase
     {
         $this->drop();
     }
+
+    /**
+     * Сброс результатов выполнения последнего запроса
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function reset();
 
     /**
      * Установка текущего выполняемого запроса

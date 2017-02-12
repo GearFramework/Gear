@@ -4,6 +4,7 @@ namespace gear\library\db;
 
 use gear\interfaces\IModel;
 use gear\library\GEvent;
+use gear\library\GModel;
 
 /**
  * Класс запроса
@@ -15,7 +16,7 @@ use gear\library\GEvent;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbCursor extends GDbCollection implements \IteratorAggregate
+abstract class GDbCursor extends GModel implements \Iterator
 {
     /* Traits */
     /* Const */
@@ -339,15 +340,6 @@ abstract class GDbCursor extends GDbCollection implements \IteratorAggregate
     {
         return $this->delete($criteria);
     }
-
-    /**
-     * Сброс результатов выполнения последнего запроса
-     *
-     * @return GDbCursor
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    abstract public function reset(): GDbCursor;
 
     /**
      * Правое подключение таблицы

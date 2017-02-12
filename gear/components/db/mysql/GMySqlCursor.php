@@ -339,7 +339,7 @@ class GMySqlCursor extends GDbCursor
         if ($params) {
             $bindParams = [];
             foreach($params as $param) {
-                $bindParams = $this->eascape($param);
+                $bindParams[] = $this->eascape($param);
             }
             $query = sprintf($query, ...$bindParams);
         }

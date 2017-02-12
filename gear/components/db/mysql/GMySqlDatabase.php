@@ -3,6 +3,7 @@
 namespace gear\components\db\mysql;
 
 use gear\library\db\GDbDatabase;
+use Traversable;
 
 /**
  * Библиотека базы данных
@@ -58,6 +59,36 @@ class GMySqlDatabase extends GDbDatabase
     {
         $this->cursor->runQuery('DROP DATABASE `%s`', $this->name);
         return $this;
+    }
+
+    /**
+     * Retrieve an external iterator
+     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or
+     * <b>Traversable</b>
+     * @since 5.0.0
+     */
+    public function getIterator()
+    {
+        if (!$this->cursor) {
+            $this->cursor = $this->factory($this->_cursorFactory);
+        }
+        return $this->cursor->runQuery('SHOW TABLES');
+    }
+
+    /**
+     * Сброс результатов выполнения последнего запроса
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function reset()
+    {
+        if ($this->_cursor) {
+            $this->_cursor->free();
+            unset($this->_cursor);
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace gear\library\db;
 
-use gear\library\GObject;
+use gear\library\GModel;
 
 /**
  * Библиотека базы данных
@@ -14,7 +14,7 @@ use gear\library\GObject;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbDatabase extends GObject implements \Iterator
+abstract class GDbDatabase extends GModel implements \IteratorAggregate
 {
     /* Traits */
     use TFactory;
@@ -29,6 +29,7 @@ abstract class GDbDatabase extends GObject implements \Iterator
     ];
     protected $_items = [];
     protected $_current = null;
+    protected $_cursor = null;
     /* Public */
 
     /**
@@ -64,7 +65,7 @@ abstract class GDbDatabase extends GObject implements \Iterator
     /**
      * Возвращает текущую выбранную коллекцию
      *
-     * @return null|GDbDatabase
+     * @return null|GDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -76,13 +77,13 @@ abstract class GDbDatabase extends GObject implements \Iterator
     /**
      * Возвращает инстанс курсора для работы с запросами
      *
-     * @return GDbCursor
+     * @return null|GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCursor(): GDbCursor
+    public function getCursor()
     {
-        return $this->factory($this->_cursorFactory);
+        return $this->_cursor;
     }
 
     /**
@@ -108,6 +109,15 @@ abstract class GDbDatabase extends GObject implements \Iterator
     {
         $this->drop();
     }
+
+    /**
+     * Сброс результатов выполнения последнего запроса
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function reset();
 
     /**
      * Выбор текущей базы данных
@@ -149,5 +159,18 @@ abstract class GDbDatabase extends GObject implements \Iterator
     public function setCurrent(GDbCollection $current)
     {
         $this->_current = $current;
+    }
+
+    /**
+     * Устанавливает инстанс курсора для работы с запросами
+     *
+     * @param null|GDbCursor $cursor
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setCursor(GDbCursor $cursor)
+    {
+        return $this->_cursor = $cursor;
     }
 }
