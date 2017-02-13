@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Фев 13 2017 г., 23:41
+-- Время создания: Фев 14 2017 г., 00:09
 -- Версия сервера: 5.6.25-73.1
 -- Версия PHP: 7.1.0RC6
 
@@ -21,6 +21,33 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `eb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `eb`;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `clientOrderProducts`
+--
+
+DROP TABLE IF EXISTS `clientOrderProducts`;
+CREATE TABLE IF NOT EXISTS `clientOrderProducts` (
+  `order` bigint(20) unsigned NOT NULL,
+  `product` bigint(20) unsigned NOT NULL,
+  `count` mediumint(8) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `clientOrders`
+--
+
+DROP TABLE IF EXISTS `clientOrders`;
+CREATE TABLE IF NOT EXISTS `clientOrders` (
+  `id` bigint(20) unsigned NOT NULL,
+  `client` bigint(20) unsigned NOT NULL,
+  `dateOrder` datetime NOT NULL,
+  `datePrepare` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -76,6 +103,48 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `storage`
+--
+
+DROP TABLE IF EXISTS `storage`;
+CREATE TABLE IF NOT EXISTS `storage` (
+  `product` bigint(20) unsigned NOT NULL,
+  `count` mediumint(8) unsigned NOT NULL,
+  `price` double unsigned NOT NULL,
+  `vendor` smallint(5) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `vendorOrders`
+--
+
+DROP TABLE IF EXISTS `vendorOrders`;
+CREATE TABLE IF NOT EXISTS `vendorOrders` (
+  `id` bigint(20) unsigned NOT NULL,
+  `vendor` smallint(5) unsigned NOT NULL,
+  `product` bigint(20) unsigned NOT NULL,
+  `lots` smallint(5) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `vendorProducts`
+--
+
+DROP TABLE IF EXISTS `vendorProducts`;
+CREATE TABLE IF NOT EXISTS `vendorProducts` (
+  `id` bigint(20) unsigned NOT NULL,
+  `name` varchar(1024) NOT NULL,
+  `vendor` smallint(5) unsigned NOT NULL,
+  `product` bigint(20) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `vendors`
 --
 
@@ -112,6 +181,18 @@ ALTER TABLE `products`
 --
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`hash`);
+
+--
+-- Индексы таблицы `vendorOrders`
+--
+ALTER TABLE `vendorOrders`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `vendorProducts`
+--
+ALTER TABLE `vendorProducts`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `vendors`
