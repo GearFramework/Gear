@@ -269,13 +269,11 @@ class GMySqlCursor extends GDbCursor
     public function limit(...$limit): GDbCursor
     {
         if (!$limit) {
-            $this->_queryBuild['limit']['offset'] = 0;
-            $this->_queryBuild['limit']['limit']= 1;
+            $this->_queryBuild['limit'] = [0, 1];
         } else if (count($limit) === 1) {
-            $this->_queryBuild['limit']['offset'] = 0;
-            $this->_queryBuild['limit']['limit']= reset($limit);
+            $this->_queryBuild['limit'] = [0, reset($limit)];
         } else if (count($limit) > 1) {
-            list($this->_queryBuild['limit']['offset'], $this->_queryBuild['limit']['limit']) = $limit;
+            list($this->_queryBuild['limit'][0], $this->_queryBuild['limit'][1]) = $limit;
         }
         return $this;
     }
