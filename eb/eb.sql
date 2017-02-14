@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.14
+-- version 4.5.3.1
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Фев 14 2017 г., 00:09
--- Версия сервера: 5.6.25-73.1
--- Версия PHP: 7.1.0RC6
+-- Время создания: Фев 14 2017 г., 16:22
+-- Версия сервера: 5.7.14-8
+-- Версия PHP: 7.0.13-1+deb.sury.org~trusty+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -29,10 +29,10 @@ USE `eb`;
 --
 
 DROP TABLE IF EXISTS `clientOrderProducts`;
-CREATE TABLE IF NOT EXISTS `clientOrderProducts` (
-  `order` bigint(20) unsigned NOT NULL,
-  `product` bigint(20) unsigned NOT NULL,
-  `count` mediumint(8) unsigned NOT NULL
+CREATE TABLE `clientOrderProducts` (
+  `order` bigint(20) UNSIGNED NOT NULL,
+  `product` bigint(20) UNSIGNED NOT NULL,
+  `count` mediumint(8) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS `clientOrderProducts` (
 --
 
 DROP TABLE IF EXISTS `clientOrders`;
-CREATE TABLE IF NOT EXISTS `clientOrders` (
-  `id` bigint(20) unsigned NOT NULL,
-  `client` bigint(20) unsigned NOT NULL,
+CREATE TABLE `clientOrders` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `client` bigint(20) UNSIGNED NOT NULL,
   `dateOrder` datetime NOT NULL,
   `datePrepare` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -56,8 +56,8 @@ CREATE TABLE IF NOT EXISTS `clientOrders` (
 --
 
 DROP TABLE IF EXISTS `clients`;
-CREATE TABLE IF NOT EXISTS `clients` (
-  `id` bigint(20) unsigned NOT NULL,
+CREATE TABLE `clients` (
+  `id` bigint(20) UNSIGNED NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(32) NOT NULL,
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `state` varchar(255) NOT NULL,
   `city` varchar(255) NOT NULL,
   `addr` varchar(1024) NOT NULL,
-  `status` tinyint(3) unsigned NOT NULL,
+  `status` tinyint(3) UNSIGNED NOT NULL,
   `lastlogin` datetime NOT NULL,
-  `discount` tinyint(3) unsigned NOT NULL DEFAULT '0'
+  `discount` tinyint(3) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -79,12 +79,13 @@ CREATE TABLE IF NOT EXISTS `clients` (
 --
 
 DROP TABLE IF EXISTS `products`;
-CREATE TABLE IF NOT EXISTS `products` (
-  `id` bigint(20) unsigned NOT NULL,
+CREATE TABLE `products` (
+  `id` bigint(20) UNSIGNED NOT NULL,
   `articul` varchar(8) NOT NULL DEFAULT '00000000',
   `name` varchar(1024) NOT NULL,
   `description` varchar(4096) NOT NULL,
-  `vendor` smallint(5) unsigned NOT NULL
+  `vendor` smallint(5) UNSIGNED NOT NULL,
+  `price` double UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -94,9 +95,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 DROP TABLE IF EXISTS `sessions`;
-CREATE TABLE IF NOT EXISTS `sessions` (
+CREATE TABLE `sessions` (
   `hash` varchar(255) NOT NULL,
-  `user` bigint(20) unsigned NOT NULL,
+  `user` bigint(20) UNSIGNED NOT NULL,
   `sessiontime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -107,11 +108,11 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 --
 
 DROP TABLE IF EXISTS `storage`;
-CREATE TABLE IF NOT EXISTS `storage` (
-  `product` bigint(20) unsigned NOT NULL,
-  `count` mediumint(8) unsigned NOT NULL,
-  `price` double unsigned NOT NULL,
-  `vendor` smallint(5) unsigned NOT NULL
+CREATE TABLE `storage` (
+  `product` bigint(20) UNSIGNED NOT NULL,
+  `vendor` smallint(5) UNSIGNED NOT NULL,
+  `count` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `reserved` mediumint(8) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -121,11 +122,11 @@ CREATE TABLE IF NOT EXISTS `storage` (
 --
 
 DROP TABLE IF EXISTS `vendorOrders`;
-CREATE TABLE IF NOT EXISTS `vendorOrders` (
-  `id` bigint(20) unsigned NOT NULL,
-  `vendor` smallint(5) unsigned NOT NULL,
-  `product` bigint(20) unsigned NOT NULL,
-  `lots` smallint(5) unsigned NOT NULL
+CREATE TABLE `vendorOrders` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `vendor` smallint(5) UNSIGNED NOT NULL,
+  `product` bigint(20) UNSIGNED NOT NULL,
+  `lots` smallint(5) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -135,11 +136,11 @@ CREATE TABLE IF NOT EXISTS `vendorOrders` (
 --
 
 DROP TABLE IF EXISTS `vendorProducts`;
-CREATE TABLE IF NOT EXISTS `vendorProducts` (
-  `id` bigint(20) unsigned NOT NULL,
+CREATE TABLE `vendorProducts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(1024) NOT NULL,
-  `vendor` smallint(5) unsigned NOT NULL,
-  `product` bigint(20) unsigned NOT NULL
+  `vendor` smallint(5) UNSIGNED NOT NULL,
+  `product` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -149,8 +150,8 @@ CREATE TABLE IF NOT EXISTS `vendorProducts` (
 --
 
 DROP TABLE IF EXISTS `vendors`;
-CREATE TABLE IF NOT EXISTS `vendors` (
-  `id` smallint(5) unsigned NOT NULL,
+CREATE TABLE `vendors` (
+  `id` smallint(5) UNSIGNED NOT NULL,
   `name` varchar(1024) NOT NULL,
   `url` varchar(2048) NOT NULL,
   `description` varchar(1024) NOT NULL
@@ -208,17 +209,17 @@ ALTER TABLE `vendors`
 -- AUTO_INCREMENT для таблицы `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `vendors`
 --
 ALTER TABLE `vendors`
-  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

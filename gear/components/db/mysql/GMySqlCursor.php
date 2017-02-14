@@ -24,6 +24,14 @@ class GMySqlCursor extends GDbCursor
     /* Const */
     /* Private */
     /* Protected */
+    protected $_queryBuild = [
+        'fields' => [],
+        'from' => null,
+        'where' => [],
+        'group' => [],
+        'order' => [],
+        'limit' => null,
+    ];
     /* Public */
 
     /**
@@ -125,46 +133,23 @@ class GMySqlCursor extends GDbCursor
     }
 
     /**
-     * Создание базы данных
-     *
-     * @return GDbDatabase
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function create(): GDbDatabase
-    {
-        // TODO: Implement create() method.
-    }
-
-    /**
      * Удаление записей соответствующих критерию
      *
-     * @param array $ctiteria
+     * @param array|object $criteria
      * @return int
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function delete($ctiteria = []): int
+    public function delete($criteria = []): int
     {
         // TODO: Implement delete() method.
-    }
-
-    /**
-     * Удаление базы данных
-     *
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function drop()
-    {
-        // TODO: Implement drop() method.
+        return $this;
     }
 
     /**
      * Экранирование спецсимволов и обрамление кавычками
      *
-     * @param mixed $value
+     * @param string $value
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
@@ -175,7 +160,7 @@ class GMySqlCursor extends GDbCursor
     }
 
     /**
-     * Устанавливает набо полей, возвращаемых в результате запроса
+     * Устанавливает набор полей, возвращаемых в результате запроса
      *
      * @param array $fields
      * @return GDbCursor
@@ -184,7 +169,7 @@ class GMySqlCursor extends GDbCursor
      */
     public function fields(array $fields): GDbCursor
     {
-
+        return $this;
     }
 
     /**
@@ -199,6 +184,7 @@ class GMySqlCursor extends GDbCursor
     public function find(array $criteria = [], array $fields = []): GDbCursor
     {
         // TODO: Implement find() method.
+        return $this;
     }
 
     /**
@@ -224,6 +210,7 @@ class GMySqlCursor extends GDbCursor
     public function group($group = null): GDbCursor
     {
         // TODO: Implement group() method.
+        return $this;
     }
 
     /**
@@ -253,6 +240,7 @@ class GMySqlCursor extends GDbCursor
     public function join($collection, $criteria = []): GDbCursor
     {
         // TODO: Implement join() method.
+        return $this;
     }
 
     /**
@@ -267,19 +255,29 @@ class GMySqlCursor extends GDbCursor
     public function left($collection, array $criteria = []): GDbCursor
     {
         // TODO: Implement left() method.
+        return $this;
     }
 
     /**
      * Установка позиции и количества возвращаемых записей
      *
-     * @param mixed $top
+     * @param array $limit
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function limit($top = null): GDbCursor
+    public function limit(...$limit): GDbCursor
     {
-        // TODO: Implement limit() method.
+        if (!$limit) {
+            $this->_queryBuild['limit']['offset'] = 0;
+            $this->_queryBuild['limit']['limit']= 1;
+        } else if (count($limit) === 1) {
+            $this->_queryBuild['limit']['offset'] = 0;
+            $this->_queryBuild['limit']['limit']= reset($limit);
+        } else if (count($limit) > 1) {
+            list($this->_queryBuild['limit']['offset'], $this->_queryBuild['limit']['limit']) = $limit;
+        }
+        return $this;
     }
 
     /**
@@ -367,18 +365,6 @@ class GMySqlCursor extends GDbCursor
     }
 
     /**
-     * Выбор текущей базы данных
-     *
-     * @return GDbDatabase
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function select(): GDbDatabase
-    {
-        // TODO: Implement select() method.
-    }
-
-    /**
      * Установка сортировки результатов запроса
      *
      * @param null|string|array $sort
@@ -389,30 +375,19 @@ class GMySqlCursor extends GDbCursor
     public function sort($sort = null): GDbCursor
     {
         // TODO: Implement sort() method.
-    }
-
-    /**
-     * Очистка таблицы от записей
-     *
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function truncate()
-    {
-
+        return $this;
     }
 
     /**
      * Обновление указанных полей для записей, соответствующих критерию
      *
-     * @param null|array $criteria
+     * @param array|object $criteria
      * @param array|object $properties
      * @return integer
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update($criteria = [], $properties): int
+    public function update($criteria = [], $properties = []): int
     {
         // TODO: Implement update() method.
     }
@@ -428,5 +403,6 @@ class GMySqlCursor extends GDbCursor
     public function where(array $criteria = []): GDbCursor
     {
         // TODO: Implement where() method.
+        return $this;
     }
 }

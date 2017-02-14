@@ -294,12 +294,12 @@ abstract class GDbCursor extends GModel implements \Iterator
     /**
      * Установка позиции и количества возвращаемых записей
      *
-     * @param mixed $top
+     * @param array $limit
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function limit($top = null): GDbCursor;
+    abstract public function limit(...$limit): GDbCursor;
 
     /**
      *
