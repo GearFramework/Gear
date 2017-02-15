@@ -261,6 +261,11 @@ class GMySqlCursor extends GDbCursor
     /**
      * Установка позиции и количества возвращаемых записей
      *
+     * $this->limit(10); // будут возвращены первые 10 найденные записи
+     * $this->limit(); // по-умолчани будет установлен лимит равный 1
+     * $this->limit(5, 10); // будут возвращены 10 записей начиная с 5-ой
+     * $this->limit([5, 10]); // аналогично предыдущему примеру
+     *
      * @param array $limit
      * @return GDbCursor
      * @since 0.0.1
@@ -271,7 +276,9 @@ class GMySqlCursor extends GDbCursor
         if (!$limit) {
             $this->_queryBuild['limit'] = [0, 1];
         } else if (count($limit) === 1) {
-            $this->_queryBuild['limit'] = [0, reset($limit)];
+            $limit = reset($limit);
+            $this->limit(...$limit);
+            is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild['limit'] = [0, $limit];
         } else if (count($limit) > 1) {
             list($this->_queryBuild['limit'][0], $this->_queryBuild['limit'][1]) = $limit;
         }
