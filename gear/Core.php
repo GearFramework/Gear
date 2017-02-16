@@ -121,6 +121,9 @@ final class Core
                 /* Автозагрузчик файлов с классами */
                 'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
             ],
+            'helpers' => [
+                'ArrayHelper' => '\gear\helpers\HArray',
+            ],
         ],
         /* Список глобальных зарегистрированных модулей системы */
         'modules' => [
@@ -268,6 +271,22 @@ final class Core
     {
         foreach($section as $name => $service) {
             self::installService($name, $service, 'component');
+        }
+    }
+
+    /**
+     * Загрузка хелперов
+     *
+     * @param array $section
+     * @return void
+     * @used-by self::_bootstrap()
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private static function _bootstrapHelpers(array $section)
+    {
+        foreach($section as $helperAlias => $helperClass) {
+            self::c('loader')->setAlias($helperClass, $helperAlias);
         }
     }
 

@@ -82,4 +82,9 @@ interface IComponent extends IService {}
  * @since 0.0.1
  * @version 0.0.1
  */
-interface IPlugin  extends IService {}
+interface IPlugin extends IService {}
+
+interface IHelper
+{
+    public function __call(string $name, array $arguments);
+}

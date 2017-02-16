@@ -3,6 +3,8 @@
 namespace gear\components\db\mysql;
 
 use gear\interfaces\IModel;
+use gear\interfaces\IObject;
+use gear\library\db\GDbCollection;
 use gear\library\db\GDbCursor;
 use gear\library\db\GDbDatabase;
 use gear\library\GModel;
@@ -187,6 +189,11 @@ class GMySqlCursor extends GDbCursor
         return $this;
     }
 
+    public function getCollectionName(): string
+    {
+        return $this->owner->name;
+    }
+
     /**
      * Возвращает ID последней вставленной записи
      *
@@ -225,7 +232,40 @@ class GMySqlCursor extends GDbCursor
      */
     public function insert($properties): int
     {
-        // TODO: Implement insert() method.
+        if ($properties instanceof IObject) {
+            $properties = $properties->props();
+        } else if (is_object($properties)) {
+            $properties = get_class_vars(get_class($properties));
+        } else if (!is_array($properties)) {
+            throw new \InvalidArgumentException('Invalid properties to insert');
+        }
+        list($names, $values) = $this->_prepareInsert($properties);
+        $this->runQuery("INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values");
+        return $this->affected();
+    }
+
+    private function _prepareInsert(array $properties)
+    {
+        if (ArrayHelper::isAssoc($properties)) {
+            $names = array_keys($properties);
+            foreach($properties as &$value) {
+                $value = '"' . $this->escape($value) . '"';
+            }
+            unset($value);
+        } else {
+            $names = array_keys(reset($properties));
+            $properties;
+            foreach($properties as $index => $p) {
+                foreach($p as &$value) {
+                    $value = '"' . $this->escape($value) . '"';
+                }
+                unset($value);
+                $properties[$index] = '(' . implode(', ', $p) . ')';
+            }
+        }
+        $names = '`' . implode('`, `', $names) . '`';
+        $properties = implode(', ', $properties);
+        return [$names, $properties];
     }
 
     /**
@@ -277,7 +317,6 @@ class GMySqlCursor extends GDbCursor
             $this->_queryBuild['limit'] = [0, 1];
         } else if (count($limit) === 1) {
             $limit = reset($limit);
-            $this->limit(...$limit);
             is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild['limit'] = [0, $limit];
         } else if (count($limit) > 1) {
             list($this->_queryBuild['limit'][0], $this->_queryBuild['limit'][1]) = $limit;
