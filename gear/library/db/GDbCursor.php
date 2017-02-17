@@ -187,6 +187,18 @@ abstract class GDbCursor extends GModel implements \Iterator
     }
 
     /**
+     * Возвращает ссылку на компонент базы данных
+     *
+     * @return GDbConnection
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getConnection(): GDbConnection
+    {
+        return $this->owner;
+    }
+
+    /**
      * Возвращает базу данных, в которой находится коллекция курсора
      *
      * @return GDbDatabase
@@ -196,6 +208,18 @@ abstract class GDbCursor extends GModel implements \Iterator
     public function getDatabase(): GDbDatabase
     {
         return $this->owner->getDatabase();
+    }
+
+    /**
+     * Возвращает ссылку на соединение с базой данных
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getHandler()
+    {
+        return $this->owner->getHandler();
     }
 
     /**
@@ -406,12 +430,12 @@ abstract class GDbCursor extends GModel implements \Iterator
     /**
      * Установка сортировки результатов запроса
      *
-     * @param null|string|array $sort
+     * @param array $sort
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function sort($sort = null): GDbCursor;
+    abstract public function sort(array $sort): GDbCursor;
 
     /**
      * Обновление указанных полей для записей, соответствующих критерию

@@ -26,7 +26,8 @@ class GMySqlCursor extends GDbCursor
     /* Const */
     /* Private */
     /* Protected */
-    protected $_queryBuild = [
+    protected $_queryBuild = [];
+    protected $_strucQueryBuild = [
         'fields' => [],
         'from' => null,
         'where' => [],
@@ -46,6 +47,9 @@ class GMySqlCursor extends GDbCursor
      */
     public function affected(): int
     {
+        if (!$this->result) {
+            $this->runQuery($this->buildQuery());
+        }
         return $this->handler->affected_rows;
     }
 
@@ -164,6 +168,8 @@ class GMySqlCursor extends GDbCursor
     /**
      * Устанавливает набор полей, возвращаемых в результате запроса
      *
+     * $this->fields(['col1', 'col2' => -1, 'col3' => 1, 'col4 as field4', 'MAX(col5)']);
+     *
      * @param array $fields
      * @return GDbCursor
      * @since 0.0.1
@@ -171,11 +177,20 @@ class GMySqlCursor extends GDbCursor
      */
     public function fields(array $fields): GDbCursor
     {
+        foreach($fields as $name => $entry) {
+            if (is_numeric($name) || $entry > 0) {
+                if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
+                    strpos($name, '(') === false) {
+                    $name = "`$name`";
+                }
+                $this->_queryBuild['fields'][] = $name;
+            }
+        }
         return $this;
     }
 
     /**
-     * Поиск записей по указханному критерию
+     * Поиск записей по указанному критерию
      *
      * @param array $criteria
      * @param array $fields
@@ -185,10 +200,18 @@ class GMySqlCursor extends GDbCursor
      */
     public function find(array $criteria = [], array $fields = []): GDbCursor
     {
-        // TODO: Implement find() method.
-        return $this;
+        $this->reset();
+        $this->_queryBuild['from'] = $this->getCollectionName();
+        return $this->fields($fields)->where($criteria);
     }
 
+    /**
+     * Возвращает название коллекции (таблицы), дял которой создан курсор
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getCollectionName(): string
     {
         return $this->owner->name;
@@ -203,7 +226,10 @@ class GMySqlCursor extends GDbCursor
      */
     public function getLastInsertId(): int
     {
-        // TODO: Implement getLastInsertId() method.
+        if (!$this->result) {
+            $this->runQuery($this->buildQuery());
+        }
+        return $this->handler->insert_id;
     }
 
     /**
@@ -232,6 +258,7 @@ class GMySqlCursor extends GDbCursor
      */
     public function insert($properties): int
     {
+        $this->reset();
         if ($properties instanceof IObject) {
             $properties = $properties->props();
         } else if (is_object($properties)) {
@@ -244,7 +271,15 @@ class GMySqlCursor extends GDbCursor
         return $this->affected();
     }
 
-    private function _prepareInsert(array $properties)
+    /**
+     * Возвращает массив подготовленных полей и данных для вставки
+     *
+     * @param array $properties
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function _prepareInsert(array $properties): array
     {
         if (ArrayHelper::isAssoc($properties)) {
             $names = array_keys($properties);
@@ -350,6 +385,8 @@ class GMySqlCursor extends GDbCursor
             $this->result->free();
             $this->result = null;
         }
+        $this->query = null;
+        $this->_queryBuild = $this->_strucQueryBuild;
         return $this;
     }
 
@@ -411,14 +448,16 @@ class GMySqlCursor extends GDbCursor
     /**
      * Установка сортировки результатов запроса
      *
-     * @param null|string|array $sort
+     * @param array $sort
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function sort($sort = null): GDbCursor
+    public function sort(array $sort): GDbCursor
     {
-        // TODO: Implement sort() method.
+        foreach($sort as $col => $order) {
+
+        }
         return $this;
     }
 
