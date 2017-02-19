@@ -20,6 +20,8 @@ abstract class GDbCursor extends GModel implements \Iterator
 {
     /* Traits */
     /* Const */
+    const ASC = 1;
+    const DESC = -1;
     /* Private */
     /* Protected */
     protected $_query = '';
@@ -109,22 +111,22 @@ abstract class GDbCursor extends GModel implements \Iterator
      * Получение количества выбранных строк в результате выполнения запроса,
      * либо добавляет COUNT() внутрь SELECT запроса
      *
-     * @param null|string|array $field
-     * @return integer
+     * @param string $field
+     * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function count($field = null): int;
+    abstract public function count(string $field);
 
     /**
      * Удаление записей соответствующих критерию
      *
-     * @param array $ctiteria
+     * @param null|array|IModel $ctiteria
      * @return int
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function delete($ctiteria = []): int;
+    abstract public function delete($ctiteria = null): int;
 
     /**
      * Экранирование спецсимволов и обрамление кавычками
@@ -261,12 +263,12 @@ abstract class GDbCursor extends GModel implements \Iterator
     /**
      * Установка группировки результатов запроса
      *
-     * @param null|string|array $group
+     * @param string|array $group
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function group($group = null): GDbCursor;
+    abstract public function group($group = ''): GDbCursor;
 
     /**
      * Добавление в коллекцию новой записи
@@ -430,12 +432,12 @@ abstract class GDbCursor extends GModel implements \Iterator
     /**
      * Установка сортировки результатов запроса
      *
-     * @param array $sort
+     * @param string|array $sort
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function sort(array $sort): GDbCursor;
+    abstract public function sort($sort = ''): GDbCursor;
 
     /**
      * Обновление указанных полей для записей, соответствующих критерию

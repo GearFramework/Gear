@@ -37,7 +37,26 @@ interface IObject
  * @since 0.0.1
  * @version 0.0.1
  */
-interface IModel extends IObject {}
+interface IModel extends IObject
+{
+    /**
+     * Возвращает название поля, которое является первичным ключом
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getPrimaryKey(): string;
+
+    /**
+     * Устанавливает название поля, которое является первичным ключом
+     *
+     * @param string $pk
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setPrimaryKey(string $pk);
+}
 
 /**
  * Интерфейс модели с фиксированной схемой свойств

@@ -26,6 +26,7 @@ class GModel extends GObject implements IModel
     /* Const */
     /* Private */
     /* Protected */
+    protected $_primaryKey = 'id';
     /* Public */
 
     /**
@@ -73,5 +74,29 @@ class GModel extends GObject implements IModel
     public function __wakeup()
     {
         parent::__wakeup();
+    }
+
+    /**
+     * Возвращает название поля, которое является первичным ключом
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getPrimaryKey(): string
+    {
+        return $this->_primaryKey;
+    }
+
+    /**
+     * Устанавливает название поля, которое является первичным ключом
+     *
+     * @param string $pk
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setPrimaryKey(string $pk)
+    {
+        $this->_primaryKey = $pk;
     }
 }

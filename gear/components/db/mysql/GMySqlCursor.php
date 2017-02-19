@@ -7,7 +7,9 @@ use gear\interfaces\IObject;
 use gear\library\db\GDbCollection;
 use gear\library\db\GDbCursor;
 use gear\library\db\GDbDatabase;
+use gear\library\GEvent;
 use gear\library\GModel;
+use gear\traits\TFactory;
 
 
 /**
@@ -23,11 +25,13 @@ use gear\library\GModel;
 class GMySqlCursor extends GDbCursor
 {
     /* Traits */
+    use TFactory;
     /* Const */
     /* Private */
     /* Protected */
     protected $_queryBuild = [];
-    protected $_strucQueryBuild = [
+    protected $_factoryQueryBuild = [
+        'class' => '\gear\library\GModel',
         'fields' => [],
         'from' => null,
         'where' => [],
@@ -121,34 +125,60 @@ class GMySqlCursor extends GDbCursor
      */
     public function buildQuery(): string
     {
-        // TODO: Implement buildQuery() method.
+        $this->_query = 'SELECT SQL_CALC_FOUND_ROWS ' . implode(', ', $this->_queryBuild->fields)
+                      . ' FROM ' . $this->_queryBuild->from;
+        return $this->_query;
     }
 
     /**
      * Получение количества выбранных строк в результате выполнения запроса,
      * либо добавляет COUNT() внутрь SELECT запроса
      *
-     * @param null|string|array $field
-     * @return integer
+     * @param string $field
+     * @return integer|GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function count($field = null): int
+    public function count(string $field = '')
     {
-        // TODO: Implement count() method.
+        if ($field) {
+            $this->_queryBuild->fields[] = "COUNT($field)";
+            $count = $this;
+        } else {
+            if (!$this->result) {
+                $this->query();
+                $result = $this->result;
+                $this->runQuery('SELECT FOUND_ROWS() AS countFoundRows');
+                $count = $this->asAssoc()['countFoundRows'];
+                $this->result = $result;
+            } else {
+                $count = $this->result->num_rows;
+            }
+        }
+        return $count;
     }
 
     /**
      * Удаление записей соответствующих критерию
      *
-     * @param array|object $criteria
+     * @param null|array|IModel $criteria
      * @return int
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function delete($criteria = []): int
+    public function delete($criteria = null): int
     {
-        // TODO: Implement delete() method.
+        if (!$criteria) {
+
+        } else if (is_array($criteria)) {
+            $criteria = $this->_prepareCriteria($criteria);
+        } else if ($criteria instanceof IModel) {
+            $pk = $criteria->primaryKey;
+            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $criteria->$pk;
+        } else {
+            throw new \InvalidArgumentException('Invalid arguments to delete');
+        }
+        $this->runQuery($query)->affected();
         return $this;
     }
 
@@ -170,22 +200,30 @@ class GMySqlCursor extends GDbCursor
      *
      * $this->fields(['col1', 'col2' => -1, 'col3' => 1, 'col4 as field4', 'MAX(col5)']);
      *
-     * @param array $fields
+     * @param string|array $fields
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function fields(array $fields): GDbCursor
+    public function fields($fields): GDbCursor
     {
-        foreach($fields as $name => $entry) {
-            if (is_numeric($name) || $entry > 0) {
-                if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
-                    strpos($name, '(') === false) {
-                    $name = "`$name`";
+        $tempFields = $this->_queryBuild->fields;
+        if (is_array($fields)) {
+            foreach($fields as $name => $entry) {
+                if (is_numeric($name) || $entry > 0) {
+                    if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
+                        strpos($name, '(') === false) {
+                        $name = "`$name`";
+                    }
+                    $tempFields[] = $name;
                 }
-                $this->_queryBuild['fields'][] = $name;
             }
+        } else if (is_string($fields)) {
+            $tempFields[] = $fields;
+        } else {
+            throw new \InvalidArgumentException('Invalid arguments to fields');
         }
+        $this->_queryBuild->fields = $tempFields;
         return $this;
     }
 
@@ -201,7 +239,7 @@ class GMySqlCursor extends GDbCursor
     public function find(array $criteria = [], array $fields = []): GDbCursor
     {
         $this->reset();
-        $this->_queryBuild['from'] = $this->getCollectionName();
+        $this->_queryBuild->from = '`' . $this->getCollectionName() . '`';
         return $this->fields($fields)->where($criteria);
     }
 
@@ -215,6 +253,19 @@ class GMySqlCursor extends GDbCursor
     public function getCollectionName(): string
     {
         return $this->owner->name;
+    }
+
+    /**
+     * Возвращает данные создаваемого объекта
+     *
+     * @param array $record
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getFactory(array $record = []): array
+    {
+        return $record ? array_replace_recursive($this->_factoryQueryBuild, $record) : $this->_factoryQueryBuild;
     }
 
     /**
@@ -235,14 +286,28 @@ class GMySqlCursor extends GDbCursor
     /**
      * Установка группировки результатов запроса
      *
-     * @param null|string|array $group
+     * @param string|array $group
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function group($group = null): GDbCursor
+    public function group($group = ''): GDbCursor
     {
-        // TODO: Implement group() method.
+        $tempGroup = $this->_queryBuild->group;
+        if (is_array($group)) {
+            foreach($group as $name => &$order) {
+                if (!is_numeric($name)) {
+                    $order = "$order " . ($order === self::ASC ? 'ASC' : 'DESC');
+                }
+            }
+            unset($order);
+            $tempGroup = array_merge($tempGroup, $group);
+        } else if (is_string($group)) {
+            $tempGroup[] = $group;
+        } else {
+            throw new \InvalidArgumentException('Invalid arguments to groupping');
+        }
+        $this->_queryBuild->group = $tempGroup;
         return $this;
     }
 
@@ -272,6 +337,45 @@ class GMySqlCursor extends GDbCursor
     }
 
     /**
+     * $this->where(['a' => 2]);
+     * $this->where(['a' => ['&lt' => 2]]);
+     * $this->where(['a' => [2, 3, 4]]);
+     * $this->where(['a' => ['$lt' => 2, '$or' => 3]]);
+     * $this->where(['a' => ['$lt' => 2, '$or' => ['$gt' => 7]]]);
+     * $this->where([['a' => 2, '$and' => ['b' => 3]]]);
+     *
+     * @param array $criteria
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function _prepareCriteria(array $criteria, $logic = 'AND', $op = null, $eq = '='): string
+    {
+        $result = [];
+        $currentRow = '';
+        foreach($criteria as $left => $right) {
+            if (is_numeric($left)) {
+                $result[] = '(' . $this->_prepareCriteria($right, $logic) . ')';
+            } else if (in_array($left, ['$or', '$and'])) {
+
+            } else if (in_array($left, ['$lt', '$gt', '$ne', '$lte', '$gte'])) {
+
+            } else if ($left === '$in') {
+                $result[] = " $logic $op IN " . implode(', ', $this->_prepareValue($right)) . ')';
+            } else if ($left === '$nin') {
+                $result[] = " $logic $op NOT IN " . implode(', ', $this->_prepareValue($right)) . ')';
+            } else {
+                if (ArrayHelper::isAssoc($right)) {
+                    $result[] = "$left IN (" . implode(', ', $this->_prepareValue($right)) . ')';
+                } else {
+                    $result[] = " $logic " . $this->_prepareCriteria($right, $logic, $left);
+                }
+            }
+        }
+        return implode(" $logic ", $result);
+    }
+
+    /**
      * Возвращает массив подготовленных полей и данных для вставки
      *
      * @param array $properties
@@ -281,6 +385,9 @@ class GMySqlCursor extends GDbCursor
      */
     private function _prepareInsert(array $properties): array
     {
+        /**
+         * ArrayHelper это алиас класса \gear\helpers\HArray
+         */
         if (ArrayHelper::isAssoc($properties)) {
             $names = array_keys($properties);
             foreach($properties as &$value) {
@@ -301,6 +408,19 @@ class GMySqlCursor extends GDbCursor
         $names = '`' . implode('`, `', $names) . '`';
         $properties = implode(', ', $properties);
         return [$names, $properties];
+    }
+
+    private function _prepareValue($value)
+    {
+        if (is_array($value)) {
+            foreach($value as &$val) {
+                $val = $this->_prepareValue($val);
+            }
+            unset($val);
+        } else {
+            $value = "'" . $this->escape($value) . "'";
+        }
+        return $value;
     }
 
     /**
@@ -349,12 +469,13 @@ class GMySqlCursor extends GDbCursor
     public function limit(...$limit): GDbCursor
     {
         if (!$limit) {
-            $this->_queryBuild['limit'] = [0, 1];
+            $this->_queryBuild->limit = [0, 1];
         } else if (count($limit) === 1) {
             $limit = reset($limit);
-            is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild['limit'] = [0, $limit];
+            is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild->limit = [0, $limit];
         } else if (count($limit) > 1) {
-            list($this->_queryBuild['limit'][0], $this->_queryBuild['limit'][1]) = $limit;
+            list($top, $limit) = $limit;
+            $this->_queryBuild->limit = [$top, $limit];
         }
         return $this;
     }
@@ -386,7 +507,11 @@ class GMySqlCursor extends GDbCursor
             $this->result = null;
         }
         $this->query = null;
-        $this->_queryBuild = $this->_strucQueryBuild;
+        $this->_queryBuild = $this->factory([], $this);
+        $cursor = $this;
+        $this->_queryBuild->builderExecute = function() use ($cursor) {
+            $cursor->buildQuery();
+        };
         return $this;
     }
 
@@ -448,16 +573,25 @@ class GMySqlCursor extends GDbCursor
     /**
      * Установка сортировки результатов запроса
      *
-     * @param array $sort
+     * @param string|array $sort
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function sort(array $sort): GDbCursor
+    public function sort($sort = ''): GDbCursor
     {
-        foreach($sort as $col => $order) {
-
+        $tempSort = $this->_queryBuild->sort;
+        if (is_array($sort)) {
+            foreach($sort as $col => &$order) {
+                if (!is_numeric($col)) {
+                    $order = "$col " . ($order === self::ASC ? 'ASC' : 'DESC');
+                }
+            }
+            $tempSort = array_merge($tempSort, $sort);
+        } else {
+            $tempSort[] = $tempSort;
         }
+        $this->_queryBuild->sort = $tempSort;
         return $this;
     }
 
