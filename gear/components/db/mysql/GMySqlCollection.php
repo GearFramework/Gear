@@ -10,6 +10,7 @@ class GMySqlCollection extends GDbCollection
     /* Const */
     /* Private */
     /* Protected */
+    protected $_alias = null;
     /* Public */
 
     /**
@@ -22,6 +23,18 @@ class GMySqlCollection extends GDbCollection
     public function drop()
     {
         $this->cursor->runQuery('DROP TABLE `%s`', $this->name)->execute();
+    }
+
+    /**
+     * Возвращает название псевдонима таблицы
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getAlias(): string
+    {
+        return $this->_alias;
     }
 
     /**
@@ -53,6 +66,18 @@ class GMySqlCollection extends GDbCollection
             $this->_cursor->free();
             unset($this->_cursor);
         }
+    }
+
+    /**
+     * Установка псевдонима для таблицы
+     *
+     * @param string $alias
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setAlias(string $alias)
+    {
+        $this->_alias = $alias;
     }
 
     /**

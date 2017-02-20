@@ -141,24 +141,24 @@ abstract class GDbCursor extends GModel implements \Iterator
     /**
      * Поиск записей по указханному критерию
      *
-     * @param array $criteria
-     * @param array $fields
+     * @param string|array $criteria
+     * @param string|array $fields
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function find(array $criteria = [], array $fields = []): GDbCursor;
+    abstract public function find($criteria = [], $fields = []): GDbCursor;
 
     /**
      * Возвращает первую запись, соответствующую указанному критерию
      *
-     * @param array $criteria
-     * @param array $fields
+     * @param string|array $criteria
+     * @param string|array $fields
      * @return array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function findOne(array $criteria = [], array $fields = []): array
+    public function findOne($criteria = [], $fields = []): array
     {
         return $this->find($criteria, $fields)->limit(1)->asAssoc();
     }
@@ -453,10 +453,10 @@ abstract class GDbCursor extends GModel implements \Iterator
     /**
      * Формирование критерия поиска
      *
-     * @param null|array $criteria
+     * @param string|array $criteria
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function where(array $criteria = []): GDbCursor;
+    abstract public function where($criteria = []): GDbCursor;
 }

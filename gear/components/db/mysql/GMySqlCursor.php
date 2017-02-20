@@ -233,13 +233,13 @@ class GMySqlCursor extends GDbCursor
     /**
      * Поиск записей по указанному критерию
      *
-     * @param array $criteria
-     * @param array $fields
+     * @param string|array $criteria
+     * @param string|array $fields
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function find(array $criteria = [], array $fields = []): GDbCursor
+    public function find($criteria = [], $fields = []): GDbCursor
     {
         $this->reset();
         $this->_queryBuild->from = '`' . $this->getCollectionName() . '`';
@@ -654,12 +654,12 @@ class GMySqlCursor extends GDbCursor
     /**
      * Формирование критерия поиска
      *
-     * @param null|array $criteria
+     * @param string|array $criteria
      * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function where(array $criteria = []): GDbCursor
+    public function where($criteria = []): GDbCursor
     {
         // TODO: Implement where() method.
         return $this;
