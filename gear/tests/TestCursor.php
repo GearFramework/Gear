@@ -54,7 +54,7 @@ class Cursor
      */
     private function _prepareCriteria($criteria, $logic = 'AND', $op = null, $eq = '='): string
     {
-        if (is_string($criteria)) {
+        if (is_string($criteria) || is_numeric($criteria)) {
             $result = $criteria;
         } else if (is_array($criteria)) {
             $result = [];
@@ -63,35 +63,81 @@ class Cursor
 //                echo "LOG > Found left numeric operand : [$left]\n";
                     if (is_array($right)) {
 //                    echo "LOG > Found groupping : [()]\n";
-                        $result[] = '(' . $this->_prepareCriteria($right, $logic) . ')';
+                        $result[] = ($result ? " $logic " : "") . '(' . $this->_prepareCriteria($right, $logic, $op, $eq) . ')';
                     } else {
 //                    echo "LOG > Found equals : [$left $eq $right]\n";
-                        $result[] = "$left $eq " . $this->_prepareValue($right);
+                        if ($op) {
+                            $result[] = ($result ? " $logic " : "") . "$left $eq " . $this->_prepareValue($right);
+                        } else {
+                            $result[] = ($result ? " $logic " : "") . $this->_prepareValue($right);
+                        }
                     }
                 } else if (in_array($left, array_keys($this->_logics))) { // AND, OR
-//                echo "LOG > Found logic operator : [$left]\n";
-                    $result[] = ($result ? $this->_logics[$left] : '') . ' ' . $this->_prepareCriteria($right, $this->_logics[$left]);
+                    /**
+                     * SQL: Using AND, OR
+                     */
+                    $result[] = ($result ? $this->_logics[$left] : '') . ' ' . $this->_prepareCriteria($right, $this->_logics[$left], $op, $eq);
                 } else if (in_array($left, array_keys($this->_eqs))) { // <, >, <=, =>, <>
-//                echo "LOG > Found equals operator : [$left]\n";
+                    /**
+                     * SQL: Using operations: <, >, <>, <=, =>
+                     */
                     if (!$op) {
-                        $result[] = $this->_prepareCriteria($right, $logic, null, $eq); // ['$lt' => ['a' => 3]]
+                        $result[] = ($result ? " $logic " : "") . $this->_prepareCriteria($right, $logic, null, $this->_eqs[$left]); // ['$lt' => ['a' => 3]]
                     } else {
-                        $result[] = "$op " . $this->_eqs[$left] . " " . $this->_prepareValue($right); // ['a' => ['$lt' => 3]]
+                        $result[] = ($result ? " $logic " : "") . " $op " . $this->_eqs[$left] . " " . $this->_prepareCriteria($right, $logic); // ['a' => ['$lt' => 3]]
                     }
                 } else if ($left === '$in') {
-//                echo "LOG > Found in scope function : [$left]\n";
+                    /**
+                     * SQL: COL IN (VAL1, VAL2, ... VALn)
+                     */
                     $result[] = ($result ? $logic : "") . " $op IN (" . implode(', ', $this->_prepareValue($right)) . ')';
                 } else if ($left === '$nin') {
-//                echo "LOG > Found not in scope function : [$left]\n";
+                    /**
+                     * SQL: COL NOT IN (VAL1, VAL2, ... VALn)
+                     */
                     $result[] = ($result ? $logic : "") . " $op NOT IN (" . implode(', ', $this->_prepareValue($right)) . ')';
                 } else if (in_array($left, array_keys($this->_sfuncs))) {
-                    $result[] = ($result ? $logic : "") . $this->_prepareOperand($right, true) . " " . $this->_funcs[$left];
+                    /**
+                     * SQL: Using IS NULL, IS NOT NULL
+                     */
+                    $result[] = ($result ? $logic : "") . $this->_prepareOperand($right, true) . " " . $this->_sfuncs[$left];
                 } else if (in_array($left, array_keys($this->_funcs))) {
+                    /**
+                     * SQL: Using LIKE, NOT LIKE, RLIKE, NOT RLIKE, REGEXP, NOT REGEXP
+                     */
                     if (!$op) { // ['$like' => ['a' => 'pattern']]
                         list($operand, $pattern) = $right;
+                        $result[] = ($result ? $logic : "") . $this->_prepareOperand($result, true) . " \"$pattern\"";
                     } else { // ['a' => ['$like' => 'pattern']]
                         $result[] = ($result ? $logic : "") . " $op " . $this->_funcs[$left] . " " . $this->_prepareValue($right);
                     }
+                } else if ($left === '$bw') {
+                    /**
+                     * SQL: COL BETWEEN VAL1 AND VAL2
+                     */
+                    if (!$op) {
+                        // ['$bw' => ['a' => [1, 10]]]
+                        $operand = $this->_prepareOperand(key($right), true);
+                        $values = $this->_prepareValue(current($right));
+                        $result[] = ($result ? $logic : "") . " $operand BETWEEN " . implode(' AND ', $values);
+                    } else {
+                        // ['a' => ['$bw' => [1 => 10]]]
+                        $right = $this->_prepareValue($right);
+                        $result[] = ($result ? $logic : "") . " $op BETWEEN " . implode(' AND ', $right);
+                    }
+                } else if ($left[0] === '$') {
+                    /**
+                     * SQL: Using functions MAX(), MIN(), DATE(), NOW() and etc.
+                     *
+                     * ['$MAX' => ':a']
+                     * ['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]
+                     */
+                    $left = substr($left, 1);
+                    $right = $this->_prepareValue($right);
+                    if (is_array($right)) {
+                        $right = implode(', ', $right);
+                    }
+                    $result[] = ($result ? $logic : "") . " " . ($op ? " $op " . ($eq ? $eq : '') : '') . " $left($right)";
                 } else {
 //                echo "LOG > Found left operand : [$left]\n";
                     $left = $this->_prepareOperand($left, true);
@@ -99,7 +145,7 @@ class Cursor
                         if (!ArrayHelper::isAssoc($right)) {
                             $result[] = ($result ? $logic : "") . " $left IN (" . implode(', ', $this->_prepareValue($right)) . ')';
                         } else {
-                            $result[] = ($result ? $logic : "") . " " . $this->_prepareCriteria($right, $logic, $left);
+                            $result[] = ($result ? $logic : "") . " " . $this->_prepareCriteria($right, $logic, $left, $eq);
                         }
                     } else {
 //                    echo "LOG > Found equals 2 : [$left $eq $right]\n";
@@ -167,38 +213,48 @@ class Cursor
 
 $cursor = new Cursor();
 $result = $cursor->find(['a' => 1]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '1. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => 1, 'b' => ':a']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
-$result = $cursor->find([1 => ':a']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '2. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find([['a' => 2, 'b' => 3]]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '3. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find([['a' => ['$lt' => 2], 'b' => 3]]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '4. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find([['a' => 3, '$or' => ['a' => 10]], 'c' => 4]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '5. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => 'SUM(b)']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '6. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => '$SUM(b)']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '7. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => [1, 2, 3]]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '8. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['SUM(a)' => [1, 2, 3]]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '9. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => ['$nin' => [1, 2, 3]]]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '10. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['$isn' => ':a']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '11. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['$isnn' => 'a']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '12. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => null]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '13. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => 'null']);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '14. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find('a = 1');
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '15. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a.b' => 1]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '16. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => 1, '$or' => [['$and' => ['a' => 1, 'b' => 2]]]]);
-echo (is_array($result) ? print_r($result, 1) : $result) . "\n";
+echo '17. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find(['b' => 1,'$gt' => ['a' => 1]]);
+echo '18. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find(['a' => ['$bw' => [1, 10]]]);
+echo '19. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find(['$bw' => ['a' => [1, 10]]]);
+echo '20. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find(['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]);
+echo '21. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find(['a' => ['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]]);
+echo '22. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find(['a' => ['$gt' => ['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]]]);
+echo '23. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
