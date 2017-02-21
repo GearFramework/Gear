@@ -66,4 +66,10 @@ class GMySqlConnectionComponent extends GDbConnection
         }
         return $this;
     }
+
+    public function getIterator()
+    {
+        $cursor = $this->cursor->runQuery('SHOW DATABASES');
+        return new \gear\library\GDelegateFactoriableIterator(['source' => $cursor], $this);
+    }
 }

@@ -15,7 +15,7 @@ use gear\traits\TFactory;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbConnection extends GComponent implements \Iterator
+abstract class GDbConnection extends GComponent implements \IteratorAggregate
 {
     /* Traits */
     use TFactory;
@@ -33,6 +33,9 @@ abstract class GDbConnection extends GComponent implements \Iterator
     ];
     protected $_factory = [
         'class' => '\gear\library\db\GDbDatabase',
+    ];
+    protected $_cursorFactory = [
+        'class' => '\gear\library\db\GDbCursor',
     ];
     protected $_handler = null;
     protected $_items = [];
@@ -69,6 +72,18 @@ abstract class GDbConnection extends GComponent implements \Iterator
     public function getCurrent()
     {
         return $this->_current;
+    }
+
+    /**
+     * Возвращает курсор
+     *
+     * @return GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCursor(): GDbCursor
+    {
+        return $this->factory($this->_cursorFactory);
     }
 
     /**

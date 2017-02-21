@@ -46,11 +46,8 @@ class GMySqlCollection extends GDbCollection
      */
     public function getIterator()
     {
-        if (!$this->cursor) {
-            $this->cursor = $this->factory($this->_cursorFactory);
-            $this->cursor->runQuery('SELECT * FROM `%s`', $this->name);
-        }
-        return $this->cursor;
+        $cursor = $this->cursor->find();
+        return new \gear\library\GDelegateFactoriableIterator(['source' => $cursor], $this);
     }
 
     /**

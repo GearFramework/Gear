@@ -81,7 +81,7 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
      */
     public function getCursor()
     {
-        return $this->_cursor;
+        return $this->factory($this->_cursorFactory);
     }
 
     /**

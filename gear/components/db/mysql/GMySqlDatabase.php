@@ -70,10 +70,8 @@ class GMySqlDatabase extends GDbDatabase
      */
     public function getIterator()
     {
-        if (!$this->cursor) {
-            $this->cursor = $this->factory($this->_cursorFactory);
-        }
-        return $this->cursor->runQuery('SHOW TABLES');
+        $cursor = $this->cursor->runQuery('SHOW DATABASES');
+        return new \gear\library\GDelegateFactoriableIterator(['source' => $cursor], $this);
     }
 
     /**

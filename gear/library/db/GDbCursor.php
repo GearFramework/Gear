@@ -340,16 +340,6 @@ abstract class GDbCursor extends GModel implements \Iterator
     abstract public function limit(...$limit): GDbCursor;
 
     /**
-     *
-     * @param string|object $collection
-     * @param array $criteria
-     * @return GDbCursor
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    abstract public function outer($collection, array $criteria = []): GDbCursor;
-
-    /**
      * Создание и выполнение запроса
      *
      * @return GDbCursor

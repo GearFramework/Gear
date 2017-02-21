@@ -32,6 +32,7 @@ class GMySqlCursor extends GDbCursor
     private $_eqs = ['$lt' => '<', '$gt' => '>', '$ne' => '<>', '$lte' => '<=', '$gte' => '>='];
     private $_funcs = ['$isn' => 'IS NULL', '$isnn' => 'IS NOT NULL'];
     /* Protected */
+    protected $_current = false;
     protected $_queryBuild = [];
     protected $_factoryQueryBuild = [
         'class' => '\gear\library\GModel',
@@ -74,7 +75,7 @@ class GMySqlCursor extends GDbCursor
         if (!$this->result) {
             $this->query();
         }
-        return $this->result->fetch_all(MYSQLI_BOTH);
+        return $this->result->fetch_all(MYSQLI_ASSOC);
     }
 
     /**
@@ -280,19 +281,6 @@ class GMySqlCursor extends GDbCursor
     }
 
     /**
-     * Возвращает данные создаваемого объекта
-     *
-     * @param array $record
-     * @return array
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getFactory(array $record = []): array
-    {
-        return $record ? array_replace_recursive($this->_factoryQueryBuild, $record) : $this->_factoryQueryBuild;
-    }
-
-    /**
      * Возвращает ID последней вставленной записи
      *
      * @return int
@@ -302,7 +290,7 @@ class GMySqlCursor extends GDbCursor
     public function getLastInsertId(): int
     {
         if (!$this->result) {
-            $this->runQuery($this->buildQuery());
+            $this->query();
         }
         return $this->handler->insert_id;
     }
@@ -472,7 +460,7 @@ class GMySqlCursor extends GDbCursor
             $this->result = null;
         }
         $this->query = null;
-        $this->_queryBuild = $this->factory([], $this);
+        $this->_queryBuild = $this->factory($this->_factoryQueryBuild, $this);
         $cursor = $this;
         $this->_queryBuild->builderExecute = function() use ($cursor) {
             $cursor->buildQuery();
@@ -915,5 +903,66 @@ class GMySqlCursor extends GDbCursor
             $value = "'" . $this->escape($value) . "'";
         }
         return $value;
+    }
+
+    /**
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     * @since 5.0.0
+     */
+    public function current()
+    {
+        return $this->_current;
+    }
+
+    /**
+     * Return the key of the current element
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return mixed scalar on success, or null on failure.
+     * @since 5.0.0
+     */
+    public function key()
+    {
+        return 0;
+    }
+
+    /**
+     * Move forward to next element
+     * @link http://php.net/manual/en/iterator.next.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function next()
+    {
+        $this->_current = $this->asAssoc();
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     * @link http://php.net/manual/en/iterator.rewind.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function rewind()
+    {
+        if (!$this->result) {
+            $this->query();
+        } else {
+            $this->result->data_seek(0);
+        }
+        $this->_current = $this->asAssoc();
+    }
+
+    /**
+     * Checks if current position is valid
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     * @since 5.0.0
+     */
+    public function valid()
+    {
+        return $this->current() ? true : false;
     }
 }

@@ -29,7 +29,6 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
     ];
     protected $_items = [];
     protected $_current = null;
-    protected $_cursor = null;
     /* Public */
 
     /**
@@ -83,7 +82,7 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
      */
     public function getCursor()
     {
-        return $this->_cursor;
+        return $this->factory($this->_cursorFactory);
     }
 
     /**
@@ -159,18 +158,5 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
     public function setCurrent(GDbCollection $current)
     {
         $this->_current = $current;
-    }
-
-    /**
-     * Устанавливает инстанс курсора для работы с запросами
-     *
-     * @param null|GDbCursor $cursor
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setCursor(GDbCursor $cursor)
-    {
-        return $this->_cursor = $cursor;
     }
 }
