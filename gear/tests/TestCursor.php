@@ -1,11 +1,48 @@
 <?php
 
+interface IModel {}
+
 class ArrayHelper
 {
     public static function IsAssoc($array)
     {
         $keys = array_keys($array);
         return array_keys($keys) !== $keys;
+    }
+}
+
+class Model implements IModel
+{
+    protected $_pk = 'a';
+    public $a;
+    public $b;
+
+    public function __construct($props)
+    {
+        foreach($props as $n => $v) {
+            $this->$n = $v;
+        }
+    }
+
+    public function __get($name)
+    {
+        if ($name === 'pk') {
+            return $this->_pk;
+        }
+    }
+
+    public function props()
+    {
+        $p = [];
+        foreach(['a', 'b'] as $n) {
+            $p[$n] = $this->$n;
+        }
+        return $p;
+    }
+
+    public function vars()
+    {
+
     }
 }
 
@@ -37,6 +74,160 @@ class Cursor
     }
 
     /**
+     * Возвращает название коллекции (таблицы), дял которой создан курсор
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCollectionName(): string
+    {
+        return 'table';
+    }
+
+    /**
+     * Добавление в коллекцию новой записи
+     * Возвращает количество затронутых строк
+     * В случае совпадения PRIMARY KEY генерируется исключение
+     *
+     * @param mixed $properties
+     * @return integer|object
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function insert($properties)
+    {
+        $this->reset();
+        $result = 0;
+        if ($properties instanceof IModel) {
+            $result = $properties;
+            $properties = $result->props();
+        } else if (is_object($properties)) {
+            $result = $properties;
+            $properties = [];
+            foreach(get_class_vars(get_class($result)) as $name => $value) {
+                $properties[$name] = $result->$name;
+            }
+        } else if (!is_array($properties)) {
+            throw new \InvalidArgumentException('Invalid properties to insert');
+        }
+        list($names, $values) = $this->_prepareInsert($properties);
+        $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
+        return $query;
+        $this->runQuery($query);
+        return is_object($result) ? $result : $this->affected();
+    }
+
+    /**
+     * Сброс результатов выполнения последнего запроса
+     *
+     * @return GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function reset()
+    {
+        return $this;
+    }
+
+    /**
+     * Добавление в коллекцию новой записи. В случае совпадения
+     * PRIMARY KEY происходит обновление указанных в $updates полей
+     * записи
+     * Возвращает количество затронутых полей
+     *
+     * @param array|IObject $properties
+     * @param array $updates
+     * @return integer
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function save($properties, array $updates = [])
+    {
+        $this->reset();
+        $result = 0;
+        if ($properties instanceof IModel) {
+            $result = $properties;
+            $properties = $result->props();
+        } else if (is_object($properties)) {
+            $result = $properties;
+            $properties = [];
+            foreach(get_class_vars(get_class($result)) as $name => $value) {
+                $properties[$name] = $result->$name;
+            }
+        } else if (!is_array($properties)) {
+            throw new \InvalidArgumentException('Invalid properties to insert');
+        }
+        list($names, $values) = $this->_prepareInsert($properties);
+        $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
+
+        if (!$updates && is_object($result)) {
+            $pk = $result->pk;
+            if (!$pk) {
+                throw self::exceptionCursor('Undefined primary key to save data');
+            }
+            $props = $result instanceof IObject ? $result->props() : get_class_vars(get_class($result));
+            $properties = [];
+            foreach($props as $name => $value) {
+                if ($name !== $pk) {
+                    $properties[] = $name;
+                }
+            }
+            $updates = $this->_prepareUpdate($properties, $result);
+        } else if ($updates) {
+            if (is_object($result)) {
+                $updates = $this->_prepareUpdate($updates, $result);
+            } else if (\ArrayHelper::IsAssoc($updates)) {
+                $updates = $this->_prepareUpdate($updates);
+            } else {
+                throw new \InvalidArgumentException('Invalid argument <updates> to save');
+            }
+        } else {
+            throw new \InvalidArgumentException('Invalid argument <updates> to save');
+        }
+        $query .= " ON DUPLICATE KEY UPDATE " . $updates;
+        return $query;
+        $this->runQuery($query);
+        return is_object($result) ? $result : $this->affected();
+    }
+
+    /**
+     * Обновление указанных полей для записей, соответствующих критерию
+     *
+     * $this->update([], ['a' => 2]);
+     * $this->update(['a' => 2], ['a' => 3]);
+     * $model = new \gear\library\GModel(['a' => 3]);
+     * $this->update($model, ['a' => 4]);
+     * $model->a = 5;
+     * $this->update($model);
+     * $model->a = 6;
+     * $this->update($model, ['a']);
+     *
+     * @param array|object $criteria
+     * @param array $properties
+     * @return int|object
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function update($criteria, array $properties = [])
+    {
+        $this->reset();
+        $result = $criteria;
+        if (!is_array($criteria) && !is_string($criteria) && !is_object($criteria)) {
+            throw new \InvalidArgumentException('Invalid argument <criteria> to update');
+        }
+        if (!$properties && !is_object($criteria)) {
+            throw new \InvalidArgumentException('Invalid argument <properties> to update');
+        }
+        $properties = $this->_prepareUpdate($properties, $result);
+        $criteria = $this->_prepareCriteria($result);
+        $query = 'UPDATE `' . $this->getCollectionName() . '` SET ' . $properties . ($criteria ? ' WHERE ' . $criteria : '');
+        return $query;
+        $this->runQuery($query);
+        return is_object($result) ? $result : $this->affected();
+    }
+
+    /**
      * $this->where(['a' => 2]);
      * $this->where(['$ne' => ['a' => 2]]);
      * $this->where(['a' => 'NOW()']);
@@ -54,18 +245,18 @@ class Cursor
      */
     private function _prepareCriteria($criteria, $logic = 'AND', $op = null, $eq = '='): string
     {
-        if (is_string($criteria) || is_numeric($criteria)) {
+        if ($criteria instanceof IModel) {
+            $pk = $criteria->pk;
+            $result = $this->_prepareCriteria([$pk => $criteria->$pk]);
+        } else if (is_string($criteria) || is_numeric($criteria)) {
             $result = $criteria;
         } else if (is_array($criteria)) {
             $result = [];
             foreach($criteria as $left => $right) {
                 if (is_numeric($left)) {
-//                echo "LOG > Found left numeric operand : [$left]\n";
                     if (is_array($right)) {
-//                    echo "LOG > Found groupping : [()]\n";
                         $result[] = ($result ? " $logic " : "") . '(' . $this->_prepareCriteria($right, $logic, $op, $eq) . ')';
                     } else {
-//                    echo "LOG > Found equals : [$left $eq $right]\n";
                         if ($op) {
                             $result[] = ($result ? " $logic " : "") . "$left $eq " . $this->_prepareValue($right);
                         } else {
@@ -139,16 +330,14 @@ class Cursor
                     }
                     $result[] = ($result ? $logic : "") . " " . ($op ? " $op " . ($eq ? $eq : '') : '') . " $left($right)";
                 } else {
-//                echo "LOG > Found left operand : [$left]\n";
                     $left = $this->_prepareOperand($left, true);
                     if (is_array($right)) {
-                        if (!ArrayHelper::isAssoc($right)) {
+                        if (!\ArrayHelper::isAssoc($right)) {
                             $result[] = ($result ? $logic : "") . " $left IN (" . implode(', ', $this->_prepareValue($right)) . ')';
                         } else {
                             $result[] = ($result ? $logic : "") . " " . $this->_prepareCriteria($right, $logic, $left, $eq);
                         }
                     } else {
-//                    echo "LOG > Found equals 2 : [$left $eq $right]\n";
                         $right = $this->_prepareValue($right);
                         $result[] = ($result ? $logic : "") . " $left " . ($right === 'NULL' ? 'IS' : $eq) . " $right";
                     }
@@ -178,27 +367,64 @@ class Cursor
         return $value;
     }
 
+    /**
+     * Возвращает массив подготовленных полей и данных для вставки
+     *
+     * @param array $properties
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function _prepareInsert(array $properties): array
+    {
+        /**
+         * \ArrayHelper это алиас класса \gear\helpers\HArray
+         */
+        if (\ArrayHelper::isAssoc($properties)) {
+            $names = array_keys($properties);
+            foreach($properties as &$value) {
+                $value = '"' . $this->escape($value) . '"';
+            }
+            unset($value);
+            $properties = '(' . implode(', ', $properties) . ')';
+        } else {
+            $first = reset($properties);
+            if (is_object($first)) {
+                $names = array_keys($first instanceof IModel ? $first->props() : get_object_vars($first));
+            } else {
+                $names = array_keys($first);
+            }
+            foreach($properties as $index => $p) {
+                if (is_object($p)) {
+                    $p = $p instanceof IModel ? $p->props() : get_object_vars($p);
+                }
+                foreach($p as &$value) {
+                    $value = '"' . $this->escape($value) . '"';
+                }
+                unset($value);
+                $properties[$index] = '(' . implode(', ', $p) . ')';
+            }
+            $properties = implode(', ', $properties);
+        }
+        $names = '(`' . implode('`, `', $names) . '`)';
+        return [$names, $properties];
+    }
+
     private function _prepareOperand($operand, $strictLeft = false)
     {
         if (!is_numeric($operand)) {
-//            echo "LOG > Operand is not numeric [$operand]\n";
             if ($operand === null || preg_match('/^null$/i', $operand)) {
-//                echo "LOG > Operand is NULL [$operand]\n";
                 $operand = 'NULL';
             } else if (preg_match('/^[a-z0-9_]+\.[a-z0-9_]+$/i', $operand)) {
-//                echo "LOG > Operand is column.alias [$operand]\n";
                 $rec = explode('.', $operand);
                 $operand = '`' . implode('`.`', $rec) . '`';
             } else if (strpos($operand, ' AS ') !== false) {
-//                echo "LOG > Operand is column as alias [$operand]\n";
                 $operand = preg_replace('/\s{2,}/', ' ', $operand);
                 list($left, $alias) = explode(' AS ', $operand);
                 $operand = (preg_match('/^[A-Z0-9_]+$/i', $left) ? "`$left`" : $left) . " AS `$alias`";
             } else if ($operand[0] === ':') { // Column in table $operand == ':id'
-//                echo "LOG > Operand is column [$operand]\n";
                 $operand = '`' . substr($operand, 1) . '`';
             } else if ($operand[0] === '$') { // Function $operand == '$SUM(price)'
-//                echo "LOG > Operand is function [$operand]\n";
                 $operand = substr($operand, 1);
             } else if (!preg_match('/^[a-z0-9_]+\(.*\)$/i', $operand)) {
                 $operand = $strictLeft ? "`$operand`" : false;
@@ -207,6 +433,36 @@ class Cursor
             $operand = false;
         }
         return $operand;
+    }
+
+    private function _prepareUpdate($properties, $source = null)
+    {
+        $result = [];
+        if ($source && is_object($source)) {
+            if (!$properties) {
+                $properties = array_keys($source instanceof IModel ? $source->props() : get_class_vars(get_class($source)));
+            }
+            $pk = $source->pk;
+            if (\ArrayHelper::IsAssoc($properties)) {
+                foreach($properties as $name => $value) {
+                    if ($pk && $pk !== $name) {
+                        $source->$name = $value;
+                        $result[] = "`$name` = '" . $this->escape($source->$name) . "'";
+                    }
+                }
+            } else {
+                foreach($properties as $name) {
+                    if ($pk && $pk !== $name) {
+                        $result[] = "`$name` = '" . $this->escape($source->$name) . "'";
+                    }
+                }
+            }
+        } else {
+            foreach($properties as $name => $value) {
+                $result[] = "`$name` = " . $this->_prepareValue($value);
+            }
+        }
+        return implode(', ', $result);
     }
 
 }
@@ -258,3 +514,41 @@ $result = $cursor->find(['a' => ['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]]);
 echo '22. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
 $result = $cursor->find(['a' => ['$gt' => ['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]]]);
 echo '23. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->find([['a' => 2, '$and' => ['b' => 3]]]);
+echo '24. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+
+
+
+$result = $cursor->save(['a' => 1, 'b' => 2], ['b' => 2]);
+echo '25. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$model = new Model(['a' => 4, 'b' => 5]);
+$result = $cursor->save($model);
+echo '26. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$model->b = 10;
+$result = $cursor->save($model);
+echo '27. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$model->b = 10;
+$result = $cursor->save($model, ['b']);
+echo '28. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->save($model, ['b' => 20]);
+echo '28. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$model->b = 50;
+$result = $cursor->update($model);
+echo '29. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->update($model, ['b']);
+echo '30. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->update($model, ['b' => 60]);
+echo '30. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->update(['a' => 1], ['b' => 70]);
+echo '31. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$model = new Model(['a' => 0, 'b' => 5]);
+$result = $cursor->insert($model);
+echo '32. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->insert(['a' => 0, 'b' => 5]);
+echo '33. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$result = $cursor->insert([['a' => 0, 'b' => 5],['a' => 0, 'b' => 5]]);
+echo '34. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";
+$model = new Model(['a' => 1, 'b' => 6]);
+$model2 = new Model(['a' => 2, 'b' => 7]);
+$result = $cursor->insert([$model, $model2]);
+echo '35. ' . (is_array($result) ? print_r($result, 1) : $result) . "\n";

@@ -286,7 +286,7 @@ final class Core
     private static function _bootstrapHelpers(array $section)
     {
         foreach($section as $helperAlias => $helperClass) {
-            self::c('loader')->setAlias($helperClass, $helperAlias);
+            self::c('loader')->setAlias($helperClass, "\\$helperAlias");
         }
     }
 

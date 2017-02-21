@@ -37,8 +37,10 @@ class GMySqlCursor extends GDbCursor
         'class' => '\gear\library\GModel',
         'fields' => [],
         'from' => null,
+        'join' => [],
         'where' => [],
         'group' => [],
+        'having' => [],
         'order' => [],
         'limit' => null,
     ];
@@ -128,8 +130,38 @@ class GMySqlCursor extends GDbCursor
      */
     public function buildQuery(): string
     {
-        $this->_query = 'SELECT SQL_CALC_FOUND_ROWS ' . implode(', ', $this->_queryBuild->fields)
-                      . ' FROM ' . $this->_queryBuild->from;
+        $this->_query = 'SELECT SQL_CALC_FOUND_ROWS ';
+        $fields = $this->_queryBuild->fields;
+        if ($fields) {
+            $this->_query .= (is_array($fields) ? implode(', ', $fields) : $fields);
+        } else {
+            $this->_query .= "*";
+        }
+        $this->_query .= ' FROM ' . $this->_queryBuild->from;
+        $join = $this->_queryBuild->join;
+        if ($join) {
+            $this->_query .= ' ' . (is_array($join) ? implode(' ', $join) : $join);
+        }
+        $where = $this->_queryBuild->where;
+        if ($where) {
+            $this->_query .= ' WHERE ' . (is_array($where) ? implode(' AND ', $where) : $where);
+        }
+        $group = $this->_queryBuild->group;
+        if ($group) {
+            $this->_query .= ' GROUP BY ' . (is_array($group) ? implode(', ', $group) : $group);
+        }
+        $having = $this->_queryBuild->having;
+        if ($having) {
+            $this->_query .= ' HAVING ' . (is_array($having) ? implode(' AND ', $having) : $having);
+        }
+        $order = $this->_queryBuild->order;
+        if ($order) {
+            $this->_query .= ' ORDER BY ' . (is_array($order) ? implode(', ', $order) : $order);
+        }
+        $limit = $this->_queryBuild->limit;
+        if ($limit) {
+            $this->_query .= ' LIMIT ' . (is_array($limit) ? implode(', ', $limit) : $limit);
+        }
         return $this->_query;
     }
 
@@ -242,20 +274,9 @@ class GMySqlCursor extends GDbCursor
     public function find($criteria = [], $fields = []): GDbCursor
     {
         $this->reset();
-        $this->_queryBuild->from = '`' . $this->getCollectionName() . '`';
+        $from = $this->getCollectionName() . ($this->collection->alias ? ' AS ' . $this->collection->alias : '');
+        $this->_queryBuild->from = "`$from`";
         return $this->fields($fields)->where($criteria);
-    }
-
-    /**
-     * Возвращает название коллекции (таблицы), дял которой создан курсор
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getCollectionName(): string
-    {
-        return $this->owner->name;
     }
 
     /**
@@ -315,154 +336,69 @@ class GMySqlCursor extends GDbCursor
     }
 
     /**
+     * Дополнительная выборка HAVING
+     *
+     * @param array $criteria
+     * @return GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function having($criteria = [])
+    {
+        $having = $this->_queryBuild->having;
+        $criteria = $this->_prepareCriteria($criteria);
+        if ($criteria) {
+            $having[] = $criteria;
+            $this->_queryBuild->having = $having;
+        }
+        return $this;
+    }
+
+    /**
+     * Подключение таблицы
+     *
+     * @param string|object $collection
+     * @param array $criteria
+     * @return GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inner($collection, $criteria = []): GDbCursor
+    {
+        $this->_join('inner', $collection, $criteria);
+        return $this;
+    }
+
+    /**
      * Добавление в коллекцию новой записи
      * Возвращает количество затронутых строк
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
-     * @param mixed $properties
-     * @return integer
+     * @param array|object $properties
+     * @return integer|object
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function insert($properties): int
+    public function insert($properties)
     {
         $this->reset();
-        if ($properties instanceof IObject) {
-            $properties = $properties->props();
+        $result = 0;
+        if ($properties instanceof IModel) {
+            $result = $properties;
+            $properties = $result->props();
         } else if (is_object($properties)) {
-            $properties = get_class_vars(get_class($properties));
+            $result = $properties;
+            $properties = get_object_vars($result);
         } else if (!is_array($properties)) {
             throw new \InvalidArgumentException('Invalid properties to insert');
         }
         list($names, $values) = $this->_prepareInsert($properties);
-        $this->runQuery("INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values");
-        return $this->affected();
-    }
-
-    /**
-     * $this->where(['a' => 2]);
-     * $this->where(['$ne' => ['a' => 2]]);
-     * $this->where(['a' => 'NOW()']);
-     * $this->where(['a' => ':b']);
-     * $this->where(['a' => ['&lt' => 2]]);
-     * $this->where(['a' => [2, 3, 4]]);
-     * $this->where(['a' => ['$lt' => 2, '$or' => 3]]);
-     * $this->where(['a' => ['$lt' => 2, '$or' => ['$gt' => 7]]]);
-     * $this->where([['a' => 2, '$and' => ['b' => 3]]]);
-     *
-     * @param array $criteria
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    private function _prepareCriteria(array $criteria, $logic = 'AND', $op = null, $eq = '='): string
-    {
-        $result = [];
-        foreach($criteria as $left => $right) {
-            if (is_numeric($left)) {
-                $result[] = '(' . $this->_prepareCriteria($right, $logic) . ')';
-            } else if (in_array($left, array_keys($this->_logics))) {
-                $result[] = $this->_logics[$left] . ' ' . $this->_prepareCriteria($right, $this->_logics[$left]);
-            } else if (in_array($left, array_keys($this->_eqs))) {
-                if (!$op) {
-                    $result[] = $this->_prepareCriteria($right, $logic, null, $eq); // ['$lt' => ['a' => 3]]
-                } else {
-                    $result[] = "$op " . $this->_eqs[$left] . " " . $this->_prepareValue($right); // ['a' => ['$lt' => 3]]
-                }
-            } else if ($left === '$in') {
-                $result[] = ($result ? $logic : "") . " $op IN (" . implode(', ', $this->_prepareValue($right)) . ')';
-            } else if ($left === '$nin') {
-                $result[] = ($result ? $logic : "") . " $op NOT IN (" . implode(', ', $this->_prepareValue($right)) . ')';
-            } else {
-                if (is_array($right)) {
-                    if (!ArrayHelper::isAssoc($right)) {
-                        $result[] = ($result ? $logic : "") . " $left IN (" . implode(', ', $this->_prepareValue($right)) . ')';
-                    } else {
-                        $result[] = ($result ? $logic : "") . " " . $this->_prepareCriteria($right, $logic, $left);
-                    }
-                } else {
-                    $result[] = ($result ? $logic : "") . " $left $eq " . $this->_prepareValue($right);
-                }
-            }
+        $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
+        $this->runQuery($query);
+        if (is_object($result) && ($pk = $result->primaryKey)) {
+            $result->$pk = $this->getLastInsertId();
         }
-        return implode(" ", $result);
-    }
-
-    /**
-     * Возвращает массив подготовленных полей и данных для вставки
-     *
-     * @param array $properties
-     * @return array
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    private function _prepareInsert(array $properties): array
-    {
-        /**
-         * ArrayHelper это алиас класса \gear\helpers\HArray
-         */
-        if (ArrayHelper::isAssoc($properties)) {
-            $names = array_keys($properties);
-            foreach($properties as &$value) {
-                $value = '"' . $this->escape($value) . '"';
-            }
-            unset($value);
-        } else {
-            $names = array_keys(reset($properties));
-            $properties;
-            foreach($properties as $index => $p) {
-                foreach($p as &$value) {
-                    $value = '"' . $this->escape($value) . '"';
-                }
-                unset($value);
-                $properties[$index] = '(' . implode(', ', $p) . ')';
-            }
-        }
-        $names = '`' . implode('`, `', $names) . '`';
-        $properties = implode(', ', $properties);
-        return [$names, $properties];
-    }
-
-    private function _prepareValue($value)
-    {
-        if (is_array($value)) {
-            foreach ($value as &$val) {
-                $val = $this->_prepareValue($val);
-            }
-            unset($val);
-        } else if ($value === null || preg_match('/^null$/i', $value)) {
-            $value = 'NULL';
-        } else if (($operand = $this->_prepareOperand($value))) {
-            $value = $operand;
-        } else {
-            $value = "'" . $this->escape($value) . "'";
-        }
-        return $value;
-    }
-
-    private function _prepareOperand($operand)
-    {
-        if (!is_numeric($operand)) {
-            if ($operand === null || preg_match('/^null$/i', $operand)) {
-                $operand = 'NULL';
-            } else if (preg_match('/^[a-z0-9_]+\.[a-z0-9_]+$/i', $operand)) {
-                $rec = explode('.', $operand);
-                $operand = '`' . implode('`.`', $rec) . '`';
-            } else if (strpos($operand, ' AS ') !== false) {
-                $operand = preg_replace('/\s{2,}/', ' ', $operand);
-                list($left, $alias) = explode(' AS ', $operand);
-                $operand = (preg_match('/^[A-Z0-9_]+$/i', $left) ? "`$left`" : $left) . " AS `$alias`";
-            } else if ($operand[0] === ':') { // Column in table $operand == ':id'
-                $operand = '`' . substr($operand, 1) . '`';
-            } else if ($operand[0] === '$') { // Function $operand == '$SUM(price)'
-                $operand = substr($operand, 1);
-            } else {
-                $operand = false;
-            }
-        } else {
-            $operand = false;
-        }
-        return $operand;
+        return is_object($result) ? $result : $this->affected();
     }
 
     /**
@@ -476,7 +412,7 @@ class GMySqlCursor extends GDbCursor
      */
     public function join($collection, $criteria = []): GDbCursor
     {
-        // TODO: Implement join() method.
+        $this->_join('join', $collection, $criteria);
         return $this;
     }
 
@@ -491,7 +427,7 @@ class GMySqlCursor extends GDbCursor
      */
     public function left($collection, array $criteria = []): GDbCursor
     {
-        // TODO: Implement left() method.
+        $this->_join('left', $collection, $criteria);
         return $this;
     }
 
@@ -520,19 +456,6 @@ class GMySqlCursor extends GDbCursor
             $this->_queryBuild->limit = [$top, $limit];
         }
         return $this;
-    }
-
-    /**
-     *
-     * @param string|object $collection
-     * @param array $criteria
-     * @return GDbCursor
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function outer($collection, array $criteria = []): GDbCursor
-    {
-        // TODO: Implement outer() method.
     }
 
     /**
@@ -568,7 +491,8 @@ class GMySqlCursor extends GDbCursor
      */
     public function right($collection, array $criteria = []): GDbCursor
     {
-        // TODO: Implement right() method.
+        $this->_join('right', $collection, $criteria);
+        return $this;
     }
 
     /**
@@ -601,15 +525,57 @@ class GMySqlCursor extends GDbCursor
      * записи
      * Возвращает количество затронутых полей
      *
-     * @param mixed $properties
-     * @param mixed $updates
-     * @return integer
+     * @param array|IObject $properties
+     * @param array $updates
+     * @return integer|object
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function save($properties, $updates = null): int
+    public function save($properties, array $updates = [])
     {
-        // TODO: Implement save() method.
+        $this->reset();
+        $result = 0;
+        if ($properties instanceof IObject) {
+            $result = $properties;
+            $properties = $result->props();
+        } else if (is_object($properties)) {
+            $result = $properties;
+            $properties = get_object_vars($result);
+        } else if (!is_array($properties)) {
+            throw new \InvalidArgumentException('Invalid properties to insert');
+        }
+        list($names, $values) = $this->_prepareInsert($properties);
+        $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
+
+        if (!$updates && is_object($result)) {
+            $pk = $result->primaryKey;
+            $props = $result instanceof IObject ? $result->props() : get_object_vars($result);
+            $properties = [];
+            foreach($props as $name => $value) {
+                if (!$pk || $name !== $pk) {
+                    $properties[] = $name;
+                }
+            }
+            $updates = $this->_prepareUpdate($properties, $result);
+        } else if ($updates) {
+            if (is_object($result)) {
+                $updates = $this->_prepareUpdate($updates, $result);
+            } else if (\ArrayHelper::IsAssoc($updates)) {
+                $updates = $this->_prepareUpdate($updates);
+            } else {
+                throw new \InvalidArgumentException('Invalid argument <updates> to save');
+            }
+        } else {
+            throw new \InvalidArgumentException('Invalid argument <updates> to save');
+        }
+        $query .= " ON DUPLICATE KEY UPDATE " . $updates;
+        $this->runQuery($query);
+        if (is_object($result) && ($pk = $result->primaryKey)) {
+            if (($id = $this->getLastInsertId())) {
+                $result->$pk = $id;
+            }
+        }
+        return is_object($result) ? $result : $this->affected();
     }
 
     /**
@@ -640,15 +606,36 @@ class GMySqlCursor extends GDbCursor
     /**
      * Обновление указанных полей для записей, соответствующих критерию
      *
+     * $this->update([], ['a' => 2]);
+     * $this->update(['a' => 2], ['a' => 3]);
+     * $model = new \gear\library\GModel(['a' => 3]);
+     * $this->update($model, ['a' => 4]);
+     * $model->a = 5;
+     * $this->update($model);
+     * $model->a = 6;
+     * $this->update($model, ['a']);
+     *
      * @param array|object $criteria
-     * @param array|object $properties
-     * @return integer
+     * @param array $properties
+     * @return int|object
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update($criteria = [], $properties = []): int
+    public function update($criteria, array $properties = [])
     {
-        // TODO: Implement update() method.
+        $this->reset();
+        $result = $criteria;
+        if (!is_array($criteria) && !is_string($criteria) && !is_object($criteria)) {
+            throw new \InvalidArgumentException('Invalid argument <criteria> to update');
+        }
+        if (!$properties && !is_object($criteria)) {
+            throw new \InvalidArgumentException('Invalid argument <properties> to update');
+        }
+        $properties = $this->_prepareUpdate($properties, $result);
+        $criteria = $this->_prepareCriteria($result);
+        $query = 'UPDATE `' . $this->getCollectionName() . '` SET ' . $properties . ($criteria ? ' WHERE ' . $criteria : '');
+        $this->runQuery($query);
+        return is_object($result) ? $result : $this->affected();
     }
 
     /**
@@ -661,7 +648,272 @@ class GMySqlCursor extends GDbCursor
      */
     public function where($criteria = []): GDbCursor
     {
-        // TODO: Implement where() method.
+        $where = $this->_queryBuild->where;
+        $criteria = $this->_prepareCriteria($criteria);
+        if ($criteria) {
+            $where[] = $criteria;
+            $this->_queryBuild->where = $where;
+        }
         return $this;
+    }
+
+    private function _join($type, $collection, $criteria = [])
+    {
+        $joinTypes = ['join' => 'JOIN', 'left' => 'LEFT JOIN', 'right' => 'RIGHT JOIN', 'inner' => 'INNER JOIN'];
+        $join = $this->_queryBuild->join;
+        $criteria = $this->_prepareCriteria($criteria);
+        $type = $joinTypes[strtolower($type)];
+        $join[] = "$type `" . (is_object($collection) ? $collection->name : $collection) . '` ON ' . $criteria;
+        $this->_queryBuild->join = $join;
+    }
+
+    /**
+     * $this->where(['a' => 2]);
+     * $this->where(['$ne' => ['a' => 2]]);
+     * $this->where(['a' => 'NOW()']);
+     * $this->where(['a' => ':b']);
+     * $this->where(['a' => ['&lt' => 2]]);
+     * $this->where(['a' => [2, 3, 4]]);
+     * $this->where(['a' => ['$lt' => 2, '$or' => 3]]);
+     * $this->where(['a' => ['$lt' => 2, '$or' => ['$gt' => 7]]]);
+     * $this->where([['a' => 2, '$and' => ['b' => 3]]]);
+     *
+     * @param numeric|string|array|IObject $criteria
+     * @param string $logic
+     * @param null|string $op
+     * @param string $eq
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function _prepareCriteria($criteria, $logic = 'AND', $op = null, $eq = '='): string
+    {
+        if ($criteria instanceof IModel) {
+            $pk = $criteria->primaryKey;
+            $result = $this->_prepareCriteria([$pk => $criteria->$pk]);
+        } else if (is_string($criteria) || is_numeric($criteria)) {
+            $result = $criteria;
+        } else if (is_array($criteria)) {
+            $result = [];
+            foreach($criteria as $left => $right) {
+                if (is_numeric($left)) {
+                    if (is_array($right)) {
+                        $result[] = ($result ? " $logic " : "") . '(' . $this->_prepareCriteria($right, $logic, $op, $eq) . ')';
+                    } else {
+                        if ($op) {
+                            $result[] = ($result ? " $logic " : "") . "$left $eq " . $this->_prepareValue($right);
+                        } else {
+                            $result[] = ($result ? " $logic " : "") . $this->_prepareValue($right);
+                        }
+                    }
+                } else if (in_array($left, array_keys($this->_logics))) { // AND, OR
+                    /**
+                     * SQL: Using AND, OR
+                     */
+                    $result[] = ($result ? $this->_logics[$left] : '') . ' ' . $this->_prepareCriteria($right, $this->_logics[$left], $op, $eq);
+                } else if (in_array($left, array_keys($this->_eqs))) { // <, >, <=, =>, <>
+                    /**
+                     * SQL: Using operations: <, >, <>, <=, =>
+                     */
+                    if (!$op) {
+                        $result[] = ($result ? " $logic " : "") . $this->_prepareCriteria($right, $logic, null, $this->_eqs[$left]); // ['$lt' => ['a' => 3]]
+                    } else {
+                        $result[] = ($result ? " $logic " : "") . " $op " . $this->_eqs[$left] . " " . $this->_prepareCriteria($right, $logic); // ['a' => ['$lt' => 3]]
+                    }
+                } else if ($left === '$in') {
+                    /**
+                     * SQL: COL IN (VAL1, VAL2, ... VALn)
+                     */
+                    $result[] = ($result ? $logic : "") . " $op IN (" . implode(', ', $this->_prepareValue($right)) . ')';
+                } else if ($left === '$nin') {
+                    /**
+                     * SQL: COL NOT IN (VAL1, VAL2, ... VALn)
+                     */
+                    $result[] = ($result ? $logic : "") . " $op NOT IN (" . implode(', ', $this->_prepareValue($right)) . ')';
+                } else if (in_array($left, array_keys($this->_sfuncs))) {
+                    /**
+                     * SQL: Using IS NULL, IS NOT NULL
+                     */
+                    $result[] = ($result ? $logic : "") . $this->_prepareOperand($right, true) . " " . $this->_sfuncs[$left];
+                } else if (in_array($left, array_keys($this->_funcs))) {
+                    /**
+                     * SQL: Using LIKE, NOT LIKE, RLIKE, NOT RLIKE, REGEXP, NOT REGEXP
+                     */
+                    if (!$op) { // ['$like' => ['a' => 'pattern']]
+                        list($operand, $pattern) = $right;
+                        $result[] = ($result ? $logic : "") . $this->_prepareOperand($result, true) . " \"$pattern\"";
+                    } else { // ['a' => ['$like' => 'pattern']]
+                        $result[] = ($result ? $logic : "") . " $op " . $this->_funcs[$left] . " " . $this->_prepareValue($right);
+                    }
+                } else if ($left === '$bw') {
+                    /**
+                     * SQL: COL BETWEEN VAL1 AND VAL2
+                     */
+                    if (!$op) {
+                        // ['$bw' => ['a' => [1, 10]]]
+                        $operand = $this->_prepareOperand(key($right), true);
+                        $values = $this->_prepareValue(current($right));
+                        $result[] = ($result ? $logic : "") . " $operand BETWEEN " . implode(' AND ', $values);
+                    } else {
+                        // ['a' => ['$bw' => [1 => 10]]]
+                        $right = $this->_prepareValue($right);
+                        $result[] = ($result ? $logic : "") . " $op BETWEEN " . implode(' AND ', $right);
+                    }
+                } else if ($left[0] === '$') {
+                    /**
+                     * SQL: Using functions MAX(), MIN(), DATE(), NOW() and etc.
+                     *
+                     * ['$MAX' => ':a']
+                     * ['$DATE_SUB' => ['NOW()', 'INTERVAL 1 DAYS']]
+                     */
+                    $left = substr($left, 1);
+                    $right = $this->_prepareValue($right);
+                    if (is_array($right)) {
+                        $right = implode(', ', $right);
+                    }
+                    $result[] = ($result ? $logic : "") . " " . ($op ? " $op " . ($eq ? $eq : '') : '') . " $left($right)";
+                } else {
+                    $left = $this->_prepareOperand($left, true);
+                    if (is_array($right)) {
+                        if (!\ArrayHelper::isAssoc($right)) {
+                            $result[] = ($result ? $logic : "") . " $left IN (" . implode(', ', $this->_prepareValue($right)) . ')';
+                        } else {
+                            $result[] = ($result ? $logic : "") . " " . $this->_prepareCriteria($right, $logic, $left, $eq);
+                        }
+                    } else {
+                        $right = $this->_prepareValue($right);
+                        $result[] = ($result ? $logic : "") . " $left " . ($right === 'NULL' ? 'IS' : $eq) . " $right";
+                    }
+                }
+            }
+            $result = trim(implode(" ", $result));
+        } else {
+            throw new \InvalidArgumentException('Invalid arguments criteria to find');
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает массив подготовленных полей и данных для вставки
+     *
+     * @param array $properties
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function _prepareInsert(array $properties): array
+    {
+        /**
+         * \ArrayHelper это алиас класса \gear\helpers\HArray
+         */
+        if (\ArrayHelper::isAssoc($properties)) {
+            $names = array_keys($properties);
+            foreach($properties as &$value) {
+                $value = '"' . $this->escape($value) . '"';
+            }
+            unset($value);
+            $properties = '(' . implode(', ', $properties) . ')';
+        } else {
+            $first = reset($properties);
+            if (is_object($first)) {
+                $names = array_keys($first instanceof IModel ? $first->props() : get_object_vars($first));
+            } else {
+                $names = array_keys($first);
+            }
+            foreach($properties as $index => $p) {
+                if (is_object($p)) {
+                    $p = $p instanceof IModel ? $p->props() : get_object_vars($p);
+                }
+                foreach($p as &$value) {
+                    $value = '"' . $this->escape($value) . '"';
+                }
+                unset($value);
+                $properties[$index] = '(' . implode(', ', $p) . ')';
+            }
+            $properties = implode(', ', $properties);
+        }
+        $names = '(`' . implode('`, `', $names) . '`)';
+        return [$names, $properties];
+    }
+
+    private function _prepareOperand($operand, $strictLeft = false)
+    {
+        if (!is_numeric($operand)) {
+            if ($operand === null || preg_match('/^null$/i', $operand)) {
+                $operand = 'NULL';
+            } else if (preg_match('/^[a-z0-9_]+\.[a-z0-9_]+$/i', $operand)) {
+                $rec = explode('.', $operand);
+                $operand = '`' . implode('`.`', $rec) . '`';
+            } else if (strpos($operand, ' AS ') !== false) {
+                $operand = preg_replace('/\s{2,}/', ' ', $operand);
+                list($left, $alias) = explode(' AS ', $operand);
+                $operand = (preg_match('/^[A-Z0-9_]+$/i', $left) ? "`$left`" : $left) . " AS `$alias`";
+            } else if ($operand[0] === ':') { // Column in table $operand == ':id'
+                $operand = '`' . substr($operand, 1) . '`';
+            } else if ($operand[0] === '$') { // Function $operand == '$SUM(price)'
+                $operand = substr($operand, 1);
+            } else if (!preg_match('/^[a-z0-9_]+\(.*\)$/i', $operand)) {
+                $operand = $strictLeft ? "`$operand`" : false;
+            }
+        } else {
+            $operand = false;
+        }
+        return $operand;
+    }
+
+    /**
+     * Возвращает подготовленную к обновлению строку, как часть sql-запроса
+     *
+     * @param $properties
+     * @param null $source
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    private function _prepareUpdate($properties, $source = null): string
+    {
+        $result = [];
+        if ($source && is_object($source)) {
+            if (!$properties) {
+                $properties = array_keys($source instanceof IModel ? $source->props() : get_class_vars(get_class($source)));
+            }
+            $pk = $source->primaryKey;
+            if (\ArrayHelper::IsAssoc($properties)) {
+                foreach($properties as $name => $value) {
+                    if (!$pk || $pk !== $name) {
+                        $source->$name = $value;
+                        $result[] = "`$name` = '" . $this->escape($source->$name) . "'";
+                    }
+                }
+            } else {
+                foreach($properties as $name) {
+                    if (!$pk || $pk !== $name) {
+                        $result[] = "`$name` = '" . $this->escape($source->$name) . "'";
+                    }
+                }
+            }
+        } else {
+            foreach($properties as $name => $value) {
+                $result[] = "`$name` = " . $this->_prepareValue($value);
+            }
+        }
+        return implode(', ', $result);
+    }
+
+    private function _prepareValue($value)
+    {
+        if (is_array($value)) {
+            foreach ($value as &$val) {
+                $val = $this->_prepareValue($val);
+            }
+            unset($val);
+        } else if ($value === null || preg_match('/^null$/i', $value)) {
+            $value = 'NULL';
+        } else if (($operand = $this->_prepareOperand($value))) {
+            $value = $operand;
+        } else {
+            $value = "'" . $this->escape($value) . "'";
+        }
+        return $value;
     }
 }

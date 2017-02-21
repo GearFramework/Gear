@@ -189,6 +189,18 @@ abstract class GDbCursor extends GModel implements \Iterator
     }
 
     /**
+     * Возвращает название коллекции (таблицы), дял которой создан курсор
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCollectionName(): string
+    {
+        return $this->owner->name;
+    }
+
+    /**
      * Возвращает ссылку на компонент базы данных
      *
      * @return GDbConnection
@@ -276,11 +288,11 @@ abstract class GDbCursor extends GModel implements \Iterator
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param mixed $properties
-     * @return integer
+     * @return integer|object
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function insert($properties): int;
+    abstract public function insert($properties);
 
     /**
      * Подключение таблицы
@@ -396,12 +408,12 @@ abstract class GDbCursor extends GModel implements \Iterator
      * Возвращает количество затронутых полей
      *
      * @param mixed $properties
-     * @param mixed $updates
-     * @return integer
+     * @param array $updates
+     * @return integer|object
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function save($properties, $updates = null): int;
+    abstract public function save($properties, array $updates = []);
 
     /**
      * Установка текущего запроса
@@ -443,12 +455,12 @@ abstract class GDbCursor extends GModel implements \Iterator
      * Обновление указанных полей для записей, соответствующих критерию
      *
      * @param null|array $criteria
-     * @param array|object $properties
-     * @return integer
+     * @param array $properties
+     * @return integer|object
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function update($criteria = [], $properties): int;
+    abstract public function update($criteria, array $properties = []);
 
     /**
      * Формирование критерия поиска
