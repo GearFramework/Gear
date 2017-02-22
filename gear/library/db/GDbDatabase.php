@@ -3,6 +3,7 @@
 namespace gear\library\db;
 
 use gear\library\GModel;
+use gear\traits\TDelegateFactory;
 
 /**
  * Библиотека базы данных
@@ -18,6 +19,7 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
 {
     /* Traits */
     use TFactory;
+    use TDelegateFactory;
     /* Const */
     /* Private */
     /* Protected */
@@ -108,15 +110,6 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
     {
         $this->drop();
     }
-
-    /**
-     * Сброс результатов выполнения последнего запроса
-     *
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    abstract public function reset();
 
     /**
      * Выбор текущей базы данных

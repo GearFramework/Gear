@@ -22,7 +22,7 @@ class GMySqlCollection extends GDbCollection
      */
     public function drop()
     {
-        $this->cursor->runQuery('DROP TABLE `%s`', $this->name)->execute();
+        $this->cursor->runQuery('DROP TABLE `%s`', $this->name);
     }
 
     /**
@@ -38,31 +38,15 @@ class GMySqlCollection extends GDbCollection
     }
 
     /**
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     * @since 5.0.0
-     */
-    public function getIterator()
-    {
-        $cursor = $this->cursor->find();
-        return new \gear\library\GDelegateFactoriableIterator(['source' => $cursor], $this);
-    }
-
-    /**
-     * Сброс результатов выполнения последнего запроса
+     * Возвращает итератор со всеми найденными записями в таблице
      *
-     * @return void
+     * @return \Iterator
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function reset()
+    public function getIterator(): \Iterator
     {
-        if ($this->_cursor) {
-            $this->_cursor->free();
-            unset($this->_cursor);
-        }
+        return $this->delegate($this->cursor->find());
     }
 
     /**
@@ -80,12 +64,12 @@ class GMySqlCollection extends GDbCollection
     /**
      * Очистка таблицы от записей
      *
-     * @return void
+     * @return GDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function truncate()
+    public function truncate(): GDbCollection
     {
-        $this->cursor->runQuery('TRUNCATE TABLE `%s`', $this->name)->execute();
+        $this->cursor->runQuery('TRUNCATE TABLE `%s`', $this->name);
     }
 }

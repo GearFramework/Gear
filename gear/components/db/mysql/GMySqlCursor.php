@@ -105,7 +105,7 @@ class GMySqlCursor extends GDbCursor
         if (!$this->result) {
             $this->query();
         }
-        return ($properties = $this->result->fetch_assoc()) ? new GModel($properties) : false;
+        return ($properties = $this->result->fetch_assoc()) ? $this->owner->factory($properties, $this->owner) : false;
     }
 
     /**

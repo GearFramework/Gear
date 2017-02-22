@@ -3,6 +3,7 @@
 namespace gear\library\db;
 
 use gear\library\GModel;
+use gear\traits\TDelegateFactory;
 
 /**
  * Библиотека коллекций (таблиц)
@@ -18,10 +19,14 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
 {
     /* Traits */
     use TFactory;
+    use TDelegateFactory;
     /* Const */
     /* Private */
     /* Protected */
     protected $_factory = [
+        'class' => '\gear\library\GModel',
+    ];
+    protected $_cursorFactory = [
         'class' => '\gear\library\db\GDbCursor',
     ];
     protected $_items = [];
@@ -31,8 +36,8 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     public function __call(string $name, array $arguments)
     {
         $result = null;
-        if (method_exists($this->_factory['class'], $name)) {
-            $result = $this->factory([], $this)->$name(... $arguments);
+        if (method_exists($this->_cursorFactory['class'], $name)) {
+            $result = $this->cursor->$name(... $arguments);
         } else {
             $result = parent::__call($name, $arguments);
         }
@@ -75,13 +80,14 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Возвращает инстанс курсора для работы с запросами
      *
-     * @return null|GDbCursor
+     * @return GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCursor()
+    public function getCursor(): GDbCursor
     {
-        return $this->factory($this->_cursorFactory);
+        $this->current = $this->factory($this->_cursorFactory);
+        return $this->current;
     }
 
     /**
@@ -105,7 +111,7 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
      */
     public function getHandler()
     {
-        return $this->owner->getHandler();
+        return $this->owner->handler;
     }
 
     /**
@@ -136,11 +142,17 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Сброс результатов выполнения последнего запроса
      *
-     * @return void
+     * @return GDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function reset();
+    public function reset(): GDbCollection
+    {
+        if ($this->current) {
+            $this->current->reset();
+        }
+        return $this;
+    }
 
     /**
      * Установка текущего выполняемого запроса
@@ -158,9 +170,9 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Очистка таблицы от записей
      *
-     * @return void
+     * @return GDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function truncate();
+    abstract public function truncate(): GDbCollection;
 }

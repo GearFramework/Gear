@@ -3,6 +3,8 @@
 namespace gear\library\db;
 
 use gear\library\GComponent;
+use gear\library\GEvent;
+use gear\traits\TDelegateFactory;
 use gear\traits\TFactory;
 
 /**
@@ -19,6 +21,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
 {
     /* Traits */
     use TFactory;
+    use TDelegateFactory;
     /* Const */
     /* Private */
     /* Protected */
@@ -28,8 +31,6 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
         'user' => '',
         'password' => '',
         'port' => '',
-        'charser' => 'utf8',
-        'collate' => 'utf8_general_ci',
     ];
     protected $_factory = [
         'class' => '\gear\library\db\GDbDatabase',
@@ -43,6 +44,28 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
     /* Public */
 
     /**
+     * Генерация события onAfterConnect после подключения к серверу
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function afterConnect()
+    {
+        $this->trigger('onAfterConnect', new GEvent($this, ['target' => $this]));
+    }
+
+    /**
+     * Генерация события onBeforeConnect до подключения к серверу
+     *
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function beforeConnect()
+    {
+        $this->trigger('onBeforeConnect', new GEvent($this, ['target' => $this]));
+    }
+
+    /**
      * Завершение соединения с сервером баз данных
      *
      * @abstract
@@ -53,14 +76,20 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
     abstract public function close();
 
     /**
-     * Подключение к серверу баз данных
+     * Подготовка и вызов метода непосредственного подключения к серверу баз данных
      *
-     * @abstract
-     * @return $this
+     * @return GDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function connect();
+    public function connect(): GDbConnection
+    {
+        if ($this->beforeConnect()) {
+            $this->open();
+            $this->afterConnect();
+        }
+        return $this;
+    }
 
     /**
      * Возвращает текущую выбранную базу данных
@@ -109,6 +138,8 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
     {
         return $this->_handler ? true : false;
     }
+
+    abstract public function open(): GDbConnection;
 
     /**
      * Выполняет подключение к серверу, если соединение ещё не было

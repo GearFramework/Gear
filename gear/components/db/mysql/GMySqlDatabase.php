@@ -62,31 +62,15 @@ class GMySqlDatabase extends GDbDatabase
     }
 
     /**
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     * @since 5.0.0
-     */
-    public function getIterator()
-    {
-        $cursor = $this->cursor->runQuery('SHOW DATABASES');
-        return new \gear\library\GDelegateFactoriableIterator(['source' => $cursor], $this);
-    }
-
-    /**
-     * Сброс результатов выполнения последнего запроса
+     * Возвращает итератор со списком таблиц в базе данных
      *
-     * @return void
+     * @return \Iterator
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function reset()
+    public function getIterator(): \Iterator
     {
-        if ($this->_cursor) {
-            $this->_cursor->free();
-            unset($this->_cursor);
-        }
+        return $this->delegate($this->cursor->runQuery('SHOW TABLES'));
     }
 
     /**

@@ -20,4 +20,12 @@ return [
             ],
         ],
     ],
+    'components' => [
+        'db' => [
+            'class' => '\gear\components\db\mysql\GMySqlConnectionComponent',
+            'host' => 'localhost',
+            'user' => '',
+            'password' => '',
+        ],
+    ],
 ];

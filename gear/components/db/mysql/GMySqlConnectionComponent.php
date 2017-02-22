@@ -3,6 +3,7 @@
 namespace gear\components\db\mysql;
 
 use gear\library\db\GDbConnection;
+use gear\library\GEvent;
 
 /**
  * Компонент подключения к MySql-серверу
@@ -28,6 +29,9 @@ class GMySqlConnectionComponent extends GDbConnection
         'database' => '',
         'port' => '',
         'socket' => '',
+        'charser' => 'utf8',
+        'collate' => 'utf8_general_ci',
+        'autoConnect' => true,
     ];
     protected $_factory = [
         'class' => '\gear\components\db\mysql\GMysqlDatabase',
@@ -52,24 +56,62 @@ class GMySqlConnectionComponent extends GDbConnection
     /**
      * Подключение к серверу баз данных
      *
-     * @return $this
+     * @return GDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function connect()
+    public function open(): GDbConnection
     {
         if (!$this->isConnected()) {
             $this->handler = new mysqli($this->host, $this->user, $this->password, $this->database, $this->this, $this->socket);
-            if (!$this->handler->connect_error) {
+            if ($this->handler->connect_error) {
                 throw self::exceptionDatabaseConnection('Error connecting to database server <{user}@{host}>', ['user' => $this->user, 'host' => $this->host]);
             }
         }
         return $this;
     }
 
-    public function getIterator()
+    /**
+     * Возвращает итератор со списком баз данных на сервере
+     *
+     * @return \Iterator
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getIterator(): \Iterator
     {
-        $cursor = $this->cursor->runQuery('SHOW DATABASES');
-        return new \gear\library\GDelegateFactoriableIterator(['source' => $cursor], $this);
+        return $this->delegate($this->cursor->runQuery('SHOW DATABASES'));
+    }
+
+    /**
+     * Обработчик события onAfterConnect, возникающего после подключения к серверу
+     *
+     * @param GEvent $event
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function onAfterConnect(GEvent $event): bool
+    {
+        if ($this->isConnected()) {
+            $this->handler->set_charset($this->charser);
+        }
+        return true;
+    }
+
+    /**
+     * Обработчик события onAfterConnect, возникающего после установки компонента
+     *
+     * @param GEvent $event
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function onAfterInstallService(GEvent $event): bool
+    {
+        if ($this->autoConnect) {
+            $this->connect();
+        }
+        return true;
     }
 }
