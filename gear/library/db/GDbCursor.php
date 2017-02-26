@@ -57,7 +57,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function all(): array;
+    abstract public function all();
 
     /**
      * Выполняет запрос и возвращает ассоциативный массив найденной записи
@@ -66,7 +66,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function asAssoc(): array;
+    abstract public function asAssoc();
 
     /**
      * Выполняет запрос и возвращает объект найденной записи, реализующий интерфейс IModel
@@ -75,7 +75,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function asObject(): IModel;
+    abstract public function asObject();
 
     /**
      * Выполняет запрос и возвращает индексный массив найденной записи
@@ -84,7 +84,7 @@ abstract class GDbCursor extends GModel implements \Iterator
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function asRow(): array;
+    abstract public function asRow();
 
     /**
      * Событие возникающее перед выполнением запроса

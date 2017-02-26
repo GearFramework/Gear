@@ -179,10 +179,10 @@ class GObject implements IObject
             } else if (method_exists($this, 'installPlugin') && $value instanceof IPlugin) {
                 $this->installPlugin($name, $value);
             } else {
-                if (isset($this->_properties[$name]))
+//                if (array_key_exists($name, $this->_properties)) {
                     $this->_properties[$name] = $value;
-                else if (is_object($this->owner))
-                    $this->owner->$name = $value;
+//                } else if (is_object($this->owner))
+  //                  $this->owner->$name = $value;
             }
         }
     }

@@ -75,7 +75,9 @@ class GControllersComponent extends GComponent
     {
         if (!($this->_currentController instanceof IController)) {
             $path = trim((string)$this->request->r);
-            $path = $this->validate(null, $path, null, function($value) { return preg_replace('/[^a-zA-Z0-9_\/]/', '', $value); });
+            $path = $this->validate(null, $path, null, function($value) {
+                return preg_replace('/[^a-zA-Z0-9_\/]/', '', $value);
+            });
             $this->_currentController = $this->getRouteController($path);
         }
         return $this->_currentController;

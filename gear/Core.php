@@ -1031,7 +1031,10 @@ final class Core
     public static function trigger(string $name, $event): bool
     {
         $result = true;
-        if (isset(self::$_events[$name])) {
+        if (is_object($event->target) && method_exists($event->target, $name)) {
+            $result = $event->target->$name($event);
+        }
+        if ($result && $event->bubble && isset(self::$_events[$name])) {
             foreach (self::$_events[$name] as $handler) {
                 if (call_user_func($handler, $event) === false)
                     $result = false;
@@ -1042,16 +1045,37 @@ final class Core
         return $result;
     }
 
+    /**
+     * Деинсталляция компонента
+     *
+     * @param mixed $name
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function uninstallComponent($name)
     {
         self::uninstallService($name, 'component');
     }
 
+    /**
+     * Деинсталляция модуля
+     *
+     * @param mixed $name
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function uninstallModule($name)
     {
         self::uninstallService($name, 'module');
     }
 
+    /**
+     * Деинсталляция сервиса
+     *
+     * @param mixed $name
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function uninstallService($name, string $type = '')
     {
         if ($name instanceof \Closure) {
@@ -1072,16 +1096,37 @@ final class Core
         $service->uninstall();
     }
 
+    /**
+     * Удаление регистрации компонента
+     *
+     * @param mixed $name
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public static function unregisterComponent($name)
     {
         self::unregisterService($name, 'component');
     }
 
+    /**
+     * Удаление регистрации модуля
+     *
+     * @param mixed $name
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public static function unregisterModule($name)
     {
         self::unregisterService($name, 'module');
     }
 
+    /**
+     * Удаление регистрации сервиса
+     *
+     * @param mixed $name
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public static function unregisterService($name, string $type)
     {
         if ($name instanceof \Closure) {

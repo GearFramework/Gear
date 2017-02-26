@@ -15,9 +15,9 @@ use gear\library\GEvent;
  * @since 0.0.1
  * @version 0.0.1
  */
-trait TFactory
+trait TStaticFactory
 {
-    protected $_factory = [];
+    protected static $_factory = [];
 
     /**
      * Создание объекта
@@ -28,11 +28,11 @@ trait TFactory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function factory(array $record = [], $owner = null)
+    public static function factory(array $record = [], $owner = null)
     {
-        list($class,, $properties) = Core::configure($this->getFactory($record));
-        $object = new $class($properties, $owner ?: $this);
-        $this->afterFactory($object);
+        list($class,, $properties) = Core::configure(self::getFactory($record));
+        $object = new $class($properties, $owner);
+        self::afterFactory($object, $owner);
         return $object;
     }
 
@@ -44,9 +44,9 @@ trait TFactory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getFactory(array $record = []): array
+    public static function getFactory(array $record = []): array
     {
-        return $record ? array_replace_recursive($this->_factory, $record) : $this->_factory;
+        return $record ? array_replace_recursive(static::$_factory, $record) : static::$_factory;
     }
 
     /**
@@ -57,9 +57,9 @@ trait TFactory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setFactory(array $factory)
+    public static function setFactory(array $factory)
     {
-        $this->_factory = $factory;
+        static::$_factory = $factory;
     }
 
     /**
@@ -70,8 +70,12 @@ trait TFactory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function afterFactory($object)
+    public static function afterFactory($object, $owner)
     {
-        return $this->trigger('onAfterFactory', new GEvent($this, ['target' => $this, 'object' => $object]));
+        $result = true;
+        if ($owner) {
+            $result = $owner->trigger('onAfterFactory', new GEvent($owner, ['target' => $owner, 'object' => $object]));
+        }
+        return $result;
     }
 }

@@ -6,7 +6,13 @@ return [
             'class' => [
                 'name' => '\eb\ElectroBunker',
                 'components' => [
-                    'controllers' => ['defaultControllerName' => 'home'],
+                    'controllers' => [
+                        'defaultControllerName' => 'home',
+                        'mapControllers' => [
+                            'operator_auth' => '',
+                            'client' => '',
+                        ],
+                    ],
                 ],
             ],
         ],
@@ -24,8 +30,8 @@ return [
         'db' => [
             'class' => '\gear\components\db\mysql\GMySqlConnectionComponent',
             'host' => 'localhost',
-            'user' => '',
-            'password' => '',
+            'user' => 'root',
+            'password' => 'rabrimlo',
         ],
     ],
 ];

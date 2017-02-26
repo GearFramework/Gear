@@ -3,7 +3,9 @@
 namespace gear\library\db;
 
 use gear\library\GModel;
+use gear\library\GStaticFactory;
 use gear\traits\TDelegateFactory;
+use gear\traits\TFactory;
 
 /**
  * Библиотека базы данных
@@ -23,9 +25,6 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
     /* Const */
     /* Private */
     /* Protected */
-    protected $_factory = [
-        'class' => '\gear\library\db\GDbCollection',
-    ];
     protected $_cursorFactory = [
         'class' => '\gear\library\db\GDbCursor',
     ];
@@ -84,7 +83,7 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
      */
     public function getCursor()
     {
-        return $this->factory($this->_cursorFactory);
+        return GStaticFactory::factory($this->_cursorFactory, $this);
     }
 
     /**

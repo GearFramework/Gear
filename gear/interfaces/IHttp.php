@@ -4,6 +4,7 @@ namespace gear\interfaces;
 
 use Psr\Http\Messages\ResponseInterface;
 use Psr\Http\Messages\ServerRequestInterface;
+use Psr\Http\Messages\UriInterface;
 
 /**
  * Интерфейс плагина для работы с запросами
@@ -92,4 +93,9 @@ interface IResponse extends ResponseInterface
      * @version 0.0.1
      */
     public function send($data);
+}
+
+interface IUri extends UriInterface
+{
+
 }

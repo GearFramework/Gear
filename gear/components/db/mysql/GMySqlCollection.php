@@ -10,7 +10,16 @@ class GMySqlCollection extends GDbCollection
     /* Const */
     /* Private */
     /* Protected */
-    protected $_alias = null;
+    protected static $_defaultProperties = [
+        'name' => '',
+    ];
+    protected $_factory = [
+        'class' => '\gear\library\GModel',
+    ];
+    protected $_cursorFactory = [
+        'class' => '\gear\components\db\mysql\GMySqlCursor',
+    ];
+    protected $_alias = '';
     /* Public */
 
     /**

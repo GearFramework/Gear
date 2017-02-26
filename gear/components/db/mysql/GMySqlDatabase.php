@@ -18,10 +18,12 @@ use Traversable;
 class GMySqlDatabase extends GDbDatabase
 {
     /* Traits */
-    use TFactory;
     /* Const */
     /* Private */
     /* Protected */
+    protected static $_defaultProperties = [
+        'name' => '',
+    ];
     protected $_factory = [
         'class' => '\gear\components\db\mysql\GMySqlCollection',
     ];
@@ -59,6 +61,20 @@ class GMySqlDatabase extends GDbDatabase
     {
         $this->cursor->runQuery('DROP DATABASE `%s`', $this->name);
         return $this;
+    }
+
+    /**
+     * Возвращает данные создаваемого объекта
+     *
+     * @param array $record
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getFactory(array $record = []): array
+    {
+        $record = ['name' => reset($record)];
+        return $record ? array_replace_recursive($this->_factory, $record) : $this->_factory;
     }
 
     /**

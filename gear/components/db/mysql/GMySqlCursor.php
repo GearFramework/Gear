@@ -9,6 +9,7 @@ use gear\library\db\GDbCursor;
 use gear\library\db\GDbDatabase;
 use gear\library\GEvent;
 use gear\library\GModel;
+use gear\library\GStaticFactory;
 use gear\traits\TFactory;
 
 
@@ -85,7 +86,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function asAssoc(): array
+    public function asAssoc()
     {
         if (!$this->result) {
             $this->query();
@@ -100,7 +101,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function asObject(): IModel
+    public function asObject()
     {
         if (!$this->result) {
             $this->query();
@@ -115,7 +116,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function asRow(): array
+    public function asRow()
     {
         if (!$this->result) {
             $this->query();
@@ -459,8 +460,8 @@ class GMySqlCursor extends GDbCursor
             $this->result->free();
             $this->result = null;
         }
-        $this->query = null;
-        $this->_queryBuild = $this->factory($this->_factoryQueryBuild, $this);
+        $this->_query = null;
+        $this->_queryBuild = GStaticFactory::factory($this->_factoryQueryBuild);
         $cursor = $this;
         $this->_queryBuild->builderExecute = function() use ($cursor) {
             $cursor->buildQuery();
@@ -501,7 +502,7 @@ class GMySqlCursor extends GDbCursor
             }
             $query = sprintf($query, ...$bindParams);
         }
-        if (!$this->result = $this->handler->query($query)) {
+        if (!($this->result = $this->handler->query($query))) {
             throw self::exceptionDbCursor('Invalid run query', ['query' => $query]);
         }
         return $this;

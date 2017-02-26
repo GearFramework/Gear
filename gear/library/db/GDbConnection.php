@@ -4,6 +4,7 @@ namespace gear\library\db;
 
 use gear\library\GComponent;
 use gear\library\GEvent;
+use gear\library\GStaticFactory;
 use gear\traits\TDelegateFactory;
 use gear\traits\TFactory;
 
@@ -32,9 +33,9 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
         'password' => '',
         'port' => '',
     ];
-    protected $_factory = [
-        'class' => '\gear\library\db\GDbDatabase',
-    ];
+//    protected $_factory = [
+//        'class' => '\gear\library\db\GDbDatabase',
+//    ];
     protected $_cursorFactory = [
         'class' => '\gear\library\db\GDbCursor',
     ];
@@ -51,7 +52,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
      */
     public function afterConnect()
     {
-        $this->trigger('onAfterConnect', new GEvent($this, ['target' => $this]));
+        return $this->trigger('onAfterConnect', new GEvent($this, ['target' => $this]));
     }
 
     /**
@@ -62,7 +63,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
      */
     public function beforeConnect()
     {
-        $this->trigger('onBeforeConnect', new GEvent($this, ['target' => $this]));
+        return $this->trigger('onBeforeConnect', new GEvent($this, ['target' => $this]));
     }
 
     /**
@@ -112,7 +113,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
      */
     public function getCursor(): GDbCursor
     {
-        return $this->factory($this->_cursorFactory);
+        return GStaticFactory::factory($this->_cursorFactory, $this);
     }
 
     /**
@@ -185,7 +186,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
                 $this->_current = $this->_items[$name]->select();
             }
         } else {
-            $this->_current = $this->_items[$name] = $this->factory(['name' => $name], $this)->select();
+            $this->_current = $this->_items[$name] = $this->factory(['Database' => $name], $this)->select();
         }
         return $this->_current;
     }
@@ -201,5 +202,18 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
     public function setCurrent(GDbDatabase $current)
     {
         $this->_current = $current;
+    }
+
+    /**
+     * Устанавливает ресурс подключения к базе данных
+     *
+     * @param mixed $handler
+     * @return null|resource
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setHandler($handler)
+    {
+        $this->_handler = $handler;
     }
 }

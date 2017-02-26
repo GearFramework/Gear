@@ -31,6 +31,7 @@ class GApplication extends GModule
         'plugins' => [
             'request' => ['class' => '\gear\plugins\http\GRequestPlugin'],
             'response' => ['class' => '\gear\plugins\http\GResponsePlugin'],
+            'uri' => ['class' => '\gear\plugins\http\GUriPlugin'],
         ],
     ];
     protected static $_initialized = false;
@@ -74,6 +75,25 @@ class GApplication extends GModule
     public function end(IResponse $response, $result)
     {
         return Core::trigger('onEndApplication', new GEvent($this, ['response' => $response, 'result' => &$result]));
+    }
+
+    public function redirect($path, $params = [])
+    {
+        if (is_array($params) && $params) {
+            $p = [];
+            foreach($params as $name => $value) {
+                $p[] = "$name=$value";
+            }
+            $path .= '?' . implode('&', $p);
+        } else if (is_string($params) && trim($params)) {
+            $path .= "?$params";
+        }
+        $this->redirectUri($path);
+    }
+
+    public function redirectUri(string $uri)
+    {
+        header("Location: $uri");
     }
 
     /**

@@ -21,12 +21,12 @@ trait TDelegateFactory
         return $this->delegat;
     }
 
-    public function getDelegat(): array
+    public function getDelegat()
     {
         return $this->_delegat;
     }
 
-    public function setDelegat(array $delegat)
+    public function setDelegat($delegat)
     {
         $this->_delegat = $delegat;
     }

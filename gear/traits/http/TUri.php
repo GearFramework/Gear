@@ -23,28 +23,6 @@ trait TUri
     protected $_userInfo = null;
 
     /**
-     * TUri constructor.
-     *
-     * @param string $uri
-     * @throws \InvalidArgumentException
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function __construct(string $uri)
-    {
-        $uri = parse_url($uri);
-        if ($uri === false)
-            throw \InvalidArgumentException("Invalid uri");
-        foreach($uri as $name => $value) {
-            $this->{'_' . $name} = $value;
-        }
-        if ($this->_user !== null)
-            $this->_userInfo = $this->_user;
-        if ($this->_pass !== null)
-            $this->_userInfo .= ':' . $this->_pass;
-    }
-
-    /**
      * Return the string representation as a URI reference.
      *
      * Depending on which components of the URI are present, the resulting
@@ -72,6 +50,16 @@ trait TUri
     public function __toString(): string
     {
         return $this->compileUri();
+    }
+
+    public function getUri(): string
+    {
+        return $this->_uri;
+    }
+
+    public function setUri(string $uri)
+    {
+        $this->_uri = $uri;
     }
 
     /**

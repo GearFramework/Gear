@@ -18,5 +18,12 @@
         <?=\gear\Core::m('resources')->publicate('resources/js/app.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/request.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/mainMenu.js')?>
+
+        <?php
+        //$t = \gear\Core::c('db')->selectCollection('eb', 'vendorStatuses');
+        foreach(\gear\Core::c('db')->selectCollection('eb', 'vendorStatuses') as $p) {
+            echo $p->nameVendorStatus . "<br />\n";
+        }
+        ?>
     </body>
 </html>
