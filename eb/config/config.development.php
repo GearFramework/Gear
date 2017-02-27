@@ -30,8 +30,8 @@ return [
         'db' => [
             'class' => '\gear\components\db\mysql\GMySqlConnectionComponent',
             'host' => 'localhost',
-            'user' => 'root',
-            'password' => 'rabrimlo',
+            'user' => '',
+            'password' => '',
         ],
     ],
 ];
