@@ -2,4 +2,6 @@
 
 use gear\library\GException;
 
-class DbCursorException extends GException {}
+class DatabaseException extends GException {}
+class DatabaseConnectionException extends  DatabaseException {}
+class DbCursorException extends DatabaseException {}

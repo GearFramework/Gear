@@ -199,6 +199,7 @@ class GController extends GModel implements IController
      */
     public function getRouteApi(string $path): string
     {
+        $path = preg_replace('#^' . preg_quote($this->name) . '/?#', '', $this->name);
         strpos($path, '/') !== false ? list(,$name) = explode('/', $path) : $name = $this->defaultApiName;
         return $name;
     }

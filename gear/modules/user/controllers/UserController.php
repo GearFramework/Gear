@@ -1,9 +1,10 @@
 <?php
 
-namespace gear\modules\resources\controllers;
+namespace gear\modules\user\controllers;
 
 use gear\Core;
 use gear\library\GController;
+use gear\traits\TView;
 
 /**
  * Контроллер менеджера пользователей
@@ -18,10 +19,18 @@ use gear\library\GController;
 class UserController extends GController
 {
     /* Traits */
+    use TView;
     /* Const */
     /* Private */
     /* Protected */
+    protected $_defaultApiName = 'auth';
+    protected $_viewPath = '\gear\modules\user\views';
     /* Public */
+
+    public function apiAuth()
+    {
+        echo $this->render('loginForm');
+    }
 
     /**
      * Аутентификация пользователя
@@ -35,7 +44,7 @@ class UserController extends GController
     public function apiLogin(string $username, string $password)
     {
         try {
-            Core::user()->login(['username' => $username, 'password' => $password]);
+            $this->getModule()->login(['username' => $username, 'password' => $password]);
         } catch(\Exception $e) {
 
         }
@@ -51,7 +60,7 @@ class UserController extends GController
     public function apiLogout()
     {
         try {
-            Core::user()->logout();
+            $this->getModule()->logout();
         } catch(\Exception $e) {
 
         }
@@ -67,9 +76,14 @@ class UserController extends GController
     public function apiRegister()
     {
         try {
-            Core::user()->register($this->request->post());
+            $this->getModule()->register($this->request->post());
         } catch(\Exception $e) {
 
         }
+    }
+
+    public function getModule()
+    {
+        return Core::user();
     }
 }

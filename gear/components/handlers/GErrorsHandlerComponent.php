@@ -51,6 +51,7 @@ class GErrorsHandlerComponent extends GComponent
                 ob_end_clean();
             $args = ['message' => $message, 'code' => $code, 'file' => $file, 'line' => $line];
             $this->view->render($this->getViewPath(), $args);
+            die();
         } catch (\Throwable $e) {
             die($e->getMessage() . "\n" . $e->getFile() . "[" . $e->getLine() . "]\n" . $e->getTraceAsString() . "\n");
         }

@@ -637,7 +637,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function installService(string $name, $service, string $type = '', $owner = null): \gear\interfaces\IService
+    public static function installService(string $name, $service, $type = '', $owner = null): \gear\interfaces\IService
     {
         if (is_array($service)) {
             list($class, $config, $properties) = self::configure($service);

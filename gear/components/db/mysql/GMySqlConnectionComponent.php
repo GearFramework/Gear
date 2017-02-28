@@ -27,9 +27,9 @@ class GMySqlConnectionComponent extends GDbConnection
         'host' => 'localhost',
         'user' => '',
         'password' => '',
-        'database' => '',
-        'port' => '',
-        'socket' => '',
+        'database' => null,
+        'port' => 3306,
+        'socket' => null,
         'charser' => 'utf8',
         'collate' => 'utf8_general_ci',
         'autoConnect' => true,
@@ -128,7 +128,7 @@ class GMySqlConnectionComponent extends GDbConnection
     public function open(): GDbConnection
     {
         if (!$this->isConnected()) {
-            Core::syslog(Core::INFO, 'Connecting to MySql server <:host> by user <:user>', ['host' => $this->host, 'user' => $this->user, '__func__' => __METHOD__, '__line__' => __LINE__]);
+            Core::syslog(Core::INFO, 'Connecting to MySql server <{host}> by user <{user}>', ['host' => $this->host, 'user' => $this->user, '__func__' => __METHOD__, '__line__' => __LINE__]);
             $this->handler = new \mysqli($this->host, $this->user, $this->password, $this->database, $this->this, $this->socket);
             if ($this->handler->connect_error) {
                 throw self::exceptionDatabaseConnection('Error connecting to database server <{user}@{host}>', ['user' => $this->user, 'host' => $this->host]);

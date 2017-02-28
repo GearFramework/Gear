@@ -136,7 +136,16 @@ class GControllersComponent extends GComponent
      */
     public function getRouteController(string $path): IController
     {
-        list($controllerPath,) = explode('/', $path);
+        //list($controllerPath,) = explode('/', $path);
+        $controllerPath = explode('/', $path);
+        $properties = [];
+        if (($controllerName = $this->existsInMapControllers($controllerPath, true))) {
+            $controllerClass = $this->_mapControllers[$controllerName];
+            $properties = ['name' => $controllerName];
+        } else {
+
+        }
+/*
         if ($controllerPath) {
             $elems = explode('_', $controllerPath);
             $c = count($elems);
@@ -169,25 +178,40 @@ class GControllersComponent extends GComponent
             }
         }
         $controller = new $controller($properties, $this);
+*/
+        $controller = new $controllerClass($properties, $this);
         return $controller;
     }
 
     /**
      * Возвращает true, если контроллер присутствует в карте, иначе false
      *
-     * @param string $name
+     * @param array|string $name
      * @param bool $returnPath
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function existsInMapControllers(string $name, bool $returnPath = false)
+    public function existsInMapControllers($name, bool $returnPath = false)
     {
-        if ($returnPath) {
+        if (is_string($name)) {
+            $name = explode('/', $name);
+        }
+        $found = false;
+        $path = '';
+        foreach($name as $part) {
+            $path .= ($path ? '/' : '') . $part;
+            if (isset($this->_mapControllers[$path])) {
+                $found = $path;
+                break;
+            }
+        }
+        return $returnPath ? $found : ($found ? true : false);
+/*        if ($returnPath) {
             return isset($this->_mapControllers[$name]) ? $this->_mapControllers[$name] : false;
         } else {
             return in_array($name, $this->_mapControllers, true);
-        }
+        }*/
     }
 
     /**

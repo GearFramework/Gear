@@ -47,6 +47,7 @@ class GExceptionsHandlerComponent extends GComponent
             if (php_sapi_name() !== 'cli' && !empty(ob_get_status()))
                 ob_end_clean();
             $this->view->render($this->getViewPath(), ['exception' => $e]);
+            die();
         } catch (\Throwable $e) {
             die($e->getMessage() . "\n" . $e->getFile() . "[" . $e->getLine() . "]\n" . $e->getTraceAsString() . "\n");
         }

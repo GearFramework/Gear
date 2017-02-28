@@ -17,10 +17,6 @@ use gear\interfaces\IDirectory;
 trait TView
 {
     /**
-     * @var string $_viewPath путь к файлам-шаблонам
-     */
-    protected $_viewPath = 'views';
-    /**
      * @var string $_viewer название плагина выступающего в качестве шаблонизатора
      */
     protected $_viewer = 'view';
