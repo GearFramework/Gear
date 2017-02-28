@@ -17,12 +17,15 @@ class GException extends \Exception
     /* Traits */
     /* Const */
     /* Private */
-    private $_defaultMessage = 'Exception message';
     /* Protected */
+    protected $_defaultMessage = 'Exception message';
     /* Public */
 
     public function __construct(string $message, int $code = 0, Exception $previous = null, array $context = [])
     {
+        if (!$message) {
+            $message = $this->_defaultMessage;
+        }
         parent::__construct($message, $code, $previous);
     }
 }

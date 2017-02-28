@@ -98,12 +98,12 @@ class GController extends GModel implements IController
             } else {
                 $name = 'api' . ucfirst($api);
                 if (!method_exists($this, $name))
-                    throw static::exceptionHttpNotFound(['api' => $api]);
+                    throw static::exceptionHttpNotFound(['uri' => $api]);
                 $runApi = [$this, $name];
             }
             $params = $this->getApiParams($runApi);
             if ($params === null) {
-                throw static::exceptionHttpBadRequest(['api' => $api]);
+                throw static::exceptionHttpBadRequest(['uri' => $api]);
             }
             $result = false;
             if ($this->beforeExecApi($api, $runApi, $params)) {
@@ -199,8 +199,8 @@ class GController extends GModel implements IController
      */
     public function getRouteApi(string $path): string
     {
-        $path = preg_replace('#^' . preg_quote($this->name) . '/?#', '', $this->name);
-        strpos($path, '/') !== false ? list(,$name) = explode('/', $path) : $name = $this->defaultApiName;
+        $path = preg_replace('#^' . preg_quote($this->name) . '/?#', '', $path);
+        $path ? list($name,) = explode('/', $path) : $name = $this->defaultApiName;
         return $name;
     }
 

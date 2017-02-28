@@ -86,7 +86,7 @@ interface ICache
      * Удаление значения из кэша
      *
      * @access public
-     * @param string|key $key
+     * @param string|array $key
      * @return boolean|array
      * @since 0.0.1
      * @version 0.0.1

@@ -432,12 +432,12 @@ final class Core
             $previous = $code ?: null;
             $code = !is_array($context) ?: 0;
             $context = $message;
-            $message = 'Throw unknown exception';
+            $message = '';
         }
-        if (self::isComponentInstalled(self::props('international'))) {
+/*        if (self::isComponentInstalled(self::props('international'))) {
             $international = self::service(self::props('international'));
             $message = $international->tr($message, 'exceptions\\' . $nameInt);
-        }
+        }*/
         foreach($context as $name => $value) {
             $message = str_replace('{' . $name . '}', $value, $message);
         }
