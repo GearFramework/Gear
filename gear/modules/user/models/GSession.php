@@ -21,5 +21,39 @@ class GSession extends GModel
     /* Private */
     /* Protected */
     protected static $_primaryKey = 'hash';
+    protected static $_validators = [
+        'sessionTimeLife' => ['\gear\validators\GSessionValidator', 'validateTimeLife'],
+        'sessionToken' => ['\gear\validators\GSessionValidator', 'validateToken'],
+    ];
+    protected $_timeLife = 900;
     /* Public */
+
+    /**
+     * @return int
+     */
+    public function getTimeLife()
+    {
+        return $this->_timeLife;
+    }
+
+    public function getUser(): int
+    {
+        return $this->user;
+    }
+
+    public function isValid(): bool
+    {
+        $result = true;
+        try {
+            $this->validate();
+        } catch(\SessionException $e) {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function setTimeLife(int $time)
+    {
+        $this->_timeLife = $time;
+    }
 }

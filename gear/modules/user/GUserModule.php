@@ -2,6 +2,7 @@
 
 namespace gear\modules\user;
 
+use gear\Core;
 use gear\library\GModule;
 use gear\modules\user\models\GUser;
 
@@ -25,6 +26,12 @@ class GUserModule extends GModule
         'components' => [
             'userDb' => [
                 'class' => '\gear\modules\user\components\GUserDbComponent',
+                'connectionName' => 'db',
+                'dbName' => '',
+                'collectionName' => '',
+            ],
+            'session' => [
+                'class' => '\gear\modules\user\components\GUserSessionComponent',
                 'connectionName' => 'db',
                 'dbName' => '',
                 'collectionName' => '',
@@ -69,6 +76,13 @@ class GUserModule extends GModule
 
     public function identity()
     {
+        try {
+            $session = $this->session->getSession();
+        } catch(\Exception $e) {
+            Core::c('exceptionHandler')->exception($e);
+            die();
+        }
+
     }
 
     public function login(array $authProperties): GUser

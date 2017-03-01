@@ -40,6 +40,10 @@ trait TProperties
             if (is_string($validator)) {
                 $validator = new $validator();
                 self::$_validators[$name] = $validator;
+            } else if (is_array($validator) && !is_object(reset($validator))) {
+                list($classValidator, $method) = $validator;
+                $validator = [new $classValidator(), $method];
+                self::$_validators[$name] = $validator;
             }
             yield $validator;
         }
@@ -191,12 +195,20 @@ trait TProperties
             }
         } else if (self::$_validators) {
             foreach($this->getValidator() as $validator) {
-                if (!$name) {
-                    $validator->validateObject($this);
-                } else if ($name && $value === null) {
-                    $validator->validateProperty($this, $name, $default);
-                } else if ($name && $value !== null) {
-                    $validator->validateValue($value);
+                if (is_array($validator)) {
+                    list($validator, $method) = $validator;
+                    if (!$name) {
+                        $validator->$method($this);
+                    }
+                    $validator->$method();
+                } else if (is_object($validator)) {
+                    if (!$name) {
+                        $validator->validateObject($this);
+                    } else if ($name && $value === null) {
+                        $validator->validateProperty($this, $name, $default);
+                    } else if ($name && $value !== null) {
+                        $validator->validateValue($value);
+                    }
                 }
             }
         }

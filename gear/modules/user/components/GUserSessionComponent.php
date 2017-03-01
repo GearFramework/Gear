@@ -21,9 +21,45 @@ class GUserSessionComponent extends GDbStorageComponent
     protected $_session = null;
     /* Public */
 
+    public function createHash(): string
+    {
+        return password_hash((string)(time() + microtime(true)) . random_bytes(128) , PASSWORD_BCRYPT, ['cost' => 12]);
+    }
+
     public function getSession()
     {
         return $this->_session;
+    }
+
+    public function onAfterInstallService()
+    {
+        if (($session = Core::app()->request->session->{$this->_sessionName})) {
+            if ($session['hash'] && ($session = $this->byPk($session['hash']))) {
+                try {
+                    $session->validate();
+                    $session->updateToken();
+                    $session->update();
+                } catch(\SessionExpiredException $e) {
+                    $this->remove($session);
+                    $session = $this->startNewSession();
+                } catch(\SessionInvalidTokenException $e) {
+                    $this->remove($session);
+                    throw self::exceptionHttpBadRequest();
+                }
+            } else {
+                $session = $this->startNewSession();
+            }
+        } else {
+            $session = $this->startNewSession();
+        }
+        $this->session = $session;
+        return true;
+    }
+
+    public function remove($session)
+    {
+        unset($_SESSION[$this->_sessionName]);
+        return parent::remove($session);
     }
 
     public function setSession($session)
@@ -31,27 +67,28 @@ class GUserSessionComponent extends GDbStorageComponent
         $this->_session = $session;
     }
 
-    public function onAfterInstallService()
-    {
-        if (($session = Core::app()->request->session->{$this->_sessionName})) {
-            if ($session['hash']) {
-                $session = $this->byPk($session['hash']);
-            } else {
-                $session = $this->startNewSession();
-                $this->add($session);
-            }
-        }
-    }
-
     public function startNewSession(): GSession
     {
-        $session = $this->factory(['hash' => $this->createHash(), 'user' => 0, 'sessiontime' => date('Y-m-d H:i:s')]);
-        $_SESSION[$this->_sessionName] = $session->props();
+        $session = $this->factory([
+            'hash' => $this->createHash(),
+            'token' => $this->createHash(),
+            'user' => 0,
+            'timeSession' => date('Y-m-d H:i:s')
+        ]);
+        Core::app()->request->session($this->_sessionName, $session->props());
+        $this->add($session);
         return $session;
     }
 
-    public function createHash(): string
+
+    public function update($session)
     {
-        return password_hash((string)(time() + microtime(true)) + random_bytes(128) , PASSWORD_BCRYPT, ['cost' => 12]);
+        Core::app()->request->session($this->_sessionName, $session->props());
+        return parent::add($session);
+    }
+
+    public function updateToken(GSession $session)
+    {
+        $session->token = $this->createHash();
     }
 }

@@ -158,7 +158,7 @@ class GObject implements IObject
                 $this->_properties[$name] instanceof \Closure) {
                 return $this->_properties[$name](...$arguments);
             } else if (is_object($this->owner)) {
-                return $this->owner->$name(...$arguments);
+                return $this->owner->$name($this, ...$arguments);
             }
         }
         throw self::exceptionObject('Calling method <{methodName}> not exists in class <{class}>', ['methodName' => $name, 'class' => get_class($this)]);
