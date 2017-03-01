@@ -1,5 +1,5 @@
 <?php
-
+/*
 use PhpUnit\Framework\TestCase;
 
 class AppTest extends TestCase
@@ -11,4 +11,4 @@ class AppTest extends TestCase
         $this->assertEquals(true, $app instanceof \gear\interfaces\IModule);
         $app->run();
     }
-}
+}*/

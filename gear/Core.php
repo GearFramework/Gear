@@ -248,8 +248,9 @@ final class Core
     {
         foreach(self::$_config['bootstrap'] as $sectionName => $section) {
             $method = '_bootstrap' . ucfirst($sectionName);
-            if (method_exists(self::class, $method))
+            if (method_exists(self::class, $method)) {
                 self::$method($section);
+            }
         }
     }
 
@@ -354,7 +355,7 @@ final class Core
     }
 
     /**
-     * возвращает текущий (выполняемый в данный момент) модуль приложения
+     * Возвращает текущий (выполняемый в данный момент) модуль приложения
      *
      * @return interfaces\IModule
      * @since 0.0.1
@@ -368,9 +369,9 @@ final class Core
     /**
      * Возвращает конфигурацию объекта в виде массива из трёх элементов
      *
-     * 1. Класс объекта
-     * 2. Статические свойства класса (конфигурация класс)
-     * 3. Свойства объекта
+     * 0 => Класс объекта или null
+     * 1 => Статические свойства класса (конфигурация класса protected static $_config)
+     * 2 => Свойства объекта
      *
      * @param array $config
      * @return array
@@ -381,18 +382,18 @@ final class Core
     {
         $class = null;
         $properties = $config;
+        $config = [];
         if (isset($properties['class'])) {
             $class = $properties['class'];
             if (is_array($class)) {
-                if (isset($class['name'])) {
-                    $config = $class;
+                $config = $class;
+                $class = null;
+                if (isset($config['name'])) {
                     $class = $config['name'];
                     unset($config['name']);
                 }
             }
             unset($properties['class']);
-        } else {
-            $config = [];
         }
         return [$class, $config, $properties];
     }
@@ -427,8 +428,7 @@ final class Core
      */
     public static function e(string $exceptionName, $message = '', $context = [], $code = 0, $previous = null): \Exception
     {
-        $nameInt = substr($exceptionName, 9);
-        $exceptionClass =  '\\' . $nameInt . 'Exception';
+        $exceptionClass =  '\\' . $exceptionName;
         $exception = null;
         if (is_array($message)) {
             $previous = $code ?: null;
