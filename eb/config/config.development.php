@@ -34,6 +34,11 @@ return [
                         'dbName' => 'eb',
                         'collectionName' => 'operators',
                     ],
+                    'session' => [
+                        'connectionName' => 'eb',
+                        'dbName' => 'eb',
+                        'collectionName' => 'operatorSessions',
+                    ]
                 ],
             ],
         ],
@@ -46,6 +51,11 @@ return [
                         'dbName' => 'eb',
                         'collectionName' => 'clients',
                     ],
+                    'session' => [
+                        'connectionName' => 'eb',
+                        'dbName' => 'eb',
+                        'collectionName' => 'clientSessions',
+                    ]
                 ],
             ],
         ],

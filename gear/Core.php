@@ -2,13 +2,11 @@
 
 namespace gear;
 
-use gear\library\GEvent;
-
 defined('GEAR') or define('GEAR', __DIR__);
 defined('ROOT') or define('ROOT', dirname(__DIR__));
 
 /**
- * Класс ядра фреймворка
+ * Ядра фреймворка
  *
  * @final
  * @package Gear Framework
@@ -98,37 +96,19 @@ final class Core
                 '\gear\traits\*',
                 '\gear\library\GException',
                 '\gear\exceptions\*',
-                '\gear\library\GEvent' => 'GEvent',
-                '\gear\library\GBehavior',
-                '\gear\library\GObject',
-                '\gear\library\GObject',
-                '\gear\library\GService',
-                '\gear\library\GModule',
-                '\gear\library\GComponent',
-                '\gear\library\GPlugin',
-                '\gear\plugins\templater\GView',
             ],
             /* Список загружаемых модулей */
             'modules' => [],
             /* Список загружаемых компонентов */
             'components' => [
-                /* Обработчик ошибок */
-                'errorsHandler' => ['class' => '\gear\components\handlers\GErrorsHandlerComponent'],
-                /* Обработчик исключений */
-                'exceptionHandler' => ['class' => '\gear\components\handlers\GExceptionsHandlerComponent'],
-                /* */
-                'lang' => ['class' => '\gear\components\international\GInternationalComponent'],
-                /* Автозагрузчик файлов с классами */
-                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
             ],
             'helpers' => [
-                'ArrayHelper' => '\gear\helpers\HArray',
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */
         'modules' => [
             /* Модуль приложения должен быть описан всегда */
-//            'app' => ['class' => '\gear\library\GApplication']
+            'app' => ['class' => '\gear\library\GApplication']
         ],
         /* Список глобальных зарегистрированных компонентов системы */
         'components' => [],
@@ -142,6 +122,7 @@ final class Core
             'charset' => 'utf-8',
             /* Файлы для записи логов ядра (должен быть прямой путь к файлу) */
             'syslog' => [
+                0 => GEAR . '/logs/core/core.log',
                 self::ALERT => GEAR . '/logs/core/core.alert.log',
                 self::CRITICAL =>  GEAR . '/logs/core/core.critical.log',
                 self::DEBUG =>  GEAR . '/logs/core/core.debug.log',
@@ -151,7 +132,6 @@ final class Core
                 self::INFO => GEAR . '/logs/core/core.info.log',
                 self::NOTICE => GEAR . '/logs/core/core.notice.log',
                 self::WARNING => GEAR . '/logs/core/core.warning.log',
-                0 => GEAR . '/logs/core/core.log',
             ],
             /* Разделять логи по файлам в зависимости от типа или всё писать в один общий лог */
             'splitLogs' => false,
@@ -228,13 +208,27 @@ final class Core
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        if ('exception' === strtolower(substr($name, 0, 9))) {
+        if ('exception' === strtolower(substr($name, -1, 9))) {
+            /**
+             * Вызвано исключение, например, Core::CoreException('Message');
+             */
             return self::e($name, ...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {
+            /**
+             * Генерация события, например, Core::onAfterServiceInstalled(new GEvent(self::class));
+             */
             return self::trigger($name, ...$arguments);
         } else if (self::isService($name)) {
+            /**
+             * Вызван зарегистрированный сервис (модуль или компонент), например, Core::loader()->resolvePath('dir/subdir');
+             */
             return self::service($name, ...$arguments);
         } else {
+            /**
+             * Возвращает установленный параметр ядра или null, если таковой не найден, например,
+             * Core::locale();, если передать параметр, то будет установлено значение, для указанного
+             * параметра, например, Core::locale('en_EN');
+             */
             return self::props($name, ...$arguments);
         }
     }
@@ -246,6 +240,7 @@ final class Core
      * @uses self::_bootstrapLibraries()
      * @uses self::_bootstrapModules()
      * @uses self::_bootstrapComponents()
+     * @uses self::_bootstrapHelpers()
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -303,14 +298,20 @@ final class Core
     {
         foreach($section as $key => $library) {
             if (preg_match('/[*|?]/', basename($library))) {
+                /**
+                 * Указана маска файлов библиотек, например, /usr/local/myproject/library/*.php
+                 */
                 $library = self::resolvePath($library, true);
                 foreach(glob($library) as $file) {
                     if (is_file($file) && is_readable($file)) {
-                        require_once $file;
+                        require_once($file);
                     }
                 }
             } else {
                 if (!is_numeric($key)) {
+                    /**
+                     * Указан алиас, под которым будет находится класс библиотеки
+                     */
                     $alias = $library;
                     $library = $key;
                 } else {
@@ -318,16 +319,17 @@ final class Core
                 }
                 if (preg_match('/\.php$/i', $library)) {
                     $file = $library;
-                    $class = null;
+                    $class = pathinfo($file, PATHINFO_FILENAME);
                 } else {
                     $class = $library;
                     $file = $library . '.php';
                 }
+                /** @var string $file путь к файлу библиотеки */
                 $file = self::resolvePath($file, true);
-                if (!file_exists($file)) {
-                    throw self::exceptionCore('Bootstrap library <{lib}> not found', ['lib' => $file]);
+                if (!$file || !file_exists($file)) {
+                    throw self::CoreException('Bootstrap library <{lib}> not found', ['lib' => $file]);
                 }
-                require_once $file;
+                require_once($file);
                 if ($alias !== null && $class !== null) {
                     class_alias($class, $alias);
                 }
