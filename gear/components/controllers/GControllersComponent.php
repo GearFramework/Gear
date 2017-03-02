@@ -11,6 +11,11 @@ use gear\library\GEvent;
 
 /**
  * Роутинг контроллеров
+ * Использовать правила nginx rewrite
+ *
+ * rewrite ^/r/([a-zA-Z0-9_/]*)/a/?([a-zA-Z0-9]*)\??.* /index.php?r=$1&a=$2;
+ * rewrite ^/r/?([a-zA-Z0-9_/]*)\??(.)* /index.php?r=$1$2;
+ * rewrite ^/a/?([a-zA-Z0-9]*)\??.* /index.php?a=$2;
  *
  * @package Gear Framework
  * @author Kukushkin Denis
