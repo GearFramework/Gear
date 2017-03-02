@@ -141,6 +141,9 @@ class GControllersComponent extends GComponent
         $properties = [];
         if (($controllerName = $this->existsInMapControllers($controllerPath, true))) {
             $controllerClass = $this->_mapControllers[$controllerName];
+            if (is_array($controllerClass)) {
+                list($controllerClass, $actionName) = $controllerClass;
+            }
             $properties = ['name' => $controllerName];
         } else {
 

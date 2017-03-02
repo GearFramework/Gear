@@ -10,7 +10,7 @@ return [
                         'defaultControllerName' => 'home',
                         'mapControllers' => [
                             'operators/auth' => '\eb\controllers\operators\AuthController',
-                            'operators/login' => '\eb\controllers\operators\AuthController',
+                            'operators/login' => ['\eb\controllers\operators\AuthController', 'login'],
                         ],
                     ],
                 ],

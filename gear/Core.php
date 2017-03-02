@@ -96,13 +96,25 @@ final class Core
                 '\gear\traits\*',
                 '\gear\library\GException',
                 '\gear\exceptions\*',
+                '\gear\library\GEvent' => 'GEvent',
+                '\gear\library\GBehavior',
+                '\gear\library\GObject',
+                '\gear\library\GObject',
+                '\gear\library\GService',
+                '\gear\library\GModule',
+                '\gear\library\GComponent',
+                '\gear\library\GPlugin',
+                '\gear\plugins\templater\GView',
             ],
             /* Список загружаемых модулей */
             'modules' => [],
             /* Список загружаемых компонентов */
             'components' => [
+                /* Автозагрузчик файлов с классами */
+                'loader' => ['class' => '\gear\components\loader\GLoaderComponent'],
             ],
             'helpers' => [
+                'ArrayHelper' => '\gear\helpers\HArray',
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */
@@ -387,10 +399,11 @@ final class Core
             $class = $properties['class'];
             if (is_array($class)) {
                 $config = $class;
-                $class = null;
                 if (isset($config['name'])) {
                     $class = $config['name'];
                     unset($config['name']);
+                } else {
+                    $class = null;
                 }
             }
             unset($properties['class']);
@@ -404,7 +417,7 @@ final class Core
      * @param string $name
      * @param interfaces\IObject $owner
      * @param bool $clone
-     * @return interfaces\IComponent
+     * @return \gear\interfaces\IComponent
      * @since 0.0.1
      * @version 0.0.1
      */
