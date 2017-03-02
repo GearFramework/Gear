@@ -115,6 +115,7 @@ final class Core
             ],
             'helpers' => [
                 'ArrayHelper' => '\gear\helpers\HArray',
+                'HtmlHelper' => '\gear\helpers\HHtml',
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */
@@ -597,11 +598,11 @@ final class Core
                     $config .= '.php';
             }
             if (!file_exists($config) || !is_readable($config) || !is_file($config))
-                throw self::exceptionCore('Invalid configuration file <{file}>', ['file' => $config]);
+                throw self::CoreException('Invalid configuration file <{file}>', ['file' => $config]);
             $config = require $config;
         }
         if (!is_array($config))
-            throw self::exceptionCore('Invalid configuration', ['config' => $config]);
+            throw self::CoreException('Invalid configuration', ['config' => $config]);
         self::$_config = array_replace_recursive(self::$_config, $config);
         if ($mode && $mode !== (int)self::props('mode')) {
             self::props('mode', $mode);
@@ -659,7 +660,7 @@ final class Core
             if (!self::isServiceInstalled(self::props('loaderName'), 'component')) {
                 $file = self::resolvePath($class, true) . '.php';
                 if (!file_exists($file) || !is_readable($file)) {
-                    throw self::exceptionCore('Class <{className}> not found in file <{filePath}>', [
+                    throw self::CoreException('Class <{className}> not found in file <{filePath}>', [
                         'className' => $class,
                         'filePath' => $file,
                     ]);
@@ -669,11 +670,11 @@ final class Core
             $service = $class::install($config, $properties, $owner);
         }
         if (!($service instanceof \gear\interfaces\IService))
-            throw self::exceptionCore('Installed service must be an instance of interface \gear\interfaces\IService');
+            throw self::CoreException('Installed service must be an instance of interface \gear\interfaces\IService');
         $type = (!$type ? self::getTypeService($service) : $type) . 's';
         if (isset(self::$_services[$type][$name])) {
             if (self::$_services[$type][$name]->props('__override__') !== true)
-                throw self::exceptionCore('Service <{name}> already installed', ['name' => $name]);
+                throw self::CoreException('Service <{name}> already installed', ['name' => $name]);
         }
         self::$_services[$type][$name] = $service;
         return self::$_services[$type][$name];
@@ -872,17 +873,17 @@ final class Core
             $name = $name($service, $type);
         }
         if (!is_string($name) || trim($name) === '')
-            throw self::exceptionCore('Invalid name of registering service, name must be a string');
+            throw self::CoreException('Invalid name of registering service, name must be a string');
         if ($service instanceof \Closure) {
             $service = $service($name, $type);
         }
         if (!is_array($service) || empty($service))
-            throw self::exceptionCore('Invalid configuration record of registering service, record must be a array');
+            throw self::CoreException('Invalid configuration record of registering service, record must be a array');
         $type .= 's';
         if (isset(self::$_config[$type][$name])) {
             if (!isset(self::$_config[$type][$name]['__override__']) ||
                 !self::$_config[$type][$name]['__override__']) {
-                throw self::exceptionCore('Service <{name}> already registered', ['name' => $name]);
+                throw self::CoreException('Service <{name}> already registered', ['name' => $name]);
             }
         }
         self::$_config[$type][$name] = $service;
@@ -943,13 +944,13 @@ final class Core
     {
         if (!self::isServiceInstalled($name, $type)) {
             if (!self::isServiceRegistered($name, $type)) {
-                throw self::exceptionCore('Service <{name}> not registered', ['name' => $name]);
+                throw self::CoreException('Service <{name}> not registered', ['name' => $name]);
             }
             $service = self::getRegisteredService($name, $type);
             if ($service)
                 $service = self::installService($name, $service, $type, $owner);
             else
-                throw self::exceptionCore('Invalid configuration record for service <{service}>', ['service' => $name]);
+                throw self::CoreException('Invalid configuration record for service <{service}>', ['service' => $name]);
         } else {
             $service = self::getInstalledService($name, $type);
         }
@@ -1005,7 +1006,7 @@ final class Core
     public static function on(string $name, $handler)
     {
         if (!is_callable($handler))
-            throw self::exceptionCore('Event handler must be callable');
+            throw self::CoreException('Event handler must be callable');
         !isset(self::$_events[$name]) ? self::$_events[$name] = [$handler] : self::$_events[$name][] = $handler;
     }
 
@@ -1097,9 +1098,9 @@ final class Core
             $name = $name($type);
         }
         if (!is_string($name))
-            self::exceptionCore('Invalis name of service; must be a string');
+            self::CoreException('Invalis name of service; must be a string');
         if (!self::isServiceRegistered($name, $type))
-            self::exceptionCore('Error uninstalling <{name}> service; service not found', ['name' => $name]);
+            self::CoreException('Error uninstalling <{name}> service; service not found', ['name' => $name]);
         if (!$type) {
             $service = self::getInstalledService($name);
             $type = self::getTypeService($service) . 's';
@@ -1148,9 +1149,9 @@ final class Core
             $name = $name($type);
         }
         if (!is_string($name))
-            self::exceptionCore('Invalis name of service; must be a string');
+            self::CoreException('Invalis name of service; must be a string');
         if (!self::isServiceRegistered($name, $type))
-            self::exceptionCore('Error unregistering <{name}> service; service not found', ['name' => $name]);
+            self::CoreException('Error unregistering <{name}> service; service not found', ['name' => $name]);
         $type .= 's';
         if (isset(self::$_config['_bootstrap'][$type][$name])) {
             unset(self::$_config['_bootstrap'][$type][$name]);

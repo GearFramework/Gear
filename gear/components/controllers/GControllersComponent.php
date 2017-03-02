@@ -11,11 +11,13 @@ use gear\library\GEvent;
 
 /**
  * Роутинг контроллеров
- * Использовать правила nginx rewrite
+ * Можно использовать правила nginx rewrite
  *
- * rewrite ^/r/([a-zA-Z0-9_/]*)/a/?([a-zA-Z0-9]*)\??.* /index.php?r=$1&a=$2;
- * rewrite ^/r/?([a-zA-Z0-9_/]*)\??(.)* /index.php?r=$1$2;
  * rewrite ^/a/?([a-zA-Z0-9]*)\??.* /index.php?a=$2;
+ * rewrite ^/([a-zA-Z0-9_/]*)/a/?([a-zA-Z0-9]*)\??.* /index.php?r=$1&a=$2;
+ * rewrite ^/([a-zA-Z0-9_/]*)\??(.)* /index.php?r=$1$2;
+ *
+ * Контроллер передаётся в параметре "r" api-метод (action) передаётся в параметре "a"
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -35,6 +37,7 @@ class GControllersComponent extends GComponent
      * @var string $_defaultControllerName название контроллера исполняемого по-умолчанию
      */
     protected $_defaultControllerName = 'index';
+    protected $_rewrite = false;
     /**
      * @var IController $_currentController инстанс текущего контроллера
      */
@@ -129,6 +132,11 @@ class GControllersComponent extends GComponent
             }
         }
         return $this->_request;
+    }
+
+    public function getRewrite(): bool
+    {
+        return $this->_rewrite;
     }
 
     /**
@@ -275,6 +283,11 @@ class GControllersComponent extends GComponent
     public function setRequest(IRequest $request)
     {
         $this->_request = $request;
+    }
+
+    public function setRewrite(bool $rewrite)
+    {
+        $this->_rewrite = $rewrite;
     }
 
     public function beforeExecRouting($request)
