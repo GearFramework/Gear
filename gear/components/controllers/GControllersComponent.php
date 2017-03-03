@@ -13,9 +13,7 @@ use gear\library\GEvent;
  * Роутинг контроллеров
  * Можно использовать правила nginx rewrite
  *
- * rewrite ^/a/?([a-zA-Z0-9]*)\??.* /index.php?a=$2;
- * rewrite ^/([a-zA-Z0-9_/]*)/a/?([a-zA-Z0-9]*)\??.* /index.php?r=$1&a=$2;
- * rewrite ^/([a-zA-Z0-9_/]*)\??(.)* /index.php?r=$1$2;
+ * rewrite ^/([a-zA-Z0-9_/]+) /index.php?r=$1 break;
  *
  * Контроллер передаётся в параметре "r" api-метод (action) передаётся в параметре "a"
  *
