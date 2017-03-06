@@ -221,7 +221,7 @@ final class Core
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        if ('exception' === strtolower(substr($name, -1, 9))) {
+        if (preg_match('/Exception$/', $name)) {
             /**
              * Вызвано исключение, например, Core::CoreException('Message');
              */

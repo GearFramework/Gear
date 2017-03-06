@@ -61,11 +61,11 @@ class GService extends GObject implements IService
             if (is_string($config)) {
                 $configFile = Core::resolvePath($config) . '.php';
                 if (!file_exists($configFile) || !is_readable($configFile))
-                    throw self::exceptionService('Configuration file <{configFile}> not found', ['configFile' => $configFile]);
+                    throw self::ServiceException('Configuration file <{configFile}> not found', ['configFile' => $configFile]);
                 $config = require $configFile;
             }
             if (!is_array($config))
-                throw self::exceptionService('Invalid service configuration');
+                throw self::ServiceException('Invalid service configuration');
             static::$_config = array_replace_recursive(static::$_config, $config);
             static::$_initialized = true;
         }

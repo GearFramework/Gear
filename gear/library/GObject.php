@@ -87,14 +87,14 @@ class GObject implements IObject
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        if (strpos($name, 'exception') === 0) {
+        if ('exception' === strtolower(substr($name, -1, 9))) {
             array_unshift($arguments, $name);
             return Core::e(...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {
             array_unshift($arguments, $name);
             return Core::trigger(...$arguments);
         }
-        throw self::exceptionObject('Static method <{methodName}> not exists', ['methodName' => $name]);
+        throw self::ObjectException('Static method <{methodName}> not exists', ['methodName' => $name]);
     }
 
     /**
@@ -109,7 +109,7 @@ class GObject implements IObject
      */
     public function __call(string $name, array $arguments)
     {
-        if (strpos($name, 'exception') === 0) {
+        if ('exception' === strtolower(substr($name, -1, 9))) {
             array_unshift($arguments, $name);
             return Core::e(...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {
@@ -129,12 +129,12 @@ class GObject implements IObject
         } else if (method_exists($this, 'isComponent') && $this->isComponent($name)) {
             $c = $this->c($name);
             if (!is_callable($c))
-                throw self::exceptionObject('Component object <{componentName}> not callable and cannot be execute as function', ['componentName' => $name]);
+                throw self::ObjectException('Component object <{componentName}> not callable and cannot be execute as function', ['componentName' => $name]);
             return $c(...$arguments);
         } else if (method_exists($this, 'isPlugin') && $this->isPlugin($name)) {
             $p = $this->p($name);
             if (!is_callable($p))
-                throw self::exceptionObject('Plugin object <{pluginName}> not callable and cannot be execute as function', ['pluginName' => $name]);
+                throw self::ObjectException('Plugin object <{pluginName}> not callable and cannot be execute as function', ['pluginName' => $name]);
             return $p(...$arguments);
         } else {
             if (method_exists($this, 'getComponents')) {
@@ -161,7 +161,7 @@ class GObject implements IObject
                 return $this->owner->$name($this, ...$arguments);
             }
         }
-        throw self::exceptionObject('Calling method <{methodName}> not exists in class <{class}>', ['methodName' => $name, 'class' => get_class($this)]);
+        throw self::ObjectException('Calling method <{methodName}> not exists in class <{class}>', ['methodName' => $name, 'class' => get_class($this)]);
     }
 
     public function __set(string $name, $value)

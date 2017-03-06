@@ -13,9 +13,13 @@ use gear\library\GEvent;
  * Роутинг контроллеров
  * Можно использовать правила nginx rewrite
  *
- * rewrite ^/([a-zA-Z0-9_/]+) /index.php?r=$1 break;
+ * if ($request_uri !~ ^/index\.php) {
+ *     rewrite ^/([a-zA-Z0-9_/]*) /index.php?r=$1 last;
+ * }
  *
- * Контроллер передаётся в параметре "r" api-метод (action) передаётся в параметре "a"
+ * Контроллер передаётся в параметре "r": index.php?r=index, index.php?r=resources/css
+ * Для указания какой api-метод использовать, необходимо в параметер "r" указать /a/<название метода>:
+ * index.php?r=resources/css/a/get
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -42,6 +46,11 @@ class GControllersComponent extends GComponent
     protected $_currentController = null;
     /**
      * @var array $_mapControllers карта контроллеров
+     * $_mapControllers => [
+     *      'dir/controllers/ControllerName' => '/namespace/toControllers/ControllerClassName',
+     *      'dir/controllers/ControllerName' => ['/namespace/toControllers/ControllerClassName', 'actionName'],
+     *      'dir/controllers/*' => '/namespace/toControllers',
+     * ]
      */
     protected $_mapControllers = [];
     /**
@@ -147,9 +156,7 @@ class GControllersComponent extends GComponent
      */
     public function getRouteController(string $path): IController
     {
-        //list($controllerPath,) = explode('/', $path);
-        $controllerPath = explode('/', $path);
-        $properties = [];
+        list($controllerPath, $actionName) = preg_split('#(^a/|/a/|/a$)#', $path);
         if (($controllerName = $this->existsInMapControllers($controllerPath, true))) {
             $controllerClass = $this->_mapControllers[$controllerName];
             if (is_array($controllerClass)) {
@@ -157,43 +164,18 @@ class GControllersComponent extends GComponent
             }
             $properties = ['name' => $controllerName];
         } else {
-
-        }
-/*
-        if ($controllerPath) {
-            $elems = explode('_', $controllerPath);
-            $c = count($elems);
-        } else {
-            $c = 0;
-            $elems = [];
-        }
-        $name = $c > 0 ? array_pop($elems) : $this->defaultControllerName;
-        $class = ucfirst($name) . 'Controller';
-        $properties = ['name' => $name];
-        if ($c === 0 || $c === 1) {
-            $map = $this->existsInMapControllers($name, true);
-            if ($map instanceof \Closure) {
-                $properties = ['name' => $name, 'bindingClosure' => $map];
-                $controller = 'GController';
-            } else {
-                if ($map) {
-                    $controller = $map;
-                } else {
-                    $controller = Core::app()->namespace . '\controllers\\' . $class;
-                }
+            if (!($controllerName = basename($controllerPath))) {
+                $controllerName = $this->defaultControllerName;
             }
-        } else if ($c > 1) {
-            $p = implode('\\', $elems);
-            if ($controllerPath{0} === '_') {
-                $controller = '\\' . $p . '\controllers\\' . $class;
-            } else {
-                $namespace = Core::app()->namespace;
-                $controller = $namespace . '\\' . $p . '\controllers\\' . $class;
-            }
+            $dir = strpos($controllerPath, '/') !== false ? '/' . dirname($controllerPath) . '/' : '/';
+            $dir = '/' . Core::app()->namespace . '/controllers' . $dir;
+            $controllerClass = $dir . ucfirst($controllerName) . 'Controller';
+            $properties = ['name' => $path ? $controllerPath : $controllerName];
         }
-        $controller = new $controller($properties, $this);
-*/
         $controller = new $controllerClass($properties, $this);
+        if ($actionName) {
+            $controller->defaultApiName = $actionName;
+        }
         return $controller;
     }
 
@@ -218,14 +200,12 @@ class GControllersComponent extends GComponent
             if (isset($this->_mapControllers[$path])) {
                 $found = $path;
                 break;
+            } else if (isset($this->_mapControllers[$path . '/*'])) {
+                $found = $path . '/*';
+                break;
             }
         }
         return $returnPath ? $found : ($found ? true : false);
-/*        if ($returnPath) {
-            return isset($this->_mapControllers[$name]) ? $this->_mapControllers[$name] : false;
-        } else {
-            return in_array($name, $this->_mapControllers, true);
-        }*/
     }
 
     /**

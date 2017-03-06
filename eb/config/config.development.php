@@ -8,6 +8,7 @@ return [
                 'components' => [
                     'controllers' => [
                         'defaultControllerName' => 'home',
+                        'rewrite' => true,
                         'mapControllers' => [
                             'operators/auth' => '\eb\controllers\operators\AuthController',
                             'operators/login' => ['\eb\controllers\operators\AuthController', 'login'],
@@ -40,6 +41,7 @@ return [
                         'collectionName' => 'operatorSessions',
                     ]
                 ],
+                'loginController' => 'operators/login',
             ],
         ],
         'clients' => [

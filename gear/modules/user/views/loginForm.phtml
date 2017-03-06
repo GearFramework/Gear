@@ -1,4 +1,4 @@
-<form method="post" action="/?r=operators/login">
+<form method="post" action="<?=\HtmlHelper::url(\gear\Core::m('user')->i('loginController'), 'login')?>">
     <h2>Authentificate user</h2>
     <p>Username <input type="text" name="username" id="username"></p>
     <p>Password <input type="password" name="password" id="password"></p>

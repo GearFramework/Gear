@@ -42,9 +42,9 @@ class GLoaderComponent extends GComponent
      */
     public function loader(string $className)
     {
-        if (isset($this->_aliases[$className]['class'])) {
+        if (isset($this->_aliases["\\$className"]['class'])) {
             $alias = $className;
-            $className = $this->_aliases[$className]['class'];
+            $className = $this->_aliases["\\$className"]['class'];
             class_alias($className, $alias);
         }
         if ($this->usePaths && isset($this->paths[$className]))
@@ -92,6 +92,19 @@ class GLoaderComponent extends GComponent
     }
 
     /**
+     * Возвращает оригинальное название класса, которому соответствует указанный алиас
+     *
+     * @param string $alias
+     * @return null|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getAlias(string $alias)
+    {
+        return isset($this->_aliases[$alias]['class']) ? $this->_aliases[$alias]['class'] : null;
+    }
+
+    /**
      * Установка алиаса для класса
      *
      * @param string $className
@@ -103,19 +116,6 @@ class GLoaderComponent extends GComponent
     public function setAlias(string $className, string $alias)
     {
         $this->_aliases[$alias] = ['class' => $className];
-    }
-
-    /**
-     * Возвращает оригинальное название класса, которому соответствует указанный алиас
-     *
-     * @param string $alias
-     * @return null|string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getAlias(string $alias)
-    {
-        return isset($this->_aliases[$alias]['class']) ? $this->_aliases[$alias]['class'] : null;
     }
 
     /**
@@ -161,16 +161,16 @@ class GLoaderComponent extends GComponent
      * Обработчик события onInstalled по-умолчанию
      * Регистрация метода автозагрузки классов
      *
-     * @return mixed
+     * @return bool
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function afterInstallService()
+    public function onAfterInstallService($event)
     {
         if (!($handlerName = static::i('autoloadHandler'))) {
-            throw self::exceptionService('Not specified <{handler}> property', ['handler' => 'autoloadHandler']);
+            throw self::ServiceException('Not specified <{handler}> property', ['handler' => 'autoloadHandler']);
         }
         spl_autoload_register([$this, $handlerName]);
-        return parent::afterInstallService();
+        return true;
     }
 }

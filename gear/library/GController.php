@@ -82,7 +82,7 @@ class GController extends GModel implements IController
         $this->request = $request;
         $result = false;
         if ($this->beforeExecController()) {
-            $api = $this->getRouteApi((string)$this->request->r);
+            $api = $this->defaultApiName;
             $mapApi = $this->existsInMapApi($api, true);
             if ($mapApi) {
                 if ($mapApi instanceof \Closure) {
@@ -92,18 +92,18 @@ class GController extends GModel implements IController
                     try {
                         $runApi = [new $class(['name' => $api], $this), 'exec'];
                     } catch(\Exception $e) {
-                        throw static::exceptionHttpNotFound();
+                        throw static::HttpNotFoundException();
                     }
                 }
             } else {
                 $name = 'api' . ucfirst($api);
                 if (!method_exists($this, $name))
-                    throw static::exceptionHttpNotFound(['uri' => $api]);
+                    throw static::HttpNotFoundException(['uri' => $api]);
                 $runApi = [$this, $name];
             }
             $params = $this->getApiParams($runApi);
             if ($params === null) {
-                throw static::exceptionHttpBadRequest(['uri' => $api]);
+                throw static::HttpBadRequestException(['uri' => $api]);
             }
             $result = false;
             if ($this->beforeExecApi($api, $runApi, $params)) {

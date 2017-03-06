@@ -44,7 +44,7 @@ class GUserSessionComponent extends GDbStorageComponent
                     $session = $this->startNewSession();
                 } catch(\SessionInvalidTokenException $e) {
                     $this->remove($session);
-                    throw self::exceptionHttpBadRequest();
+                    throw self::HttpBadRequestException();
                 }
             } else {
                 $session = $this->startNewSession();

@@ -3,26 +3,24 @@
 namespace gear\helpers;
 
 use gear\Core;
+use gear\library\GHelper;
 
 class HHtml extends GHelper
 {
     public static function helpUrl(string $controller = '', string $api = '', array $params = [])
     {
-        $p = [];
-        foreach($params as $name => $value) {
-            $p[] = "$name=" . urlencode($value);
+        foreach($params as $name => &$value) {
+            $value = "$name=" . urlencode($value);
         }
+        unset($value);
         if (Core::app()->controllers->rewrite) {
-            $params = implode('&', $p);
-            $url = '/' . ($controller ? $controller . '/' : '') . ($api ? "/a/$api/" : '') . ($params ? "?$params" : '');
+            $params = implode('&', $params);
+            $url = '/' . ($controller ? $controller . '/' : '') . ($api ? "a/$api/" : '') . ($params ? "?$params" : '');
         } else {
-            if ($api) {
-                array_unshift($params, "a=$api");
-            }
             if ($controller) {
-                array_unshift($params, "r=$controller");
+                array_unshift($params, "r=$controller" . ($api ? "/a/$api" : ''));
             }
-            $params = implode('&', $p);
+            $params = implode('&', $params);
             $url = '/' . ($params ? "?$params" : '');
         }
         return $url;

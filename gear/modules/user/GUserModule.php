@@ -36,7 +36,8 @@ class GUserModule extends GModule
                 'dbName' => '',
                 'collectionName' => '',
             ],
-        ]
+        ],
+        'loginController' => ['user'],
     ];
     protected static $_initialized = false;
     protected $_useComponent = 'userDb';
