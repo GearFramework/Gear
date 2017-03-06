@@ -74,7 +74,7 @@ class GControllersComponent extends GComponent
             $this->request = $request;
             $controller = $this->currentController;
             /** @var \Closure|\gear\interfaces\IController $controller */
-            $controller($request);
+            $result = $controller($request);
         }
         return $result;
     }
@@ -141,6 +141,13 @@ class GControllersComponent extends GComponent
         return $this->_request;
     }
 
+    /**
+     * Возвращает используется ли mod_rewrite или rewrite (nginx) true или false
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getRewrite(): bool
     {
         return $this->_rewrite;
@@ -263,6 +270,13 @@ class GControllersComponent extends GComponent
         $this->_request = $request;
     }
 
+    /**
+     * Устанавливает используется ли mod_rewrite (apache) или rewrite (nginx)
+     *
+     * @param bool $rewrite
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function setRewrite(bool $rewrite)
     {
         $this->_rewrite = $rewrite;
