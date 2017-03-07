@@ -87,7 +87,7 @@ class GObject implements IObject
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        if ('exception' === strtolower(substr($name, -1, 9))) {
+        if (preg_match('/Exception$/', $name)) {
             array_unshift($arguments, $name);
             return Core::e(...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {
@@ -109,7 +109,7 @@ class GObject implements IObject
      */
     public function __call(string $name, array $arguments)
     {
-        if ('exception' === strtolower(substr($name, -1, 9))) {
+        if (preg_match('/Exception$/', $name)) {
             array_unshift($arguments, $name);
             return Core::e(...$arguments);
         } else if (preg_match('/^on[A-Z]/', $name)) {

@@ -179,6 +179,7 @@ class GControllersComponent extends GComponent
             $controllerClass = $dir . ucfirst($controllerName) . 'Controller';
             $properties = ['name' => $path ? $controllerPath : $controllerName];
         }
+        $controllerClass = str_replace('/', '\\', $controllerClass);
         $controller = new $controllerClass($properties, $this);
         if ($actionName) {
             $controller->defaultApiName = $actionName;

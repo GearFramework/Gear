@@ -75,7 +75,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
             $tempFile = $this->getTempFile();
             $records = $tempFile->content(function($data) { return json_decode($data, true); });
             if (!isset($records[$hash])) {
-                throw static::exceptionResources('Resource with the corresponding hash <{hash}> is not found', ['hash' => $hash]);
+                throw static::ResourcesException('Resource with the corresponding hash <{hash}> is not found', ['hash' => $hash]);
             }
             $resource = new GFile(['path' => $records[$hash]]);
         }
@@ -156,7 +156,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
         if (!$tempFile->exists()) {
             if (!file_exists($tempFile->dirname)) {
                 if (!@mkdir($tempFile->dirname)) {
-                    throw static::exceptionResources('Temp directory <{tempDir}> not created', ['tempDir' => $tempFile->dirname]);
+                    throw static::ResourcesException('Temp directory <{tempDir}> not created', ['tempDir' => $tempFile->dirname]);
                 }
                 chmod($tempFile->dirname, 0770);
             }
@@ -245,6 +245,19 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     }
 
     /**
+     * Подготовка ресурса
+     *
+     * @param string|IFile $resource
+     * @return IFile
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function prepareResource($resource): IFile
+    {
+        return $this->owner->prepareResource($resource);
+    }
+
+    /**
      * Публикация ресурса, возвращает html-код для вставки на страницу
      *
      * @param string|IFile $resource
@@ -277,7 +290,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
             if (!$hashExists) {
                 $tempFile->content = json_encode($records);
             }
-            $url = 'index.php?r=' . str_replace('\\', '_', $this->controller) . '/get&hash=' . $hash . '&type=' . $this->typeResource;
+            $url = '/index.php?r=' . str_replace('\\', '_', $this->controller) . '/get&hash=' . $hash . '&type=' . $this->typeResource;
         }
         return $this->makeHtml($url, $options);
     }

@@ -11,7 +11,6 @@ return [
                         'rewrite' => true,
                         'mapControllers' => [
                             'operators/auth' => '\eb\controllers\operators\AuthController',
-                            'operators/login' => ['\eb\controllers\operators\AuthController', 'login'],
                         ],
                     ],
                 ],
@@ -21,8 +20,8 @@ return [
             'class' => [
                 'name' => '\gear\modules\resources\GResourcesModule',
                 'plugins' => [
-                    'js' => ['mappingFolder' => 'js'],
-                    'css' => ['mappingFolder' => 'css'],
+                    'js' => ['mappingFolder' => '/js'],
+                    'css' => ['mappingFolder' => '/css'],
                 ],
             ],
         ],
@@ -41,7 +40,8 @@ return [
                         'collectionName' => 'operatorSessions',
                     ]
                 ],
-                'loginController' => 'operators/login',
+                'authController' => 'operators/auth',
+                'loginController' => 'operators/auth',
             ],
         ],
         'clients' => [

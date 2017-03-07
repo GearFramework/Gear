@@ -44,7 +44,7 @@ class GView extends GPlugin
         if ($template instanceof \gear\library\GTemplate) {
             $result = $template->render($context, $buffered);
         } else if (!is_string($template)) {
-            throw self::exceptionInvalidTemplate(['template' => $template]);
+            throw self::InvalidTemplateException(['template' => $template]);
         } else {
             if (!preg_match('/(\\\\|\/)/', $template))
                 $template = $this->owner->viewPath . '/' . $template;
@@ -70,7 +70,7 @@ class GView extends GPlugin
     public function renderFile(string $__render__filePath__, array $__render__context__ = [], bool $__render__buffered__ = false): string
     {
         if (!file_exists($__render__filePath__) || !is_readable($__render__filePath__)) {
-            throw self::exceptionFileNotFound(['filePath' => $__render__filePath__]);
+            throw self::FileNotFoundException(['filePath' => $__render__filePath__]);
         }
         if ($__render__context__) {
             extract($__render__context__);

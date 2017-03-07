@@ -24,12 +24,25 @@ class UserController extends GController
     /* Private */
     /* Protected */
     protected $_defaultApiName = 'auth';
+    protected $_layout = 'authPage';
     protected $_viewPath = '\gear\modules\user\views';
     /* Public */
 
+    /**
+     * Рисует станданртную форму аутентификации пользователя
+     *
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function apiAuth()
     {
-        echo $this->render('loginForm');
+        $authForm = $this->render('loginForm', [], true);
+        if ($this->_layout) {
+            $this->render($this->_layout, ['contentLayout' => $authForm]);
+        } else {
+            return $authForm;
+        }
     }
 
     /**
@@ -82,8 +95,15 @@ class UserController extends GController
         }
     }
 
+    /**
+     * Возвращает текущий модуль управления пользователями
+     *
+     * @return \gear\interfaces\IModule
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getModule()
     {
-        return Core::user();
+        return Core::users();
     }
 }

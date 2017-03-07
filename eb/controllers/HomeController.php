@@ -2,7 +2,6 @@
 
 namespace eb\controllers;
 
-use gear\Core;
 use gear\library\GController;
 
 class HomeController extends GController

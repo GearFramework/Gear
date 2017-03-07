@@ -109,7 +109,7 @@ class GResourcesModule extends GModule
             } else if (is_array($resource)) {
                 $resource = new GFile($resource);
             } else {
-                throw self::exceptionInvalidResource(['resource' => $resource]);
+                throw self::InvalidResourceException(['resource' => $resource]);
             }
         }
         return $resource;
