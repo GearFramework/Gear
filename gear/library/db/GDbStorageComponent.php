@@ -2,6 +2,7 @@
 
 namespace gear\library\db;
 
+use gear\Core;
 use gear\interfaces\IModel;
 use gear\library\GComponent;
 use gear\traits\TDelegateFactory;

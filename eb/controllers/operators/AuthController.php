@@ -23,6 +23,7 @@ class AuthController extends UserController
     /* Protected */
     protected $_layout = 'views/operators/authPage';
     protected $_viewPath = 'views/operators/auth';
+    protected $_caption = 'Вход для операторов сайта';
     /* Public */
 
     /**

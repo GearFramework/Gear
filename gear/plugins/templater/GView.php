@@ -78,16 +78,23 @@ class GView extends GPlugin
         $__result__view__rendered__ = '';
         if ($__render__buffered__) {
             $__old__data__ = null;
-            $__buffer__is__started = false;
+            $__buffered__ = false;
             if (ob_get_status()) {
+                $__buffered__ = true;
                 $__old__data__ = ob_get_contents();
-                ob_end_clean();
-                $__buffer__is__started = true;
+                ob_clean();
+            } else {
+                ob_start();
             }
-            ob_start();
             require $__render__filePath__;
             $__result__view__rendered__ = ob_get_contents();
-            $__buffer__is__started ? print $__old__data__ : ob_end_clean();
+            ob_clean();
+            if ($__buffered__ && $__old__data__) {
+                echo $__old__data__;
+            }
+            if (!$__buffered__){
+                ob_end_flush();
+            }
         } else {
             require $__render__filePath__;
         }

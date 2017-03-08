@@ -163,7 +163,12 @@ class GControllersComponent extends GComponent
      */
     public function getRouteController(string $path): IController
     {
-        list($controllerPath, $actionName) = preg_split('#(^a/|/a/|/a$)#', $path);
+        if (preg_match('#(^a/|/a/|/a$)#', $path)) {
+            list($controllerPath, $actionName) = preg_split('#(^a/|/a/|/a$)#', $path);
+        } else {
+            $controllerPath = $path;
+            $actionName = '';
+        }
         if (($controllerName = $this->existsInMapControllers($controllerPath, true))) {
             $controllerClass = $this->_mapControllers[$controllerName];
             if (is_array($controllerClass)) {

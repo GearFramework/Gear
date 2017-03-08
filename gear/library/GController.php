@@ -22,6 +22,7 @@ class GController extends GModel implements IController
     /* Const */
     /* Private */
     /* Protected */
+    protected $_caption = '';
     /**
      * @var IRequest $_request
      */
@@ -164,6 +165,11 @@ class GController extends GModel implements IController
             $result[] = $value;
         }
         return $result;
+    }
+
+    public function getCaption():string
+    {
+        return $this->_caption;
     }
 
     /**

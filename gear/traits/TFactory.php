@@ -17,8 +17,6 @@ use gear\library\GEvent;
  */
 trait TFactory
 {
-    protected $_factory = [];
-
     /**
      * Создание объекта
      *
