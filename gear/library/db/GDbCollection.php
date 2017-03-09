@@ -128,14 +128,18 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Удаление таблицы
      *
-     * @access public
+     * @param null|object $model
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function remove()
+    public function remove($model = null)
     {
-        $this->drop();
+        if ($model) {
+            $this->cursor->remove($model);
+        } else {
+            $this->drop();
+        }
     }
 
     /**

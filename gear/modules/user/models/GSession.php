@@ -22,8 +22,15 @@ class GSession extends GModel
     /* Protected */
     protected static $_primaryKey = 'hash';
     protected static $_validators = [
-        'sessionTimeLife' => ['\gear\validators\GSessionValidator', 'validateTimeLife'],
-        'sessionToken' => ['\gear\validators\GSessionValidator', 'validateToken'],
+        'sessionTimeLife' => [
+            [
+                'class' => '\gear\validators\GSessionValidator',
+                'timeLife' => 900,
+            ], 'validateTimeLife'
+        ],
+        'sessionToken' => [
+            ['class' => '\gear\validators\GSessionValidator'], 'validateToken'
+        ],
     ];
     protected $_timeLife = 900;
     /* Public */

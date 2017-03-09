@@ -30,12 +30,12 @@ return [
                 'name' => '\gear\modules\user\GUserModule',
                 'components' => [
                     'userDb' => [
-                        'connectionName' => 'eb',
+                        'connectionName' => 'db',
                         'dbName' => 'eb',
                         'collectionName' => 'operators',
                     ],
                     'session' => [
-                        'connectionName' => 'eb',
+                        'connectionName' => 'db',
                         'dbName' => 'eb',
                         'collectionName' => 'operatorSessions',
                     ]

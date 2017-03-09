@@ -2,6 +2,8 @@
 
 namespace gear\helpers;
 
+use gear\library\GHelper;
+
 class HArray extends GHelper
 {
     public static function helpIsAssoc($array)

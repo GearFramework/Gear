@@ -34,7 +34,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     public function byPk($pkValue)
     {
         $class = $this->factory['class'];
-        return $this->factory($this->selectCollection()->findOne([$class::primaryKey() => $pkValue]));
+        return $this->factory($this->selectCollection()->findOne([$class::primaryKey() => "'$pkValue'"]));
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
      */
     public function getCollectionName(): string
     {
-        $this->_collectionName;
+        return $this->_collectionName;
     }
 
     /**

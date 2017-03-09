@@ -154,11 +154,11 @@ abstract class GDbCursor extends GModel implements \Iterator
      *
      * @param string|array $criteria
      * @param string|array $fields
-     * @return array
+     * @return array|null
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function findOne($criteria = [], $fields = []): array
+    public function findOne($criteria = [], $fields = [])
     {
         return $this->find($criteria, $fields)->limit(1)->asAssoc();
     }

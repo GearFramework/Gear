@@ -37,8 +37,7 @@ class UserController extends GController
      */
     public function apiAuth()
     {
-        $token = $this->getModule()->session;
-        var_dump($token);
+        $session = $this->getModule()->session->validSession;
         $authForm = $this->render('loginForm', [], true);
         if ($this->_layout) {
             $this->render($this->_layout, ['contentLayout' => $authForm]);

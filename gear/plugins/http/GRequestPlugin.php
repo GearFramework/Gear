@@ -209,6 +209,11 @@ class GRequestPlugin extends GPlugin implements IRequest
         return $this->_requestHandlers;
     }
 
+    public function getToken(): string
+    {
+        return '';
+    }
+
     public function inCli(string $name)
     {
     }

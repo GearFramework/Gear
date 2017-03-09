@@ -2,6 +2,8 @@
 
 namespace gear\traits;
 
+use gear\Core;
+
 
 /**
  * Трейт для реализации динамических свойств объектов
@@ -36,13 +38,21 @@ trait TProperties
      */
     public function getValidator()
     {
-        foreach(self::$_validators as $name => $validator) {
+        foreach(static::$_validators as $name => $validator) {
             if (is_string($validator)) {
                 $validator = new $validator();
                 self::$_validators[$name] = $validator;
             } else if (is_array($validator) && !is_object(reset($validator))) {
-                list($classValidator, $method) = $validator;
-                $validator = [new $classValidator(), $method];
+                $method = null;
+                if (count($validator) > 1) {
+                    list($validator, $method) = $validator;
+                }
+                if (is_string($validator)) {
+                    $validator = [new $validator, $method];
+                } else {
+                    list($class,, $properties) = Core::configure($validator);
+                    $validator = [new $class($properties), $method];
+                }
                 self::$_validators[$name] = $validator;
             }
             yield $validator;
@@ -193,14 +203,14 @@ trait TProperties
                 $validator = new $validator();
                 return $validator->validateValue($value);
             }
-        } else if (self::$_validators) {
+        } else if (static::$_validators) {
             foreach($this->getValidator() as $validator) {
                 if (is_array($validator)) {
                     list($validator, $method) = $validator;
                     if (!$name) {
                         $validator->$method($this);
                     }
-                    $validator->$method();
+                    $validator->$method($this);
                 } else if (is_object($validator)) {
                     if (!$name) {
                         $validator->validateObject($this);

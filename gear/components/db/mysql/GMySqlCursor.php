@@ -2,6 +2,7 @@
 
 namespace gear\components\db\mysql;
 
+use gear\Core;
 use gear\interfaces\IModel;
 use gear\interfaces\IObject;
 use gear\library\db\GDbCollection;
@@ -31,7 +32,8 @@ class GMySqlCursor extends GDbCursor
     /* Private */
     private $_logics = ['$or' => 'OR', '$and' => 'AND'];
     private $_eqs = ['$lt' => '<', '$gt' => '>', '$ne' => '<>', '$lte' => '<=', '$gte' => '>='];
-    private $_funcs = ['$isn' => 'IS NULL', '$isnn' => 'IS NOT NULL'];
+    private $_sfuncs = ['$isn' => 'IS NULL', '$isnn' => 'IS NOT NULL'];
+    private $_funcs = ['$like' => 'LIKE', '$nlike' => 'NOT LIKE', '$rlike' => 'RLIKE', '$nrlike' => 'NOT RLIKE', '$regx' => 'REGEXP', '$nregx' => 'NOT REGEXP'];
     /* Protected */
     protected $_current = false;
     protected $_queryBuild = [];
@@ -211,12 +213,11 @@ class GMySqlCursor extends GDbCursor
             $criteria = $this->_prepareCriteria($criteria);
         } else if ($criteria instanceof IModel) {
             $pk = $criteria->primaryKey;
-            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $criteria->$pk;
+            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $this->_prepareValue('{' . $criteria->$pk . '}');
         } else {
             throw new \InvalidArgumentException('Invalid arguments to delete');
         }
-        $this->runQuery($query)->affected();
-        return $this;
+        return $this->runQuery($query)->affected();
     }
 
     /**
@@ -502,8 +503,9 @@ class GMySqlCursor extends GDbCursor
             }
             $query = sprintf($query, ...$bindParams);
         }
+        Core::syslog(Core::INFO, 'Run MySQL query <{query}>', ['query' => $query, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (!($this->result = $this->handler->query($query))) {
-            throw self::exceptionDbCursor('Invalid run query', ['query' => $query]);
+            throw self::DbCursorException('Invalid run query', ['query' => $query]);
         }
         return $this;
     }
@@ -898,6 +900,11 @@ class GMySqlCursor extends GDbCursor
             unset($val);
         } else if ($value === null || preg_match('/^null$/i', $value)) {
             $value = 'NULL';
+        } else if (preg_match('/^\{(.+)\}$/', $value)) {
+            $value = preg_replace('/^\{/', '"', preg_replace('/\}$/', '"', $this->escape($value)));
+        } else if (preg_match('/^(\'|")(.+)(\'|")$/', $value)) {
+            $value = preg_replace("/(^('|\")|('|\")$)/", '', $value);
+            $value = "'" . $this->escape($value) . "'";
         } else if (($operand = $this->_prepareOperand($value))) {
             $value = $operand;
         } else {
