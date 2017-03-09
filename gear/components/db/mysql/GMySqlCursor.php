@@ -213,7 +213,7 @@ class GMySqlCursor extends GDbCursor
             $criteria = $this->_prepareCriteria($criteria);
         } else if ($criteria instanceof IModel) {
             $pk = $criteria->primaryKey;
-            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $this->_prepareValue('{' . $criteria->$pk . '}');
+            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $this->_prepareValue('"' . $criteria->$pk . '"');
         } else {
             throw new \InvalidArgumentException('Invalid arguments to delete');
         }
@@ -900,8 +900,6 @@ class GMySqlCursor extends GDbCursor
             unset($val);
         } else if ($value === null || preg_match('/^null$/i', $value)) {
             $value = 'NULL';
-        } else if (preg_match('/^\{(.+)\}$/', $value)) {
-            $value = preg_replace('/^\{/', '"', preg_replace('/\}$/', '"', $this->escape($value)));
         } else if (preg_match('/^(\'|")(.+)(\'|")$/', $value)) {
             $value = preg_replace("/(^('|\")|('|\")$)/", '', $value);
             $value = "'" . $this->escape($value) . "'";
