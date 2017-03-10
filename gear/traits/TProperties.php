@@ -184,6 +184,11 @@ trait TProperties
         $this->_properties = array_replace_recursive(static::$_defaultProperties, $default);
     }
 
+    public function setValidators(array $validators)
+    {
+        static::$_validators = $validators;
+    }
+
     /**
      * Валидация объекта или отдельных его свойств
      *

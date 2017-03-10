@@ -38,7 +38,7 @@ class UserController extends GController
     public function apiAuth()
     {
         $session = $this->getModule()->session->validSession;
-        $authForm = $this->render('loginForm', [], true);
+        $authForm = $this->render('loginForm', ['session' => $session], true);
         if ($this->_layout) {
             $this->render($this->_layout, ['contentLayout' => $authForm]);
         } else {
@@ -51,16 +51,18 @@ class UserController extends GController
      *
      * @param string $username
      * @param string $password
+     * @param string token
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function apiLogin(string $username, string $password)
+    public function apiLogin(string $username, string $password, string $tk)
     {
         try {
-            $this->getModule()->login(['username' => $username, 'password' => $password]);
+            $user = $this->getModule()->login(['username' => $username, 'password' => $password]);
+            die(print_r($user, 1));
         } catch(\Exception $e) {
-
+            die($e->getMessage());
         }
     }
 

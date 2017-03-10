@@ -4,6 +4,7 @@ namespace gear\modules\user;
 
 use gear\Core;
 use gear\library\GModule;
+use gear\modules\resources\controllers\PublicateController;
 use gear\modules\user\models\GUser;
 
 /**
@@ -43,11 +44,11 @@ class GUserModule extends GModule
     protected $_useComponent = 'userDb';
     protected $_model = [
         'id' => ['default' => 0, 'type' => 'int', 'index' => 'primary', 'options' => 'autoincrement'],
-        'username' => ['type' => 'varchar(255)', 'charset' => 'utf8_general_ci', 'setter' => 'setterPassword'],
-        'password' => ['type' => 'varchar(255)', 'charset' => 'utf8_general_ci'],
+        'username' => ['type' => 'varchar(255)', 'charset' => 'utf8_general_ci'],
+        'password' => ['type' => 'varchar(255)', 'charset' => 'utf8_general_ci', 'setter' => 'setterPassword'],
         'email' => ['type' => 'varchar(255)', 'charset' => 'utf8_general_ci'],
     ];
-    protected $_authProperties = ['username', 'password'];
+    protected $_authProperties = ['username'];
     /* Public */
 
     public function changePassword(string $oldPassword = '', string $newPassword = '')
@@ -92,15 +93,18 @@ class GUserModule extends GModule
         $model = $this->model;
         foreach($this->_authProperties as $name) {
             if (!isset($authProperties[$name]) || !isset($model[$name])) {
-                throw self::exceptionUserLoginPropertyFailed('Needed valid property <{name}>', ['name' => $name]);
+                throw self::UserLoginPropertyFailedException('Needed valid property <{name}>', ['name' => $name]);
             }
             $value = isset($model[$name]['setter'])
                      ? $this->{$model[$name]['setter']}($authProperties[$name])
                      : $authProperties[$name];
-            $criteria[$name] = $value;
+            $criteria[$name] = "\"$value\"";
         }
-        if (!($user = $this->c($this->useComponent)->find($criteria))) {
-            throw self::exceptionUserLoginFailed('User not found');
+        if (!($user = $this->c($this->useComponent)->findOne($criteria))) {
+            throw self::UserLoginFailedException('User not found');
+        }
+        if (!password_verify($authProperties['password'], $user->password)) {
+            throw self::UserLoginFailedException('Wrong password');
         }
         return $user;
     }

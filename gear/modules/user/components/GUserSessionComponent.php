@@ -13,6 +13,9 @@ class GUserSessionComponent extends GDbStorageComponent
     /* Const */
     /* Private */
     /* Protected */
+    protected static $_defaultProperties = [
+        'autoStartSession' => true,
+    ];
     protected $_factory = [
         'class' => '\gear\modules\user\models\GSession',
     ];
@@ -31,6 +34,11 @@ class GUserSessionComponent extends GDbStorageComponent
         return $this->_session;
     }
 
+    public function getSessionName()
+    {
+        return $this->_sessionName;
+    }
+
     public function getValidSession()
     {
         return $this->session;
@@ -38,19 +46,32 @@ class GUserSessionComponent extends GDbStorageComponent
 
     public function onAfterInstallService()
     {
+        if ($this->autoStartSession) {
+            $this->runSession();
+        }
+        return true;
+    }
+
+    public function remove($session)
+    {
+        Core::syslog(Core::INFO, 'Remove session <{sessionName}> from $_SESSION and database', ['sessionName' => $this->_sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        unset($_SESSION[$this->_sessionName]);
+        return parent::remove($session);
+    }
+
+    public function runSession()
+    {
         Core::syslog(Core::INFO, 'Check exists valid session <{sessionName}> in $_SESSION', ['sessionName' => $this->_sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        if (($session = Core::app()->request->session($this->_sessionName))) {
+        if (($session = Core::app()->request->session($this->sessionName))) {
             Core::syslog(Core::INFO, 'Session <{sessionName}> exists, check hash <{hash}> in database', ['hash' => $session['hash']?? '', 'sessionName' => $this->_sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
             if ($session['hash'] && ($session = $this->byPk($session['hash']))) {
                 try {
                     Core::syslog(Core::INFO, 'Session <{sessionName}> found by hash <{hash}>, validate...', ['hash' => $session->hash, 'sessionName' => $this->_sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                     $session->validate();
-                    $session->updateToken();
                     $session->update();
                 } catch(\SessionExpiredException $e) {
                     Core::syslog(Core::WARNING, 'Session <{hash}> has expired, remove', ['hash' => $session->hash, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                     $this->remove($session);
-                    Core::syslog(Core::INFO, 'Start new session', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
                     $session = $this->startNewSession();
                     Core::syslog(Core::INFO, 'New session <{hash}>', ['hash' => $session->hash, '__func__' => __METHOD__, '__line__' => __LINE__], true);
                 } catch(\SessionInvalidTokenException $e) {
@@ -67,14 +88,6 @@ class GUserSessionComponent extends GDbStorageComponent
             $session = $this->startNewSession();
         }
         $this->session = $session;
-        return true;
-    }
-
-    public function remove($session)
-    {
-        Core::syslog(Core::INFO, 'Remove session <{sessionName}> from $_SESSION and database', ['sessionName' => $this->_sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        unset($_SESSION[$this->_sessionName]);
-        return parent::remove($session);
     }
 
     public function setSession($session)
@@ -82,9 +95,14 @@ class GUserSessionComponent extends GDbStorageComponent
         $this->_session = $session;
     }
 
+    public function setSessionName($sessionName)
+    {
+        $this->_sessionName = $sessionName;
+    }
+
     public function startNewSession(): GSession
     {
-        Core::syslog(Core::INFO, 'Start new session <{sessionName}>', ['sessionName' => $this->_sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        Core::syslog(Core::INFO, 'Start new session <{sessionName}>', ['sessionName' => $this->sessionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $session = $this->factory([
             'hash' => $this->createHash(),
             'token' => $this->createHash(),
@@ -92,9 +110,8 @@ class GUserSessionComponent extends GDbStorageComponent
             'timeSession' => date('Y-m-d H:i:s')
         ]);
         Core::syslog(Core::INFO, 'New session hash <{hash}>', ['hash' => $session->hash, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        Core::app()->request->session($this->_sessionName, $session->props());
+        Core::app()->request->session($this->sessionName, $session->props());
         $this->add($session);
-        header('X-HTTP-TOKEN: ' . $session->token);
         return $session;
     }
 
@@ -102,15 +119,7 @@ class GUserSessionComponent extends GDbStorageComponent
     public function update($session)
     {
         Core::syslog(Core::INFO, 'Update session by hash <{hash}>', ['hash' => $session->hash, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        Core::app()->request->session($this->_sessionName, $session->props());
+        Core::app()->request->session($this->sessionName, $session->props());
         return parent::update($session);
-    }
-
-    public function updateToken(GSession $session)
-    {
-        Core::syslog(Core::INFO, 'Update session token <{token}>', ['token' => $session->token, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        $session->token = $this->createHash();
-        Core::syslog(Core::INFO, 'New session token <{token}>', ['token' => $session->token, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        header('X-HTTP-TOKEN: ' . $session->token);
     }
 }

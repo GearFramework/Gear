@@ -117,10 +117,7 @@ class GObject implements IObject
                 $event = $arguments[0];
                 $event->target = $this;
             } else {
-                if (isset($arguments[1]) && is_array($arguments[1]))
-                    $arguments[1]['target'] = $this;
-                else
-                    $arguments = ['target' => $this];
+                $arguments = ['target' => $this];
                 $event = new GEvent($this, $arguments);
             }
             $this->trigger($name, $event);

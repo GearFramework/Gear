@@ -681,7 +681,7 @@ class GMySqlCursor extends GDbCursor
     {
         if ($criteria instanceof IModel) {
             $pk = $criteria->primaryKey;
-            $result = $this->_prepareCriteria([$pk => $criteria->$pk]);
+            $result = $this->_prepareCriteria([$pk => '"' . $criteria->$pk . '"']);
         } else if (is_string($criteria) || is_numeric($criteria)) {
             $result = $criteria;
         } else if (is_array($criteria)) {

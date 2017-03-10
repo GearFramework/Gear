@@ -22,8 +22,7 @@ class GSession extends GModel
     /* Protected */
     protected static $_primaryKey = 'hash';
     protected static $_validators = [
-        'sessionTimeLife' => [
-            [
+        'sessionTimeLife' => [[
                 'class' => '\gear\validators\GSessionValidator',
                 'timeLife' => 900,
             ], 'validateTimeLife'
@@ -32,20 +31,20 @@ class GSession extends GModel
             ['class' => '\gear\validators\GSessionValidator'], 'validateToken'
         ],
     ];
-    protected $_timeLife = 900;
+    protected $_maxTimeLife = 900;
     /* Public */
 
     /**
      * @return int
      */
-    public function getTimeLife()
+    public function getMaxTimeLife()
     {
-        return $this->_timeLife;
+        return $this->_maxTimeLife;
     }
 
     public function getUser(): int
     {
-        return $this->user;
+        return $this->props('user');
     }
 
     public function isValid(): bool
@@ -59,8 +58,20 @@ class GSession extends GModel
         return $result;
     }
 
-    public function setTimeLife(int $time)
+    public function onAfterUpdate()
     {
-        $this->_timeLife = $time;
+        return true;
+    }
+
+    public function onBeforeUpdate()
+    {
+        $this->props('timeSession', date('Y-m-d H:i:s'));
+        $this->token = $this->owner->createHash();
+        return true;
+    }
+
+    public function setMaxTimeLife(int $time)
+    {
+        $this->_maxTimeLife = $time;
     }
 }

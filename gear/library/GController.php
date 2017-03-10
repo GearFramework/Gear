@@ -211,6 +211,18 @@ class GController extends GModel implements IController
     }
 
     /**
+     * Установка названия исполняемого api-метода
+     *
+     * @param string $apiName
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setDefaultApiName(string $apiName)
+    {
+        $this->_defaultApiName = $apiName;
+    }
+
+    /**
      * Устанавливает карту путей к api-методам
      *
      * @param array $mapApi

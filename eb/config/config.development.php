@@ -38,6 +38,17 @@ return [
                         'connectionName' => 'db',
                         'dbName' => 'eb',
                         'collectionName' => 'operatorSessions',
+                        'factory' => [
+                            'class' => '\gear\modules\user\models\GSession',
+                            'validators' => [
+                                'sessionTimeLife' => [
+                                    [
+                                        'class' => '\gear\validators\GSessionValidator',
+                                        'timeLife' => 900,
+                                    ], 'validateTimeLife'
+                                ],
+                            ],
+                        ],
                     ]
                 ],
                 'authController' => 'operators/auth',
