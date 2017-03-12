@@ -74,12 +74,6 @@ return [
         ],
     ],
     'components' => [
-        'db' => [
-            'class' => '\gear\components\db\mysql\GMySqlConnectionComponent',
-            'host' => '127.0.0.1',
-            'user' => '',
-            'password' => '',
-            'database' => '',
-        ],
+        'db' => include(__DIR__ . '/config.db.php'),
     ],
 ];
