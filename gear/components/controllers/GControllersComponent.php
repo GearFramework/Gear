@@ -89,7 +89,7 @@ class GControllersComponent extends GComponent
     public function getCurrentController(): IController
     {
         if (!($this->_currentController instanceof IController)) {
-            $path = trim((string)$this->request->r);
+            $path = str_replace(' ', '', trim((string)$this->request->r));
             $path = $this->validate(null, $path, null, function($value) {
                 return preg_replace('/[^a-zA-Z0-9_\/]/', '', $value);
             });
@@ -187,6 +187,7 @@ class GControllersComponent extends GComponent
         $controllerClass = str_replace('/', '\\', $controllerClass);
         $controller = new $controllerClass($properties, $this);
         if ($actionName) {
+            $actionName = preg_replace('#(^/|/$)#', '', trim($actionName));
             $controller->defaultApiName = $actionName;
         }
         return $controller;

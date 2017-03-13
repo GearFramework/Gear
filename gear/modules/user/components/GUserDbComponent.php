@@ -20,6 +20,15 @@ class GUserDbComponent extends GDbStorageComponent
 
     public function getUser()
     {
+        if (!$this->_user) {
+            $session = $this->owner->session->validSession;
+
+            if ($session->user) {
+                if ($user = $this->byPk($session->user)) {
+                    $this->_user = $user;
+                }
+            }
+        }
         return $this->_user;
     }
 

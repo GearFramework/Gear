@@ -22,4 +22,10 @@ class GUser extends GModel
     /* Protected */
     protected static $_primaryKey = 'id';
     /* Public */
+
+    public function setSession($session)
+    {
+        $session->user = $this->{$this->primaryKey};
+        $session->update();
+    }
 }

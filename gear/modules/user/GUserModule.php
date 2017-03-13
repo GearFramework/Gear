@@ -3,8 +3,8 @@
 namespace gear\modules\user;
 
 use gear\Core;
+use gear\library\GEvent;
 use gear\library\GModule;
-use gear\modules\resources\controllers\PublicateController;
 use gear\modules\user\models\GUser;
 
 /**
@@ -49,7 +49,19 @@ class GUserModule extends GModule
         'email' => ['type' => 'varchar(255)', 'charset' => 'utf8_general_ci'],
     ];
     protected $_authProperties = ['username'];
+    protected $_identityRoutes = [
+        'sessionIdentity' => [
+            'class' => '\gear\modules\user\identifies\GSessionIdentity',
+        ]
+    ];
     /* Public */
+
+    public function afterSuccessLogin($user)
+    {
+        $this->user = $user;
+        $this->user->setSession($this->session->validSession);
+        return $this->trigger('onAfterSuccessLogin', new GEvent($this, ['target' => $user]));
+    }
 
     public function changePassword(string $oldPassword = '', string $newPassword = '')
     {
@@ -59,6 +71,15 @@ class GUserModule extends GModule
     public function confirmRegister($token)
     {
 
+    }
+
+    public function getIdentifies()
+    {
+        foreach($this->_identityRoutes as $route) {
+            list($class,, $properties) = Core::configure($route);
+            $identity = new $class($properties, $this);
+            yield $identity;
+        }
     }
 
     public function getModel(): array
@@ -79,12 +100,17 @@ class GUserModule extends GModule
     public function identity()
     {
         try {
-            $session = $this->session->getSession();
+            $result = true;
+            foreach($this->getIdentifies() as $identity) {
+                if (!$identity->check()) {
+                    throw self::UserInvalidIdentityException();
+                }
+            }
         } catch(\Exception $e) {
-            Core::c('exceptionHandler')->exception($e);
-            die();
+            $result = false;
+        } finally {
+            return $result;
         }
-
     }
 
     public function login(array $authProperties): GUser
@@ -106,6 +132,7 @@ class GUserModule extends GModule
         if (!password_verify($authProperties['password'], $user->password)) {
             throw self::UserLoginFailedException('Wrong password');
         }
+        $this->afterSuccessLogin($user);
         return $user;
     }
 

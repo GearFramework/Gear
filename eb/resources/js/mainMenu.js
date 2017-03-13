@@ -30,6 +30,11 @@ MainMenuClass.prototype.deselect = function(item) {
     this.onDeselectMainMenuItem(item);
 };
 
+MainMenuClass.prototype.deselectAll = function() {
+    this.jq.find('.mainmenu-area .main-item.selected').removeClass('selected');
+    this.jq.find('.submenu-area .submenu-items.' + item.attr('id')).addClass('hidden');
+};
+
 MainMenuClass.prototype.select = function(item) {
     item.addClass('selected');
     this.showSubmenu(item);
@@ -56,6 +61,21 @@ MainMenuClass.prototype.selectMenuItem = function(item, event) {
     }
 };
 
+MainMenuClass.prototype.selectSubmenuItem = function(item, event) {
+    if (item.attr('data-action')) {
+        App.request({
+            url: "/" + item.attr('data-action'),
+            onBeforeSend: function() {
+            },
+            onAfterSuccess: function(json) {
+                console.log(json);
+            },
+            onComplete: function() {
+            }
+        }).get();
+    }
+};
+
 MainMenuClass.prototype.isSelected = function(item) {
     return item.hasClass('selected');
 };
@@ -68,7 +88,19 @@ MainMenuClass.prototype.getSelectedMenuItem = function() {
 /* Переопределяем унаследованное от ObjectClass событие AppClass.onInit */
 MainMenuClass.prototype.onInit = function(event) {
     var menu = this;
-    this.jq.find('.mainmenu-area .main-item').click(function(event) { menu.selectMenuItem($(this), event) });
+    this.jq.find('.mainmenu-area .main-item').click(function(event) {
+        menu.selectMenuItem($(this), event);
+        event.stopPropagation();
+    });
+    this.jq.find('.submenu-area .submenu-item').click(function(event) {
+        menu.selectSubmenuItem($(this), event);
+    });
+    $('html').on('click', function() {
+        var item = menu.getSelectedMenuItem();
+        if (item !== undefined) {
+            menu.deselect(item);
+        }
+    });
     ObjectClass.prototype.onInit.apply(this, arguments);
 };
 

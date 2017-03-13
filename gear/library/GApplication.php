@@ -74,6 +74,7 @@ class GApplication extends GModule
      */
     public function end(IResponse $response, $result)
     {
+        $response->send($result);
         return Core::trigger('onEndApplication', new GEvent($this, ['response' => $response, 'result' => &$result]));
     }
 
@@ -88,7 +89,7 @@ class GApplication extends GModule
         } else if (is_string($params) && trim($params)) {
             $path .= "?$params";
         }
-        $this->redirectUri($path);
+        $this->redirectUri("/$path");
     }
 
     public function redirectUri(string $uri)

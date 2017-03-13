@@ -47,6 +47,11 @@ trait TFactory
         return $record ? array_replace_recursive($this->_factory, $record) : $this->_factory;
     }
 
+    public function getFactoryClass(array $record = [])
+    {
+        return $record['class'] ?? ($this->_factory['class'] ?? null);
+    }
+
     /**
      * Устанавливает данные создаваемых объектов
      *

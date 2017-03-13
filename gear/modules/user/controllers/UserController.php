@@ -51,7 +51,7 @@ class UserController extends GController
      *
      * @param string $username
      * @param string $password
-     * @param string token
+     * @param string tk
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -60,9 +60,10 @@ class UserController extends GController
     {
         try {
             $user = $this->getModule()->login(['username' => $username, 'password' => $password]);
-            die(print_r($user, 1));
+            Core::app()->redirect($this->getModule()->successLoginController);
         } catch(\Exception $e) {
-            die($e->getMessage());
+            $this->render('invalidLogin');
+            die();
         }
     }
 

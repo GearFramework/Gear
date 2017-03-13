@@ -51,9 +51,10 @@ return [
                         ],
                     ]
                 ],
-                'authController' => 'operators/auth',
-                'loginController' => 'operators/auth',
             ],
+            'authController' => 'operators/auth',
+            'loginController' => 'operators/auth',
+            'successLoginController' => 'operators/home',
         ],
         'clients' => [
             'class' => [

@@ -14,10 +14,11 @@ abstract class EbController extends GController
     protected $_access = Core::ACCESS_PROTECTED;
     /* Public */
 
-    public function onAfterExecController($event)
+    public function onBeforeExecController($event)
     {
-        if ($this->access != Core::ACCESS_PUBLIC && !Core::user()->identity()) {
-            return Core::app()->redirect('operator/auth', ['back' => base64_encode(Core::app()->uri)]);
+        if ($this->access != Core::ACCESS_PUBLIC && !$this->getModule()->identity()) {
+            return Core::app()->redirect($this->getModule()->authController);
         }
+        return true;
     }
 }

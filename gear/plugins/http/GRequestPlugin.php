@@ -355,7 +355,7 @@ class GRequestPlugin extends GPlugin implements IRequest
             $handler = $this->getRequestHandler(self::POST);
             return $handler($name);
         }
-        return $this->getData($_POST);
+        return $this->getData($_POST, $name);
     }
 
     public function session(string $name = '', $value = null)

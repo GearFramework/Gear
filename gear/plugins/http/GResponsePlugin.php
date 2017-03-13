@@ -2,6 +2,7 @@
 
 namespace gear\plugins\http;
 
+use gear\Core;
 use gear\interfaces\IResponse;
 use gear\library\GPlugin;
 use gear\traits\http\TMessage;
@@ -34,5 +35,23 @@ class GResponsePlugin extends GPlugin implements IResponse
      */
     public function send($data)
     {
+        if (Core::app()->request->isAjax()) {
+            if (is_string($data)) {
+                $data = json_encode(['data-content' => $data, 'errors' => 0]);
+            } else if (is_array($data)) {
+                $data = json_encode($data);
+            } else {
+                header('Unsupported Media Type', true, 415);
+                die();
+            }
+        } else {
+            if (is_array($data)) {
+                $data = json_encode($data);
+            } else if (!is_string($data)) {
+                header('Unsupported Media Type', true, 415);
+                die();
+            }
+        }
+        echo $data;
     }
 }

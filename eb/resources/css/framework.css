@@ -19,14 +19,16 @@ body, div, ul, li, td, p, aside { position: relative; padding: 0; margin: 0; }
 .text-capitalize { text-transform: capitalize; }
 .text-hide { font: 0/0 a; color: transparent; text-shadow: none; }
 
+.base-color { color: white; }
+
 .xxsmall { font-size: 10px; }
 .xsmall { font-size: 11px; }
 .small { font-size: 12px; }
 .middle { font-size: 14px; }
 .big { font-size: 18px; }
-.xlbig { font-size: 20px; }
-.xxlbig { font-size: 24px; }
-.xxxlbig { font-size: 28px; }
+.xl { font-size: 20px; }
+.xxl { font-size: 24px; }
+.xxxl { font-size: 28px; }
 
 .center-block { display: block; margin-right: auto; margin-left: auto; }
 .pull-right { float: right !important; }
@@ -101,3 +103,7 @@ body, div, ul, li, td, p, aside { position: relative; padding: 0; margin: 0; }
 .pc-offset-2, .nt-offset-2, .tb-offset-2, .mb-offset-2 { margin-left: 16.66666667%; }
 .pc-offset-1, .nt-offset-1, .tb-offset-1, .mb-offset-1 { margin-left: 8.33333333%; }
 .pc-offset-0, .nt-offset-0, .tb-offset-0, .mb-offset-0 { margin-left: 0; }
+
+input[type="text"], input[type="password"], input[type="button"], input[type="submit"] {
+    height: 32px; line-height: 32px; padding: 0 8px 0 8px; box-sizing: border-box;
+}

@@ -3,10 +3,14 @@
         <div class="logo-area"></div>
     </div>
 </div>
-<form method="post" action="<?=\HtmlHelper::url(\gear\Core::m('operators')->i('loginController'), 'login')?>">
-    <h2>Authentificate operator</h2>
-    <p>Username <input type="text" name="username" id="username"></p>
-    <p>Password <input type="password" name="password" id="password"></p>
-    <input type="hidden" name="tk" id="tk" value="<?=$session->token?>">
-    <input type="submit" value="Apply" name="apply" id="apply">
-</form>
+<div class="auth-form base big text-center">
+    <form method="post" action="<?=\HtmlHelper::url(\gear\Core::m('operators')->loginController, 'login')?>">
+        <h2 class="light xxl base-color">Аутентификация оператора магазина</h2>
+        <div class="inputs light text-left pc-2 pc-offset-5">
+            <p><input class="light middle" type="text" name="username" id="username" placeholder="Имя пользователя"></p>
+            <p><input class="light middle" type="password" name="password" id="password" placeholder="Пароль"></p>
+            <input type="hidden" name="tk" id="tk" value="<?=$session->token?>">
+        </div>
+        <input class="light middle base-color" type="submit" value="Войти" name="apply" id="apply">
+    </form>
+</div>

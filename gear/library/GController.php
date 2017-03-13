@@ -26,9 +26,11 @@ class GController extends GModel implements IController
     /**
      * @var IRequest $_request
      */
+    protected $_layout = '';
     protected $_request = null;
     protected $_defaultApiName = 'index';
     protected $_mapApi = [];
+    protected $_viewPath = 'views';
     /* Public */
 
     /**
@@ -113,6 +115,7 @@ class GController extends GModel implements IController
             $this->afterExecApi($runApi, $result);
         }
         $this->afterExecController($result);
+        return $result;
     }
 
     /**
@@ -153,8 +156,9 @@ class GController extends GModel implements IController
         }
         $params = $reflection->getParameters();
         $result = [];
+        $method = strtolower($this->request->getMethod());
         foreach ($params as $param) {
-            $value = $this->request->{$param->name};
+            $value = $this->request->$method($param->name);
             if ($value === null) {
                 if (!$param->isOptional()) {
                     $result = null;
@@ -181,6 +185,11 @@ class GController extends GModel implements IController
     public function getDefaultApiName(): string
     {
         return $this->_defaultApiName;
+    }
+
+    public function getLayout(): string
+    {
+        return $this->_layout;
     }
 
     /**
@@ -211,6 +220,27 @@ class GController extends GModel implements IController
     }
 
     /**
+     * Отображение шаблона
+     *
+     * @param $template
+     * @param array $context
+     * @param bool $buffered
+     * @return bool|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function render($template, array $context = [], bool $buffered = false)
+    {
+        if ($this->layout) {
+            $contentPage = $this->{$this->viewer}->render($template, $context, true);
+            $result = $this->{$this->viewer}->render($this->_layout, ['contentLayout' => $contentPage], $buffered);
+        } else {
+            $result = $this->{$this->viewer}->render($template, $context, $buffered);
+        }
+        return $result;
+    }
+
+    /**
      * Установка названия исполняемого api-метода
      *
      * @param string $apiName
@@ -220,6 +250,11 @@ class GController extends GModel implements IController
     public function setDefaultApiName(string $apiName)
     {
         $this->_defaultApiName = $apiName;
+    }
+
+    public function setLayout(string $layout)
+    {
+        $this->_layout = $layout;
     }
 
     /**
