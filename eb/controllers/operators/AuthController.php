@@ -26,6 +26,11 @@ class AuthController extends UserController
     protected $_caption = 'Вход для операторов сайта';
     /* Public */
 
+    public function apiDenied()
+    {
+        die('Доступ закрыт');
+    }
+
     /**
      * Возвращает текущий модуль управления операторами магазина
      *

@@ -3,7 +3,18 @@ function AppClass(properties) {
     this.properties = {
         onInit: [],
         onResize: [],
-        onChangeContent: []
+        onChangeContent: [],
+        controllers: {
+            auth: ''
+        },
+        errorsHandlers: {
+            401: function() {
+                self.location = '/' + App.props('controllers').auth;
+            },
+            403: function() {
+                self.location = '/' + App.props('controllers').denied;
+            }
+        }
     };
     /* вызываем родительский конструктор */
     return ObjectClass.apply(this, arguments);
@@ -21,6 +32,12 @@ AppClass.prototype.constructor = AppClass;
 AppClass.prototype.changeContent = function(binds) {
     for(var bindName in binds) {
         this.onChangeContent(bindName, binds[bindName]);
+    }
+};
+
+AppClass.prototype.errorResponse = function(xhr) {
+    if (this.properties.errorsHandlers[xhr.status] !== undefined) {
+        this.properties.errorsHandlers[xhr.status]();
     }
 };
 
@@ -47,7 +64,3 @@ AppClass.prototype.onResize = function(event) {
 };
 
 var App = undefined;
-
-$(document).ready(function() {
-    App = new AppClass({}, $('html'));
-});

@@ -21,6 +21,16 @@
         <?=\gear\Core::m('resources')->publicate('resources/js/jquery-3.1.1.min.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/objectClass.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/app.js')?>
+        <script>
+            $(document).ready(function() {
+                App = new AppClass({
+                    controllers: {
+                        auth: '<?=$this->getModule()->authController?>',
+                        denied: 'operators/auth/a/denied'
+                    }
+                }, $('html'));
+            });
+        </script>
         <?=\gear\Core::m('resources')->publicate('resources/js/request.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/mainMenu.js')?>
     </body>

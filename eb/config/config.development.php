@@ -11,6 +11,7 @@ return [
                         'rewrite' => true,
                         'mapControllers' => [
                             'operators/auth' => '\eb\controllers\operators\AuthController',
+                            'operators/denied' => '\eb\controllers\operators\AuthController',
                         ],
                     ],
                 ],

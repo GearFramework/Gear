@@ -41,14 +41,14 @@ class GResponsePlugin extends GPlugin implements IResponse
             } else if (is_array($data)) {
                 $data = json_encode($data);
             } else {
-                header('Unsupported Media Type', true, 415);
+                header('HTTP/1.0 200 OK', true, 200);
                 die();
             }
         } else {
             if (is_array($data)) {
                 $data = json_encode($data);
             } else if (!is_string($data)) {
-                header('Unsupported Media Type', true, 415);
+                header('HTTP/1.0 200 OK', true, 200);
                 die();
             }
         }

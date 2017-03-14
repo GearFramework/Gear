@@ -7,8 +7,8 @@
     <form method="post" action="<?=\HtmlHelper::url(\gear\Core::m('operators')->loginController, 'login')?>">
         <h2 class="light xxl base-color">Аутентификация оператора магазина</h2>
         <div class="inputs light text-left pc-2 pc-offset-5">
-            <p><input class="light middle" type="text" name="username" id="username" placeholder="Имя пользователя"></p>
-            <p><input class="light middle" type="password" name="password" id="password" placeholder="Пароль"></p>
+            <p class="input-line"><input class="light middle" type="text" name="username" id="username" placeholder="Имя пользователя"></p>
+            <p class="input-line"><input class="light middle" type="password" name="password" id="password" placeholder="Пароль"></p>
             <input type="hidden" name="tk" id="tk" value="<?=$session->token?>">
         </div>
         <input class="light middle base-color" type="submit" value="Войти" name="apply" id="apply">

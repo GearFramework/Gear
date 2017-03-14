@@ -106,7 +106,7 @@ RequestClass.prototype.success = function(data, textStatus, xhr) {
 RequestClass.prototype.error = function(xhr, status, errorMessage) {
     var request = this;
     if (this.props('messenger') !== undefined) {
-        this.props('messenger').log('ERROR# ' + xhr.status + ' ' + xhr.statusText);
+        this.props('messenger').log('ERROR# [' + xhr.status + '] ' + xhr.statusText);
     }
     this.trigger('error', undefined, {request: request, xhr: xhr, status: status, errorMessage: errorMessage});
 };

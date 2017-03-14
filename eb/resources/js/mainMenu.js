@@ -63,16 +63,21 @@ MainMenuClass.prototype.selectMenuItem = function(item, event) {
 
 MainMenuClass.prototype.selectSubmenuItem = function(item, event) {
     if (item.attr('data-action')) {
-        App.request({
+        App.request().get({
             url: "/" + item.attr('data-action'),
             onBeforeSend: function() {
+                console.log('Before send');
             },
             onAfterSuccess: function(json) {
-                console.log(json);
+                console.log('After send');
             },
             onComplete: function() {
+                console.log('Complete');
+            },
+            onError: function(request, event, params) {
+                App.errorResponse(params.xhr);
             }
-        }).get();
+        });
     }
 };
 

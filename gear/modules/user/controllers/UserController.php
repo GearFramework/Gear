@@ -61,10 +61,8 @@ class UserController extends GController
         try {
             $user = $this->getModule()->login(['username' => $username, 'password' => $password]);
             Core::app()->redirect($this->getModule()->successLoginController);
-            die();
         } catch(\Exception $e) {
             $this->render('invalidLogin');
-            die();
         }
     }
 

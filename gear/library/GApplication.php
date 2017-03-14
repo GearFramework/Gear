@@ -95,6 +95,7 @@ class GApplication extends GModule
     public function redirectUri(string $uri)
     {
         header("Location: $uri");
+        die();
     }
 
     /**
