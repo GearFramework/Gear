@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Фев 26 2017 г., 23:24
+-- Время создания: Мар 14 2017 г., 22:27
 -- Версия сервера: 5.6.25-73.1
--- Версия PHP: 7.1.0RC6
+-- Версия PHP: 7.0.16-4+deb.sury.org~trusty+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -167,8 +167,8 @@ CREATE TABLE IF NOT EXISTS `clients` (
 DROP TABLE IF EXISTS `clientSessions`;
 CREATE TABLE IF NOT EXISTS `clientSessions` (
   `hash` varchar(255) NOT NULL,
-  `token` varchar(128) NOT NULL,
-  `client` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `token` varchar(512) NOT NULL,
+  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
   `timeSession` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -233,9 +233,37 @@ DROP TABLE IF EXISTS `operators`;
 CREATE TABLE IF NOT EXISTS `operators` (
   `id` bigint(20) unsigned NOT NULL,
   `username` varchar(255) NOT NULL,
-  `password` varchar(32) NOT NULL,
+  `password` varchar(512) NOT NULL,
   `email` varchar(255) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `operators`
+--
+
+INSERT INTO `operators` (`id`, `username`, `password`, `email`) VALUES
+(1, 'denisk', '$2y$12$JXPXkSHWvmAhS3dFxxVj.eJq1HG3r.bGBNpkfn3E.5YvRll53ItZa', 'denlinkers@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `operatorSessions`
+--
+
+DROP TABLE IF EXISTS `operatorSessions`;
+CREATE TABLE IF NOT EXISTS `operatorSessions` (
+  `hash` varchar(255) NOT NULL,
+  `token` varchar(512) NOT NULL,
+  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `timeSession` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `operatorSessions`
+--
+
+INSERT INTO `operatorSessions` (`hash`, `token`, `user`, `timeSession`) VALUES
+('$2y$12$Jf9lf3vvrAt8fZ.f3ddiN.0yFzh.6Zlsyfu0b5/Onj64DuXX/vJN2', '$2y$12$B3G3C6Xgwh9EjH2KfMug5uu20HP4j.IODTSi/C0I1vVIsVg0ob5e.', 1, '2017-03-13 19:45:10');
 
 -- --------------------------------------------------------
 
@@ -613,7 +641,14 @@ CREATE TABLE IF NOT EXISTS `vendors` (
   `url` varchar(2048) NOT NULL,
   `description` varchar(1024) NOT NULL,
   `statusVendor` tinyint(1) unsigned NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `vendors`
+--
+
+INSERT INTO `vendors` (`id`, `name`, `url`, `description`, `statusVendor`) VALUES
+(1, 'A+++ Electronics Maker', 'https://ru.aliexpress.com/store/1544094?spm=2114.12010612.0.0.no8LHh', 'Платы Arduino,шилды,сенсоры, кабели, дисплеи, Banana Pi, RaspberryPi', 1);
 
 -- --------------------------------------------------------
 
@@ -632,14 +667,9 @@ CREATE TABLE IF NOT EXISTS `vendorStatuses` (
 --
 
 INSERT INTO `vendorStatuses` (`idVendorStatus`, `nameVendorStatus`) VALUES
-(1, 'Создан'),
-(2, 'Оплачен'),
-(3, 'Отправлен'),
-(4, 'Получен'),
-(5, 'Поступил на склад'),
-(6, 'Возврат поставщику'),
-(7, 'Утерян при пересылке'),
-(8, 'Не отправлен');
+(1, 'Разрешено к заказу'),
+(2, 'Проверка поставщика'),
+(3, 'Запрещено к заказу у поставщика');
 
 --
 -- Индексы сохранённых таблиц
@@ -682,7 +712,7 @@ ALTER TABLE `clients`
 --
 ALTER TABLE `clientSessions`
   ADD PRIMARY KEY (`hash`),
-  ADD KEY `client` (`client`);
+  ADD KEY `client` (`user`);
 
 --
 -- Индексы таблицы `clientStatuses`
@@ -854,7 +884,7 @@ ALTER TABLE `clientStatuses`
 -- AUTO_INCREMENT для таблицы `operators`
 --
 ALTER TABLE `operators`
-  MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT для таблицы `payments`
 --
@@ -934,7 +964,7 @@ ALTER TABLE `vendorProductStatuses`
 -- AUTO_INCREMENT для таблицы `vendors`
 --
 ALTER TABLE `vendors`
-  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT для таблицы `vendorStatuses`
 --

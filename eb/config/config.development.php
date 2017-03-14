@@ -77,5 +77,8 @@ return [
     ],
     'components' => [
         'db' => include(__DIR__ . '/config.db.php'),
+        'vendors' => [
+            'class' => '\eb\components\vendors\GVendorsComponent',
+        ],
     ],
 ];

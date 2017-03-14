@@ -31,6 +31,11 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
         $this->selectCollection()->insert($model);
     }
 
+    public function all()
+    {
+        return $this->getIterator($this->find());
+     }
+
     public function byPk($pkValue)
     {
         $class = $this->factory['class'];
