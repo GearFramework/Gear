@@ -9,15 +9,19 @@
     </head>
 
     <body>
-        <div class="top">
+    <div class="top-fix"></div>
+        <div class="top affix">
             <?= $this->view->render($this->viewPath . '/../common/mainmenu'); ?>
         </div>
 
         <?=$contentLayout?>
 
+        <div data-bind="data-content"></div>
+
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic" rel="stylesheet">
         <?=\gear\Core::m('resources')->publicate('resources/css/framework.css')?>
         <?=\gear\Core::m('resources')->publicate('resources/css/operators/base.css')?>
+        <?=\gear\Core::m('resources')->publicate('resources/css/operators/eb.css')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/jquery-3.1.1.min.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/objectClass.js')?>
         <?=\gear\Core::m('resources')->publicate('resources/js/app.js')?>

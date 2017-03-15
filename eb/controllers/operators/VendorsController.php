@@ -23,14 +23,14 @@ class VendorsController extends EbOperatorController
     /* Protected */
     protected $_defaultApiName = 'list';
     protected $_layout = 'views/operators/operatorPage';
-    protected $_viewPath = 'views/operators/home';
+    protected $_viewPath = 'views/operators/vendors';
     protected $_caption = 'Управление магазином';
     /* Public */
 
     public function apiList()
     {
-        header('HTTP/1.0 403 Forbidden', true, 403);
-        die();
-        return 'vendors';
+//        header('HTTP/1.0 403 Forbidden', true, 403);
+//        die();
+        return $this->view->render('vendorsList', [], true);
     }
 }

@@ -134,6 +134,7 @@ class GMySqlCursor extends GDbCursor
      */
     public function buildQuery(): string
     {
+        Core::syslog(Core::INFO, 'Build MySQL query ', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         $this->_query = 'SELECT SQL_CALC_FOUND_ROWS ';
         $fields = $this->_queryBuild->fields;
         if ($fields) {
@@ -496,6 +497,7 @@ class GMySqlCursor extends GDbCursor
      */
     public function runQuery(string $query, ...$params): GDbCursor
     {
+        Core::syslog(Core::INFO, 'Prepare run MySQL query <{query}>', ['query' => $query, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if ($params) {
             $bindParams = [];
             foreach($params as $param) {

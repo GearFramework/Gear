@@ -1,0 +1,14 @@
+<div class="container vendors-list base light middle">
+    <div class="col pc-3">
+    <?php foreach(\gear\Core::vendors()->all() as $vendor): ?>
+        <div class="pc-12 pull-left vendor-tile">
+            <div class="col pc-12 extrabold text-overflow"><?=$vendor->name?></div>
+            <div class="clearfix"></div>
+            <!--<div class="col pc-5 text-overflow"><?=$vendor->url?></div> -->
+            <div class="col pc-7 text-overflow"><?=$vendor->description?></div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    <?php endforeach; ?>
+    </div>
+</div>

@@ -18,6 +18,7 @@ body, div, ul, li, td, p, aside { position: relative; padding: 0; margin: 0; }
 .text-uppercase { text-transform: uppercase; }
 .text-capitalize { text-transform: capitalize; }
 .text-hide { font: 0/0 a; color: transparent; text-shadow: none; }
+.text-overflow { overflow: hidden; text-overflow: ellipsis; }
 
 .base-color { color: white; }
 

@@ -91,9 +91,7 @@ RequestClass.prototype.success = function(data, textStatus, xhr) {
             }
             this.onResponseError(data);
         } else {
-            if (data.binds) {
-                App.changeContent(data.binds);
-            }
+            App.changeContent(data);
             this.onResponseSuccess(data);
         }
         this.trigger('afterSuccess', undefined, {request: request, data: data, textStatus: textStatus, xhr: xhr});

@@ -68,10 +68,10 @@ ObjectClass.prototype.trigger = function(name, event, params) {
 ObjectClass.prototype.isPossibleBind = function(name) {
     var possible = false;
     if (this.jq !== undefined) {
-        if (this.jq.attr('bind') && this.jq.attr('bind') === name)
+        if (this.jq.attr('data-bind') && this.jq.attr('data-bind') === name)
             possible = true;
         else
-        if (this.jq.find('[bind="' + name + '"]').length)
+        if (this.jq.find('[data-bind="' + name + '"]').length)
             possible = true;
     }
     return possible;
@@ -84,6 +84,7 @@ ObjectClass.prototype.isPossibleBind = function(name) {
  * @param string content
  */
 ObjectClass.prototype.changeContent = function(bindName, content) {
+    console.log(bindName);
     if (this.isPossibleBind(bindName)) {
         this.onBeforeChangeContent(bindName, content);
         this.setContent(bindName, content);
@@ -99,10 +100,10 @@ ObjectClass.prototype.changeContent = function(bindName, content) {
  * @returns {ObjectClass}
  */
 ObjectClass.prototype.setContent = function(name, content) {
-    if (this.jq.attr('bind') && this.jq.attr('bind') === name)
+    if (this.jq.attr('data-bind') && this.jq.attr('bind') === name)
         this.jq.html(content);
     else
-        this.jq.find('[bind="' + name + '"]').html(content);
+        this.jq.find('[data-bind="' + name + '"]').html(content);
     return this;
 };
 

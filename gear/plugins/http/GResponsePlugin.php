@@ -35,6 +35,10 @@ class GResponsePlugin extends GPlugin implements IResponse
      */
     public function send($data)
     {
+        if (is_string($data) && preg_match('#^HTTP/\d\.\d (\d+)#', $data, $math)) {
+            header($data, true, $math[1]);
+            die();
+        }
         if (Core::app()->request->isAjax()) {
             if (is_string($data)) {
                 $data = json_encode(['data-content' => $data, 'errors' => 0]);

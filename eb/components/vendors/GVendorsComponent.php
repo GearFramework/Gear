@@ -12,7 +12,7 @@ class GVendorsComponent extends GDbStorageComponent
     protected $_joins = [
         'vendorStatuses' => [
             'join'=> 'left',
-            'link' => ['id' => 'idVendorStatus'],
+            'link' => ['vendorStatus' => 'idVendorStatus'],
             'fields' => ['nameVendorStatus'=> 1],
         ],
     ];

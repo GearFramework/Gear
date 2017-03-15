@@ -30,8 +30,15 @@ AppClass.prototype.constructor = AppClass;
  * @param binds
  */
 AppClass.prototype.changeContent = function(binds) {
+    console.log(binds);
     for(var bindName in binds) {
-        this.onChangeContent(bindName, binds[bindName]);
+        var content = binds[bindName];
+        console.log(bindName);
+        if (this.isPossibleBind(bindName)) {
+            this.onBeforeChangeContent(bindName, content);
+            this.setContent(bindName, content);
+            this.onAfterChangeContent(bindName, content);
+        }
     }
 };
 

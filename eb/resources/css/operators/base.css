@@ -6,12 +6,22 @@ body, div, p, ul, li {
 }
 
 .top {
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 128px;
     width: 100%;
     background-color: #8dc153;
+    z-index: 1;
+}
+
+.top-fix {
+    clear: both;
+    height: 128px;
 }
 
 .top > .top-area {
+    width: 100%;
     height: 64px;
     width: 100%;
 }
@@ -85,6 +95,7 @@ body, div, p, ul, li {
 }
 
 .top > #mainMenu .mainmenu-area {
+    width: 100%;
     height: 64px;
     width: 100%;
     padding-top: 32px;

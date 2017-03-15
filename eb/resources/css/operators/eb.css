@@ -1,0 +1,16 @@
+.vendors-list>.col {
+    box-sizing: border-box;
+    height: 100%;
+    background-color: #f0f0f0;
+}
+
+.vendors-list .vendor-tile {
+    min-height: 96px;
+    box-sizing: border-box;
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+.vendors-list .vendor-tile:hover {
+    background-color: #e0e0e0;
+}
