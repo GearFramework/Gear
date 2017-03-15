@@ -1,20 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.14
+-- version 4.4.15.5
 -- http://www.phpmyadmin.net
 --
--- Хост: localhost
--- Время создания: Мар 14 2017 г., 22:27
--- Версия сервера: 5.6.25-73.1
--- Версия PHP: 7.0.16-4+deb.sury.org~trusty+1
+-- Хост: 127.0.0.1:3306
+-- Время создания: Мар 15 2017 г., 16:36
+-- Версия сервера: 10.1.13-MariaDB
+-- Версия PHP: 7.0.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- База данных: `eb`
@@ -167,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
 DROP TABLE IF EXISTS `clientSessions`;
 CREATE TABLE IF NOT EXISTS `clientSessions` (
   `hash` varchar(255) NOT NULL,
-  `token` varchar(512) NOT NULL,
+  `token` varchar(128) NOT NULL,
   `user` bigint(20) unsigned NOT NULL DEFAULT '0',
   `timeSession` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -242,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `operators` (
 --
 
 INSERT INTO `operators` (`id`, `username`, `password`, `email`) VALUES
-(1, 'denisk', '$2y$12$JXPXkSHWvmAhS3dFxxVj.eJq1HG3r.bGBNpkfn3E.5YvRll53ItZa', 'denlinkers@gmail.com');
+(1, 'denisk', '$2y$12$WsYwdzLHjaOUSEnn7LndTeeHPDjCbGsH37DHWvQG31n/GZ.9s.4N2', 'denlinkers@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -253,7 +247,7 @@ INSERT INTO `operators` (`id`, `username`, `password`, `email`) VALUES
 DROP TABLE IF EXISTS `operatorSessions`;
 CREATE TABLE IF NOT EXISTS `operatorSessions` (
   `hash` varchar(255) NOT NULL,
-  `token` varchar(512) NOT NULL,
+  `token` varchar(128) NOT NULL,
   `user` bigint(20) unsigned NOT NULL DEFAULT '0',
   `timeSession` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -263,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `operatorSessions` (
 --
 
 INSERT INTO `operatorSessions` (`hash`, `token`, `user`, `timeSession`) VALUES
-('$2y$12$Jf9lf3vvrAt8fZ.f3ddiN.0yFzh.6Zlsyfu0b5/Onj64DuXX/vJN2', '$2y$12$B3G3C6Xgwh9EjH2KfMug5uu20HP4j.IODTSi/C0I1vVIsVg0ob5e.', 1, '2017-03-13 19:45:10');
+('$2y$12$eXTjtqGmpWEFAtD/EGE9M.sn9yrcRK1B50Anik.P/Mm88c2WxpUuC', '$2y$12$pv7SuV1saX09NsqArGjI3OhtkyV0KF7.btxNj4HHAJOVm5OPJ5SPC', 0, '2017-03-15 16:33:26');
 
 -- --------------------------------------------------------
 
@@ -439,19 +433,6 @@ CREATE TABLE IF NOT EXISTS `properties` (
   `id` tinyint(3) unsigned NOT NULL,
   `type` tinyint(1) unsigned NOT NULL,
   `data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `sessions`
---
-
-DROP TABLE IF EXISTS `sessions`;
-CREATE TABLE IF NOT EXISTS `sessions` (
-  `hash` varchar(255) NOT NULL,
-  `user` bigint(20) unsigned NOT NULL,
-  `sessiontime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -640,15 +621,17 @@ CREATE TABLE IF NOT EXISTS `vendors` (
   `name` varchar(1024) NOT NULL,
   `url` varchar(2048) NOT NULL,
   `description` varchar(1024) NOT NULL,
-  `statusVendor` tinyint(1) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `statusVendor` tinyint(1) unsigned NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `vendors`
 --
 
 INSERT INTO `vendors` (`id`, `name`, `url`, `description`, `statusVendor`) VALUES
-(1, 'A+++ Electronics Maker', 'https://ru.aliexpress.com/store/1544094?spm=2114.12010612.0.0.no8LHh', 'Платы Arduino,шилды,сенсоры, кабели, дисплеи, Banana Pi, RaspberryPi', 1);
+(1, 'A+++ Electronics Maker', 'https://ru.aliexpress.com/store/1544094?spm=2114.12010612.0.0.no8LHh', 'Платы Arduino,шилды,сенсоры, кабели, дисплеи, Banana Pi, RaspberryPi', 1),
+(3, 'GREAT WALL Electronics Co., Ltd.', 'https://ru.aliexpress.com/store/731260?spm=2114.12010608.0.0.dgtBot', 'Всё для Arduino', 1),
+(4, 'Feiyang electronics', 'https://ru.aliexpress.com/store/1022067?spm=2114.12010608.0.0.LloTS9', 'Покупка плат Arduino, модулей, датчиков', 1);
 
 -- --------------------------------------------------------
 
@@ -667,9 +650,14 @@ CREATE TABLE IF NOT EXISTS `vendorStatuses` (
 --
 
 INSERT INTO `vendorStatuses` (`idVendorStatus`, `nameVendorStatus`) VALUES
-(1, 'Разрешено к заказу'),
-(2, 'Проверка поставщика'),
-(3, 'Запрещено к заказу у поставщика');
+(1, 'Создан'),
+(2, 'Оплачен'),
+(3, 'Отправлен'),
+(4, 'Получен'),
+(5, 'Поступил на склад'),
+(6, 'Возврат поставщику'),
+(7, 'Утерян при пересылке'),
+(8, 'Не отправлен');
 
 --
 -- Индексы сохранённых таблиц
@@ -727,6 +715,13 @@ ALTER TABLE `operators`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `operatorSessions`
+--
+ALTER TABLE `operatorSessions`
+  ADD PRIMARY KEY (`hash`),
+  ADD KEY `client` (`user`);
+
+--
 -- Индексы таблицы `payments`
 --
 ALTER TABLE `payments`
@@ -781,12 +776,6 @@ ALTER TABLE `products`
 --
 ALTER TABLE `properties`
   ADD PRIMARY KEY (`id`);
-
---
--- Индексы таблицы `sessions`
---
-ALTER TABLE `sessions`
-  ADD PRIMARY KEY (`hash`);
 
 --
 -- Индексы таблицы `vendorCategories`
@@ -964,12 +953,9 @@ ALTER TABLE `vendorProductStatuses`
 -- AUTO_INCREMENT для таблицы `vendors`
 --
 ALTER TABLE `vendors`
-  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT для таблицы `vendorStatuses`
 --
 ALTER TABLE `vendorStatuses`
   MODIFY `idVendorStatus` tinyint(1) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
