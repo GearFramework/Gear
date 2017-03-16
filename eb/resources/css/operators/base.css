@@ -163,7 +163,7 @@ body, div, p, ul, li {
     line-height: inherit;
     background-color: white;
     margin: 0;
-    cursor: default;
+    cursor: pointer;
     text-indent: 28px;
     background-position: 12px center;
     background-repeat: no-repeat;
@@ -204,4 +204,50 @@ body, div, p, ul, li {
 }
 .toolbar-menu-items .item.last {
     border: 0;
+}
+.toolbar-sort {
+    height: inherit;
+    line-height: inherit;
+    border-left: 1px solid #e0e0e0;
+}
+
+.breadcrumbs {
+    height: inherit;
+    line-height: inherit;
+}
+
+.breadcrumbs .crumb {
+    padding: 0 12px;
+    font-weight: 600;
+}
+
+.breadcrumbs .crumb>a {
+    color:black;
+}
+
+.breadcrumbs .crumb.arrow {
+    padding: 0;
+    font-weight: 300;
+}
+
+.breadcrumbs .crumb.last {
+    padding: 0 12px;
+    font-weight: 300;
+    color:#868686;
+}
+
+.paginator {
+    height: inherit;
+    line-height: inherit;
+}
+.paginator .page {
+    width: 48px;
+    border-left: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+.paginator .page:hover {
+    background-color: #e0e0e0;
+}
+.paginator .page.selected {
+    background-color: #e0e0e0;
 }
