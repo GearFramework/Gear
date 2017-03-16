@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 15 2017 г., 16:36
+-- Время создания: Мар 16 2017 г., 16:42
 -- Версия сервера: 10.1.13-MariaDB
 -- Версия PHP: 7.0.4
 
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `operatorSessions` (
 --
 
 INSERT INTO `operatorSessions` (`hash`, `token`, `user`, `timeSession`) VALUES
-('$2y$12$eXTjtqGmpWEFAtD/EGE9M.sn9yrcRK1B50Anik.P/Mm88c2WxpUuC', '$2y$12$pv7SuV1saX09NsqArGjI3OhtkyV0KF7.btxNj4HHAJOVm5OPJ5SPC', 0, '2017-03-15 16:33:26');
+('$2y$12$qnjkcyaATh3ODC.x21uHWefRgQ9OCtZ6BmPQhtwHCQnXFKMGZixLK', '$2y$12$kfhO2c7uIEvjCSgSkr7FMOaibhr3/6gBjQs6vqQ6IZ0Hd6wyfsVBu', 1, '2017-03-16 16:35:56');
 
 -- --------------------------------------------------------
 
@@ -622,7 +622,7 @@ CREATE TABLE IF NOT EXISTS `vendors` (
   `url` varchar(2048) NOT NULL,
   `description` varchar(1024) NOT NULL,
   `statusVendor` tinyint(1) unsigned NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `vendors`
@@ -631,7 +631,26 @@ CREATE TABLE IF NOT EXISTS `vendors` (
 INSERT INTO `vendors` (`id`, `name`, `url`, `description`, `statusVendor`) VALUES
 (1, 'A+++ Electronics Maker', 'https://ru.aliexpress.com/store/1544094?spm=2114.12010612.0.0.no8LHh', 'Платы Arduino,шилды,сенсоры, кабели, дисплеи, Banana Pi, RaspberryPi', 1),
 (3, 'GREAT WALL Electronics Co., Ltd.', 'https://ru.aliexpress.com/store/731260?spm=2114.12010608.0.0.dgtBot', 'Всё для Arduino', 1),
-(4, 'Feiyang electronics', 'https://ru.aliexpress.com/store/1022067?spm=2114.12010608.0.0.LloTS9', 'Покупка плат Arduino, модулей, датчиков', 1);
+(4, 'Feiyang electronics', 'https://ru.aliexpress.com/store/1022067?spm=2114.12010608.0.0.LloTS9', 'Покупка плат Arduino, модулей, датчиков', 1),
+(5, 'Shenzhen Xunlong Software CO., Limited', 'https://ru.aliexpress.com/store/1553371?spm=2114.12010608.0.0.xS81YQ', 'Всё Orange Pi', 1),
+(6, 'SmartFly Tech CO.,Ltd.', 'https://ru.aliexpress.com/store/1382212?spm=2114.12010608.0.0.0zLeKO', 'Платы CubieBoard', 1),
+(7, 'Qingpeng Electronics co., LTD.', 'https://ru.aliexpress.com/store/908915?spm=2114.12010608.0.0.O17boB', 'Покупка плат Raspberry, Banana Pi, BeagleBone', 1),
+(8, 'Anny & Toby', 'https://ru.aliexpress.com/store/1659037?spm=2114.12010608.0.0.QKgwQQ', 'Покупка плат Raspberry Pi 3, 2, Banana Pi', 1),
+(9, 'SHENZHEN IROON ELECTRIC TECHNOLOGY LTD.', 'https://ru.aliexpress.com/store/701314?spm=2114.12010608.0.0.yiRdi2', 'Покупка всего для Raspberry Pi, Banana Pi', 1),
+(10, 'All Electronics Trading Company', 'https://ru.aliexpress.com/store/716258?spm=2114.12010608.0.0.WwJ5g0', 'Всякая всячина для Arduino и немного Raspberry PI,  Banana Pi, Cubieboard', 1),
+(11, 'Million Sunshine Technology', 'https://ru.aliexpress.com/store/1957482?spm=2114.12010608.0.0.xEPYTp', 'Платы Raspberry Pi и Banana Pi', 1),
+(12, 'Shenzhen Innovation and Technology', 'https://ru.aliexpress.com/store/1242010?spm=2114.12010608.0.0.bCLvlj', 'Всякая всячина для Arduibo, Raspberry Pi, CubieBoard', 1),
+(13, 'Geeekstudio', 'https://ru.aliexpress.com/store/2167039?spm=2114.12010608.0.0.cpVdY3', 'Всякая всячина и платы Raspberry Pi, Banana Pi, BeagleBone', 1),
+(14, 'DIY ZONE', 'https://diyzone.ru.aliexpress.com/store/1270976?spm=2114.12010608.0.0.eCsqfH', 'Всякая всячина и платы Raspberry Pi, Orange Pi, Banana Pi, платы BeagleBoard', 1),
+(15, 'BIG TREE TECH CO.,LTD Store', 'https://ru.aliexpress.com/store/228623?spm=2114.12010608.0.0.lD94fR', 'Всякая всячина и Arduino Платы (возможно будет основной поставщик Uno R3)', 1),
+(16, 'A+A+A+', 'https://ru.aliexpress.com/store/110055?spm=2114.12010608.0.0.KGzjqJ', 'Всякая всячина для Arduino, механика', 1),
+(17, 'Amico', 'https://ru.aliexpress.com/store/817555?spm=2114.12010608.0.0.jq0zzi', 'Куча электронных и механических деталей', 1),
+(18, 'Shenzhen factory', 'https://ru.aliexpress.com/store/1192233?spm=2114.12010608.0.0.PsBc3q', 'Платы Raspberry Pi, Banana Pi, CubieBoard и всё для них', 1),
+(19, 'Feisidiya development board Mall', 'https://ru.aliexpress.com/store/1314127?spm=2114.12010608.0.0.6oSwQN', 'Куча микроконтроллеров, одноплатных компов, Intel Edison', 1),
+(20, 'Numon Electronic Cyberport Store', 'https://ru.aliexpress.com/store/2274002?spm=2114.12010608.0.0.NWPoa1', 'Intel Edison и прочие одноплатные компы', 1),
+(21, 'Siren Electronics', 'https://ru.aliexpress.com/store/1795334?spm=2114.10010208.0.0.WQ0MUF', 'Платы OLINUXINO, прочие одноплатные компы и программаторы', 1),
+(22, 'Robotlinking Store', 'https://ru.aliexpress.com/store/1738188?spm=2114.12010608.0.0.n6X6E3', 'Товары для Arduino, 3D принтеров, роботов', 1),
+(23, 'Mega Semiconductor CO., Ltd.', 'https://ru.aliexpress.com/store/808897?spm=2114.12010608.0.0.03V7Wz', 'Товары для Arduino, есть Raspberry Pi', 1);
 
 -- --------------------------------------------------------
 
@@ -953,7 +972,7 @@ ALTER TABLE `vendorProductStatuses`
 -- AUTO_INCREMENT для таблицы `vendors`
 --
 ALTER TABLE `vendors`
-  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT для таблицы `vendorStatuses`
 --
