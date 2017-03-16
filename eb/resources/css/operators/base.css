@@ -9,7 +9,7 @@ body, div, p, ul, li {
     top: 0;
     left: 0;
     width: 100%;
-    height: 128px;
+    height: auto;
     width: 100%;
     background-color: #8dc153;
     z-index: 1;
@@ -17,7 +17,6 @@ body, div, p, ul, li {
 
 .top-fix {
     clear: both;
-    height: 128px;
 }
 
 .top > .top-area {
@@ -124,6 +123,8 @@ body, div, p, ul, li {
     background-color: #a0d468;
     color: white;
     line-height: 32px;
+    z-index: 2;
+    width: 100%;
 }
 
 .top > #mainMenu .submenu-area .submenu-item {
@@ -136,4 +137,71 @@ body, div, p, ul, li {
 
 .top > #mainMenu .submenu-area .submenu-item:hover {
     border-bottom: 3px solid #8dc153;
+}
+
+.top .toolbar-container,
+.top .navigator-container {
+    box-sizing: border-box;
+    height: 48px;
+    line-height: 48px;
+    border-bottom: 1px solid #e0e0e0;
+    width: 100%;
+    background-color: white;
+}
+.toolbar-buttons {
+    height: inherit;
+    line-height: inherit;
+}
+
+.button.toolbar {
+    box-sizing: border-box;
+    padding: 0 12px;
+    border: 0;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    height: inherit;
+    line-height: inherit;
+    background-color: white;
+    margin: 0;
+    cursor: default;
+    text-indent: 28px;
+    background-position: 12px center;
+    background-repeat: no-repeat;
+}
+.button.toolbar:hover {
+    background-color: #f6f6f6;
+}
+.button.toolbar.add {
+    background-image: url(/images/toolbar-button-add.png);
+}
+.button.toolbar.edit {
+    background-image: url(/images/toolbar-button-edit.png);
+}
+.button.toolbar.remove {
+    background-image: url(/images/toolbar-button-remove.png);
+}
+.button.toolbar.view {
+    background-image: url(/images/toolbar-button-view.png);
+}
+.button.toolbar.toolbars-menu {
+    width: 48px;
+    background-image: url(/images/hamburger-menu.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.toolbar-menu-items {
+    z-index: 3;
+    left: 0;
+    top: 48px;
+    background-color: white;
+    box-sizing: border-box;
+    border: 1px solid #e0e0e0;
+}
+.toolbar-menu-items .item {
+    border: 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.toolbar-menu-items .item.last {
+    border: 0;
 }

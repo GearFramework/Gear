@@ -17,8 +17,12 @@ abstract class EbController extends GController
     public function onBeforeExecController($event)
     {
         if ($this->access != Core::ACCESS_PUBLIC && !$this->getModule()->identity()) {
-            //return Core::app()->redirect($this->getModule()->authController);
-            return 'HTTP/1.0 401 Unauthorized';
+            if (!Core::app()->request->isAjax()) {
+                Core::app()->redirect($this->getModule()->authController);
+            } else {
+                Core::app()->response->send('HTTP/1.0 401 Unauthorized');
+            }
+            die();
         }
         return true;
     }

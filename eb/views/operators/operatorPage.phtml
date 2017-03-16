@@ -9,9 +9,29 @@
     </head>
 
     <body>
-    <div class="top-fix"></div>
+        <div class="top-fix"></div>
         <div class="top affix">
+            <?= $this->view->render($this->viewPath . '/../common/logo'); ?>
             <?= $this->view->render($this->viewPath . '/../common/mainmenu'); ?>
+            <div class="col pc-12 toolbar-container">
+                <div class="col toolbar-buttons">
+                    <div class="base light small pull-left button toolbar toolbars-menu hide">
+                        <div class="fly toolbar-menu-items">
+                            <div class="button toolbar item add">добавить</div>
+                            <div class="button toolbar item edit">редактировать</div>
+                            <div class="button toolbar item remove">удалить</div>
+                            <div class="button toolbar item view last">просмотр</div>
+                        </div>
+                    </div>
+                    <div class="base light small pull-left button toolbar add">добавить</div>
+                    <div class="base light small pull-left button toolbar edit">редактировать</div>
+                    <div class="base light small pull-left button toolbar remove">удалить</div>
+                    <div class="base light small pull-left button toolbar view">просмотр</div>
+                </div>
+            </div>
+            <div class="col pc-12 navigator-container">
+
+            </div>
         </div>
 
         <?=$contentLayout?>

@@ -1,7 +1,7 @@
 .vendors-list>.col {
     box-sizing: border-box;
     height: 100%;
-    background-color: #f0f0f0;
+    background-color: #f1fdf2;
 }
 
 .vendors-list .vendor-tile {
@@ -12,5 +12,5 @@
     cursor: pointer;
 }
 .vendors-list .vendor-tile:hover {
-    background-color: #e0e0e0;
+    background-color: #def2df;
 }

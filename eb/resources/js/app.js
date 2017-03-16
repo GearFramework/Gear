@@ -30,10 +30,8 @@ AppClass.prototype.constructor = AppClass;
  * @param binds
  */
 AppClass.prototype.changeContent = function(binds) {
-    console.log(binds);
     for(var bindName in binds) {
         var content = binds[bindName];
-        console.log(bindName);
         if (this.isPossibleBind(bindName)) {
             this.onBeforeChangeContent(bindName, content);
             this.setContent(bindName, content);
@@ -52,6 +50,8 @@ AppClass.prototype.errorResponse = function(xhr) {
 AppClass.prototype.onInit = function(event) {
     var application = this;
     $(window).on('resize', function(event) { application.onResize(event); });
+    console.log(this.jq.find('.top').height());
+    this.jq.find('.top-fix').height(this.jq.find('.top').height());
     ObjectClass.prototype.onInit.apply(this, arguments);
 };
 

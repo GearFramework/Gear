@@ -84,7 +84,6 @@ ObjectClass.prototype.isPossibleBind = function(name) {
  * @param string content
  */
 ObjectClass.prototype.changeContent = function(bindName, content) {
-    console.log(bindName);
     if (this.isPossibleBind(bindName)) {
         this.onBeforeChangeContent(bindName, content);
         this.setContent(bindName, content);
@@ -104,6 +103,7 @@ ObjectClass.prototype.setContent = function(name, content) {
         this.jq.html(content);
     else
         this.jq.find('[data-bind="' + name + '"]').html(content);
+    this.onChangeContent(name, content);
     return this;
 };
 
