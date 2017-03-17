@@ -142,15 +142,19 @@ body, div, p, ul, li {
 .top .toolbar-container,
 .top .navigator-container {
     box-sizing: border-box;
-    height: 48px;
-    line-height: 48px;
-    border-bottom: 1px solid #e0e0e0;
     width: 100%;
     background-color: white;
+    padding: 0;
+}
+.top .toolbar-container .vendors-toolbar-panel,
+.top .navigator-container .vendors-navigator-panel {
+    border-bottom: 1px solid #e0e0e0;
+    height: 48px;
+    width:100%;
 }
 .toolbar-buttons {
-    height: inherit;
-    line-height: inherit;
+    height: 48px;
+    line-height: 48px;
 }
 
 .button.toolbar {
@@ -158,13 +162,12 @@ body, div, p, ul, li {
     padding: 0 12px;
     border: 0;
     border-right: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+/*    border-bottom: 1px solid #e0e0e0;*/
     height: inherit;
     line-height: inherit;
     background-color: white;
     margin: 0;
     cursor: pointer;
-    text-indent: 28px;
     background-position: 12px center;
     background-repeat: no-repeat;
 }
@@ -172,15 +175,19 @@ body, div, p, ul, li {
     background-color: #f6f6f6;
 }
 .button.toolbar.add {
+    text-indent: 28px;
     background-image: url(/images/toolbar-button-add.png);
 }
 .button.toolbar.edit {
+    text-indent: 28px;
     background-image: url(/images/toolbar-button-edit.png);
 }
 .button.toolbar.remove {
+    text-indent: 28px;
     background-image: url(/images/toolbar-button-remove.png);
 }
 .button.toolbar.view {
+    text-indent: 28px;
     background-image: url(/images/toolbar-button-view.png);
 }
 .button.toolbar.toolbars-menu {
@@ -206,17 +213,19 @@ body, div, p, ul, li {
     border: 0;
 }
 .toolbar-sort {
-    height: inherit;
-    line-height: inherit;
+    height: 48px;
+    line-height: 48px;
     border-left: 1px solid #e0e0e0;
 }
 
 .breadcrumbs {
-    height: inherit;
-    line-height: inherit;
+    height: 48px;
+    line-height: 48px;
 }
 
 .breadcrumbs .crumb {
+    height: 48px;
+    line-height: 48px;
     padding: 0 12px;
     font-weight: 600;
 }
@@ -237,8 +246,8 @@ body, div, p, ul, li {
 }
 
 .paginator {
-    height: inherit;
-    line-height: inherit;
+    height: 48px;
+    line-height: 48px;
 }
 .paginator .page {
     width: 48px;
@@ -246,8 +255,22 @@ body, div, p, ul, li {
     cursor: pointer;
 }
 .paginator .page:hover {
-    background-color: #e0e0e0;
+    background-color: #f6f6f6;
 }
 .paginator .page.selected {
-    background-color: #e0e0e0;
+    background-color: #f6f6f6;
+}
+
+.sort.desc {
+    text-indent: 20px;
+    background-image: url(/images/arrow-down.png);
+    background-position: 12px center;
+    background-repeat: no-repeat;
+}
+
+.sort.asc {
+    text-indent: 28px;
+    background-image: url(/images/arrow-up.png);
+    background-position: 12px center;
+    background-repeat: no-repeat;
 }

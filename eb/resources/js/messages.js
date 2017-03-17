@@ -10,7 +10,7 @@ function MessageClass() {
 
 /* Наследуемся от ObjectClass */
 MessageClass.prototype = Object.create(ObjectClass.prototype);
-MessageClass.prototype.constructor = MainMenuClass;
+MessageClass.prototype.constructor = MessageClass;
 
 /* Переопределяем унаследованное от ObjectClass событие AppClass.onInit */
 MessageClass.prototype.onInit = function(event) {

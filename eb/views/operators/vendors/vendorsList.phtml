@@ -12,3 +12,14 @@
     <?php endforeach; ?>
     </div>
 </div>
+<?php \gear\Core::m('resources')->publicate('resources/js/operators/vendors.js') ?>
+<script>
+    App.vendors = new VendorsClass({
+        navigator: new ToolbarClass({}, $('.vendors-navigator-panel'))
+        toolbar: new ToolbarClass({
+            buttons: {
+                add:
+            }
+        }, $('.vendors-toolbar-panel'))
+    }, $('.vendors-list'));
+</script>
