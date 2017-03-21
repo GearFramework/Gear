@@ -99,10 +99,14 @@ ObjectClass.prototype.changeContent = function(bindName, content) {
  * @returns {ObjectClass}
  */
 ObjectClass.prototype.setContent = function(name, content) {
-    if (this.jq.attr('data-bind') && this.jq.attr('bind') === name)
-        this.jq.html(content);
-    else
-        this.jq.find('[data-bind="' + name + '"]').html(content);
+    if (this.jq.attr('data-bind') && this.jq.attr('bind') === name) {
+        this.jq.html('');
+        this.jq.append(content);
+    }
+    else {
+        this.jq.find('[data-bind="' + name + '"]').html('');
+        this.jq.find('[data-bind="' + name + '"]').append(content);
+    }
     this.onChangeContent(name, content);
     return this;
 };

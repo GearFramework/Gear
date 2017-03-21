@@ -31,9 +31,9 @@ class VendorsController extends EbOperatorController
     public function apiList()
     {
         $template = new GTemplate(['bindsTemplates' => [
-            'data-content' => $this->_viewPath . '/vendorsList',
-            'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
             'data-navigator' => $this->_viewPath . '/vendorsNavigator',
+            'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
+            'data-content' => $this->_viewPath . '/vendorsList',
         ]]);
         return $this->view->render($template, ['vendors' => Core::vendors()->all()], true);
     }

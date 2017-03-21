@@ -37,7 +37,8 @@ ButtonClass.prototype.click = function() {
 };
 
 ButtonClass.prototype.load = function() {
-    console.log(this.jq);
+    var button = this;
+    console.log(this);
     this.jq.on('click', function(event) {
         button.click();
     });
@@ -45,9 +46,7 @@ ButtonClass.prototype.load = function() {
 
 /* Переопределяем унаследованное от ObjectClass событие ButtonClass.onInit */
 ButtonClass.prototype.onInit = function(event) {
-    var buttons = this;
     this.load();
-    App.on('changeContent', buttons.load);
     ObjectClass.prototype.onInit.apply(this, arguments);
 };
 

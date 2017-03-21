@@ -20,7 +20,11 @@ App.vendors = new VendorsClass({
     navigator: new ToolbarClass({}, $('.vendors-navigator-panel')),
     toolbar: new ToolbarClass({
         buttons: {
-            add: new ButtonClass({}, $('.vendors-toolbar-panel .button.add'))
+            add: new ButtonClass({
+                action: function() {
+                    alert('add');
+                }
+            }, $('.vendors-toolbar-panel .button.add'))
         }
     }, $('.vendors-toolbar-panel'))
 }, $('.vendors-list'));
