@@ -60,7 +60,7 @@ AppClass.prototype.onInit = function(event) {
  * @param content
  */
 AppClass.prototype.onChangeContent = function(bindName, content) {
-    this.jq.find('.top-fix').height(this.jq.find('.top').height());путинввввававав
+    this.jq.find('.top-fix').height(this.jq.find('.top').height());
     this.trigger('changeContent', undefined, {bindName: bindName, content: content});
 };
 
