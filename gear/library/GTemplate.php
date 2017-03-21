@@ -2,7 +2,6 @@
 
 namespace gear\library;
 
-use gear\traits\TObject;
 use gear\traits\TView;
 
 /**
@@ -15,13 +14,20 @@ use gear\traits\TView;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GTemplate
+class GTemplate extends GModel
 {
     /* Traits */
-    use TObject;
-    use TView;
     /* Const */
     /* Private */
     /* Protected */
     /* Public */
+
+    public function build($context)
+    {
+        $result = [];
+        foreach($this->bindsTemplates as $bindName => $template) {
+            $result[$bindName] = $this->view->render($template, $context, true);
+        }
+        return $result;
+    }
 }

@@ -150,11 +150,14 @@ body, div, p, ul, li {
 .top .navigator-container .vendors-navigator-panel {
     border-bottom: 1px solid #e0e0e0;
     height: 48px;
+    line-height: 48px;
     width:100%;
 }
 .toolbar-buttons {
-    height: 48px;
-    line-height: 48px;
+    height: inherit;
+    line-height: inherit;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .button.toolbar {
@@ -170,6 +173,7 @@ body, div, p, ul, li {
     cursor: pointer;
     background-position: 12px center;
     background-repeat: no-repeat;
+    border-bottom: 1px solid #e0e0e0;
 }
 .button.toolbar:hover {
     background-color: #f6f6f6;

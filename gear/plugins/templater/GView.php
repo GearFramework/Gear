@@ -42,7 +42,8 @@ class GView extends GPlugin
             $template = $template($context, $buffered);
         }
         if ($template instanceof \gear\library\GTemplate) {
-            $result = $template->render($context, $buffered);
+            $result = $template->build($context);
+            //TODO:Разобраться с $buffered
         } else if (!is_string($template)) {
             throw self::InvalidTemplateException(['template' => $template]);
         } else {

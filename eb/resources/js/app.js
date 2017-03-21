@@ -50,8 +50,6 @@ AppClass.prototype.errorResponse = function(xhr) {
 AppClass.prototype.onInit = function(event) {
     var application = this;
     $(window).on('resize', function(event) { application.onResize(event); });
-    console.log(this.jq.find('.top').height());
-    this.jq.find('.top-fix').height(this.jq.find('.top').height());
     ObjectClass.prototype.onInit.apply(this, arguments);
 };
 
@@ -62,6 +60,7 @@ AppClass.prototype.onInit = function(event) {
  * @param content
  */
 AppClass.prototype.onChangeContent = function(bindName, content) {
+    this.jq.find('.top-fix').height(this.jq.find('.top').height());путинввввававав
     this.trigger('changeContent', undefined, {bindName: bindName, content: content});
 };
 

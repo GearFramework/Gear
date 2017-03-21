@@ -1,6 +1,6 @@
 <div class="container vendors-list base light middle">
     <div class="col pc-3">
-    <?php foreach(\gear\Core::vendors()->all() as $vendor): ?>
+    <?php foreach($vendors as $vendor): ?>
         <div class="pc-12 pull-left vendor-tile">
             <div class="col pc-12 extrabold text-overflow"><?=$vendor->name?></div>
             <div class="clearfix"></div>
@@ -13,13 +13,3 @@
     </div>
 </div>
 <?php \gear\Core::m('resources')->publicate('resources/js/operators/vendors.js') ?>
-<script>
-    App.vendors = new VendorsClass({
-        navigator: new ToolbarClass({}, $('.vendors-navigator-panel'))
-        toolbar: new ToolbarClass({
-            buttons: {
-                add:
-            }
-        }, $('.vendors-toolbar-panel'))
-    }, $('.vendors-list'));
-</script>

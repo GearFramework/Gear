@@ -1,6 +1,7 @@
 function ToolbarClass() {
     /* Устанавливаем свойства по-умолчанию */
     this.properties = {
+        buttons: {},
         onInit: []
     };
     /* вызываем родительский конструктор */
