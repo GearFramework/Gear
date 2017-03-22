@@ -1,7 +1,6 @@
 body, div, p, ul, li {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     position: relative;
 }
 
@@ -141,7 +140,6 @@ body, div, p, ul, li {
 
 .top .toolbar-container,
 .top .navigator-container {
-    box-sizing: border-box;
     width: 100%;
     background-color: white;
     padding: 0;
@@ -156,12 +154,10 @@ body, div, p, ul, li {
 .toolbar-buttons {
     height: inherit;
     line-height: inherit;
-    box-sizing: border-box;
     border-bottom: 1px solid #e0e0e0;
 }
 
 .button.toolbar {
-    box-sizing: border-box;
     padding: 0 12px;
     border: 0;
     border-right: 1px solid #e0e0e0;
@@ -206,7 +202,6 @@ body, div, p, ul, li {
     left: 0;
     top: 48px;
     background-color: white;
-    box-sizing: border-box;
     border: 1px solid #e0e0e0;
 }
 .toolbar-menu-items .item {
@@ -256,6 +251,7 @@ body, div, p, ul, li {
 .paginator .page {
     width: 48px;
     border-left: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
     cursor: pointer;
 }
 .paginator .page:hover {
@@ -263,6 +259,7 @@ body, div, p, ul, li {
 }
 .paginator .page.selected {
     background-color: #f6f6f6;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .sort.desc {

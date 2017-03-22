@@ -19,6 +19,8 @@ body, div, ul, li, td, p, aside { position: relative; padding: 0; margin: 0; }
 .text-capitalize { text-transform: capitalize; }
 .text-hide { font: 0/0 a; color: transparent; text-shadow: none; }
 .text-overflow { overflow: hidden; text-overflow: ellipsis; }
+.text-overflow-scrollable { overflow: auto;}
+.text-overflow-cut { overflow: hidden; }
 
 .base-color { color: white; }
 
@@ -107,4 +109,32 @@ body, div, ul, li, td, p, aside { position: relative; padding: 0; margin: 0; }
 
 input[type="text"], input[type="password"], input[type="button"], input[type="submit"] {
     height: 32px; line-height: 32px; padding: 0 8px 0 8px; box-sizing: border-box;
+}
+
+/*.visible-mb, .visible-tb, .visible-nt, .visible-pc { display: block !important; }
+.hidden-mb, .hidden-tb, .hidden-nt, .hidden-pc { display: none !important; }*/
+
+@media (max-width: 767px)
+{
+    .visible-mb { display: block !important; }
+    .hidden-mb { display: none !important; }
+    .text-hide-mb { font: 0/0 a; color: transparent; text-shadow: none; }
+}
+@media (min-width: 768px) and (max-width: 991px)
+{
+    .visible-tb { display: block !important; }
+    .hidden-tb { display: none !important; }
+    .text-hide-tb { font: 0/0 a; color: transparent; text-shadow: none; }
+}
+@media (min-width: 992px) and (max-width: 1199px)
+{
+    .visible-nt { display: block !important; }
+    .hidden-nt { display: none !important; }
+    .text-hide-nt { font: 0/0 a; color: transparent; text-shadow: none; }
+}
+@media (min-width: 1200px)
+{
+    .visible-pc { display: block !important; }
+    .hidden-pc { display: none !important; }
+    .text-hide-pc { font: 0/0 a; color: transparent; text-shadow: none; }
 }
