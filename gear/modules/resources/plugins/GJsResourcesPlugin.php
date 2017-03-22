@@ -25,6 +25,7 @@ class GJsResourcesPlugin extends GResourcePlugin
     protected $_mappingFolder = null;
     protected $_typeResource = 'js';
     protected $_mime = 'text/javascript';
+    protected $_basePath = 'resources/js';
     /* Public */
 
     /**

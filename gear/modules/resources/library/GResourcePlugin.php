@@ -31,6 +31,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     protected $_typeResource = null;
     protected $_mime = null;
     protected $_controller = '\gear\resources\publicate';
+    protected $_basePath = 'resources';
     /* Public */
 
     /**
@@ -91,6 +92,18 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
      */
     public function getAllowedExtensions(): array {
         return $this->_allowedExtensions;
+    }
+
+    /**
+     * Возвращает базовый путь расположения ресурсов
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getBasePath(): string
+    {
+        return $this->_basePath;
     }
 
     /**
@@ -254,6 +267,11 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
      */
     public function prepareResource($resource): IFile
     {
+        if (is_string($resource)) {
+            if (!preg_match('/^([a-z]\:|\/|\\)/i', $resource)) {
+                $resource = $this->basePath . '/' . $resource;
+            }
+        }
         return $this->owner->prepareResource($resource);
     }
 
@@ -309,6 +327,18 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
         }
         header('Content-Type: ' . $this->mime);
         echo (string)$resource;
+    }
+
+    /**
+     * Устанавливает базовый путь расположения ресурсов
+     *
+     * @param string $path
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setBasePath(string $path)
+    {
+        $this->_basePath = $path;
     }
 
     /**

@@ -25,6 +25,7 @@ class GCssResourcesPlugin extends GResourcePlugin
     protected $_mappingFolder = null;
     protected $_typeResource = 'css';
     protected $_mime = 'text/css';
+    protected $_basePath = 'resources/css';
     /* Public */
 
     /**
