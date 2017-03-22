@@ -200,7 +200,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
      */
     public function isAllowedResource($resource): bool
     {
-        $resource = $this->prepareResource($resource);
+//        $resource = $this->prepareResource($resource);
         $ext = pathinfo($resource, PATHINFO_EXTENSION);
         return in_array(strtolower($ext), $this->allowedExtensions, true);
     }
@@ -268,7 +268,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     public function prepareResource($resource): IFile
     {
         if (is_string($resource)) {
-            if (!preg_match('/^([a-z]\:|\/|\\)/i', $resource)) {
+            if (!preg_match('/^([a-z]\:|\/|\\\\)/i', $resource)) {
                 $resource = $this->basePath . '/' . $resource;
             }
         }

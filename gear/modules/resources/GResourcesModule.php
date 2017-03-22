@@ -127,7 +127,7 @@ class GResourcesModule extends GModule
      */
     public function publicate($resource, array $options = [], bool $compile = false): string
     {
-        $resource = $this->prepareResource($resource);
+        //$resource = $this->prepareResource($resource);
         $result = '';
         foreach($this->resources as $resourceName) {
             if ($this->p($resourceName)->isAllowedResource($resource)) {
