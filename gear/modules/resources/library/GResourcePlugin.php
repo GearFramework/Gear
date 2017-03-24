@@ -28,6 +28,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     /* Protected */
     protected $_allowedExtensions = [];
     protected $_mappingFolder = null;
+    protected $_hashingName = true;
     protected $_typeResource = null;
     protected $_mime = null;
     protected $_controller = '\gear\resources\publicate';
@@ -131,6 +132,19 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     {
         $data = $cache->get($hash);
         return $data ?: '';
+    }
+
+    /**
+     * Возвращает true или false определяющие будет ли при отражении ресурса его оригинальное имя
+     * файла хэшироваться или нет
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getHashingName(): bool
+    {
+        return $this->_hashingName;
     }
 
     /**
@@ -244,7 +258,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
         if (!is_writable($mappingFolder)) {
             throw self::exceptionFileSystem('Mapping directory <{folder}> is not writable', ['folder' => $mappingFolder]);
         }
-        $mappingFile = md5($resource) . '.' . $resource->extension();
+        $mappingFile = $this->hashingName ? md5($resource) . '.' . $resource->extension() : $resource->basename;
         $mappingResource = $mappingFolder . '/' . $mappingFile;
         if (!file_exists($mappingResource) || $resource->mtime() > filemtime($mappingResource)) {
             if ($compile) {
@@ -352,6 +366,19 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     public function setController(string $controller)
     {
         $this->_controller = $controller;
+    }
+
+    /**
+     * Устанавливает true или false определяющие будет ли при отражении ресурса его оригинальное имя
+     * файла хэшироваться или нет
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setHashingName(bool $hashingName)
+    {
+        $this->_hashingName = $hashingName;
     }
 
     /**
