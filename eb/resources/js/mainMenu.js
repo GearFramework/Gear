@@ -1,119 +1,67 @@
-function MainMenuClass(properties) {
-    /* Устанавливаем свойства по-умолчанию */
-    this.properties = {
-        onInit: [],
-        onResize: [],
-        onChangeContent: []
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var MainMenuClass = (function (_super) {
+    __extends(MainMenuClass, _super);
+    function MainMenuClass() {
+        _super.apply(this, arguments);
+    }
+    MainMenuClass.prototype.deselectMenuItem = function (menuItem, event) {
+        menuItem.removeClass('selected');
+        this.hideSubmenu(menuItem);
+        this.trigger('deselectMainMenuItem', event, { menuItem: menuItem });
     };
-    /* вызываем родительский конструктор */
-    return ObjectClass.apply(this, arguments);
-}
-
-/* Наследуемся от ObjectClass */
-MainMenuClass.prototype = Object.create(ObjectClass.prototype);
-MainMenuClass.prototype.constructor = MainMenuClass;
-
-/**
- * Изменение контента на странице
- *
- * @param binds
- */
-MainMenuClass.prototype.changeContent = function(binds) {
-    for(var bindName in binds) {
-        this.onChangeContent(bindName, binds[bindName]);
-    }
-};
-
-MainMenuClass.prototype.deselect = function(item) {
-    item.removeClass('selected');
-    this.hideSubmenu(item);
-    this.onDeselectMainMenuItem(item);
-};
-
-MainMenuClass.prototype.deselectAll = function() {
-    this.jq.find('.mainmenu-area .main-item.selected').removeClass('selected');
-    this.jq.find('.submenu-area .submenu-items.' + item.attr('id')).addClass('hidden');
-};
-
-MainMenuClass.prototype.select = function(item) {
-    item.addClass('selected');
-    this.showSubmenu(item);
-    this.onSelectMainMenuItem(item);
-};
-
-MainMenuClass.prototype.hideSubmenu = function(item) {
-    this.jq.find('.submenu-area .submenu-items.' + item.attr('id')).addClass('hidden');
-};
-
-MainMenuClass.prototype.showSubmenu = function(item) {
-    this.jq.find('.submenu-area .submenu-items.' + item.attr('id')).removeClass('hidden');
-};
-
-MainMenuClass.prototype.selectMenuItem = function(item, event) {
-    var selectedItem = this.getSelectedMenuItem();
-    if (this.isSelected(item)) {
-        this.deselect(item);
-    } else {
-        if (selectedItem !== undefined) {
-            this.deselect(selectedItem);
+    MainMenuClass.prototype.getSelectedMenuItem = function () {
+        var item = this.jq.find('.mainmenu-area .main-item.selected');
+        return item.length > 0 ? item.eq(0) : null;
+    };
+    MainMenuClass.prototype.hideSubmenu = function (menuItem) {
+        this.jq.find(".submenu-area .submenu-items." + menuItem.attr('id')).addClass('hidden');
+    };
+    MainMenuClass.prototype.isSelected = function (menuItem) {
+        return menuItem.hasClass('selected');
+    };
+    MainMenuClass.prototype.selectMenuItem = function (menuItem, event) {
+        if (this.isSelected(menuItem)) {
+            this.deselectMenuItem(menuItem, event);
         }
-        this.select(item);
-    }
-};
-
-MainMenuClass.prototype.selectSubmenuItem = function(item, event) {
-    if (item.attr('data-action')) {
-        App.request().get({
-            url: "/" + item.attr('data-action'),
-            onBeforeSend: function() {
-            },
-            onAfterSuccess: function(json) {
-            },
-            onComplete: function() {
-            },
-            onError: function(request, event, params) {
-                App.errorResponse(params.xhr);
+        else {
+            var selectedItem = this.getSelectedMenuItem();
+            if (selectedItem !== null) {
+                this.deselectMenuItem(menuItem, event);
+            }
+        }
+        menuItem.addClass('selected');
+        this.showSubmenu(menuItem);
+        this.trigger('selectMainMenuItem', event, { menuItem: menuItem });
+    };
+    MainMenuClass.prototype.selectSubmenuItem = function (menuItem, event) {
+        if (menuItem.attr('data-action')) {
+            App.request().get({ url: "/" + menuItem.attr('data-action') });
+        }
+    };
+    MainMenuClass.prototype.showSubmenu = function (menuItem) {
+        this.jq.find(".submenu-area .submenu-items." + menuItem.attr('id')).removeClass('hidden');
+    };
+    MainMenuClass.prototype.init = function (properties) {
+        var menu = this;
+        this.jq.find('.mainmenu-area .main-item').click(function (event) {
+            menu.selectMenuItem($(this), event);
+            event.stopPropagation();
+        });
+        this.jq.find('.submenu-area .submenu-item').click(function (event) {
+            menu.selectSubmenuItem($(this), event);
+        });
+        $('html').on('click', function (event) {
+            var item = menu.getSelectedMenuItem();
+            if (item !== null) {
+                menu.deselectMenuItem(item, event);
             }
         });
-    }
-};
-
-MainMenuClass.prototype.isSelected = function(item) {
-    return item.hasClass('selected');
-};
-
-MainMenuClass.prototype.getSelectedMenuItem = function() {
-    var item = this.jq.find('.mainmenu-area .main-item.selected');
-    return item.length > 0 ? item.eq(0) : undefined;
-};
-
-/* Переопределяем унаследованное от ObjectClass событие AppClass.onInit */
-MainMenuClass.prototype.onInit = function(event) {
-    var menu = this;
-    this.jq.find('.mainmenu-area .main-item').click(function(event) {
-        menu.selectMenuItem($(this), event);
-        event.stopPropagation();
-    });
-    this.jq.find('.submenu-area .submenu-item').click(function(event) {
-        menu.selectSubmenuItem($(this), event);
-    });
-    $('html').on('click', function() {
-        var item = menu.getSelectedMenuItem();
-        if (item !== undefined) {
-            menu.deselect(item);
-        }
-    });
-    ObjectClass.prototype.onInit.apply(this, arguments);
-};
-
-MainMenuClass.prototype.onSelectMainMenuItem = function(item) {
-    this.trigger('selectMainMenuItem', undefined, {item: item});
-};
-
-MainMenuClass.prototype.onDeselectMainMenuItem = function(item) {
-    this.trigger('deselectMainMenuItem', undefined, {item: item});
-};
-
-$(document).ready(function() {
-    App.mainMenu = new MainMenuClass({}, $('#mainMenu'));
-});
+        _super.prototype.init.call(this, properties);
+    };
+    return MainMenuClass;
+}(ObjectClass));
+//# sourceMappingURL=mainMenu.js.map
