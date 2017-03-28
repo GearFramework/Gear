@@ -55,6 +55,7 @@ class MainMenuClass extends ObjectClass {
      */
     public init(properties: any): void {
         let menu: MainMenuClass = this;
+        console.log(this.jq.find('.mainmenu-area .main-item'));
         this.jq.find('.mainmenu-area .main-item').click(function(event: any) {
             menu.selectMenuItem($(this), event);
             event.stopPropagation();

@@ -1,30 +1,33 @@
-function VendorsClass() {
-    /* Устанавливаем свойства по-умолчанию */
-    this.properties = {
-        onInit: []
-    };
-    /* вызываем родительский конструктор */
-    return ObjectClass.apply(this, arguments);
-}
-
-/* Наследуемся от ObjectClass */
-VendorsClass.prototype = Object.create(ObjectClass.prototype);
-VendorsClass.prototype.constructor = VendorsClass;
-
-/* Переопределяем унаследованное от ObjectClass событие VendorsClass.onInit */
-VendorsClass.prototype.onInit = function(event) {
-    ObjectClass.prototype.onInit.apply(this, arguments);
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
-App.vendors = new VendorsClass({
+var VendorsClass = (function (_super) {
+    __extends(VendorsClass, _super);
+    function VendorsClass() {
+        _super.apply(this, arguments);
+    }
+    VendorsClass.prototype.init = function (properties) {
+        _super.prototype.init.call(this, properties);
+    };
+    return VendorsClass;
+}(ObjectClass));
+AppClass.prototype.vendors = new VendorsClass({
     navigator: new ToolbarClass({}, $('.vendors-navigator-panel')),
     toolbar: new ToolbarClass({
         buttons: {
             add: new ButtonClass({
-                action: function() {
+                action: function () {
                     alert('add');
                 }
-            }, $('.vendors-toolbar-panel .button.add'))
+            }, $('.vendors-toolbar-panel .button.add')),
+            edit: new ButtonClass({
+                action: function () {
+                    alert('edit');
+                }
+            }, $('.vendors-toolbar-panel .button.edit'))
         }
     }, $('.vendors-toolbar-panel'))
 }, $('.vendors-list'));
+//# sourceMappingURL=vendors.js.map

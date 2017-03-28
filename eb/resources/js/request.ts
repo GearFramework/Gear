@@ -2,6 +2,9 @@
  * Класс для работы с ajax-запросами
  * - Посылка запросов
  * - Обработка ответов
+ *
+ * @since 0.0.1
+ * @version 0.0.1
  */
 class RequestClass extends ObjectClass {
     /* Private */
@@ -108,6 +111,13 @@ class RequestClass extends ObjectClass {
         }
     }
 
+    /**
+     * Инициализация объекта
+     *
+     * @param object properties
+     * @since 2.0.0
+     * @version 2.0.0
+     */
     public init(properties: any): void {
         super.init(properties);
     }

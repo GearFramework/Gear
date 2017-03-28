@@ -29,6 +29,7 @@ class AppClass extends ObjectClass {
     public request: any;
     public message: any;
     public progress: any;
+    public vendors: any;
 
     public appendComponent(name: string, component: any): void {
         this._components[name] = component;

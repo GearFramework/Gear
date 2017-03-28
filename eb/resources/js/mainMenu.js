@@ -47,6 +47,7 @@ var MainMenuClass = (function (_super) {
     };
     MainMenuClass.prototype.init = function (properties) {
         var menu = this;
+        console.log(this.jq.find('.mainmenu-area .main-item'));
         this.jq.find('.mainmenu-area .main-item').click(function (event) {
             menu.selectMenuItem($(this), event);
             event.stopPropagation();
