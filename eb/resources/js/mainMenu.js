@@ -30,7 +30,7 @@ var MainMenuClass = (function (_super) {
         else {
             var selectedItem = this.getSelectedMenuItem();
             if (selectedItem !== null) {
-                this.deselectMenuItem(menuItem, event);
+                this.deselectMenuItem(selectedItem, event);
             }
         }
         menuItem.addClass('selected');
@@ -47,7 +47,6 @@ var MainMenuClass = (function (_super) {
     };
     MainMenuClass.prototype.init = function (properties) {
         var menu = this;
-        console.log(this.jq.find('.mainmenu-area .main-item'));
         this.jq.find('.mainmenu-area .main-item').click(function (event) {
             menu.selectMenuItem($(this), event);
             event.stopPropagation();

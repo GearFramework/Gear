@@ -33,6 +33,7 @@
         <?=\gear\Core::m('resources')->publicate('app.js')?>
         <?=\gear\Core::m('resources')->publicate('request.js')?>
         <?=\gear\Core::m('resources')->publicate('controls.js')?>
+        <?=\gear\Core::m('resources')->publicate('mainMenu.js')?>
         <script>
             $(document).ready(function() {
                 App = new AppClass({
@@ -41,9 +42,9 @@
                         denied: 'operators/auth/a/denied'
                     }
                 }, $('html'));
+                AppClass.prototype.mainMenu = new MainMenuClass({}, $('#mainMenu'));
             });
         </script>
-        <?=\gear\Core::m('resources')->publicate('mainMenu.js')?>
     </body>
 
 </html>

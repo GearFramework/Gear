@@ -24,6 +24,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     protected $_connectionName = 'db';
     protected $_dbName = '';
     protected $_collectionName = '';
+    protected $_defaultParams = [];
     /* Public */
 
     public function add($model)
@@ -92,6 +93,18 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     public function getConnectionName(): string
     {
         return $this->_connectionName;
+    }
+
+    /**
+     * Возвращает курсор коллекции
+     *
+     * @return GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCursor(): GDbCursor
+    {
+        return $this->selectCollection()->cursor;
     }
 
     /**

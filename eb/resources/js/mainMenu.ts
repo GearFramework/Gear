@@ -22,13 +22,13 @@ class MainMenuClass extends ObjectClass {
         return menuItem.hasClass('selected');
     }
 
-    public selectMenuItem(menuItem: any, event: any): void {
+    public selectMenuItem(menuItem: JQuery, event: any): void {
         if (this.isSelected(menuItem)) {
             this.deselectMenuItem(menuItem, event);
         } else {
-            let selectedItem: any = this.getSelectedMenuItem();
+            let selectedItem: JQuery = this.getSelectedMenuItem();
             if (selectedItem !== null) {
-                this.deselectMenuItem(menuItem, event);
+                this.deselectMenuItem(selectedItem, event);
             }
         }
         menuItem.addClass('selected');
@@ -55,7 +55,6 @@ class MainMenuClass extends ObjectClass {
      */
     public init(properties: any): void {
         let menu: MainMenuClass = this;
-        console.log(this.jq.find('.mainmenu-area .main-item'));
         this.jq.find('.mainmenu-area .main-item').click(function(event: any) {
             menu.selectMenuItem($(this), event);
             event.stopPropagation();
