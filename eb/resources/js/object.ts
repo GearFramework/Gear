@@ -1,10 +1,10 @@
 abstract class ObjectClass {
-    public jq: any;
+    public jq: JQuery;
     public properties: any = {
         onInit: []
     };
 
-    constructor (properties: any, jq?: any) {
+    constructor (properties: any = {}, jq?: JQuery) {
         this.props(properties);
         this.jq = jq;
         this.init(properties);
@@ -44,7 +44,7 @@ abstract class ObjectClass {
         }
     }
 
-    public init(properties: any): void {
+    public init(properties: any = {}): void {
         this.trigger('init', null, properties);
     }
 
@@ -91,9 +91,11 @@ abstract class ObjectClass {
      * @since 2.0.0
      * @version 2.0.0
      */
-    public props(name?: any, value?: any): any {
+    public props(name: any, value?: any): any {
         let result: any = null;
         if (name !== null) {
+            console.log(typeof name);
+            console.log(name);
             if (typeof name === "object") {
                 let nameProp: string;
                 let valueProps: any;

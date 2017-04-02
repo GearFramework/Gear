@@ -36,8 +36,11 @@ var RequestClass = (function (_super) {
         App.trigger('errorResponse', xhr, { status: status, errorMessage: errorMessage });
     };
     RequestClass.prototype.get = function (requestOptions) {
-        if (requestOptions === void 0) { requestOptions = {}; }
-        typeof requestOptions === "undefined" ? requestOptions = { method: "GET" } : requestOptions["method"] = "GET";
+        if (requestOptions === void 0) { requestOptions = { method: "GET" }; }
+        if (requestOptions["method"] === undefined) {
+            requestOptions["method"] = "GET";
+        }
+        this.send(requestOptions);
     };
     RequestClass.prototype.post = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = {}; }
@@ -83,6 +86,7 @@ var RequestClass = (function (_super) {
         }
     };
     RequestClass.prototype.init = function (properties) {
+        if (properties === void 0) { properties = {}; }
         _super.prototype.init.call(this, properties);
     };
     return RequestClass;

@@ -8,6 +8,26 @@ class VendorsClass extends ObjectClass {
     }
 }
 
+class VendorOrdersClass extends ObjectClass {
+    /* Private */
+    /* Protected */
+    /* Public */
+
+    public init(properties: any): void {
+        super.init(properties);
+    }
+}
+
+class VendorCategoriesClass extends ObjectClass {
+    /* Private */
+    /* Protected */
+    /* Public */
+
+    public init(properties: any): void {
+        super.init(properties);
+    }
+}
+
 AppClass.prototype.vendors = new VendorsClass({
     navigator: new ToolbarClass({
 

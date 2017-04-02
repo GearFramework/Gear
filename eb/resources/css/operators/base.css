@@ -131,6 +131,7 @@ body, div, p, ul, li {
     line-height: inherit;
     width: 160px;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .top > #mainMenu .submenu-area .submenu-item:hover {

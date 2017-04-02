@@ -48,8 +48,11 @@ class RequestClass extends ObjectClass {
      * @since 2.0.0
      * @version 2.0.0
      */
-    public get(requestOptions: any = {}): void {
-        typeof requestOptions === "undefined" ? requestOptions = {method: "GET"} : requestOptions["method"] = "GET";
+    public get(requestOptions: any = {method: "GET"}): void {
+        if (requestOptions["method"] === undefined){
+            requestOptions["method"] = "GET";
+        }
+        this.send(requestOptions);
     }
 
     /**
@@ -118,7 +121,7 @@ class RequestClass extends ObjectClass {
      * @since 2.0.0
      * @version 2.0.0
      */
-    public init(properties: any): void {
+    public init(properties: Object = {}): void {
         super.init(properties);
     }
 }

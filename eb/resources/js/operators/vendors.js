@@ -13,6 +13,26 @@ var VendorsClass = (function (_super) {
     };
     return VendorsClass;
 }(ObjectClass));
+var VendorOrdersClass = (function (_super) {
+    __extends(VendorOrdersClass, _super);
+    function VendorOrdersClass() {
+        _super.apply(this, arguments);
+    }
+    VendorOrdersClass.prototype.init = function (properties) {
+        _super.prototype.init.call(this, properties);
+    };
+    return VendorOrdersClass;
+}(ObjectClass));
+var VendorCategoriesClass = (function (_super) {
+    __extends(VendorCategoriesClass, _super);
+    function VendorCategoriesClass() {
+        _super.apply(this, arguments);
+    }
+    VendorCategoriesClass.prototype.init = function (properties) {
+        _super.prototype.init.call(this, properties);
+    };
+    return VendorCategoriesClass;
+}(ObjectClass));
 AppClass.prototype.vendors = new VendorsClass({
     navigator: new ToolbarClass({}, $('.vendors-navigator-panel')),
     toolbar: new ToolbarClass({
