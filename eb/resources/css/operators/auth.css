@@ -1,9 +1,2 @@
-body {
-    background-color: #8dc153;
-}
-
-.inputs { margin-bottom: 24px; }
-.inputs input#username,
-.inputs input#password { width: 100%; }
-.inputs .input-line { margin-bottom: 12px; }
-input#apply { background-color: #9bce52; border: 1px solid #779B38; }
+body{background-color:#8dc153}.inputs{margin-bottom:24px}.inputs input#username,.inputs input#password{width:100%}.inputs .input-line{margin-bottom:12px}input#apply{background-color:#9bce52;border:1px solid #779B38}
+/*# sourceMappingURL=auth.css.map */
