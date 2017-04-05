@@ -69,5 +69,5 @@ interface TimerInterface {
 }
 
 interface TimerGenerator {
-//    (properties: any = {}, jq?: JQuery): TimerInterface;
+    (properties?: Object, jq?: JQuery): TimerInterface;
 }

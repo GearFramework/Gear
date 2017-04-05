@@ -181,7 +181,7 @@ class TimerClass extends ObjectClass implements TimerInterface {
             this.paused = false;
             this.trigger('start', null, {timer: this});
             setTimeout(handlerFunction, this.interval);
-        } else {
+        } else if (this.isPaused()) {
             this.continue();
         }
     }
@@ -200,5 +200,5 @@ class TimerClass extends ObjectClass implements TimerInterface {
 }
 
 $(document).ready(function () {
-    AppClass.prototype.timer = (properties: any, jq?: any) => new RequestClass(properties, jq);
+    App.timer = (properties: Object = {}, jq?: JQuery): TimerInterface => new TimerClass(properties, jq);
 });

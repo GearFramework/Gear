@@ -31,7 +31,7 @@ class AppClass extends ObjectClass {
     public request: any;
     public message: any;
     public progress: any;
-    public timer: any;
+    public timer: TimerGenerator;
     public vendors: any;
 
     /**
