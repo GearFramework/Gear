@@ -20,28 +20,34 @@ var AppClass = (function (_super) {
                 }
             },
             onInit: [],
-            onErrorResponse: [function (sender, xhr, params) {
-                    App.responseError(xhr);
-                }]
+            onRequestComplete: [],
+            onRequestError: [],
+            onResponseSuccess: [],
+            onResponseError: []
         };
     }
-    AppClass.prototype.appendComponent = function (name, component) {
-        this._components[name] = component;
-    };
     AppClass.prototype.init = function (properties) {
         var app = this;
         $(window).on('resize', function (event) {
             app.resize(event);
         });
+        this.on('requestError', function (sender, xhr, params) {
+            if (params === void 0) { params = {}; }
+            app.requestError(xhr);
+        });
+        this.on('responseSuccess', function (sender, xhr, params) {
+            if (params === void 0) { params = {}; }
+            app.changeContent(params);
+        });
         _super.prototype.init.call(this, properties);
     };
-    AppClass.prototype.resize = function (event) {
-        this.trigger('resize', event, {});
-    };
-    AppClass.prototype.responseError = function (xhr) {
+    AppClass.prototype.requestError = function (xhr) {
         if (this.properties.errorsHandlers[xhr.status] !== undefined) {
             this.properties.errorsHandlers[xhr.status]();
         }
+    };
+    AppClass.prototype.resize = function (event) {
+        this.trigger('resize', event, {});
     };
     return AppClass;
 }(ObjectClass));

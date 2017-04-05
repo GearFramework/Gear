@@ -12,6 +12,7 @@ var ControlsClass = (function (_super) {
     ControlsClass.prototype.checkAppendControls = function (sender, event, params) {
     };
     ControlsClass.prototype.init = function (properties) {
+        if (properties === void 0) { properties = {}; }
         App.on('beforeChangeContent', this.checkAppendControls);
         this.loadControls();
         _super.prototype.init.call(this, properties);

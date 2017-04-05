@@ -17,69 +17,143 @@ class RequestClass extends ObjectClass {
         onInit: []
     };
 
-    public beforeSend(xhr: any, settings: any): void {
+    /**
+     * Обработчик события возникающего перед отправкой запроса на сервер
+     *
+     * @param JQueryXHR xhr
+     * @param Object settings
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public beforeSend(xhr: JQueryXHR, settings: Object): void {
         let progress: any = this.props('progress');
         if (typeof progress === "object") {
             progress.start();
         }
-        App.trigger('beforeSend', xhr, {setting: settings});
+        this.trigger('beforeSend', xhr, {setting: settings});
     }
 
+    /**
+     * Обработчик события, возникающего когда запрос завершает свою работу не зависимо от была ли ошибка от
+     * сервера или сервер вернул 200 OK
+     *
+     * Генерирует событие App.onRequestComplete
+     *
+     * @param JQueryXHR xhr
+     * @param string textStatus
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public complete(xhr: any, textStatus: string): void {
         let progress: any = this.props('progress');
         if (typeof progress === "object") {
             progress.stop().reset();
         }
-        App.trigger('complete', xhr, {textStatus: textStatus});
+        App.trigger('requestComplete', xhr, {textStatus: textStatus});
     }
 
+    /**
+     * Обработчик события, возникающего когда сервер возвращает не 200 OK
+     *
+     * Генерирует событие App.onRequestError
+     *
+     * @param JQueryXHR xhr
+     * @param any status
+     * @param string errorMessage
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public error(xhr: any, status: any, errorMessage: string): void {
         let messenger: any = this.props('messenger');
         if (typeof messenger === "object") {
             messenger.log(`Request error [${xhr.status}] ${xhr.statusText}`);
         }
-        App.trigger('errorResponse', xhr, {status: status, errorMessage: errorMessage});
+        App.trigger('requestError', xhr, {status: status, errorMessage: errorMessage});
     }
 
     /**
      * Отправка GET-запроса
      *
      * @param object requestOptions
-     * @since 2.0.0
-     * @version 2.0.0
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public get(requestOptions: any = {method: "GET"}): void {
-        if (requestOptions["method"] === undefined){
+        if (requestOptions["method"] === undefined) {
             requestOptions["method"] = "GET";
         }
         this.send(requestOptions);
     }
 
     /**
+     * Инициализация объекта
+     *
+     * @param object properties
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public init(properties: Object = {}): void {
+        super.init(properties);
+    }
+
+    /**
      * Отправка POST-запроса
      *
      * @param object requestOptions
-     * @since 2.0.0
-     * @version 2.0.0
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
-    public post(requestOptions: any = {}): void {
-        typeof requestOptions === "undefined" ? requestOptions = {method: "POST"} : requestOptions["method"] = "POST";
+    public post(requestOptions: any = {method: "POST"}): void {
+        if (requestOptions["method"] === undefined) {
+            requestOptions["method"] = "POST";
+        }
+        this.send(requestOptions);
     }
 
-    public responseError(data: any, xhr: any): void {
-        this.trigger('responseError', undefined, {data: data, xhr: xhr});
+    /**
+     * Метод вызывается когда со стороны сервера пришёл ответ содержаший ошибку выполнения
+     *
+     * Генерирует событие App.onResponseError
+     *
+     * @param Object data
+     * @param JQueryXHR xhr
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public responseError(data: Object, xhr: JQueryXHR): void {
+        App.trigger('responseError', xhr, {data: data});
     }
 
-    public responseSuccess(data: any, xhr: any): void {
-        this.trigger('responseSuccess', undefined, {data: data, xhr: xhr});
+    /**
+     * Метод вызывается когда со стороны сервера пришёл ответ, не содержащий в себе
+     * ошибку исполнения кода
+     *
+     * Генерирует событие App.onResponseSuccess
+     *
+     * @param Object data
+     * @param JQueryXHR xhr
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public responseSuccess(data: Object, xhr: JQueryXHR): void {
+        App.trigger('responseSuccess', xhr, {data: data});
     }
 
     /**
      * Отправка запроса на сервер
      *
      * @param object requestOptions
-     * @since 2.0.0
-     * @version 2.0.0
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
      */
     public send(requestOptions: any): void {
         let options: any = this.props('requestOptions');
@@ -93,9 +167,20 @@ class RequestClass extends ObjectClass {
         $.ajax(options);
     }
 
-    public success(data: any, textStatus: string, xhr: any): void {
+    /**
+     * Обработчик успешно выполненного запроса, когда сервер возвращает ответ 200 OK
+     *
+     * @param object data
+     * @param string textStatus
+     * @param JQueryXHR xhr
+     * @return void
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public success(data: any, textStatus: string, xhr: JQueryXHR): void {
         let request: RequestClass = this;
-        this.trigger('beforeSuccess', undefined, {request: request, data: data, textStatus: textStatus, xhr: xhr});
+        this.trigger('beforeSuccess', xhr, {request: request, data: data, textStatus: textStatus});
         if (!this.props('returnTransfer')) {
             if (data["error"] !== null) {
                 let messenger: any = this.props('messenger');
@@ -104,29 +189,15 @@ class RequestClass extends ObjectClass {
                 }
                 this.responseError(data, xhr);
             } else {
-                App.changeContent(data.binds);
                 this.responseSuccess(data, xhr);
             }
-            this.trigger('afterSuccess', undefined, {request: request, data: data, textStatus: textStatus, xhr: xhr});
+            this.trigger('afterSuccess', xhr, {request: request, data: data, textStatus: textStatus});
         } else {
-            this.trigger('afterSuccess', undefined, {request: request, data: data, textStatus: textStatus, xhr: xhr});
-            return data;
+            this.trigger('afterSuccess', xhr, {request: request, data: data, textStatus: textStatus});
         }
-    }
-
-    /**
-     * Инициализация объекта
-     *
-     * @param object properties
-     * @since 2.0.0
-     * @version 2.0.0
-     */
-    public init(properties: Object = {}): void {
-        super.init(properties);
     }
 }
 
 $(document).ready(function () {
-    //App.appendComponent('request', (properties: any, jq?: any) => new RequestClass(properties, jq));
     AppClass.prototype.request = (properties: any, jq?: any) => new RequestClass(properties, jq);
 });

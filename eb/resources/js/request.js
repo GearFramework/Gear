@@ -19,21 +19,21 @@ var RequestClass = (function (_super) {
         if (typeof progress === "object") {
             progress.start();
         }
-        App.trigger('beforeSend', xhr, { setting: settings });
+        this.trigger('beforeSend', xhr, { setting: settings });
     };
     RequestClass.prototype.complete = function (xhr, textStatus) {
         var progress = this.props('progress');
         if (typeof progress === "object") {
             progress.stop().reset();
         }
-        App.trigger('complete', xhr, { textStatus: textStatus });
+        App.trigger('requestComplete', xhr, { textStatus: textStatus });
     };
     RequestClass.prototype.error = function (xhr, status, errorMessage) {
         var messenger = this.props('messenger');
         if (typeof messenger === "object") {
             messenger.log("Request error [" + xhr.status + "] " + xhr.statusText);
         }
-        App.trigger('errorResponse', xhr, { status: status, errorMessage: errorMessage });
+        App.trigger('requestError', xhr, { status: status, errorMessage: errorMessage });
     };
     RequestClass.prototype.get = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = { method: "GET" }; }
@@ -42,15 +42,22 @@ var RequestClass = (function (_super) {
         }
         this.send(requestOptions);
     };
+    RequestClass.prototype.init = function (properties) {
+        if (properties === void 0) { properties = {}; }
+        _super.prototype.init.call(this, properties);
+    };
     RequestClass.prototype.post = function (requestOptions) {
-        if (requestOptions === void 0) { requestOptions = {}; }
-        typeof requestOptions === "undefined" ? requestOptions = { method: "POST" } : requestOptions["method"] = "POST";
+        if (requestOptions === void 0) { requestOptions = { method: "POST" }; }
+        if (requestOptions["method"] === undefined) {
+            requestOptions["method"] = "POST";
+        }
+        this.send(requestOptions);
     };
     RequestClass.prototype.responseError = function (data, xhr) {
-        this.trigger('responseError', undefined, { data: data, xhr: xhr });
+        App.trigger('responseError', xhr, { data: data });
     };
     RequestClass.prototype.responseSuccess = function (data, xhr) {
-        this.trigger('responseSuccess', undefined, { data: data, xhr: xhr });
+        App.trigger('responseSuccess', xhr, { data: data });
     };
     RequestClass.prototype.send = function (requestOptions) {
         var options = this.props('requestOptions');
@@ -65,7 +72,7 @@ var RequestClass = (function (_super) {
     };
     RequestClass.prototype.success = function (data, textStatus, xhr) {
         var request = this;
-        this.trigger('beforeSuccess', undefined, { request: request, data: data, textStatus: textStatus, xhr: xhr });
+        this.trigger('beforeSuccess', xhr, { request: request, data: data, textStatus: textStatus });
         if (!this.props('returnTransfer')) {
             if (data["error"] !== null) {
                 var messenger = this.props('messenger');
@@ -75,19 +82,13 @@ var RequestClass = (function (_super) {
                 this.responseError(data, xhr);
             }
             else {
-                App.changeContent(data.binds);
                 this.responseSuccess(data, xhr);
             }
-            this.trigger('afterSuccess', undefined, { request: request, data: data, textStatus: textStatus, xhr: xhr });
+            this.trigger('afterSuccess', xhr, { request: request, data: data, textStatus: textStatus });
         }
         else {
-            this.trigger('afterSuccess', undefined, { request: request, data: data, textStatus: textStatus, xhr: xhr });
-            return data;
+            this.trigger('afterSuccess', xhr, { request: request, data: data, textStatus: textStatus });
         }
-    };
-    RequestClass.prototype.init = function (properties) {
-        if (properties === void 0) { properties = {}; }
-        _super.prototype.init.call(this, properties);
     };
     return RequestClass;
 }(ObjectClass));

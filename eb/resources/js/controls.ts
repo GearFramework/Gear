@@ -12,7 +12,7 @@ class ControlsClass extends ObjectClass {
 
     }
 
-    public init(properties: void): void {
+    public init(properties: Object = {}): void {
         App.on('beforeChangeContent', this.checkAppendControls);
         this.loadControls();
         super.init(properties);
