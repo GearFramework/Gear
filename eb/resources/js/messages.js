@@ -1,24 +1,26 @@
-function MessageClass() {
-    /* Устанавливаем свойства по-умолчанию */
-    this.properties = {
-        message: '',
-        onInit: []
-    };
-    /* вызываем родительский конструктор */
-    return ObjectClass.apply(this, arguments);
-}
-
-/* Наследуемся от ObjectClass */
-MessageClass.prototype = Object.create(ObjectClass.prototype);
-MessageClass.prototype.constructor = MessageClass;
-
-/* Переопределяем унаследованное от ObjectClass событие AppClass.onInit */
-MessageClass.prototype.onInit = function(event) {
-    ObjectClass.prototype.onInit.apply(this, arguments);
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
-$(document).ready(function() {
-    AppClass.prototype.messages = function(properties) {
-        return new MessageClass(properties);
+var MessagesClass = (function (_super) {
+    __extends(MessagesClass, _super);
+    function MessagesClass() {
+        _super.apply(this, arguments);
+        this.properties = {
+            notifyContainer: null,
+            shadow: null,
+            onShow: [],
+            onClose: []
+        };
+    }
+    MessagesClass.prototype.showMessage = function (message) {
     };
+    MessagesClass.prototype.showNotify = function (message) {
+    };
+    return MessagesClass;
+}(ObjectClass));
+$(document).ready(function () {
+    AppClass.prototype.messages = function (properties, jq) { return new MessagesClass(properties, jq); };
 });
+//# sourceMappingURL=messages.js.map

@@ -162,7 +162,7 @@ class TimerClass extends ObjectClass implements TimerInterface {
         if (interval !== undefined) {
             this.interval = this._prepareInterval(interval);
         }
-        if (!this.isPaused() && this.isStopped()) {
+        if (this.isStopped()) {
             let handlerFunction = (): void => {
                 if (this.paused) {
                     setTimeout(handlerFunction, this.interval);
