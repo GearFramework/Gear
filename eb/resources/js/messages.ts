@@ -9,6 +9,10 @@ class MessagesClass extends ObjectClass {
         onClose: []
     };
 
+    protected prepareEventName(eventName: string): string {
+        return super.prepareEventName(eventName);
+    }
+
     public showMessage(message: string): void {
 
     }

@@ -14,7 +14,27 @@ class RequestClass extends ObjectClass {
         messenger: console,
         progress: null,
         requestOptions: {},
-        onInit: []
+        onInit: [],
+        onResponseSuccess: [
+            (eventName: string, event?: any, params?: any): void => {
+                App.trigger('responseSuccess', event, params);
+            }
+        ],
+        onResponseError: [
+            (eventName: string, event?: any, params?: any): void => {
+                App.trigger('responseError', event, params);
+            }
+        ],
+        onRequestComplete: [
+            (eventName: string, event?: any, params?: any): void => {
+                App.trigger('requestComplete', event, params);
+            }
+        ],
+        onRequestError: [
+            (eventName: string, event?: any, params?: any): void => {
+                App.trigger('requestError', event, params);
+            }
+        ]
     };
 
     /**
@@ -51,7 +71,7 @@ class RequestClass extends ObjectClass {
         if (typeof progress === "object") {
             progress.stop().reset();
         }
-        App.trigger('requestComplete', xhr, {textStatus: textStatus});
+        this.trigger('requestComplete', xhr, {textStatus: textStatus});
     }
 
     /**
@@ -71,7 +91,7 @@ class RequestClass extends ObjectClass {
         if (typeof messenger === "object") {
             messenger.log(`Request error [${xhr.status}] ${xhr.statusText}`);
         }
-        App.trigger('requestError', xhr, {status: status, errorMessage: errorMessage});
+        this.trigger('requestError', xhr, {status: status, errorMessage: errorMessage});
     }
 
     /**
@@ -128,7 +148,7 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public responseError(data: Object, xhr: JQueryXHR): void {
-        App.trigger('responseError', xhr, {data: data});
+        this.trigger('responseError', xhr, {data: data});
     }
 
     /**
@@ -144,7 +164,7 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public responseSuccess(data: Object, xhr: JQueryXHR): void {
-        App.trigger('responseSuccess', xhr, {data: data});
+        this.trigger('responseSuccess', xhr, {data: data});
     }
 
     /**

@@ -14,6 +14,9 @@ var MessagesClass = (function (_super) {
             onClose: []
         };
     }
+    MessagesClass.prototype.prepareEventName = function (eventName) {
+        return _super.prototype.prepareEventName.call(this, eventName);
+    };
     MessagesClass.prototype.showMessage = function (message) {
     };
     MessagesClass.prototype.showNotify = function (message) {

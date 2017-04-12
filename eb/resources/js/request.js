@@ -11,7 +11,27 @@ var RequestClass = (function (_super) {
             messenger: console,
             progress: null,
             requestOptions: {},
-            onInit: []
+            onInit: [],
+            onResponseSuccess: [
+                function (eventName, event, params) {
+                    App.trigger('responseSuccess', event, params);
+                }
+            ],
+            onResponseError: [
+                function (eventName, event, params) {
+                    App.trigger('responseError', event, params);
+                }
+            ],
+            onRequestComplete: [
+                function (eventName, event, params) {
+                    App.trigger('requestComplete', event, params);
+                }
+            ],
+            onRequestError: [
+                function (eventName, event, params) {
+                    App.trigger('requestError', event, params);
+                }
+            ]
         };
     }
     RequestClass.prototype.beforeSend = function (xhr, settings) {
@@ -26,14 +46,14 @@ var RequestClass = (function (_super) {
         if (typeof progress === "object") {
             progress.stop().reset();
         }
-        App.trigger('requestComplete', xhr, { textStatus: textStatus });
+        this.trigger('requestComplete', xhr, { textStatus: textStatus });
     };
     RequestClass.prototype.error = function (xhr, status, errorMessage) {
         var messenger = this.props('messenger');
         if (typeof messenger === "object") {
             messenger.log("Request error [" + xhr.status + "] " + xhr.statusText);
         }
-        App.trigger('requestError', xhr, { status: status, errorMessage: errorMessage });
+        this.trigger('requestError', xhr, { status: status, errorMessage: errorMessage });
     };
     RequestClass.prototype.get = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = { method: "GET" }; }
@@ -54,10 +74,10 @@ var RequestClass = (function (_super) {
         this.send(requestOptions);
     };
     RequestClass.prototype.responseError = function (data, xhr) {
-        App.trigger('responseError', xhr, { data: data });
+        this.trigger('responseError', xhr, { data: data });
     };
     RequestClass.prototype.responseSuccess = function (data, xhr) {
-        App.trigger('responseSuccess', xhr, { data: data });
+        this.trigger('responseSuccess', xhr, { data: data });
     };
     RequestClass.prototype.send = function (requestOptions) {
         var options = this.props('requestOptions');
