@@ -4,6 +4,7 @@ namespace gear\library\io;
 
 use gear\interfaces\IIo;
 use gear\library\GModel;
+use gear\traits\TStaticFactory;
 
 abstract class GIo extends GModel implements IIo
 {
