@@ -25,7 +25,9 @@ abstract class ObjectClass {
      * @version 0.0.1
      */
     constructor (properties: Object = {}, jq?: JQuery) {
+        console.log(properties);
         this.props(properties);
+        console.log(this);
         this.jq = jq;
         this.init(properties);
     }
@@ -180,6 +182,7 @@ abstract class ObjectClass {
     public props(name?: any, value?: any): any {
         let result: any = null;
         if (name !== null) {
+            console.log(name);
             if (typeof name === "object") {
                 let nameProp: string;
                 let valueProps: any;
@@ -187,7 +190,7 @@ abstract class ObjectClass {
                     this.props(nameProp, name[nameProp]);
                 }
             } else if (typeof name === "string") {
-                if (value === null) {
+                if (value === undefined) {
                     result = this.properties[name];
                 } else {
                     if (name.match('^on[A-Z]')) {

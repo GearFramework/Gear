@@ -38,7 +38,7 @@ class MainMenuClass extends ObjectClass {
 
     public selectSubmenuItem(menuItem: JQuery, event: Event): void {
         if (menuItem.attr('data-action')) {
-            App.request().get({url: `/${menuItem.attr('data-action')}`});
+            App.request({url: `/${menuItem.attr('data-action')}`}).get();
         }
     }
 

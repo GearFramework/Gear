@@ -39,7 +39,7 @@ var MainMenuClass = (function (_super) {
     };
     MainMenuClass.prototype.selectSubmenuItem = function (menuItem, event) {
         if (menuItem.attr('data-action')) {
-            App.request().get({ url: "/" + menuItem.attr('data-action') });
+            App.request({ url: "/" + menuItem.attr('data-action') }).get();
         }
     };
     MainMenuClass.prototype.showSubmenu = function (menuItem) {

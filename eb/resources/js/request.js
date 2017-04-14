@@ -36,7 +36,7 @@ var RequestClass = (function (_super) {
     }
     RequestClass.prototype.beforeSend = function (xhr, settings) {
         var progress = this.props('progress');
-        if (typeof progress === "object") {
+        if (progress !== null) {
             progress.start();
         }
         this.trigger('beforeSend', xhr, { setting: settings });
@@ -80,14 +80,15 @@ var RequestClass = (function (_super) {
         this.trigger('responseSuccess', xhr, { data: data });
     };
     RequestClass.prototype.send = function (requestOptions) {
+        var request = this;
         var options = this.props('requestOptions');
         for (var name_1 in requestOptions) {
             options[name_1] = requestOptions[name_1];
         }
-        options.beforeSend = this.beforeSend;
-        options.success = this.success;
-        options.error = this.error;
-        options.complete = this.complete;
+        options.beforeSend = function (xhr, settings) { return request.beforeSend(xhr, settings); };
+        options.success = function (data, textStatus, xhr) { return request.success(data, textStatus, xhr); };
+        options.error = function (xhr, status, errorMessage) { return request.error(xhr, status, errorMessage); };
+        options.complete = function (xhr, textStatus) { return request.complete(xhr, textStatus); };
         $.ajax(options);
     };
     RequestClass.prototype.success = function (data, textStatus, xhr) {

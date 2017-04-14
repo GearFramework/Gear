@@ -48,7 +48,7 @@ class RequestClass extends ObjectClass {
      */
     public beforeSend(xhr: JQueryXHR, settings: Object): void {
         let progress: any = this.props('progress');
-        if (typeof progress === "object") {
+        if (progress !== null) {
             progress.start();
         }
         this.trigger('beforeSend', xhr, {setting: settings});
@@ -66,7 +66,7 @@ class RequestClass extends ObjectClass {
      * @since 0.0.1
      * @version 0.0.1
      */
-    public complete(xhr: any, textStatus: string): void {
+    public complete(xhr: JQueryXHR, textStatus: string): void {
         let progress: any = this.props('progress');
         if (typeof progress === "object") {
             progress.stop().reset();
@@ -86,7 +86,7 @@ class RequestClass extends ObjectClass {
      * @since 0.0.1
      * @version 0.0.1
      */
-    public error(xhr: any, status: any, errorMessage: string): void {
+    public error(xhr: JQueryXHR, status: any, errorMessage: string): void {
         let messenger: any = this.props('messenger');
         if (typeof messenger === "object") {
             messenger.log(`Request error [${xhr.status}] ${xhr.statusText}`);
@@ -176,14 +176,15 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public send(requestOptions: any): void {
+        let request: RequestClass = this;
         let options: any = this.props('requestOptions');
         for(let name in requestOptions) {
             options[name] = requestOptions[name];
         }
-        options.beforeSend = this.beforeSend;
-        options.success = this.success;
-        options.error = this.error;
-        options.complete = this.complete;
+        options.beforeSend = (xhr: JQueryXHR, settings: Object): void => request.beforeSend(xhr, settings);
+        options.success = (data: any, textStatus: string, xhr: JQueryXHR): void => request.success(data, textStatus, xhr);
+        options.error = (xhr: JQueryXHR, status: any, errorMessage: string): void => request.error(xhr, status, errorMessage);
+        options.complete = (xhr: JQueryXHR, textStatus: string): void => request.complete(xhr, textStatus);
         $.ajax(options);
     }
 
@@ -219,5 +220,5 @@ class RequestClass extends ObjectClass {
 }
 
 $(document).ready(function () {
-    AppClass.prototype.request = (properties: any, jq?: any) => new RequestClass(properties, jq);
+    AppClass.prototype.request = (properties: any, jq?: any): RequestClass => new RequestClass(properties, jq);
 });
