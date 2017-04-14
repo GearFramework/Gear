@@ -8,6 +8,7 @@ use gear\library\GModel;
 abstract class GIo extends GModel implements IIo
 {
     /* Traits */
+    use TStaticFactory;
     /* Const */
     const UNKNOWN = 0;
     const FIFO = 1;

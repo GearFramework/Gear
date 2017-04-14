@@ -23,7 +23,6 @@ use gear\traits\TStaticFactory;
 abstract class GFileSystem extends GIo implements IFileSystem
 {
     /* Traits */
-    use TStaticFactory;
     /* Const */
     const DEFAULT_MODE = 0664;
     /* Private */
