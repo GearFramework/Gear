@@ -34,7 +34,6 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
 
     public function all()
     {
-        Core::syslog(Core::INFO, 'Get all from storage <{class}>', ['class' => static::class, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return $this->find();
     }
 
