@@ -8,6 +8,7 @@ use gear\interfaces\IFileSystem;
 use gear\library\GEvent;
 use gear\library\io\GIo;
 use gear\traits\TFactory;
+use gear\traits\TStaticFactory;
 
 /**
  * Класс файловой системы
@@ -22,7 +23,7 @@ use gear\traits\TFactory;
 abstract class GFileSystem extends GIo implements IFileSystem
 {
     /* Traits */
-    use TFactory;
+    use TStaticFactory;
     /* Const */
     const DEFAULT_MODE = 0664;
     /* Private */
@@ -1013,8 +1014,11 @@ abstract class GFileSystem extends GIo implements IFileSystem
         'zirz' => 'application/vnd.zul',
         'zmm' => 'application/vnd.handheld-entertainment+xml',
     ];
+    protected static $_factory = [
+        'dir' => ['class' => '\gear\library\io\filesystem\GDirectory'],
+        'file' => ['class' => '\gear\library\io\filesystem\GFile'],
+    ];
     protected $_units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-    protected $_factory = [];
     /* Public */
 
     /**
@@ -1390,6 +1394,35 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function getDirname(): string
     {
         return dirname($this->path);
+    }
+
+    /**
+     * Возвращает данные создаваемого объекта
+     *
+     * @param array $record
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getFactory(array $record = []): array
+    {
+        $factory = null;
+        if ($record && isset($record['path'])) {
+            if (file_exists($record['path'])) {
+                $type = filetype($record['path']);
+                if (isset(static::$_factory[$type])) {
+                    $factory = static::$_factory[$type];
+                }
+            } else if (isset($record['type'])) {
+                if (isset(static::$_factory[$record['type']])) {
+                    $factory = static::$_factory[$record['type']];
+                }
+            }
+        }
+        if (!$factory) {
+            self::FileSystemException('Unknown filesystem element');
+        }
+        return array_replace_recursive($factory, $record);
     }
 
     /**
