@@ -9,8 +9,7 @@
 class AppClass extends ObjectClass {
     /* Private */
     /* Protected */
-    /* Public */
-    public properties: any = {
+    protected _propertiesDefault: any = {
         controllers: {
             auth: ''
         },
@@ -28,12 +27,28 @@ class AppClass extends ObjectClass {
         onResponseSuccess: [],
         onResponseError: []
     };
+    /* Public */
     public request: any;
     public message: any;
     public progress: any;
     public timer: TimerGenerator;
     public messages: any;
     public vendors: any;
+
+    /**
+     * Конструктор объекта
+     *
+     * @param Object properties
+     * @param JQuery jq
+     * @return ObjectClass
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    constructor (properties: Object = {}, jq?: JQuery) {
+        super(properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
 
     /**
      * Инициализация приложения

@@ -3,6 +3,21 @@ class MainMenuClass extends ObjectClass {
     /* Protected */
     /* Public */
 
+    /**
+     * Конструктор объекта
+     *
+     * @param Object properties
+     * @param JQuery jq
+     * @return ObjectClass
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    constructor (properties: Object = {}, jq?: JQuery) {
+        super(properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
+
     public deselectMenuItem(menuItem: JQuery, event: Event): void {
         menuItem.removeClass('selected');
         this.hideSubmenu(menuItem);
@@ -38,7 +53,8 @@ class MainMenuClass extends ObjectClass {
 
     public selectSubmenuItem(menuItem: JQuery, event: Event): void {
         if (menuItem.attr('data-action')) {
-            App.request({url: `/${menuItem.attr('data-action')}`}).get();
+            let request: RequestClass = App.request({url: `/${menuItem.attr('data-action')}`});
+            request.get();
         }
     }
 

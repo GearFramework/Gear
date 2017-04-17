@@ -9,8 +9,7 @@
 class RequestClass extends ObjectClass {
     /* Private */
     /* Protected */
-    /* Public */
-    public properties: any = {
+    protected _defaultProperties: any = {
         messenger: console,
         progress: null,
         requestOptions: {},
@@ -36,6 +35,22 @@ class RequestClass extends ObjectClass {
             }
         ]
     };
+    /* Public */
+
+    /**
+     * Конструктор объекта
+     *
+     * @param Object properties
+     * @param JQuery jq
+     * @return ObjectClass
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    constructor (properties: Object = {}, jq?: JQuery) {
+        super(properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
 
     /**
      * Обработчик события возникающего перед отправкой запроса на сервер
@@ -103,9 +118,11 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public get(requestOptions: any = {method: "GET"}): void {
+        console.log('Request get');
         if (requestOptions["method"] === undefined) {
             requestOptions["method"] = "GET";
         }
+        console.log(this.properties);
         this.send(requestOptions);
     }
 
@@ -118,7 +135,9 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public init(properties: Object = {}): void {
+        console.log('Request init');
         super.init(properties);
+        console.log(this);
     }
 
     /**
@@ -176,6 +195,8 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public send(requestOptions: any): void {
+        console.log('Request send');
+        console.log(this.properties);
         let request: RequestClass = this;
         let options: any = this.props('requestOptions');
         for(let name in requestOptions) {
@@ -205,7 +226,7 @@ class RequestClass extends ObjectClass {
         if (!this.props('returnTransfer')) {
             if (data["error"] !== null) {
                 let messenger: any = this.props('messenger');
-                if (typeof messenger === "object") {
+                if (messenger !== null) {
                     messenger.log(`Application error:\n${data.error.text}\n${data.error.file} [${data.error.line}]\n${data.error.trace}`);
                 }
                 this.responseError(data, xhr);

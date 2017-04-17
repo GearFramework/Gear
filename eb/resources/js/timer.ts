@@ -9,11 +9,7 @@
 class TimerClass extends ObjectClass implements TimerInterface {
     /* Private */
     /* Protected */
-    protected _interval: number = null;
-    protected _stopped: boolean = true;
-    protected _paused: boolean = false;
-    /* Public */
-    public properties: any = {
+    protected _propertiesDefault: any = {
         timer: 0,
         autoStart: false,
         cycle: false,
@@ -21,6 +17,25 @@ class TimerClass extends ObjectClass implements TimerInterface {
         onEnd: [],
         onStart: []
     };
+    protected _interval: number = null;
+    protected _stopped: boolean = true;
+    protected _paused: boolean = false;
+    /* Public */
+
+    /**
+     * Конструктор объекта
+     *
+     * @param Object properties
+     * @param JQuery jq
+     * @return ObjectClass
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    constructor (properties: Object = {}, jq?: JQuery) {
+        super(properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
 
     get interval(): number {
         if (this._interval === null) {

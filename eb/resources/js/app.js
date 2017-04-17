@@ -5,9 +5,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var AppClass = (function (_super) {
     __extends(AppClass, _super);
-    function AppClass() {
-        _super.apply(this, arguments);
-        this.properties = {
+    function AppClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this._propertiesDefault = {
             controllers: {
                 auth: ''
             },
@@ -25,6 +26,8 @@ var AppClass = (function (_super) {
             onResponseSuccess: [],
             onResponseError: []
         };
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
     }
     AppClass.prototype.init = function (properties) {
         var app = this;

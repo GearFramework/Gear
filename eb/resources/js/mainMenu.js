@@ -5,8 +5,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var MainMenuClass = (function (_super) {
     __extends(MainMenuClass, _super);
-    function MainMenuClass() {
-        _super.apply(this, arguments);
+    function MainMenuClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
     }
     MainMenuClass.prototype.deselectMenuItem = function (menuItem, event) {
         menuItem.removeClass('selected');
@@ -39,7 +42,8 @@ var MainMenuClass = (function (_super) {
     };
     MainMenuClass.prototype.selectSubmenuItem = function (menuItem, event) {
         if (menuItem.attr('data-action')) {
-            App.request({ url: "/" + menuItem.attr('data-action') }).get();
+            var request = App.request({ url: "/" + menuItem.attr('data-action') });
+            request.get();
         }
     };
     MainMenuClass.prototype.showSubmenu = function (menuItem) {

@@ -5,9 +5,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var RequestClass = (function (_super) {
     __extends(RequestClass, _super);
-    function RequestClass() {
-        _super.apply(this, arguments);
-        this.properties = {
+    function RequestClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this._defaultProperties = {
             messenger: console,
             progress: null,
             requestOptions: {},
@@ -33,6 +34,8 @@ var RequestClass = (function (_super) {
                 }
             ]
         };
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
     }
     RequestClass.prototype.beforeSend = function (xhr, settings) {
         var progress = this.props('progress');
@@ -57,14 +60,18 @@ var RequestClass = (function (_super) {
     };
     RequestClass.prototype.get = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = { method: "GET" }; }
+        console.log('Request get');
         if (requestOptions["method"] === undefined) {
             requestOptions["method"] = "GET";
         }
+        console.log(this.properties);
         this.send(requestOptions);
     };
     RequestClass.prototype.init = function (properties) {
         if (properties === void 0) { properties = {}; }
+        console.log('Request init');
         _super.prototype.init.call(this, properties);
+        console.log(this);
     };
     RequestClass.prototype.post = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = { method: "POST" }; }
@@ -80,6 +87,8 @@ var RequestClass = (function (_super) {
         this.trigger('responseSuccess', xhr, { data: data });
     };
     RequestClass.prototype.send = function (requestOptions) {
+        console.log('Request send');
+        console.log(this.properties);
         var request = this;
         var options = this.props('requestOptions');
         for (var name_1 in requestOptions) {
@@ -97,7 +106,7 @@ var RequestClass = (function (_super) {
         if (!this.props('returnTransfer')) {
             if (data["error"] !== null) {
                 var messenger = this.props('messenger');
-                if (typeof messenger === "object") {
+                if (messenger !== null) {
                     messenger.log("Application error:\n" + data.error.text + "\n" + data.error.file + " [" + data.error.line + "]\n" + data.error.trace);
                 }
                 this.responseError(data, xhr);

@@ -7,9 +7,7 @@
 class ListClass extends ObjectClass {
     /* Private */
     /* Protected */
-    protected _items: any = null;
-    /* Public */
-    public properties: any = {
+    protected _defaultProperties: any = {
         messenger: console,
         progress: null,
         /* Селектор элементов, которые участвуют в списке */
@@ -25,6 +23,23 @@ class ListClass extends ObjectClass {
         disableHtmlSelecting : true,
         onInit: []
     };
+    protected _items: any = null;
+    /* Public */
+
+    /**
+     * Конструктор объекта
+     *
+     * @param Object properties
+     * @param JQuery jq
+     * @return ObjectClass
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    constructor (properties: Object = {}, jq?: JQuery) {
+        super(properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
 
     public get items(): any {
         return this._items;

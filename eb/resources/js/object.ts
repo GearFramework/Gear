@@ -9,6 +9,7 @@
 abstract class ObjectClass {
     /* Private */
     /* Protected */
+    protected _propertiesDefault: any = {};
     /* Public */
     public jq: JQuery;
     public properties: any = {
@@ -25,11 +26,22 @@ abstract class ObjectClass {
      * @version 0.0.1
      */
     constructor (properties: Object = {}, jq?: JQuery) {
-        console.log(properties);
-        this.props(properties);
-        console.log(this);
         this.jq = jq;
-        this.init(properties);
+    }
+
+    protected _mergeProperties(propertiesDefault: Object, propertiesConstructor: Object): Object {
+        for(let name in propertiesConstructor) {
+            if (name.match('^on[A-Z]')) {
+                if (propertiesDefault[name] !== undefined) {
+                    propertiesDefault[name].push(propertiesConstructor[name]);
+                } else {
+                    propertiesDefault[name] = [propertiesConstructor[name]];
+                }
+            } else {
+                propertiesDefault[name] = propertiesConstructor[name];
+            }
+        }
+        return propertiesDefault;
     }
 
     /**
@@ -182,7 +194,6 @@ abstract class ObjectClass {
     public props(name?: any, value?: any): any {
         let result: any = null;
         if (name !== null) {
-            console.log(name);
             if (typeof name === "object") {
                 let nameProp: string;
                 let valueProps: any;
@@ -203,7 +214,9 @@ abstract class ObjectClass {
                             }
                         }
                     } else {
-                        this.properties.name = value;
+                        console.log(`Set property ${name} = ${value}`);
+                        this.properties[name] = value;
+                        console.log(this.properties);
                     }
                 }
             }
