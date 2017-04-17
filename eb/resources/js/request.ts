@@ -9,10 +9,11 @@
 class RequestClass extends ObjectClass {
     /* Private */
     /* Protected */
-    protected _defaultProperties: any = {
+    protected _propertiesDefault: any = {
         messenger: console,
         progress: null,
-        requestOptions: {},
+        dataType:'json',
+        method:"GET",
         onInit: [],
         onResponseSuccess: [
             (eventName: string, event?: any, params?: any): void => {
@@ -196,9 +197,10 @@ class RequestClass extends ObjectClass {
      */
     public send(requestOptions: any): void {
         console.log('Request send');
-        console.log(this.properties);
+        console.log(this);
         let request: RequestClass = this;
         let options: any = this.props('requestOptions');
+        console.log(options);
         for(let name in requestOptions) {
             options[name] = requestOptions[name];
         }

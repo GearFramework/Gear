@@ -29,7 +29,7 @@ abstract class ObjectClass {
         this.jq = jq;
     }
 
-    protected _mergeProperties(propertiesDefault: Object, propertiesConstructor: Object): Object {
+    protected _mergeProperties(propertiesDefault: any, propertiesConstructor: any): Object {
         for(let name in propertiesConstructor) {
             if (name.match('^on[A-Z]')) {
                 if (propertiesDefault[name] !== undefined) {

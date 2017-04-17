@@ -8,10 +8,11 @@ var RequestClass = (function (_super) {
     function RequestClass(properties, jq) {
         if (properties === void 0) { properties = {}; }
         _super.call(this, properties, jq);
-        this._defaultProperties = {
+        this._propertiesDefault = {
             messenger: console,
             progress: null,
-            requestOptions: {},
+            dataType: 'json',
+            method: "GET",
             onInit: [],
             onResponseSuccess: [
                 function (eventName, event, params) {
@@ -88,9 +89,10 @@ var RequestClass = (function (_super) {
     };
     RequestClass.prototype.send = function (requestOptions) {
         console.log('Request send');
-        console.log(this.properties);
+        console.log(this);
         var request = this;
         var options = this.props('requestOptions');
+        console.log(options);
         for (var name_1 in requestOptions) {
             options[name_1] = requestOptions[name_1];
         }
