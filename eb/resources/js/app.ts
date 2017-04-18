@@ -24,6 +24,7 @@ class AppClass extends ObjectClass {
         onInit: [],
         onRequestComplete: [],
         onRequestError: [],
+        onResize: [],
         onResponseSuccess: [],
         onResponseError: []
     };
@@ -68,6 +69,9 @@ class AppClass extends ObjectClass {
         });
         this.on('responseSuccess', function (sender: any, xhr?: JQueryXHR, params: any = {}): void {
             app.changeContent(params);
+        });
+        this.on('resize', function (sender: any, xhr?: JQueryXHR, params: any = {}): void {
+            app.jq.find('.top-fix').height(app.jq.find('.top').height());
         });
         super.init(properties);
     }

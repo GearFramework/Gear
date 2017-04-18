@@ -53,7 +53,13 @@ class MainMenuClass extends ObjectClass {
 
     public selectSubmenuItem(menuItem: JQuery, event: Event): void {
         if (menuItem.attr('data-action')) {
-            let request: RequestClass = App.request({url: `/${menuItem.attr('data-action')}`});
+            let url: string = `/${menuItem.attr('data-action')}`;
+            let request: RequestClass = App.request({
+                url: url
+/*                onResponseSuccess: (eventName: string, event?: any, params?: any): void => {
+                    window.history.replaceState({}, '', url);
+                }*/
+            });
             request.get();
         }
     }

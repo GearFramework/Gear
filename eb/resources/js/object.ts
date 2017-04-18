@@ -88,8 +88,8 @@ abstract class ObjectClass {
         let bindName: string;
         let bind: any;
         let dataBindElement: any;
-        for(bindName in data.binds) {
-            bind = data.binds[bindName];
+        for(bindName in data) {
+            bind = data[bindName];
             if (this.jq.attr('data-bind') === bindName) {
                 dataBindElement = this.jq;
             } else {
@@ -99,15 +99,19 @@ abstract class ObjectClass {
                 }
             }
             this.beforeChangeContent(bindName, bind, dataBindElement);
-            if (bind.options.append) {
-                dataBindElement.append(bind.content);
-            } else if (bind.options.prepend) {
-                dataBindElement.prepend(bind.content);
+            if (bind.options !== undefined) {
+                if (bind.options.append) {
+                    dataBindElement.append(bind.content);
+                } else if (bind.options.prepend) {
+                    dataBindElement.prepend(bind.content);
+                }
+
             } else {
                 dataBindElement.html(bind.content);
             }
             this.afterChangeContent(bindName, bind, dataBindElement);
         }
+        $(window).trigger('resize');
     }
 
     /**
@@ -193,7 +197,7 @@ abstract class ObjectClass {
      */
     public props(name?: any, value?: any): any {
         let result: any = null;
-        if (name !== null) {
+        if (name !== undefined) {
             if (typeof name === "object") {
                 let nameProp: string;
                 let valueProps: any;
@@ -214,9 +218,7 @@ abstract class ObjectClass {
                             }
                         }
                     } else {
-                        console.log(`Set property ${name} = ${value}`);
                         this.properties[name] = value;
-                        console.log(this.properties);
                     }
                 }
             }

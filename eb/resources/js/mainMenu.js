@@ -42,7 +42,10 @@ var MainMenuClass = (function (_super) {
     };
     MainMenuClass.prototype.selectSubmenuItem = function (menuItem, event) {
         if (menuItem.attr('data-action')) {
-            var request = App.request({ url: "/" + menuItem.attr('data-action') });
+            var url = "/" + menuItem.attr('data-action');
+            var request = App.request({
+                url: url
+            });
             request.get();
         }
     };

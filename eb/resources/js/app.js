@@ -23,6 +23,7 @@ var AppClass = (function (_super) {
             onInit: [],
             onRequestComplete: [],
             onRequestError: [],
+            onResize: [],
             onResponseSuccess: [],
             onResponseError: []
         };
@@ -41,6 +42,10 @@ var AppClass = (function (_super) {
         this.on('responseSuccess', function (sender, xhr, params) {
             if (params === void 0) { params = {}; }
             app.changeContent(params);
+        });
+        this.on('resize', function (sender, xhr, params) {
+            if (params === void 0) { params = {}; }
+            app.jq.find('.top-fix').height(app.jq.find('.top').height());
         });
         _super.prototype.init.call(this, properties);
     };

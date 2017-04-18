@@ -36,6 +36,21 @@ class RequestClass extends ObjectClass {
             }
         ]
     };
+    protected _ajaxFields: any = [
+        'accepts', 'async',
+        'cache', 'contents', 'contentType', 'context', 'converters', 'crossDomain',
+        'data', 'dataType',
+        'global',
+        'headers',
+        'ifModified', 'isLocal',
+        'jsonp', 'jsonpCallback',
+        'mimeType',
+        'password', 'processData',
+        'scriptCharset', 'statusCode',
+        'timeout', 'traditional',
+        'url', 'username',
+        'xhr', 'xhrFields'
+    ];
     /* Public */
 
     /**
@@ -51,6 +66,10 @@ class RequestClass extends ObjectClass {
         super(properties, jq);
         this.props(this._mergeProperties(this._propertiesDefault, properties));
         this.init(properties);
+    }
+
+    get ajaxFields(): any {
+        return this._ajaxFields;
     }
 
     /**
@@ -84,7 +103,7 @@ class RequestClass extends ObjectClass {
      */
     public complete(xhr: JQueryXHR, textStatus: string): void {
         let progress: any = this.props('progress');
-        if (typeof progress === "object") {
+        if (progress !== null) {
             progress.stop().reset();
         }
         this.trigger('requestComplete', xhr, {textStatus: textStatus});
@@ -104,7 +123,7 @@ class RequestClass extends ObjectClass {
      */
     public error(xhr: JQueryXHR, status: any, errorMessage: string): void {
         let messenger: any = this.props('messenger');
-        if (typeof messenger === "object") {
+        if (messenger !== null) {
             messenger.log(`Request error [${xhr.status}] ${xhr.statusText}`);
         }
         this.trigger('requestError', xhr, {status: status, errorMessage: errorMessage});
@@ -119,11 +138,9 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public get(requestOptions: any = {method: "GET"}): void {
-        console.log('Request get');
         if (requestOptions["method"] === undefined) {
             requestOptions["method"] = "GET";
         }
-        console.log(this.properties);
         this.send(requestOptions);
     }
 
@@ -136,9 +153,7 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public init(properties: Object = {}): void {
-        console.log('Request init');
         super.init(properties);
-        console.log(this);
     }
 
     /**
@@ -168,7 +183,7 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public responseError(data: Object, xhr: JQueryXHR): void {
-        this.trigger('responseError', xhr, {data: data});
+        this.trigger('responseError', xhr, data);
     }
 
     /**
@@ -184,7 +199,7 @@ class RequestClass extends ObjectClass {
      * @version 0.0.1
      */
     public responseSuccess(data: Object, xhr: JQueryXHR): void {
-        this.trigger('responseSuccess', xhr, {data: data});
+        this.trigger('responseSuccess', xhr, data);
     }
 
     /**
@@ -195,14 +210,15 @@ class RequestClass extends ObjectClass {
      * @since 0.0.1
      * @version 0.0.1
      */
-    public send(requestOptions: any): void {
-        console.log('Request send');
-        console.log(this);
+    public send(requestOptions: any = {}): void {
+        this.props(requestOptions);
         let request: RequestClass = this;
-        let options: any = this.props('requestOptions');
-        console.log(options);
-        for(let name in requestOptions) {
-            options[name] = requestOptions[name];
+        let options: any = {};
+        let ajax: any = this.ajaxFields;
+        for(let field of ajax) {
+            if (this.properties[field] !== undefined) {
+                options[field] = this.properties[field];
+            }
         }
         options.beforeSend = (xhr: JQueryXHR, settings: Object): void => request.beforeSend(xhr, settings);
         options.success = (data: any, textStatus: string, xhr: JQueryXHR): void => request.success(data, textStatus, xhr);
@@ -226,7 +242,7 @@ class RequestClass extends ObjectClass {
         let request: RequestClass = this;
         this.trigger('beforeSuccess', xhr, {request: request, data: data, textStatus: textStatus});
         if (!this.props('returnTransfer')) {
-            if (data["error"] !== null) {
+            if (data["error"] !== undefined) {
                 let messenger: any = this.props('messenger');
                 if (messenger !== null) {
                     messenger.log(`Application error:\n${data.error.text}\n${data.error.file} [${data.error.line}]\n${data.error.trace}`);

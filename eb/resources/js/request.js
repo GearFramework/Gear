@@ -35,9 +35,31 @@ var RequestClass = (function (_super) {
                 }
             ]
         };
+        this._ajaxFields = [
+            'accepts', 'async',
+            'cache', 'contents', 'contentType', 'context', 'converters', 'crossDomain',
+            'data', 'dataType',
+            'global',
+            'headers',
+            'ifModified', 'isLocal',
+            'jsonp', 'jsonpCallback',
+            'mimeType',
+            'password', 'processData',
+            'scriptCharset', 'statusCode',
+            'timeout', 'traditional',
+            'url', 'username',
+            'xhr', 'xhrFields'
+        ];
         this.props(this._mergeProperties(this._propertiesDefault, properties));
         this.init(properties);
     }
+    Object.defineProperty(RequestClass.prototype, "ajaxFields", {
+        get: function () {
+            return this._ajaxFields;
+        },
+        enumerable: true,
+        configurable: true
+    });
     RequestClass.prototype.beforeSend = function (xhr, settings) {
         var progress = this.props('progress');
         if (progress !== null) {
@@ -47,32 +69,28 @@ var RequestClass = (function (_super) {
     };
     RequestClass.prototype.complete = function (xhr, textStatus) {
         var progress = this.props('progress');
-        if (typeof progress === "object") {
+        if (progress !== null) {
             progress.stop().reset();
         }
         this.trigger('requestComplete', xhr, { textStatus: textStatus });
     };
     RequestClass.prototype.error = function (xhr, status, errorMessage) {
         var messenger = this.props('messenger');
-        if (typeof messenger === "object") {
+        if (messenger !== null) {
             messenger.log("Request error [" + xhr.status + "] " + xhr.statusText);
         }
         this.trigger('requestError', xhr, { status: status, errorMessage: errorMessage });
     };
     RequestClass.prototype.get = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = { method: "GET" }; }
-        console.log('Request get');
         if (requestOptions["method"] === undefined) {
             requestOptions["method"] = "GET";
         }
-        console.log(this.properties);
         this.send(requestOptions);
     };
     RequestClass.prototype.init = function (properties) {
         if (properties === void 0) { properties = {}; }
-        console.log('Request init');
         _super.prototype.init.call(this, properties);
-        console.log(this);
     };
     RequestClass.prototype.post = function (requestOptions) {
         if (requestOptions === void 0) { requestOptions = { method: "POST" }; }
@@ -82,19 +100,22 @@ var RequestClass = (function (_super) {
         this.send(requestOptions);
     };
     RequestClass.prototype.responseError = function (data, xhr) {
-        this.trigger('responseError', xhr, { data: data });
+        this.trigger('responseError', xhr, data);
     };
     RequestClass.prototype.responseSuccess = function (data, xhr) {
-        this.trigger('responseSuccess', xhr, { data: data });
+        this.trigger('responseSuccess', xhr, data);
     };
     RequestClass.prototype.send = function (requestOptions) {
-        console.log('Request send');
-        console.log(this);
+        if (requestOptions === void 0) { requestOptions = {}; }
+        this.props(requestOptions);
         var request = this;
-        var options = this.props('requestOptions');
-        console.log(options);
-        for (var name_1 in requestOptions) {
-            options[name_1] = requestOptions[name_1];
+        var options = {};
+        var ajax = this.ajaxFields;
+        for (var _i = 0, ajax_1 = ajax; _i < ajax_1.length; _i++) {
+            var field = ajax_1[_i];
+            if (this.properties[field] !== undefined) {
+                options[field] = this.properties[field];
+            }
         }
         options.beforeSend = function (xhr, settings) { return request.beforeSend(xhr, settings); };
         options.success = function (data, textStatus, xhr) { return request.success(data, textStatus, xhr); };
@@ -106,7 +127,7 @@ var RequestClass = (function (_super) {
         var request = this;
         this.trigger('beforeSuccess', xhr, { request: request, data: data, textStatus: textStatus });
         if (!this.props('returnTransfer')) {
-            if (data["error"] !== null) {
+            if (data["error"] !== undefined) {
                 var messenger = this.props('messenger');
                 if (messenger !== null) {
                     messenger.log("Application error:\n" + data.error.text + "\n" + data.error.file + " [" + data.error.line + "]\n" + data.error.trace);

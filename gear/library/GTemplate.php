@@ -26,7 +26,14 @@ class GTemplate extends GModel
     {
         $result = [];
         foreach($this->bindsTemplates as $bindName => $template) {
-            $result[$bindName] = $this->view->render($template, $context, true);
+            if (!is_array($template)) {
+                $result[$bindName]['content'] = $this->view->render($template, $context, true);
+            } else {
+                if (isset($template['options'])) {
+                    $result[$bindName]['options'] = $template['options'];
+                }
+                $result[$bindName]['content'] = $this->view->render($template['view'], $context, true);
+            }
         }
         return $result;
     }
