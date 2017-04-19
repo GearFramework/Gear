@@ -5,18 +5,37 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var VendorsClass = (function (_super) {
     __extends(VendorsClass, _super);
-    function VendorsClass() {
-        _super.apply(this, arguments);
+    function VendorsClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
     }
     VendorsClass.prototype.init = function (properties) {
+        var _this = this;
+        var vendors = this;
+        $('.wrapper>.page-wrapper').css('margin-left', this.jq.parent().width());
+        this.jq.find('.vendor-tile').on('click', function (event) { return _this.selectVendor($(event.currentTarget)); });
+        App.on('resize', function (sender, event, params) {
+            var height = App.getHeight() - _this.jq.parent().offset().top;
+            _this.jq.parent().height(height);
+            $('.wrapper>.page-wrapper').height(height);
+        });
         _super.prototype.init.call(this, properties);
+    };
+    VendorsClass.prototype.selectVendor = function (vendor) {
+        App.request({ url: vendor.attr('data-action') }).get();
+        console.log(vendor.attr('data-action'));
     };
     return VendorsClass;
 }(ObjectClass));
 var VendorOrdersClass = (function (_super) {
     __extends(VendorOrdersClass, _super);
-    function VendorOrdersClass() {
-        _super.apply(this, arguments);
+    function VendorOrdersClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
     }
     VendorOrdersClass.prototype.init = function (properties) {
         _super.prototype.init.call(this, properties);
@@ -25,15 +44,18 @@ var VendorOrdersClass = (function (_super) {
 }(ObjectClass));
 var VendorCategoriesClass = (function (_super) {
     __extends(VendorCategoriesClass, _super);
-    function VendorCategoriesClass() {
-        _super.apply(this, arguments);
+    function VendorCategoriesClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
     }
     VendorCategoriesClass.prototype.init = function (properties) {
         _super.prototype.init.call(this, properties);
     };
     return VendorCategoriesClass;
 }(ObjectClass));
-AppClass.prototype.vendors = new VendorsClass({
+App.vendors = new VendorsClass({
     navigator: new ToolbarClass({}, $('.vendors-navigator-panel')),
     toolbar: new ToolbarClass({
         buttons: {

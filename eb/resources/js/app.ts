@@ -51,6 +51,15 @@ class AppClass extends ObjectClass {
         this.init(properties);
     }
 
+    public getHeight(): number {
+        let height: number = parseInt($(window).attr('innerHeight'));
+        return height;
+    }
+
+    public getWidth(): number {
+        let width: number = $(window).width();
+        return width;
+    }
     /**
      * Инициализация приложения
      *
@@ -61,17 +70,11 @@ class AppClass extends ObjectClass {
      */
     public init(properties: any): void {
         let app: AppClass = this;
-        $(window).on('resize', function (event: Event) {
-            app.resize(event);
-        });
-        this.on('requestError', function(sender: any, xhr?: JQueryXHR, params: any = {}) {
-            app.requestError(xhr);
-        });
-        this.on('responseSuccess', function (sender: any, xhr?: JQueryXHR, params: any = {}): void {
-            app.changeContent(params);
-        });
-        this.on('resize', function (sender: any, xhr?: JQueryXHR, params: any = {}): void {
-            app.jq.find('.top-fix').height(app.jq.find('.top').height());
+        $(window).on('resize', (event: Event): void => app.resize(event));
+        this.on('requestError', (sender: any, xhr?: JQueryXHR, params: any = {}): void => app.requestError(xhr));
+        this.on('responseSuccess', (sender: any, xhr?: JQueryXHR, params: any = {}): void => app.changeContent(params));
+        this.on('resize', (sender: any, xhr?: JQueryXHR, params: any = {}): void => {
+            this.jq.find('.top-fix').height(app.jq.find('.top').height())
         });
         super.init(properties);
     }

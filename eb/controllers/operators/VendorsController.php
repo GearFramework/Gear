@@ -31,10 +31,22 @@ class VendorsController extends EbOperatorController
     public function apiList()
     {
         $template = new GTemplate(['bindsTemplates' => [
-            'data-navigator' => $this->_viewPath . '/vendorsNavigator',
-            'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
+//            'data-navigator' => $this->_viewPath . '/vendorsNavigator',
+//            'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
             'data-content' => $this->_viewPath . '/vendorsList',
         ]]);
         return $this->view->render($template, ['vendors' => Core::vendors()->all()], true);
+    }
+
+    public function apiOrders(int $vendor)
+    {
+        $vendor = abs((int)$vendor);
+        $vendor = Core::vendors()->byPk($vendor);
+        $template = new GTemplate(['bindsTemplates' => [
+            'data-navigator' => $this->_viewPath . '/vendorsNavigator',
+            'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
+            'list-vendor-orders' => $this->_viewPath . '/vendorOrders',
+        ]]);
+        return $this->view->render($template, ['caption' => $vendor->name, 'vendor' => $vendor], true);
     }
 }

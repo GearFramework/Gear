@@ -1,15 +1,20 @@
-<div class="container vendors-list base light middle">
-    <div class="col pc-3">
-    <?php foreach($vendors as $vendor): ?>
-        <div class="pc-12 pull-left vendor-tile">
-            <div class="col pc-12 extrabold text-overflow"><?=$vendor->name?></div>
+<aside class="col pc-2 affix text-overflow-scrollable">
+    <div class="container vendors-list base light middle">
+        <div class="col pc-12">
+        <?php foreach($vendors as $vendor): ?>
+            <div id="<?=$vendor->id?>" class="pc-12 pull-left vendor-tile" data-action="<?=\HtmlHelper::url('operators/vendors', 'orders', ['vendor' => $vendor->id])?>">
+                <div class="col pc-12 extrabold text-overflow"><?=$vendor->name?></div>
+                <div class="clearfix"></div>
+                <!--<div class="col pc-5 text-overflow"><?=$vendor->url?></div> -->
+                <div class="col pc-12 text-overflow"><?=$vendor->description?></div>
+                <div class="clearfix"></div>
+            </div>
             <div class="clearfix"></div>
-            <!--<div class="col pc-5 text-overflow"><?=$vendor->url?></div> -->
-            <div class="col pc-7 text-overflow"><?=$vendor->description?></div>
-            <div class="clearfix"></div>
+        <?php endforeach; ?>
         </div>
-        <div class="clearfix"></div>
-    <?php endforeach; ?>
     </div>
+    <?= \gear\Core::m('resources')->publicate('operators/vendors.js') ?>
+</aside>
+<div class="page-wrapper text-overflow-scrollable" data-bind="list-vendor-orders">
+
 </div>
-<?= \gear\Core::m('resources')->publicate('operators/vendors.js') ?>

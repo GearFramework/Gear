@@ -135,16 +135,30 @@ top-fix
             line-height: 48px
             width: 100%
 
+.toolbar-caption
+    white-space: nowrap
+    max-width: 320px
+    overflow: hidden
+    text-overflow: ellipsis
+    padding: 0 16px
+    border: 0
+    background-color: #def2df
+
 .toolbar-buttons
     height: inherit
     line-height: inherit
-    border-bottom: 1px solid #e0e0e0
+    /*border-bottom: 1px solid #e0e0e0*/
 
 .toolbar
     &.button
         padding: 0 12px
-        border: 0
+        border-left: 0
         border-right: 1px solid #e0e0e0
+        border-top: 0
+        border-bottom: 0
+        background-position: 12px center
+        background-repeat: no-repeat
+        cursor: pointer
 
         &:hover
             background-color: #f6f6f6
@@ -190,13 +204,13 @@ top-fix
     border-left: 1px solid #e0e0e0
 
     .sort
-        .desc
+        &.desc
             text-indent: 20px
             background-image: url(/images/arrow-down.png)
             background-position: 12px center
             background-repeat: no-repeat
 
-        .asc
+        &.asc
             text-indent: 28px
             background-image: url(/images/arrow-up.png)
             background-position: 12px center
@@ -241,5 +255,6 @@ top-fix
             background-color: #f6f6f6
             border-bottom: 1px solid #e0e0e0
 
-aside
-    height: 100%
+.page-wrapper
+    box-sizing: border-box
+    padding: 0 16px
