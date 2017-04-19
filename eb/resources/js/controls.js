@@ -83,4 +83,83 @@ var ToolbarClass = (function (_super) {
     };
     return ToolbarClass;
 }(ObjectClass));
+var ProgressBarClass = (function (_super) {
+    __extends(ProgressBarClass, _super);
+    function ProgressBarClass(properties, jq) {
+        if (properties === void 0) { properties = {}; }
+        _super.call(this, properties, jq);
+        this._propertiesDefault = {};
+        this._isStarted = false;
+        this._state = 0;
+        this._position = 0;
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
+    Object.defineProperty(ProgressBarClass.prototype, "isStarted", {
+        get: function () {
+            return this._isStarted;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ProgressBarClass.prototype, "state", {
+        get: function () {
+            return this._state;
+        },
+        set: function (state) {
+            this._state = state;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ProgressBarClass.prototype, "position", {
+        set: function (position) {
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ProgressBarClass.prototype.inc = function (amount) {
+        if (this.state === 0) {
+            this.start();
+        }
+        else if (this.state > 1) {
+            return;
+        }
+        else {
+            if (this.state >= 0 && this.state < 0.2) {
+                amount = 0.1;
+            }
+            else if (this.state >= 0.2 && this.state < 0.5) {
+                amount = 0.04;
+            }
+            else if (this.state >= 0.5 && this.state < 0.8) {
+                amount = 0.02;
+            }
+            else if (this.state >= 0.8 && this.state < 0.99) {
+                amount = 0.005;
+            }
+            else {
+                amount = 0;
+            }
+            this.state += amount;
+            if (this.state < 0)
+                this.state = 0;
+            if (this.state > 0.994)
+                this.state = 0.994;
+            this.position = this.state;
+        }
+    };
+    ProgressBarClass.prototype.init = function (properties) {
+        _super.prototype.init.call(this, properties);
+    };
+    ProgressBarClass.prototype.start = function () {
+        if (!this.isStarted) {
+        }
+    };
+    ProgressBarClass.prototype.stop = function () {
+        if (this.isStarted) {
+        }
+    };
+    return ProgressBarClass;
+}(ObjectClass));
 //# sourceMappingURL=controls.js.map

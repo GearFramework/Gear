@@ -11,6 +11,9 @@ var VendorsClass = (function (_super) {
         this.props(this._mergeProperties(this._propertiesDefault, properties));
         this.init(properties);
     }
+    VendorsClass.prototype.getSelectedVendor = function () {
+        return this.jq.find('.vendor-tile.selected');
+    };
     VendorsClass.prototype.init = function (properties) {
         var _this = this;
         var vendors = this;
@@ -25,7 +28,8 @@ var VendorsClass = (function (_super) {
     };
     VendorsClass.prototype.selectVendor = function (vendor) {
         App.request({ url: vendor.attr('data-action') }).get();
-        console.log(vendor.attr('data-action'));
+        this.getSelectedVendor().removeClass('selected');
+        vendor.addClass('selected');
     };
     return VendorsClass;
 }(ObjectClass));

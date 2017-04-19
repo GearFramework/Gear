@@ -18,6 +18,10 @@ class VendorsClass extends ObjectClass {
         this.init(properties);
     }
 
+    public getSelectedVendor(): JQuery {
+        return this.jq.find('.vendor-tile.selected');
+    }
+
     public init(properties: any): void {
         let vendors: VendorsClass = this;
         $('.wrapper>.page-wrapper').css('margin-left', this.jq.parent().width());
@@ -32,7 +36,8 @@ class VendorsClass extends ObjectClass {
 
     public selectVendor(vendor: JQuery): void {
         App.request({url: vendor.attr('data-action')}).get();
-        console.log(vendor.attr('data-action'));
+        this.getSelectedVendor().removeClass('selected');
+        vendor.addClass('selected');
     }
 }
 

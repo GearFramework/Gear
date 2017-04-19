@@ -1,22 +1,18 @@
 <!--bind:data-toolbar-->
 <div class="vendors-toolbar-panel">
-    <?= isset($caption) && $caption ? "<div class=\"col pull-left base normal middle toolbar-caption\">$caption</div>" : '' ?>
+    <?= isset($caption) && $caption ? "<div class=\"col pc-2 pull-left base light big toolbar-caption\">$caption</div>" : '' ?>
     <div class="col pull-left toolbar-buttons">
         <div class="base light small pull-left button toolbar toolbars-menu hidden-pc hidden-nt visible-tb visible-mb">
             <div class="fly toolbar-menu-items hide">
-                <div class="button toolbar item add">добавить</div>
-                <div class="button toolbar item edit">редактировать</div>
+                <div class="button toolbar item add">новый заказ</div>
                 <div class="button toolbar item remove">удалить</div>
-                <div class="button toolbar item view last">просмотр</div>
             </div>
         </div>
-        <div class="base light small pull-left button toolbar add hidden-tb hidden-mb">добавить</div>
-        <div class="base light small pull-left button toolbar edit hidden-tb hidden-mb">редактировать</div>
+        <div class="base light small pull-left button toolbar add hidden-tb hidden-mb">новый заказ</div>
         <div class="base light small pull-left button toolbar remove hidden-tb hidden-mb">удалить</div>
-        <div class="base light small pull-left button toolbar view hidden-tb hidden-mb">просмотр</div>
     </div>
-<!--    <div class="col pull-right toolbar-sort">
+    <div class="col pull-right toolbar-sort">
         <div class="base light small pull-left button toolbar sort desc">по дате заказа</div>
         <div class="base light small pull-left button toolbar sort">по статусу</div>
-    </div> -->
+    </div>
 </div>

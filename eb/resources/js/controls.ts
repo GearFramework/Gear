@@ -84,3 +84,81 @@ class ToolbarClass extends ObjectClass {
         super.init(properties);
     }
 }
+
+class ProgressBarClass extends ObjectClass {
+    /* Private */
+    /* Protected */
+    protected _propertiesDefault: Object = {};
+    protected _isStarted: boolean = false;
+    protected _state: number = 0;
+    protected _position: number = 0;
+    /* Public */
+
+    get isStarted(): boolean {
+        return this._isStarted;
+    }
+
+    get state(): number {
+        return this._state;
+    }
+
+    set position(position: number) {
+
+    }
+
+    set state(state: number) {
+        this._state = state;
+    }
+
+    /**
+     * Конструктор объекта
+     *
+     * @param Object properties
+     * @param JQuery jq
+     * @return ObjectClass
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    constructor (properties: Object = {}, jq?: JQuery) {
+        super(properties, jq);
+        this.props(this._mergeProperties(this._propertiesDefault, properties));
+        this.init(properties);
+    }
+
+    public inc(amount: number): void {
+        if (this.state === 0) {
+            this.start();
+        } else if (this.state > 1) {
+            return;
+        } else {
+            if (this.state >= 0 && this.state < 0.2) { amount = 0.1; }
+            else if (this.state >= 0.2 && this.state < 0.5) { amount = 0.04; }
+            else if (this.state >= 0.5 && this.state < 0.8) { amount = 0.02; }
+            else if (this.state >= 0.8 && this.state < 0.99) { amount = 0.005; }
+            else { amount = 0; }
+
+            this.state += amount;
+            if (this.state < 0)
+                this.state = 0;
+            if (this.state > 0.994)
+                this.state = 0.994;
+            this.position = this.state;
+        }
+    }
+
+    public init(properties: any): void {
+        super.init(properties);
+    }
+
+    public start(): void {
+        if (!this.isStarted) {
+
+        }
+    }
+
+    public stop(): void {
+        if (this.isStarted) {
+
+        }
+    }
+}
