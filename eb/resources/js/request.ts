@@ -16,22 +16,27 @@ class RequestClass extends ObjectClass {
         method:"GET",
         onInit: [],
         onResponseSuccess: [
-            (eventName: string, event?: any, params?: any): void => {
+            (sender: Object, event?: any, params?: any): void => {
+                params.sender = sender;
                 App.trigger('responseSuccess', event, params);
             }
         ],
         onResponseError: [
-            (eventName: string, event?: any, params?: any): void => {
+            (sender: Object, event?: any, params?: any): void => {
+                console.log('App response error');
+                params.sender = sender;
                 App.trigger('responseError', event, params);
             }
         ],
         onRequestComplete: [
-            (eventName: string, event?: any, params?: any): void => {
+            (sender: Object, event?: any, params?: any): void => {
+                params.sender = sender;
                 App.trigger('requestComplete', event, params);
             }
         ],
         onRequestError: [
-            (eventName: string, event?: any, params?: any): void => {
+            (sender: Object, event?: any, params?: any): void => {
+                params.sender = sender;
                 App.trigger('requestError', event, params);
             }
         ]
@@ -245,7 +250,7 @@ class RequestClass extends ObjectClass {
             if (data["error"] !== undefined) {
                 let messenger: any = this.props('messenger');
                 if (messenger !== null) {
-                    messenger.log(`Application error:\n${data.error.text}\n${data.error.file} [${data.error.line}]\n${data.error.trace}`);
+                    messenger.log(`Application error:\n${data}\n${data.error.file} [${data.error.line}]\n${data.error.trace}`);
                 }
                 this.responseError(data, xhr);
             } else {

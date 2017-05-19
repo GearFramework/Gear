@@ -15,22 +15,27 @@ var RequestClass = (function (_super) {
             method: "GET",
             onInit: [],
             onResponseSuccess: [
-                function (eventName, event, params) {
+                function (sender, event, params) {
+                    params.sender = sender;
                     App.trigger('responseSuccess', event, params);
                 }
             ],
             onResponseError: [
-                function (eventName, event, params) {
+                function (sender, event, params) {
+                    console.log('App response error');
+                    params.sender = sender;
                     App.trigger('responseError', event, params);
                 }
             ],
             onRequestComplete: [
-                function (eventName, event, params) {
+                function (sender, event, params) {
+                    params.sender = sender;
                     App.trigger('requestComplete', event, params);
                 }
             ],
             onRequestError: [
-                function (eventName, event, params) {
+                function (sender, event, params) {
+                    params.sender = sender;
                     App.trigger('requestError', event, params);
                 }
             ]
@@ -130,7 +135,7 @@ var RequestClass = (function (_super) {
             if (data["error"] !== undefined) {
                 var messenger = this.props('messenger');
                 if (messenger !== null) {
-                    messenger.log("Application error:\n" + data.error.text + "\n" + data.error.file + " [" + data.error.line + "]\n" + data.error.trace);
+                    messenger.log("Application error:\n" + data + "\n" + data.error.file + " [" + data.error.line + "]\n" + data.error.trace);
                 }
                 this.responseError(data, xhr);
             }

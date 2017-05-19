@@ -162,9 +162,19 @@ top-fix
         &:hover
             background-color: #f6f6f6
 
+        &.inactive
+            color: #d0d0d0
+            cursor: default
+            &:hover
+                background-color: transparent
+
+
         &.add
             text-indent: 28px
             background-image: url(/images/toolbar-button-add.png)
+
+            &.inactive
+                background-image: url(/images/toolbar-button-add-inact.png)
 
         &.edit
             text-indent: 28px
@@ -173,6 +183,8 @@ top-fix
         &.remove
             text-indent: 28px
             background-image: url(/images/toolbar-button-remove.png)
+            &.inactive
+                background-image: url(/images/toolbar-button-remove-inact.png)
 
         &.view
             text-indent: 28px

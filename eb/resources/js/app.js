@@ -22,10 +22,10 @@ var AppClass = (function (_super) {
             },
             onInit: [],
             onRequestComplete: [],
-            onRequestError: [],
+            onRequestError: [function (sender, event, params) { App.requestError(event, params); }],
             onResize: [],
             onResponseSuccess: [],
-            onResponseError: []
+            onResponseError: [function (sender, event, params) { App.responseError(event, params); }]
         };
         this.props(this._mergeProperties(this._propertiesDefault, properties));
         this.init(properties);
@@ -56,7 +56,13 @@ var AppClass = (function (_super) {
         });
         _super.prototype.init.call(this, properties);
     };
-    AppClass.prototype.requestError = function (xhr) {
+    AppClass.prototype.requestError = function (xhr, params) {
+        if (this.properties.errorsHandlers[xhr.status] !== undefined) {
+            this.properties.errorsHandlers[xhr.status]();
+        }
+    };
+    AppClass.prototype.responseError = function (xhr, params) {
+        console.log(xhr);
         if (this.properties.errorsHandlers[xhr.status] !== undefined) {
             this.properties.errorsHandlers[xhr.status]();
         }

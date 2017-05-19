@@ -25,6 +25,15 @@ class GResponsePlugin extends GPlugin implements IResponse
         return $this;
     }
 
+    public function sendStatus($code)
+    {
+        if (!isset(self::$_phrases[$code])) {
+            $code = 306;
+        }
+        header("HTTP/1.0 $code " . isset(self::$_phrases[$code]));
+        die();
+    }
+
     /**
      * Отправляет клиенту данные
      *
@@ -37,7 +46,7 @@ class GResponsePlugin extends GPlugin implements IResponse
     {
         if (is_string($data) && preg_match('#^HTTP/\d\.\d (\d+)#', $data, $math)) {
             if (Core::app()->request->isAjax()) {
-                $data = ['errors' => $math[1]];
+                $data = ['error' => $math[1]];
             } else {
                 header($data, true, $math[1]);
                 die();
@@ -45,7 +54,7 @@ class GResponsePlugin extends GPlugin implements IResponse
         }
         if (Core::app()->request->isAjax()) {
             if (is_string($data)) {
-                $data = json_encode(['data-content' => $data, 'errors' => 0]);
+                $data = json_encode(['data-content' => $data, 'error' => 0]);
             } else if (is_array($data)) {
                 $data = json_encode($data);
             } else {
