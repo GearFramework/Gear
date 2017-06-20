@@ -29,6 +29,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     protected $_allowedExtensions = [];
     protected $_mappingFolder = null;
     protected $_hashingName = true;
+    protected $_safePath = true;
     protected $_typeResource = null;
     protected $_mime = null;
     protected $_controller = '\gear\resources\publicate';
@@ -205,6 +206,19 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     }
 
     /**
+     * Возвращает текущий режим сохранения пути при маппинге
+     * ресурсов
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getSafePath(): bool
+    {
+        return $this->_safePath;
+    }
+
+    /**
      * Возвращает true, если указанный ресурс является валидным для данного плагина
      *
      * @param string|IFile $resource
@@ -254,11 +268,16 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
      */
     public function mapping(IFile $resource, bool $compile = false): string
     {
-        $mappingFolder = $_SERVER['DOCUMENT_ROOT'] .'/' . $this->mappingFolder;
+        $mappingFolder = $_SERVER['DOCUMENT_ROOT'] . $this->mappingFolder;
         if (!is_writable($mappingFolder)) {
             throw self::exceptionFileSystem('Mapping directory <{folder}> is not writable', ['folder' => $mappingFolder]);
         }
         $mappingFile = $this->hashingName ? md5($resource) . '.' . $resource->extension() : $resource->basename;
+        if ($this->safePath) {
+            $safePath = Core::resolvePath($this->basePath);
+            $safePath = str_replace($safePath, '', $resource->dirname);
+            $mappingFolder .= $safePath;
+        }
         $mappingResource = $mappingFolder . '/' . $mappingFile;
         if (!file_exists($mappingResource) || $resource->mtime() > filemtime($mappingResource)) {
             if ($compile) {
@@ -404,6 +423,20 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     public function setMime(string $mime)
     {
         $this->_mime = $mime;
+    }
+
+    /**
+     * Устанавливает или сбрасывает режим сохранения пути при маппинге
+     * ресурсов
+     *
+     * @param bool $safePath
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setSafePath(bool $safePath)
+    {
+        $this->_safePath = $safePath;
     }
 
     /**
