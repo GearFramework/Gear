@@ -25,7 +25,7 @@ class GTemplate extends GModel
     public function build($context)
     {
         $result = [];
-        foreach($this->bindsTemplates as $bindName => $template) {
+        foreach($this->binds as $bindName => $template) {
             if (!is_array($template)) {
                 $result[$bindName]['content'] = $this->view->render($template, $context, true);
             } else {

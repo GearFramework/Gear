@@ -30,7 +30,7 @@ class VendorsController extends EbOperatorController
 
     public function apiList()
     {
-        $template = new GTemplate(['bindsTemplates' => [
+        $template = new GTemplate(['binds' => [
 //            'data-navigator' => $this->_viewPath . '/vendorsNavigator',
 //            'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
             'data-content' => $this->_viewPath . '/vendorsList',
@@ -42,7 +42,7 @@ class VendorsController extends EbOperatorController
     {
         $vendor = abs((int)$vendor);
         $vendor = Core::vendors()->byPk($vendor);
-        $template = new GTemplate(['bindsTemplates' => [
+        $template = new GTemplate(['binds' => [
             'data-navigator' => $this->_viewPath . '/vendorsNavigator',
             'data-toolbar' => $this->_viewPath . '/vendorsToolbar',
             'list-vendor-orders' => $this->_viewPath . '/vendorOrders',

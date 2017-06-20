@@ -23,10 +23,10 @@ class AppClass extends ObjectClass {
         },
         onInit: [],
         onRequestComplete: [],
-        onRequestError: [],
+        onRequestError: [(sender: Object, event?: any, params?: any): void => { App.requestError(event, params); }],
         onResize: [],
         onResponseSuccess: [],
-        onResponseError: []
+        onResponseError: [(sender: Object, event?: any, params?: any): void => { App.responseError(event, params); }]
     };
     /* Public */
     public request: any;
@@ -83,11 +83,28 @@ class AppClass extends ObjectClass {
      * Обработчик ошибок после запроса (HTTP вернул не 200 OK)
      *
      * @param JQueryXHR xhr
+     * @param any params
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public requestError(xhr: JQueryXHR): void {
+    public requestError(xhr: JQueryXHR, params?: any): void {
+        if (this.properties.errorsHandlers[xhr.status] !== undefined) {
+            this.properties.errorsHandlers[xhr.status]();
+        }
+    }
+
+    /**
+     * Обработчик ошибок после запроса (HTTP вернул не 200 OK)
+     *
+     * @param JQueryXHR xhr
+     * @param any params
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public responseError(xhr: JQueryXHR, params?: any): void {
+        console.log(xhr);
         if (this.properties.errorsHandlers[xhr.status] !== undefined) {
             this.properties.errorsHandlers[xhr.status]();
         }
