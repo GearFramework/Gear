@@ -276,7 +276,8 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
         if ($this->safePath) {
             $safePath = Core::resolvePath($this->basePath);
             Core::syslog(Core::INFO, "Safe path <{safePath}>", ['safePath' => $safePath], true);
-            $safePath = str_replace($safePath, '', $resource->dirname);
+            Core::syslog(Core::INFO, "Resource dirname <{dirname}>", ['dirname' => $resource->dirname()], true);
+            $safePath = str_replace($safePath, '', $resource->dirname());
             Core::syslog(Core::INFO, "Safe path after replace <{safePath}>", ['safePath' => $safePath], true);
             $mappingFolder .= $safePath;
             Core::syslog(Core::INFO, "Mapping path <{mappingPath}>", ['mappingPath' => $mappingFolder], true);
