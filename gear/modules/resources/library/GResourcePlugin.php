@@ -275,12 +275,8 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
         $mappingFile = $this->hashingName ? md5($resource) . '.' . $resource->extension() : $resource->basename;
         if ($this->safePath) {
             $safePath = Core::resolvePath($this->basePath);
-            Core::syslog(Core::INFO, "Safe path <{safePath}>", ['safePath' => $safePath], true);
-            Core::syslog(Core::INFO, "Resource <{file}> dirname <{dirname}>", ['file' => $resource, 'dirname' => $resource->dirname()], true);
             $safePath = str_replace($safePath, '', $resource->dirname());
-            Core::syslog(Core::INFO, "Safe path after replace <{safePath}>", ['safePath' => $safePath], true);
             $mappingFolder .= $safePath;
-            Core::syslog(Core::INFO, "Mapping path <{mappingPath}>", ['mappingPath' => $mappingFolder], true);
         }
         $mappingResource = $mappingFolder . '/' . $mappingFile;
         if (!file_exists($mappingResource) || $resource->mtime() > filemtime($mappingResource)) {
@@ -291,7 +287,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
                 copy($resource, $mappingResource);
             }
         }
-        return $this->mappingFolder . '/' . $mappingFile;
+        return $mappingResource;
     }
 
     /**
