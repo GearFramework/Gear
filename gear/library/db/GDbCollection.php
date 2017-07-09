@@ -25,11 +25,12 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /* Const */
     /* Private */
     /* Protected */
+    protected $_alias = "";
+    protected $_current = null;
     protected $_cursorFactory = [
         'class' => '\gear\library\db\GDbCursor',
     ];
     protected $_items = [];
-    protected $_current = null;
     /* Public */
 
     public function __call(string $name, array $arguments)
@@ -51,6 +52,18 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
      * @version 0.0.1
      */
     abstract public function drop();
+
+    /**
+     * Возвращает псевдоним для коллекции
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getAlias(): string
+    {
+        return $this->_alias;
+    }
 
     /**
      * Возвращает соединение с сервером базы данных
@@ -155,6 +168,19 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
             $this->current->reset();
         }
         return $this;
+    }
+
+    /**
+     * Установка псевдонима для коллекции
+     *
+     * @param string $alias
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setAlias(string $alias)
+    {
+        $this->_alias = $alias;
     }
 
     /**

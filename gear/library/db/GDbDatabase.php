@@ -123,18 +123,23 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate
      * Возвращает коллекцию
      *
      * @param string $name
+     * @param string $alias
      * @return GDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function selectCollection(string $name): GDbCollection
+    public function selectCollection(string $name, string $alias = ""): GDbCollection
     {
         if (isset($this->_items[$name])) {
+            if ($alias) {
+                $this->_items[$name]->alias = $alias;
+            }
             if (!$this->current || $this->current->name !== $name) {
                 $this->current = $this->_items[$name];
             }
         } else {
-            $this->current = $this->_items[$name] = $this->factory(['name' => $name], $this);
+            $properties = $alias ? ['name' => $name, 'alias' => $alias] : ['name' => $name];
+            $this->current = $this->_items[$name] = $this->factory($properties, $this);
         }
         return $this->current;
     }
