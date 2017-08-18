@@ -162,13 +162,14 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
      *
      * @param string $dbName
      * @param string $collectionName
+     * @param string $alias
      * @return GDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function selectCollection(string $dbName, string $collectionName): GDbCollection
+    public function selectCollection(string $dbName, string $collectionName, string $alias = ""): GDbCollection
     {
-        return $this->selectDB($dbName)->selectCollection($collectionName);
+        return $this->selectDB($dbName)->selectCollection($collectionName, $alias);
     }
 
     /**

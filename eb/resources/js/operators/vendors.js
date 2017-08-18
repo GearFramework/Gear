@@ -24,10 +24,11 @@ var VendorsClass = (function (_super) {
             _this.jq.parent().height(height);
             $('.wrapper>.page-wrapper').height(height);
         });
+        $(window).trigger('resize');
         _super.prototype.init.call(this, properties);
     };
     VendorsClass.prototype.selectVendor = function (vendor) {
-        App.request({ url: vendor.attr('data-action') }).get();
+        App.request({ url: vendor.attr('data-action'), onRequestComplete: function () { $(window).trigger('resize'); } }).get();
         this.getSelectedVendor().removeClass('selected');
         vendor.addClass('selected');
     };

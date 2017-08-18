@@ -31,11 +31,12 @@ class VendorsClass extends ObjectClass {
             this.jq.parent().height(height);
             $('.wrapper>.page-wrapper').height(height);
         });
+        $(window).trigger('resize');
         super.init(properties);
     }
 
     public selectVendor(vendor: JQuery): void {
-        App.request({url: vendor.attr('data-action')}).get();
+        App.request({url: vendor.attr('data-action'), onRequestComplete: ()=> {$(window).trigger('resize')}}).get();
         this.getSelectedVendor().removeClass('selected');
         vendor.addClass('selected');
     }

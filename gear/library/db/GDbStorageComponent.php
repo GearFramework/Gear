@@ -148,9 +148,9 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
         $this->selectCollection()->save($model);
     }
 
-    public function selectCollection(): GDbCollection
+    public function selectCollection(string $alias = ""): GDbCollection
     {
-        return $this->connection->selectCollection($this->dbName, $this->collectionName);
+        return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias);
     }
 
     public function selectDB(): GDbDatabase
