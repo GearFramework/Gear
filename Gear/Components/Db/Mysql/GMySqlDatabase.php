@@ -23,11 +23,11 @@ class GMySqlDatabase extends GDbDatabase
     protected static $_defaultProperties = [
         'name' => '',
     ];
-    protected $_factory = [
-        'class' => '\gear\components\db\mysql\GMySqlCollection',
+    protected $_factoryProperties = [
+        'class' => '\Gear\Components\Db\Mysql\GMySqlCollection',
     ];
     protected $_cursorFactory = [
-        'class' => '\gear\components\db\mysql\GMySqlCursor',
+        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
     ];
     /* Public */
 

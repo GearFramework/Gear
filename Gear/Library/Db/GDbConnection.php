@@ -32,9 +32,6 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
         'password' => '',
         'port' => '',
     ];
-//    protected $_factory = [
-//        'class' => '\gear\library\db\GDbDatabase',
-//    ];
     protected $_cursorFactory = [
         'class' => '\Gear\Library\Db\GDbCursor',
     ];
@@ -114,7 +111,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
      */
     public function getCursor(): GDbCursor
     {
-        return GStaticFactory::factory($this->_cursorFactory, $this);
+        return $this->factory($this->_cursorFactory, $this);
     }
 
     /**
@@ -160,8 +157,9 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
      */
     public function reconnect()
     {
-        if (!$this->isConnected())
+        if (!$this->isConnected()) {
             $this->connect();
+        }
         return $this;
     }
 
@@ -191,11 +189,14 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate
     public function selectDB(string $name): GDbDatabase
     {
         if (isset($this->_items[$name])) {
-            if (!$this->_current || $this->_current->name !== $name) {
-                $this->_current = $this->_items[$name]->select();
+            if (!$this->current || $this->current->name !== $name) {
+                $this->current = $this->_items[$name];
+                $this->current->select();
             }
         } else {
-            $this->_current = $this->_items[$name] = $this->factory(['Database' => $name], $this)->select();
+            $db = $this->factory(['name' => $name], $this);
+            $this->current = $this->_items[$name] = $db;
+            $this->current->select();
         }
         return $this->_current;
     }

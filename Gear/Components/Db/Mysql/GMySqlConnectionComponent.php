@@ -34,11 +34,11 @@ class GMySqlConnectionComponent extends GDbConnection
         'collate' => 'utf8_general_ci',
         'autoConnect' => true,
     ];
-    protected $_factory = [
-        'class' => '\gear\components\db\mysql\GMySqlDatabase',
+    protected $_factoryProperties = [
+        'class' => '\Gear\Components\Db\Mysql\GMySqlDatabase',
     ];
     protected $_cursorFactory = [
-        'class' => '\gear\components\db\mysql\GMySqlCursor',
+        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
     ];
     /* Public */
 

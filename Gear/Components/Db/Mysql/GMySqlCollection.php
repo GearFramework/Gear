@@ -24,11 +24,11 @@ class GMySqlCollection extends GDbCollection
         'name' => '',
         'type' => 'InnoDB',
     ];
-    protected $_factory = [
-        'class' => '\gear\library\GModel',
+    protected $_factoryProperties = [
+        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
     ];
     protected $_cursorFactory = [
-        'class' => '\gear\components\db\mysql\GMySqlCursor',
+        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
     ];
     protected $_alias = '';
     /* Public */

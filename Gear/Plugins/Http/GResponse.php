@@ -2,6 +2,8 @@
 
 namespace Gear\Plugins\Http;
 
+use Gear\Core;
+use Gear\Interfaces\IResponse;
 use Gear\Library\GPlugin;
 use Gear\Traits\Http\TMessage;
 use Gear\Traits\Http\TResponse;
@@ -16,7 +18,7 @@ use Gear\Traits\Http\TResponse;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GResponse extends GPlugin
+class GResponse extends GPlugin implements IResponse
 {
     /* Traits */
     use TMessage;

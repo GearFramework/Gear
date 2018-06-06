@@ -144,6 +144,8 @@ class GLoaderComponent extends GComponent
         $alias = $className;
         if (($className = $this->getAlias($alias))) {
             class_alias($className, $alias);
+        } else {
+            $className = $alias;
         }
         if ($this->usePaths && isset($this->paths[$className])) {
             $file = $this->paths[$className];

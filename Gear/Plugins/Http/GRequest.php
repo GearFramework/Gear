@@ -2,6 +2,7 @@
 
 namespace Gear\Plugins\Http;
 
+use Gear\Interfaces\IRequest;
 use Gear\Library\GPlugin;
 use Gear\Traits\Http\TServerRequest;
 
@@ -15,7 +16,7 @@ use Gear\Traits\Http\TServerRequest;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GRequest extends GPlugin
+class GRequest extends GPlugin implements IRequest
 {
     /* Traits */
     use TServerRequest;
@@ -455,6 +456,23 @@ class GRequest extends GPlugin
                     $this->_files[$uploadName][$index][$sectionName] = $value;
             }
         }
+    }
+
+    /**
+     * Возвращает значение указанного параметра, независимо от метода запроса
+     *
+     * @param string $name
+     * @param null $default
+     * @return GModel|mixed|null
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function param(string $name, $default = null)
+    {
+        if ($this->isCli()) {
+            return $this->cli($name, $default);
+        }
+        return $this->getData($_REQUEST, $name, null, $default);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Gear\Library\Io\Filesystem;
 
 use gear\Core;
 use Gear\Interfaces\IFileSystem;
+use Gear\Interfaces\IObject;
 use Gear\Library\Io\GIo;
 
 /**
@@ -1487,11 +1488,11 @@ abstract class GFileSystem extends GIo implements IFileSystem
     /**
      * Возвращает владельца элемента файловой системы
      *
-     * @return IDirectory
+     * @return IObject|null
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getOwner(): IDirectory
+    public function getOwner(): ?IObject
     {
         if ($this->_owner === null) {
             $this->owner = $this->factory(['path' => $this->dirname()]);

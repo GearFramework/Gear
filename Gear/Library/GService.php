@@ -63,7 +63,7 @@ class GService extends GObject implements IService
      */
     public static function init($config = []): bool
     {
-        if (static::isInitialized() === false) {
+//        if (static::isInitialized() === false) {
             if (is_string($config) === true) {
                 $path = Core::resolvePath($config);
                 if (substr($path, -4) !== '.php') {
@@ -80,7 +80,8 @@ class GService extends GObject implements IService
                 throw static::ServiceInitException();
             }
             static::setInitialized(true);
-        }
+        //}
+        return static::isInitialized();
     }
 
     /**

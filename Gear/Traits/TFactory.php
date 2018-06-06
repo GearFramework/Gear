@@ -4,7 +4,7 @@ namespace Gear\Traits;
 
 use Gear\Core;
 use Gear\Interfaces\IObject;
-use gear\library\GEvent;
+use Gear\Library\GEvent;
 
 /**
  * Методы фабрики объектов
@@ -18,13 +18,6 @@ use gear\library\GEvent;
  */
 trait TFactory
 {
-    /**
-     * @var array $_factoryProperties параметры создаваемых фабрикой объектов
-     */
-    protected $_factoryProperties = [
-        'class' => '\Gear\Library\GModel'
-    ];
-
     /**
      * Генерация события после создания объекта
      *
@@ -76,12 +69,12 @@ trait TFactory
             $properties = array_replace_recursive($this->factoryProperties, $properties);
             list($class, $config, $properties) = Core::configure($properties);
             if (method_exists($class, 'install')) {
-                $object = $class::install($config, $properties, $this);
+                $object = $class::install($config, $properties, $owner);
             } else {
                 if ($config) {
                     $class::i($config);
                 }
-                $object = new $class($properties, $this);
+                $object = new $class($properties, $owner);
             }
             $this->afterFactory($object);
         }
@@ -97,7 +90,7 @@ trait TFactory
      */
     public function getFactoryProperties(): array
     {
-        return $this->_factoryProperties;
+        return $this->_factoryProperties ?? [];
     }
 
     /**

@@ -340,6 +340,12 @@ abstract class GDbCursor extends GModel implements \Iterator
      */
     abstract public function limit(...$limit): GDbCursor;
 
+    public function onAfterConstruct($event)
+    {
+        $this->reset();
+        return true;
+    }
+
     /**
      * Создание и выполнение запроса
      *

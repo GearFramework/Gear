@@ -81,25 +81,23 @@ final class Core {
      */
     const WARNING = 'warning';
     /* Private */
-    /* Protected */
     /**
      * @var array $_bootstrapLibraries обязательные библиотеки для начальной загрузки
      */
-    protected $_bootstrapLibraries = [
+    private static $_bootstrapLibraries = [
         '\Psr\Http\Message\*',
         '\Gear\Interfaces\*',
         '\Gear\Traits\*',
         '\Gear\Library\GException',
         '\Gear\Exceptions\*',
         '\Gear\Library\GEvent' => '\GEvent',
-        '\Gear\Library\GBehavior',
         '\Gear\Library\GObject',
         '\Gear\Library\GObject',
         '\Gear\Library\GService',
         '\Gear\Library\GModule',
         '\Gear\Library\GComponent',
         '\Gear\Library\GPlugin',
-        '\Gear\Plugins\Templater\GView',
+        '\Gear\Plugins\Templater\GViewerPlugin',
     ];
     /**
      * @var array $_config конфигурация ядра и системы
@@ -110,11 +108,7 @@ final class Core {
             /* Список пользовательских загружаемых библиотек */
             'libraries' => [],
             /* Список загружаемых модулей */
-            'modules' => [
-                'app' => [
-                    'class' => '\gear\library\GApplication',
-                ],
-            ],
+            'modules' => [],
             /* Список загружаемых компонентов */
             'components' => [
                 /* Автозагрузчик файлов с классами */
@@ -192,7 +186,6 @@ final class Core {
      * @param string $name
      * @param array $arguments
      * @return \Exception|mixed
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -262,6 +255,7 @@ final class Core {
      * Начальная загрузка необходимых библиотек и сервисов для дальнейшей работы ядра и приложения
      *
      * @return void
+     * @throws \CoreException
      * @uses self::_bootstrapLibraries()
      * @uses self::_bootstrapModules()
      * @uses self::_bootstrapComponents()
@@ -285,8 +279,8 @@ final class Core {
      *
      * @param array $section
      * @return void
-     * @used-by self::_bootstrap()
      * @throws \CoreException
+     * @used-by self::_bootstrap()
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -318,6 +312,7 @@ final class Core {
      *
      * @param array $section
      * @return void
+     * @throws \CoreException
      * @used-by self::_bootstrap()
      * @since 0.0.1
      * @version 0.0.1
@@ -328,7 +323,7 @@ final class Core {
             if (preg_match('/[*|?]/', basename($library))) {
                 /* Указана маска файлов библиотек, например, /usr/local/myproject/library/*.php */
                 $library = self::resolvePath($library, true);
-                foreach(glob($library) as $file) {
+                foreach (glob($library) as $file) {
                     if (is_file($file) && is_readable($file)) {
                         require_once($file);
                     }
@@ -366,10 +361,10 @@ final class Core {
      *
      * @param array $section
      * @return void
+     * @throws \CoreException
      * @used-by self::_bootstrap()
      * @since 0.0.1
      * @version 0.0.1
-     * @throws \CoreException
      */
     private static function _bootstrapModules(array $section)
     {
@@ -382,6 +377,7 @@ final class Core {
      * Возвращает текущий (выполняемый в данный момент) модуль приложения
      *
      * @return Interfaces\IModule
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -430,7 +426,6 @@ final class Core {
      * @param \Gear\Interfaces\IObject $owner
      * @param bool $clone
      * @return \Gear\Interfaces\IComponent
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -449,7 +444,6 @@ final class Core {
      * @param mixed $code
      * @param null|\Exception $previous
      * @return \Exception
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -460,10 +454,8 @@ final class Core {
         $args = func_get_args();
         array_shift($args);
         if (is_array($message)) {
-            $keys = ['message', 'context', 'code', 'previous'];
-            array_unshift($args, '');
-            $args = array_combine(['message', 'context', 'code', 'previous'], $args);
-            extract($args);
+            $context = $message;
+            $message = '';
         }
         if (!class_exists($exceptionClass, false)) {
             foreach ($context as $name => $value) {
@@ -623,6 +615,7 @@ final class Core {
      * @param array|string|\Closure $config
      * @param int $mode
      * @return void
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -660,6 +653,7 @@ final class Core {
      * @param \Gear\Interfaces\IComponent|array $component
      * @param \Gear\Interfaces\IObject|null $owner
      * @return \Gear\Interfaces\IComponent
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -674,6 +668,7 @@ final class Core {
      * @param string $name
      * @param \Gear\Interfaces\IModule|array $module
      * @return \Gear\Interfaces\IModule
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -690,6 +685,7 @@ final class Core {
      * @param string|null $type
      * @param \Gear\Interfaces\IObject|null $owner
      * @return \Gear\Interfaces\IService
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -989,6 +985,7 @@ final class Core {
      * @param string|null $type
      * @param \Gear\Interfaces\IObject|null $owner
      * @return \Gear\Interfaces\IService
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

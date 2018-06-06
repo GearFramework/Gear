@@ -25,13 +25,14 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
     /* Const */
     /* Private */
     /* Protected */
+    protected static $_isInitialized = false;
     protected $_allowedExtensions = [];
-    protected $_mappingFolder = null;
-    protected $_hashingName = true;
-    protected $_typeResource = null;
-    protected $_mime = null;
-    protected $_controller = '\Gear\Resources\Publicate';
     protected $_basePath = 'Resources';
+    protected $_controller = '\Gear\Resources\Publicate';
+    protected $_hashingName = true;
+    protected $_mappingFolder = null;
+    protected $_mime = null;
+    protected $_typeResource = null;
     /* Public */
 
     /**
@@ -345,7 +346,9 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
         if (ob_get_status()) {
             ob_end_clean();
         }
-        header('Content-Type: ' . $this->mime);
+        $mime = $resource instanceof IFile ? $resource->mime : $this->mime;
+        header('Content-Type: ' . $mime);
+        header('Content-Length: ', filesize($resource));
         echo (string)$resource;
     }
 

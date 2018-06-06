@@ -32,7 +32,7 @@ interface IController
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function exec(IRequest $request);
+    public function run(IRequest $request);
 }
 
 /**

@@ -32,7 +32,8 @@ trait TObject
      * @param string $name
      * @param array $arguments
      * @return mixed
-     * @throws \ObjectException
+     * @throws \ComponentNotFoundException
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -49,7 +50,7 @@ trait TObject
                 $arguments = ['target' => $this];
                 $event = new GEvent($this, $arguments);
             }
-            method_exists($this, 'trigger') ? $this->trigger($name, $event) : Core::trigger($name, $event);
+            return method_exists($this, 'trigger') ? $this->trigger($name, $event) : Core::trigger($name, $event);
         } elseif ($this instanceof IComponentContained && $this->isComponent($name)) {
             $c = $this->c($name);
             if (!is_callable($c)) {
@@ -88,6 +89,47 @@ trait TObject
             }
         }
         throw self::ObjectException('Calling method <{methodName}> not exists in class <{class}>', ['methodName' => $name, 'class' => get_class($this)]);
+    }
+
+    public function __set(string $name, $value)
+    {
+        $setter = 'set' . ucfirst($name);
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
+        } elseif (preg_match('/^on[A-Z]/', $name)) {
+            $this->on($name, $value);
+        } else {
+            if (method_exists($this, 'installComponent') && $value instanceof IComponent) {
+                $this->installComponent($value);
+            } elseif (method_exists($this, 'installPlugin') && $value instanceof IPlugin) {
+                $this->installPlugin($name, $value);
+            } else {
+                $this->_properties[$name] = $value;
+            }
+        }
+    }
+
+    public function __get(string $name)
+    {
+        $value = null;
+        $getter = 'get' . ucfirst($name);
+        if (method_exists($this, $getter)) {
+            $value = $this->$getter();
+        }
+        elseif (preg_match('/^on[A-Z]/', $name)) {
+            $value = $this->trigger($name, new GEvent($this, ['target' => $this]));
+        } elseif (method_exists($this, 'isComponent') && $this->isComponent($name)) {
+            $value = $this->c($name);
+        } elseif (method_exists($this, 'isPlugin') && $this->isPlugin($name)) {
+            $value = $this->p($name);
+        } else {
+            if (isset($this->_properties[$name])) {
+                $value = $this->_properties[$name];
+            } elseif (is_object($this->owner)) {
+                $value = $this->owner->$name;
+            }
+        }
+        return $value;
     }
 
     /**
@@ -132,7 +174,35 @@ trait TObject
      * @version 0.0.1
      */
     public static function getNamespace(): string {
-        Core::getNamespace(static::class);
+        return Core::getNamespace(static::class);
+    }
+
+    /**
+     * Вызывается после создания объекта
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function afterConstruct()
+    {
+        return $this->onAfterConstruct(new GEvent($this));
+    }
+
+    /**
+     * Вызывается перед созданием объекта
+     *
+     * @param array $properties
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function beforeConstruct($properties)
+    {
+        if (method_exists($this, 'restoreDefaultProperties')) {
+            $this->restoreDefaultProperties();
+        }
+        return $this->onBeforeConstruct(new GEvent($this, ['properties' => $properties]));
     }
 
     /**

@@ -80,7 +80,6 @@ class GObject implements IObject
      * @param string $name
      * @param array $arguments
      * @return mixed
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

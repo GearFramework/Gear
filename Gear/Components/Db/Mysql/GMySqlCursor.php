@@ -6,7 +6,6 @@ use Gear\Core;
 use Gear\Interfaces\IModel;
 use Gear\Interfaces\IObject;
 use Gear\Library\Db\GDbCursor;
-use Gear\Library\GStaticFactory;
 use Gear\Traits\TFactory;
 
 
@@ -34,7 +33,7 @@ class GMySqlCursor extends GDbCursor
     protected $_current = false;
     protected $_queryBuild = [];
     protected $_factoryQueryBuild = [
-        'class' => '\gear\library\GModel',
+        'class' => '\Gear\Library\GModel',
         'fields' => [],
         'from' => null,
         'join' => [],
@@ -460,7 +459,7 @@ class GMySqlCursor extends GDbCursor
             $this->result = null;
         }
         $this->_query = null;
-        $this->_queryBuild = GStaticFactory::factory($this->_factoryQueryBuild);
+        $this->_queryBuild = $this->factory($this->_factoryQueryBuild);
         $cursor = $this;
         $this->_queryBuild->builderExecute = function() use ($cursor) {
             $cursor->buildQuery();
@@ -502,7 +501,8 @@ class GMySqlCursor extends GDbCursor
             $query = sprintf($query, ...$bindParams);
         }
         if (!($this->result = $this->handler->query($query))) {
-            throw self::DbCursorException('Invalid run query', ['query' => $query]);
+            $handler = $this->handler;
+            throw self::DbCursorException('Invalid run query: {errorMessage}', ['query' => $query, 'errorMessage' => $handler->error]);
         }
         return $this;
     }
@@ -576,18 +576,18 @@ class GMySqlCursor extends GDbCursor
      */
     public function sort($sort = ''): GDbCursor
     {
-        $tempSort = $this->_queryBuild->sort;
+        $tempSort = $this->_queryBuild->order;
         if (is_array($sort)) {
             foreach($sort as $col => &$order) {
                 if (!is_numeric($col)) {
-                    $order = "$col " . ($order === self::ASC ? 'ASC' : 'DESC');
+                    $order = "`$col` " . ($order === self::ASC ? 'ASC' : 'DESC');
                 }
             }
             $tempSort = array_merge($tempSort, $sort);
         } else {
             $tempSort[] = $tempSort;
         }
-        $this->_queryBuild->sort = $tempSort;
+        $this->_queryBuild->order = $tempSort;
         return $this;
     }
 

@@ -35,7 +35,7 @@ class GResourcesModule extends GModule
             ],
         ],
     ];
-    protected static $_initialized = false;
+    protected static $_isInitialized = false;
     protected $_resources = ['js', 'css'];
     protected $_cacheName = 'cache';
     /* Public */
@@ -47,6 +47,7 @@ class GResourcesModule extends GModule
      * @param string $type
      * @param bool $send
      * @return mixed
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -69,16 +70,29 @@ class GResourcesModule extends GModule
      * Возвращает инстанс плагина для работы с кэшем или null, таковой не зарегистрирован
      *
      * @return null|ICache
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.1
      */
     public function getCache(): ?ICache
     {
         $cache = null;
-        if ($this->isPluginRegistered($this->_cache)) {
-            $cache = $this->p($this->_cache);
+        if ($this->isPluginRegistered($this->cacheName)) {
+            $cache = $this->p($this->cacheName);
         }
         return $cache;
+    }
+
+    /**
+     * Возвращает название плагина для работы с кэшем или null, таковой не зарегистрирован
+     *
+     * @return null|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCacheName(): ?string
+    {
+        return $this->_cacheName;
     }
 
     /**
@@ -123,6 +137,7 @@ class GResourcesModule extends GModule
      * @param array $options
      * @param bool $compile
      * @return string
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.1
      */

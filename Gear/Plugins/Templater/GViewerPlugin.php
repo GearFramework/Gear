@@ -30,7 +30,7 @@ class GViewerPlugin extends GPlugin
      * @param array $context
      * @param bool $buffered
      * @return void|string
-     * @throws \FileNotFoundException
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -39,16 +39,18 @@ class GViewerPlugin extends GPlugin
         if ($template instanceof \Closure) {
             $template = $template($context, $buffered);
         }
-        if ($template instanceof \gear\library\GTemplate) {
+        if ($template instanceof \Gear\Library\GTemplate) {
             $result = $template->build($context);
         } elseif (!is_string($template)) {
             throw self::InvalidTemplateException(['template' => $template]);
         } else {
-            if (!preg_match('/(\\\\|\/)/', $template))
+            if (!preg_match('/(\\\\|\/)/', $template)) {
                 $template = $this->owner->viewPath . '/' . $template;
+            }
             $template = \gear\Core::resolvePath($template);
-            if (!preg_match('/\.phtml$/', $template))
+            if (!preg_match('/\.phtml$/', $template)) {
                 $template .= '.phtml';
+            }
             $result = $this->renderFile($template, $context, $buffered);
         }
         return $result;
@@ -62,7 +64,6 @@ class GViewerPlugin extends GPlugin
      * @param array $__render__context__
      * @param bool $__render__buffered__
      * @return string
-     * @throws \FileNotFoundException
      * @since 0.0.1
      * @version 0.0.1
      */

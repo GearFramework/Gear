@@ -3,6 +3,8 @@
 namespace Gear\Library;
 
 use Gear\Interfaces\IModel;
+use Gear\Interfaces\IObject;
+use Gear\Traits\TPluginContained;
 
 /**
  * Базовый класс моделей
@@ -17,6 +19,7 @@ use Gear\Interfaces\IModel;
 class GModel extends GObject implements IModel
 {
     /* Traits */
+    use TPluginContained;
     /* Const */
     /* Private */
     /* Protected */

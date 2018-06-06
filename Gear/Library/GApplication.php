@@ -4,6 +4,7 @@ namespace Gear\Library;
 
 use Gear\Core;
 use Gear\Interfaces\IModule;
+use Gear\Traits\TComponentContained;
 
 /**
  * Класс приложений
@@ -15,7 +16,7 @@ use Gear\Interfaces\IModule;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GApplication extends GService implements IModule
+class GApplication extends GModule implements IModule
 {
     /* Traits */
     /* Const */
@@ -45,7 +46,7 @@ class GApplication extends GService implements IModule
      */
     public function afterRun($result)
     {
-        return Core::onAfterRunApplication();
+        return Core::onAfterRunApplication(new \GEvent($this));
     }
 
     /**
@@ -57,7 +58,7 @@ class GApplication extends GService implements IModule
      */
     public function beforeRun()
     {
-        return Core::onBeforeRunApplication();
+        return Core::onBeforeRunApplication(new \GEvent($this));
     }
 
     /**
@@ -84,7 +85,7 @@ class GApplication extends GService implements IModule
     final public function run()
     {
         if ($this->beforeRun()) {
-            $result = $this->controllers->exec($this->request, $this->response);
+            $result = $this->router->exec($this->request, $this->response);
             $this->end($result);
         }
     }

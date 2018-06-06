@@ -3,6 +3,7 @@
 namespace Gear\Library\Db;
 
 use Gear\Core;
+use Gear\Interfaces\IFactory;
 use Gear\Interfaces\IModel;
 use Gear\Library\GComponent;
 use Gear\Traits\TDelegateFactory;
@@ -18,7 +19,7 @@ use Gear\Traits\TFactory;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate
+abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate, IFactory
 {
     /* Traits */
     use TFactory;
@@ -27,8 +28,8 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /* Private */
     /* Protected */
     protected static $_initialized = false;
-    protected $_factory = [
-        'class' => '\gear\library\GModel',
+    protected $_factoryProperties = [
+        'class' => '\Gear\Library\GModel',
     ];
     protected $_connection = null;
     protected $_connectionName = 'db';
@@ -58,9 +59,9 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function all()
+    public function all(): iterable
     {
-        return $this->find();
+        return $this->getIterator($this->getDefaultCursor());
     }
 
     /**
@@ -124,7 +125,6 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
      * @return GDbConnection
      * @since 0.0.1
      * @version 0.0.1
-     * @throws \CoreException
      */
     public function getConnection(): GDbConnection
     {
@@ -171,6 +171,33 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     }
 
     /**
+     * Возвращает курсор с параметрами по-умолчанию
+     *
+     * @return GDbCursor
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDefaultCursor(): GDbCursor
+    {
+        $criteria = [];
+        if ($this->_defaultParams['where']) {
+            $criteria = $this->_defaultParams['where'];
+        }
+        $fields = [];
+        if ($this->_defaultParams['fields']) {
+            $fields = $this->_defaultParams['fields'];
+        }
+        $cursor = $this->cursor->find($criteria, $fields);
+        if ($this->_defaultParams['sort']) {
+            $cursor->sort($this->_defaultParams['sort']);
+        }
+        if ($this->_defaultParams['limit']) {
+            $cursor->limit($this->_defaultParams['limit']);
+        }
+        return $cursor;
+    }
+
+    /**
      * Возвращает итератор со записями
      *
      * @param mixed $cursor
@@ -185,7 +212,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
         } else if (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
         } else {
-            $cursor = $this->delegate($this->cursor->find());
+            $cursor = $this->delegate($this->getDefaultCursor());
         }
         return $cursor;
     }

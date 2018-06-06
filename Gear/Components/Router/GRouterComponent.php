@@ -4,6 +4,7 @@ namespace Gear\Components\Router;
 
 use Gear\Core;
 use Gear\Interfaces\IController;
+use Gear\Interfaces\IObject;
 use Gear\Interfaces\IRequest;
 use Gear\Interfaces\IResponse;
 use Gear\Library\GComponent;
@@ -41,6 +42,7 @@ class GRouterComponent extends GComponent
      * @param IRequest $request
      * @param IResponse $response
      * @return mixed
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -65,18 +67,24 @@ class GRouterComponent extends GComponent
     {
         $class = $this->getClassByRouteInRoutes($route);
         if (empty($class)) {
+            $classPath = [];
             foreach (explode('/', $route) as $item) {
                 if ($item === 'a') {
                     break;
                 } elseif ($item === '') {
-                    $class .= '/';
+                    $classPath[] = '';
                 } else {
-                    $class = ucfirst($item) . '/';
+                    $classPath[] = ucfirst($item);
                 }
             }
-            $class = Core::resolvePath(preg_replace('#/$#', '', $class));
+            $class = implode('\\', $classPath);
             if (empty($class)) {
-                $class = Core::resolvePath($this->defaultControllersPath . '/' . ucfirst($this->defaultController) . 'Controller');
+                $class = '\\' . Core::app()->namespace . '\\' . $this->defaultControllersPath . '/' . ucfirst($this->defaultController);
+            } else {
+                if ($class[0] !== '\\') {
+                    $class = '\\' . Core::app()->namespace . '\\' . $this->defaultControllersPath . '\\' . $class;
+                }
+                //$class = Core::resolvePath(preg_replace('#/$#', '', $class));
             }
         }
         return $class;
@@ -87,7 +95,6 @@ class GRouterComponent extends GComponent
      *
      * @param string $route
      * @return string
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -118,6 +125,7 @@ class GRouterComponent extends GComponent
      * Возвращает текущий контроллер, если таковой определен
      *
      * @return IController
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

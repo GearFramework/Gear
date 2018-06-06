@@ -2,6 +2,7 @@
 
 namespace Gear\Traits;
 
+use Arquivo\Models\RgSource;
 use Gear\Core;
 use Gear\Interfaces\IObject;
 use Gear\Interfaces\IPlugin;
@@ -185,6 +186,7 @@ trait TPluginContained
      *
      * @param string $name
      * @return void
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.1
      */

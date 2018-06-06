@@ -4,6 +4,7 @@ namespace Gear\Library;
 
 use Gear\Core;
 use Gear\Interfaces\IApi;
+use Gear\Interfaces\IController;
 use Gear\Interfaces\IRequest;
 
 /**
@@ -16,7 +17,7 @@ use Gear\Interfaces\IRequest;
  * @since 0.0.1
  * @version 0.0.1
  */
-class GController extends GModel
+class GController extends GModel implements IController
 {
     /* Traits */
     /* Const */
@@ -30,26 +31,41 @@ class GController extends GModel
     /* Public */
 
     /**
+     * Вызов метода $this->run()
+     *
+     * @param IRequest $request
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function __invoke(IRequest $request)
+    {
+        return $this->run($request);
+    }
+
+    /**
      * Генерация события после того как контроллер отработал
      *
      * @param mixed $result
+     * @return bool
      * @since 0.0.1
      * @version 0.0.1
      */
     public function afterRun($result)
     {
-        Core::trigger('onAfterRun', new GEvent($this, ['result' => $result]));
+        return Core::trigger('onAfterRun', new GEvent($this, ['result' => $result]));
     }
 
     /**
      * Генерация события перед тем как контроллер начнёт работу
      *
+     * @return bool
      * @since 0.0.1
      * @version 0.0.1
      */
     public function beforeRun()
     {
-        Core::trigger('onBeforeRun', new GEvent($this));
+        return Core::trigger('onBeforeRun', new GEvent($this));
     }
 
     /**
@@ -75,7 +91,7 @@ class GController extends GModel
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getApiParams($method, IRequest $request): array
+    public function getApiParams($method): array
     {
         if ($method instanceof \Closure)
             $reflection = new \ReflectionFunction($method);
@@ -91,7 +107,7 @@ class GController extends GModel
         $result = [];
         $method = strtolower($this->request->getMethod());
         foreach ($params as $param) {
-            $value = $request->$method($param->name);
+            $value = $this->request->$method($param->name);
             if ($value === null) {
                 if (!$param->isOptional()) {
                     throw self::InvalidApiParamsException();
@@ -163,6 +179,28 @@ class GController extends GModel
     }
 
     /**
+     * Отображение шаблона
+     *
+     * @param $template
+     * @param array $context
+     * @param bool $buffered
+     * @return bool|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function render($template, array $context = [], bool $buffered = false)
+    {
+        $viewer = $this->{$this->viewerName};
+        if ($this->layout) {
+            $contentPage = $viewer->render($template, $context, true);
+            $result = $viewer->render($this->_layout, ['contentLayout' => $contentPage], $buffered);
+        } else {
+            $result = $viewer->render($template, $context, $buffered);
+        }
+        return $result;
+    }
+
+    /**
      * Начало работы контроллера
      *
      * @param IRequest $request
@@ -175,7 +213,7 @@ class GController extends GModel
         $result = null;
         $this->request = $request;
         if ($this->beforeRun()) {
-            $route = $request->param('r', null);
+            $route = $request->param('r', $this->defaultApi);
             preg_match('#/a(($)|(/[A-Za-z0-9_]*))#', $route, $match);
             if ($match) {
                 $api = $match[1];
@@ -191,6 +229,9 @@ class GController extends GModel
             }
             $params = $this->getApiParams($apiMethod);
             if ($this->beforeExecApi($api, $apiMethod, $params)) {
+                if (is_string($apiMethod)) {
+                    $apiMethod = [$this, $apiMethod];
+                }
                 $result = call_user_func($apiMethod, ...$params);
             }
             $this->afterRun($result);
