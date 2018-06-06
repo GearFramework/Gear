@@ -186,6 +186,7 @@ final class Core {
      * @param string $name
      * @param array $arguments
      * @return \Exception|mixed
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -426,6 +427,7 @@ final class Core {
      * @param \Gear\Interfaces\IObject $owner
      * @param bool $clone
      * @return \Gear\Interfaces\IComponent
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -444,6 +446,7 @@ final class Core {
      * @param mixed $code
      * @param null|\Exception $previous
      * @return \Exception
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
