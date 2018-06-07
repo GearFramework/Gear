@@ -2,6 +2,10 @@
 
 namespace Gear\Library\Db;
 
+use Gear\Interfaces\IDbCollection;
+use Gear\Interfaces\IDbConnection;
+use Gear\Interfaces\IDbCursor;
+use Gear\Interfaces\IDbDatabase;
 use Gear\Interfaces\IModel;
 use Gear\Library\GModel;
 use Gear\Library\GStaticFactory;
@@ -18,7 +22,7 @@ use Gear\Traits\TFactory;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbCollection extends GModel implements \IteratorAggregate
+abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCollection
 {
     /* Traits */
     use TFactory;
@@ -69,11 +73,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Возвращает соединение с сервером базы данных
      *
-     * @return GDbConnection
+     * @return IDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getConnection(): GDbConnection
+    public function getConnection(): IDbConnection
     {
         return $this->getDatabase()->getConnection();
     }
@@ -81,11 +85,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Возвращает текущий выполняемый запрос
      *
-     * @return null|GDbCursor
+     * @return null|IDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCurrent(): ?GDbCursor
+    public function getCurrent(): ?IDbCursor
     {
         return $this->_current;
     }
@@ -93,11 +97,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Возвращает инстанс курсора для работы с запросами
      *
-     * @return GDbCursor
+     * @return IDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCursor(): GDbCursor
+    public function getCursor(): IDbCursor
     {
         $this->current = $this->factory($this->factoryProperties, $this);
         return $this->current;
@@ -106,11 +110,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
      *
-     * @return GDbDatabase
+     * @return IDbDatabase
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getDatabase(): GDbDatabase
+    public function getDatabase(): IDbDatabase
     {
         return $this->owner;
     }
@@ -143,11 +147,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
      * Удаление таблицы
      *
      * @param null|IModel $model
-     * @return GDbCollection
+     * @return IDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function remove(?IModel $model = null): GDbCollection
+    public function remove(?IModel $model = null): IDbCollection
     {
         if ($model) {
             $this->cursor->remove($model);
@@ -160,11 +164,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Сброс результатов выполнения последнего запроса
      *
-     * @return GDbCollection
+     * @return IDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function reset(): GDbCollection
+    public function reset(): IDbCollection
     {
         if ($this->current) {
             $this->current->reset();
@@ -188,12 +192,12 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Установка текущего выполняемого запроса
      *
-     * @param GDbCursor $cursor
+     * @param IDbCursor $cursor
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setCurrent(GDbCursor $cursor)
+    public function setCurrent(IDbCursor $cursor)
     {
         $this->_current = $cursor;
     }
@@ -201,9 +205,9 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate
     /**
      * Очистка таблицы от записей
      *
-     * @return GDbCollection
+     * @return IDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function truncate(): GDbCollection;
+    abstract public function truncate(): IDbCollection;
 }
