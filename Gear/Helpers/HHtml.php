@@ -30,6 +30,7 @@ class HHtml extends GHelper
      * @param string $api
      * @param array $params
      * @return string
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

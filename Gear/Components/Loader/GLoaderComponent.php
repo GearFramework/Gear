@@ -179,6 +179,7 @@ class GLoaderComponent extends GComponent
      *
      * @param string $namespace
      * @return string
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

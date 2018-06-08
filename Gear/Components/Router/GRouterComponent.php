@@ -4,7 +4,6 @@ namespace Gear\Components\Router;
 
 use Gear\Core;
 use Gear\Interfaces\IController;
-use Gear\Interfaces\IObject;
 use Gear\Interfaces\IRequest;
 use Gear\Interfaces\IResponse;
 use Gear\Library\GComponent;

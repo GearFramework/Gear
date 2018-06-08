@@ -48,7 +48,7 @@ class GLogComponent extends GComponent
         $this->_loggers[] = $name;
         if ($logger instanceof IPlugin) {
             $this->installPlugin($name, $logger, $this);
-        } else if (is_array($logger)) {
+        } elseif (is_array($logger)) {
             $this->registerPlugin($name, $logger);
         } else {
             throw $this->exceptionInvalidLogWriter(['logger' => $name]);
@@ -178,10 +178,10 @@ class GLogComponent extends GComponent
      */
     public function log(string $level, string $message, array $context = [])
     {
-        foreach($context as $name => $value) {
+        foreach ($context as $name => $value) {
             $message = str_replace('{' . $name . '}', $value, $message);
         }
-        foreach($this->loggers as $logger) {
+        foreach ($this->loggers as $logger) {
             $this->p($logger)->log($level, $message, $context);
         }
     }

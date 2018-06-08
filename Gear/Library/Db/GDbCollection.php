@@ -8,7 +8,6 @@ use Gear\Interfaces\IDbCursor;
 use Gear\Interfaces\IDbDatabase;
 use Gear\Interfaces\IModel;
 use Gear\Library\GModel;
-use Gear\Library\GStaticFactory;
 use Gear\Traits\TDelegateFactory;
 use Gear\Traits\TFactory;
 
