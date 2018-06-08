@@ -3,6 +3,10 @@
 namespace Gear\Library\Db;
 
 use Gear\Core;
+use Gear\Interfaces\IDbCollection;
+use Gear\Interfaces\IDbConnection;
+use Gear\Interfaces\IDbCursor;
+use Gear\Interfaces\IDbDatabase;
 use Gear\Interfaces\IFactory;
 use Gear\Interfaces\IModel;
 use Gear\Library\GComponent;
@@ -41,21 +45,20 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Добавление модели в набор (сохранение в коллекции-таблице в базе данных)
      *
-     * @param IModel $model
-     * @return $this
+     * @param IModel|array of IModel $model
+     * @return int
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function add(IModel $model)
+    public function add($model): int
     {
-        $this->selectCollection()->insert($model);
-        return $this;
+        return $this->selectCollection()->insert($model);
     }
 
     /**
      * Выборка всех моделей из коллекции
      *
-     * @return \Iterator
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -122,11 +125,12 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Возвращает компонент подключения к базе данных
      *
-     * @return GDbConnection
+     * @return IDbConnection
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getConnection(): GDbConnection
+    public function getConnection(): IDbConnection
     {
         if (!$this->_connection) {
             $this->_connection = Core::c($this->connectionName);
@@ -149,11 +153,11 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Возвращает курсор коллекции
      *
-     * @return GDbCursor
+     * @return IDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCursor(): GDbCursor
+    public function getCursor(): IDbCursor
     {
         return $this->selectCollection()->cursor;
     }
@@ -173,11 +177,11 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Возвращает курсор с параметрами по-умолчанию
      *
-     * @return GDbCursor
+     * @return IDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getDefaultCursor(): GDbCursor
+    public function getDefaultCursor(): IDbCursor
     {
         $criteria = [];
         if ($this->_defaultParams['where']) {
@@ -201,11 +205,11 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
      * Возвращает итератор со записями
      *
      * @param mixed $cursor
-     * @return \Iterator
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getIterator($cursor = null): \Iterator
+    public function getIterator($cursor = null): iterable
     {
         if ($cursor instanceof \Iterator) {
             $cursor = $this->delegate($cursor);
@@ -220,7 +224,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Удаление модели
      *
-     * @param array|IModel $model
+     * @param array|IModel|array of IModel $model
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -232,7 +236,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Сохранение модели
      *
-     * @param array|IModel $model
+     * @param array|IModel|array of IModel $model
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -245,11 +249,11 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
      * Выбор коллекции
      *
      * @param string $alias
-     * @return GDbCollection
+     * @return IDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function selectCollection(string $alias = ""): GDbCollection
+    public function selectCollection(string $alias = ""): IDbCollection
     {
         return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias);
     }
@@ -257,11 +261,11 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Выбор базы данных
      *
-     * @return GDbDatabase
+     * @return IDbDatabase
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function selectDB(): GDbDatabase
+    public function selectDB(): IDbDatabase
     {
         return $this->connection->selectDB($this->dbName);
     }
@@ -282,12 +286,12 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /**
      * Устновка подключения к серверу базы данных
      *
-     * @param GDbConnection $connection
+     * @param IDbConnection $connection
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setConnection(GDbConnection $connection)
+    public function setConnection(IDbConnection $connection)
     {
         $this->_connection = $connection;
     }

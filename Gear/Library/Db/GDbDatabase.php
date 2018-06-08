@@ -119,6 +119,18 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
     }
 
     /**
+     * Возвращает базу данных, т.е. саму себя
+     *
+     * @return IDbDatabase
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDatabase(): IDbDatabase
+    {
+        return $this;
+    }
+
+    /**
      * Возвращает ресурс подключения к базе данных
      *
      * @return mixed

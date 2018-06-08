@@ -95,6 +95,18 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     }
 
     /**
+     * Возвращает ссылку на компонент подключения базы данных, т.е. на самого себя
+     *
+     * @return IDbConnection
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getConnection(): IDbConnection
+    {
+        return $this;
+    }
+
+    /**
      * Возвращает текущую выбранную базу данных
      *
      * @return null|GDbDatabase

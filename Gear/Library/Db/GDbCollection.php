@@ -38,6 +38,13 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     protected $_items = [];
     /* Public */
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return mixed|null
+     * @throws \ComponentNotFoundException
+     * @throws \PluginNotFoundException
+     */
     public function __call(string $name, array $arguments)
     {
         $result = null;
@@ -50,7 +57,7 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     }
 
     /**
-     * Удаление базы данных
+     * Удаление коллекции
      *
      * @return void
      * @since 0.0.1
@@ -68,6 +75,18 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     public function getAlias(): string
     {
         return $this->_alias;
+    }
+
+    /**
+     * Возвращает коллекцию, т.е. саму себя
+     *
+     * @return IDbCollection
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCollection(): IDbCollection
+    {
+        return $this;
     }
 
     /**
@@ -144,7 +163,7 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     }
 
     /**
-     * Удаление таблицы
+     * Удаление таблицы или указанной модели из таблицы
      *
      * @param null|IModel $model
      * @return IDbCollection
