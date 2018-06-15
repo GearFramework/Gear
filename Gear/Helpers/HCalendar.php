@@ -43,7 +43,7 @@ class HCalendar extends GHelper
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function date($date = null): GDate
+    public static function helpDate($date = null): GDate
     {
         if (null === $date) {
             $date = time();
@@ -65,7 +65,7 @@ class HCalendar extends GHelper
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function day($date = null, $options = ['format' => 'd'])
+    public static function helpDay($date = null, $options = ['format' => 'd'])
     {
         $date = self::date($date);
         $options = self::_prepareOptions($options);
@@ -81,7 +81,7 @@ class HCalendar extends GHelper
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function month($date = null, $options = ['format' => 'm'])
+    public static function helpMonth($date = null, $options = ['format' => 'm'])
     {
         $date = self::date($date);
         $options = self::_prepareOptions($options);
@@ -95,11 +95,9 @@ class HCalendar extends GHelper
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function now()
+    public static function helpNow(): GDate
     {
-        if (self::$_currentDate !== null) {
-            self::setDate(time());
-        }
+        self::$_currentDate = self::date(time());
         return self::$_currentDate;
     }
 
@@ -124,7 +122,7 @@ class HCalendar extends GHelper
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function year($date = null, $options = ['format' => 'Y']): int
+    public static function helpYear($date = null, $options = ['format' => 'Y']): int
     {
         $date = self::date($date);
         $options = self::_prepareOptions($options);

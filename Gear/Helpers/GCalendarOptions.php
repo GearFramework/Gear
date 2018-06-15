@@ -6,7 +6,7 @@ use Gear\Traits\TGetter;
 use Gear\Traits\TProperties;
 use Gear\Traits\TSetter;
 
-class GCalendaOptions
+class GCalendarOptions
 {
     /* Traits */
     use TProperties;

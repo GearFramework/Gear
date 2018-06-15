@@ -2,7 +2,7 @@
 
 namespace Gear\Models;
 
-use Gear\Helpers\GCalendaOptions;
+use Gear\Helpers\GCalendarOptions;
 use Gear\Library\GModel;
 
 /**
@@ -38,51 +38,77 @@ class GDate extends GModel
      */
     public function __toString(): string
     {
-        return $this->date();
+        return $this->getDate();
     }
 
     /**
      * Обработка переданных опциональных значений
      *
-     * @param array|GCalendaOptions $options
-     * @return GCalendaOptions
+     * @param array|string|GCalendarOptions $options
+     * @return GCalendarOptions
      * @since 0.0.1
      * @version 0.0.1
      */
-    protected function _prepareOptions($options): GCalendaOptions
+    protected function _prepareOptions($options): GCalendarOptions
     {
-        if ($options instanceof GCalendaOptions) {
+        if ($options instanceof GCalendarOptions) {
             $options->props(array_replace_recursive(self::$_config['options'], $options->props()));
         } else {
             if (is_array($options)) {
                 $options = array_replace_recursive(self::$_config['options'], $options);
+            } elseif (is_string($options)) {
+                $options = ['format' => $options];
             } else {
                 $options = self::$_config['options'];
             }
-            $options = new GCalendaOptions($options);
+            $options = new GCalendarOptions($options);
         }
-        $this->options = $options;
+        $this->_options = $options;
         return $options;
     }
 
+    /**
+     * Возвращает отформатированную дату и время
+     *
+     * @param array|string|GCalendarOptions $options
+     * @return string
+     * @use $this->getDate()
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function date($options = []): string
     {
         return $this->getDate($options);
     }
 
+    /**
+     * Возвращает отформатированную дату и время
+     *
+     * @param array|string|GCalendarOptions $options
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getDate($options = []): string
     {
         $this->options = $this->_prepareOptions($options);
         return date($options->format, $this->timestamp);
     }
 
+    /**
+     * Возвращает день месяца без ведущего нуля
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getDay(): int
     {
         return date('j', $this->timestamp);
     }
 
     /**
-     * Возвращает месяц
+     * Возвращает месяц без ведущего нуля
      *
      * @return int
      * @since 0.0.1
@@ -96,37 +122,65 @@ class GDate extends GModel
     /**
      * Возвращает текущие опции
      *
-     * @return GCalendaOptions
+     * @return null|GCalendarOptions
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getOptions(): GCalendaOptions
+    public function getOptions(): ?GCalendarOptions
     {
         return $this->_options;
     }
 
+    /**
+     * Возвращает UNIX Timestamp
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getTimestamp(): int
     {
         return $this->props('timestamp');
     }
 
+    /**
+     * Возвращает год
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getYear(): int
     {
         return date('Y', $this->timestamp);
     }
 
+    /**
+     * Возвращает месяц без ведущего нуля
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function month(): int
     {
         return $this->getMonth();
     }
 
+    /**
+     * Установка параметров
+     *
+     * @param string|array|GCalendarOptions $options
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function setOptions($options)
     {
         $this->_prepareOptions($options);
     }
 
     /**
-     * Возвращает unix timestamp
+     * Возвращает Unix Timestamp
      *
      * @return int
      * @since 0.0.1
