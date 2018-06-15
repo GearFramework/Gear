@@ -109,11 +109,11 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Возвращает текущую выбранную базу данных
      *
-     * @return null|GDbDatabase
+     * @return null|IDbDatabase
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCurrent(): ?GDbDatabase
+    public function getCurrent(): ?IDbDatabase
     {
         return $this->_current;
     }
@@ -157,7 +157,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Подключение к серверу базы данных
      *
-     * @return GDbConnection
+     * @return IDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */

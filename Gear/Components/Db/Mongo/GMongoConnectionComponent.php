@@ -2,6 +2,7 @@
 
 namespace Gear\Components\Db\Mongo;
 
+use Gear\Interfaces\IDbConnection;
 use Gear\Library\Db\GDbConnection;
 use Gear\Library\GEvent;
 
@@ -35,11 +36,11 @@ class GMongoConnectionComponent extends GDbConnection
     /**
      * Завершение соединения с сервером баз данных
      *
-     * @return $this
+     * @return IDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function close(): GDbConnection
+    public function close(): IDbConnection
     {
         if ($this->isConnected()) {
             $this->handler->close();
@@ -64,11 +65,11 @@ class GMongoConnectionComponent extends GDbConnection
     /**
      * Возвращает итератор со списком баз данных на сервере
      *
-     * @return \Iterator
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getIterator(): \Iterator
+    public function getIterator(): iterable
     {
         return $this->delegate($this->cursor->runQuery('SHOW DATABASES'));
     }
@@ -108,11 +109,11 @@ class GMongoConnectionComponent extends GDbConnection
     /**
      * Подключение к серверу баз данных
      *
-     * @return GDbConnection
+     * @return IDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function open(): GDbConnection
+    public function open(): IDbConnection
     {
         if (!$this->isConnected()) {
             $this->handler = new \mysqli($this->host, $this->user, $this->password, $this->database, $this->this, $this->socket);

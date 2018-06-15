@@ -2,7 +2,7 @@
 
 namespace Gear\Components\Db\Mysql;
 
-use Gear\Core;
+use Gear\Interfaces\IDbConnection;
 use Gear\Library\Db\GDbConnection;
 use Gear\Library\GEvent;
 
@@ -45,11 +45,11 @@ class GMySqlConnectionComponent extends GDbConnection
     /**
      * Завершение соединения с сервером баз данных
      *
-     * @return $this
+     * @return IDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function close(): GDbConnection
+    public function close(): IDbConnection
     {
         if ($this->isConnected()) {
             $this->handler->close();
@@ -74,11 +74,11 @@ class GMySqlConnectionComponent extends GDbConnection
     /**
      * Возвращает итератор со списком баз данных на сервере
      *
-     * @return \Iterator
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getIterator(): \Iterator
+    public function getIterator(): iterable
     {
         return $this->delegate($this->cursor->runQuery('SHOW DATABASES'));
     }
