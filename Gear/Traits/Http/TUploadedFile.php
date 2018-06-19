@@ -2,7 +2,7 @@
 
 namespace Gear\Traits\Http;
 
-use Psr\Http\Messages\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
 trait TUploadedFile
 {

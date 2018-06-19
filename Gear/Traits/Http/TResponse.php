@@ -2,7 +2,7 @@
 
 namespace Gear\Traits\Http;
 
-use Psr\Http\Messages\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Representation of an outgoing, server-side response.

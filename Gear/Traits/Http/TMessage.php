@@ -2,8 +2,8 @@
 
 namespace Gear\Traits\Http;
 
-use Psr\Http\Messages\MessageInterface;
-use Psr\Http\Messages\StreamInterface;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * HTTP messages consist of requests from a client to a server and responses

@@ -2,8 +2,8 @@
 
 namespace gear\traits\http;
 
-use Psr\Http\Messages\RequestInterface;
-use Psr\Http\Messages\UriInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Representation of an outgoing, client-side request.

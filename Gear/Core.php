@@ -158,8 +158,8 @@ final class Core {
      * @var string[] Строковые значения режимов запуска
      */
     private static $_modes = [
-        self::DEVELOPMENT => 'development',
-        self::PRODUCTION => 'production',
+        self::DEVELOPMENT => 'Development',
+        self::PRODUCTION => 'Production',
     ];
     /**
      * @var \gear\interfaces\IService[] Массив установленных сервисов (модули, компоненты)
@@ -297,6 +297,7 @@ final class Core {
      *
      * @param array $section
      * @return void
+     * @throws \CoreException
      * @used-by self::_bootstrap()
      * @since 0.0.1
      * @version 0.0.1
@@ -622,7 +623,7 @@ final class Core {
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function init($config = [], int $mode = 0)
+    public static function init($config = [], int $mode = self::PRODUCTION)
     {
         if ($config instanceof \Closure) {
             $config = $config();
@@ -630,7 +631,7 @@ final class Core {
         if (is_string($config)) {
             $config = self::resolvePath($config, true);
             if (is_dir($config)) {
-                $config .= '/config.' . (self::$_modes[$mode ?? self::props('mode')] ?? self::$_modes[self::PRODUCTION]) . '.php';
+                $config .= '/' . (self::$_modes[$mode ?? self::props('mode')] ?? self::$_modes[self::PRODUCTION]) . '.php';
             } else {
                 if (!preg_match('/\.php$/', $config))
                     $config .= '.php';

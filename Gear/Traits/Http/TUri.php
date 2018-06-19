@@ -2,7 +2,7 @@
 
 namespace Gear\Traits\Http;
 
-use Psr\Http\Messages\UriInterface;
+use Psr\Http\Message\UriInterface;
 
 trait TUri
 {

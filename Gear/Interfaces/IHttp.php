@@ -2,9 +2,9 @@
 
 namespace Gear\Interfaces;
 
-use Psr\Http\Messages\ResponseInterface;
-use Psr\Http\Messages\ServerRequestInterface;
-use Psr\Http\Messages\UriInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Интерфейс плагина для работы с запросами

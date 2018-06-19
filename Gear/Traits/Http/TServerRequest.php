@@ -2,7 +2,7 @@
 
 namespace Gear\Traits\Http;
 
-use Psr\Http\Messages\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * PSR-7

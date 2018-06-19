@@ -35,6 +35,7 @@ class GController extends GModel implements IController
      *
      * @param IRequest $request
      * @return mixed
+     * @throws \ReflectionException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -65,7 +66,11 @@ class GController extends GModel implements IController
      */
     public function beforeRun()
     {
-        return Core::trigger('onBeforeRun', new GEvent($this));
+        $event = new GEvent($this);
+        if ($result = $this->trigger('onBeforeRun', $event)) {
+            $result = Core::trigger('onBeforeRun', $event);
+        }
+        return $result;
     }
 
     /**
@@ -88,6 +93,7 @@ class GController extends GModel implements IController
      *
      * @param IApi|\Closure|string|array $method
      * @return array
+     * @throws \ReflectionException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -205,6 +211,7 @@ class GController extends GModel implements IController
      *
      * @param IRequest $request
      * @return mixed
+     * @throws \ReflectionException
      * @since 0.0.1
      * @version 0.0.1
      */
