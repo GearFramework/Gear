@@ -1,20 +1,17 @@
 <?php
 
-namespace Gear\Library\Db;
+namespace Gear\Traits;
 
 use Gear\Core;
 use Gear\Interfaces\IDbCollection;
 use Gear\Interfaces\IDbConnection;
 use Gear\Interfaces\IDbCursor;
 use Gear\Interfaces\IDbDatabase;
-use Gear\Interfaces\IFactory;
 use Gear\Interfaces\IModel;
-use Gear\Library\GComponent;
-use Gear\Traits\TDelegateFactory;
-use Gear\Traits\TFactory;
 
 /**
- * Бибилиотека для компонентов, работающих с данными в базе данных
+ * Трейт компонентов для выполнения операций с моделями
+ * в базах данных
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -23,25 +20,8 @@ use Gear\Traits\TFactory;
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate, IFactory
+trait TDbStorage
 {
-    /* Traits */
-    use TFactory;
-    use TDelegateFactory;
-    /* Const */
-    /* Private */
-    /* Protected */
-    protected static $_initialized = false;
-    protected $_factoryProperties = [
-        'class' => '\Gear\Library\GModel',
-    ];
-    protected $_connection = null;
-    protected $_connectionName = 'db';
-    protected $_dbName = '';
-    protected $_collectionName = '';
-    protected $_defaultParams = [];
-    /* Public */
-
     /**
      * Добавление модели в набор (сохранение в коллекции-таблице в базе данных)
      *
