@@ -1,5 +1,7 @@
 <?php
 
+namespace Gear\Interfaces;
+
 /**
  * Интерфейс логгера
  *
