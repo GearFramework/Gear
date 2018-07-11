@@ -1,6 +1,6 @@
 <?php
 
-namespace gear\library\db;
+namespace Gear\Library\Db;
 
 use Gear\Library\GPlugin;
 use Gear\Traits\TDbStorage;
