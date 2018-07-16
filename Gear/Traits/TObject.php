@@ -32,8 +32,7 @@ trait TObject
      * @param string $name
      * @param array $arguments
      * @return mixed
-     * @throws \ComponentNotFoundException
-     * @throws \PluginNotFoundException
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -206,6 +205,18 @@ trait TObject
     }
 
     /**
+     * Возвращает режим доступа к объекту
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getAccess(): int
+    {
+        return $this->_access;
+    }
+
+    /**
      * Возвращает владельца объекта
      *
      * @return null|IObject
@@ -244,6 +255,18 @@ trait TObject
             static::$_config[$name] = $value;
         }
         return null;
+    }
+
+    /**
+     * Устанавливает режим доступа к объекту
+     *
+     * @param int $access
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setAccess(int $access)
+    {
+        $this->_access = $access;
     }
 
     /**
