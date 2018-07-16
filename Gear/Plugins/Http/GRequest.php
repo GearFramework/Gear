@@ -115,7 +115,7 @@ class GRequest extends GPlugin implements IRequest
         if (!$name) {
             return $this->getData($_COOKIE);
         } else {
-            return $_COOKIE;
+            return $_COOKIE[$name];
         }
     }
 
