@@ -142,7 +142,7 @@ class GLoaderComponent extends GComponent
     public function loader(string $className)
     {
         $alias = $className;
-        if (!($className = $this->getAlias($alias))) {
+        if (($className = $this->getAlias($alias))) {
             class_alias($className, $alias);
         } else {
             $className = $alias;
@@ -221,7 +221,6 @@ class GLoaderComponent extends GComponent
     public function setAlias(string $className, string $alias)
     {
         $this->_aliases[$alias] = ['class' => $className];
-        class_alias($className, $alias);
     }
 
     /**
