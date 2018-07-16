@@ -75,6 +75,26 @@ class GApplication extends GModule implements IModule
         exit(0);
     }
 
+    public function redirect($path, $params = [])
+    {
+        if (is_array($params) && $params) {
+            $p = [];
+            foreach($params as $name => $value) {
+                $p[] = "$name=$value";
+            }
+            $path .= '?' . implode('&', $p);
+        } else if (is_string($params) && trim($params)) {
+            $path .= "?$params";
+        }
+        $this->redirectUri("/$path");
+    }
+
+    public function redirectUri(string $uri)
+    {
+        header("Location: $uri");
+        die();
+    }
+
     /**
      * Запуск приложения
      *
