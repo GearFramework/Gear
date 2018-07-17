@@ -99,6 +99,7 @@ final class Core {
         '\Gear\Library\GPlugin',
         '\Gear\Plugins\Templater\GViewerPlugin',
     ];
+
     /**
      * @var array $_config конфигурация ядра и системы
      */
