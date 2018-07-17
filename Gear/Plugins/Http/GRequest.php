@@ -3,6 +3,7 @@
 namespace Gear\Plugins\Http;
 
 use Gear\Interfaces\IRequest;
+use Gear\Library\GModel;
 use Gear\Library\GPlugin;
 use Gear\Traits\Http\TServerRequest;
 
