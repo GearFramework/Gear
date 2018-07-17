@@ -223,7 +223,7 @@ class GController extends GModel implements IController
             $route = $request->param('r', $this->defaultApi);
             preg_match('#/a(($)|(/[A-Za-z0-9_]*))#', $route, $match);
             if ($match) {
-                $api = $match[1];
+                $api = preg_replace('#^/+#', '', $match[1]);
             }
             if (!$api) {
                 $api = $this->_defaultApi;
