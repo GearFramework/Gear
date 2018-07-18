@@ -23,8 +23,8 @@ class GModel extends GObject implements IModel
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_primaryKeyName = 'id';
     /* Public */
+    public static $primaryKeyName = 'id';
 
     /**
      * GModel constructor.
@@ -60,7 +60,7 @@ class GModel extends GObject implements IModel
      */
     public function getPrimaryKeyName(): string
     {
-        return static::$_primaryKeyName;
+        return static::$primaryKeyName;
     }
 
     /**
@@ -73,7 +73,7 @@ class GModel extends GObject implements IModel
      */
     public function setPrimaryKey($value)
     {
-        return $this->props(static::getPrimaryKeyName(), $value);
+        return $this->props($this->primaryKeyName, $value);
     }
 
     /**
@@ -86,6 +86,6 @@ class GModel extends GObject implements IModel
      */
     public function setPrimaryKeyName(string $pkName)
     {
-        static::$_primaryKeyName = $pkName;
+        static::$primaryKeyName = $pkName;
     }
 }
