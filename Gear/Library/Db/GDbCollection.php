@@ -41,8 +41,7 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
      * @param string $name
      * @param array $arguments
      * @return mixed|null
-     * @throws \ComponentNotFoundException
-     * @throws \PluginNotFoundException
+     * @throws \CoreException
      */
     public function __call(string $name, array $arguments)
     {

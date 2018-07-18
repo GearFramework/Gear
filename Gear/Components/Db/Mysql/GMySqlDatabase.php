@@ -2,6 +2,7 @@
 
 namespace Gear\Components\Db\Mysql;
 
+use Gear\Interfaces\IDbDatabase;
 use Gear\Library\Db\GDbDatabase;
 
 /**
@@ -34,11 +35,11 @@ class GMySqlDatabase extends GDbDatabase
     /**
      * Создание базы данных
      *
-     * @return GDbDatabase
+     * @return IDbDatabase
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function create(): GDbDatabase
+    public function create(): IDbDatabase
     {
         $this->cursor->runQuery(
             'CREATE DATABASE `%s` CHARACTER SET %s COLLATE %s',
@@ -52,11 +53,11 @@ class GMySqlDatabase extends GDbDatabase
     /**
      * Удаление базы данных
      *
-     * @return $this
+     * @return IDbDatabase
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function drop(): GDbDatabase
+    public function drop(): IDbDatabase
     {
         $this->cursor->runQuery('DROP DATABASE `%s`', $this->name);
         return $this;
@@ -91,11 +92,11 @@ class GMySqlDatabase extends GDbDatabase
     /**
      * Выбор текущей базы данных
      *
-     * @return GDbDatabase
+     * @return IDbDatabase
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function select(): GDbDatabase
+    public function select(): IDbDatabase
     {
         $this->handler->select_db($this->name);
         return $this;
