@@ -211,7 +211,7 @@ class GMySqlCursor extends GDbCursor
             $criteria = $this->_prepareCriteria($criteria);
             $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE " . $criteria;
         } else if ($criteria instanceof IModel) {
-            $pk = $criteria->primaryKey;
+            $pk = $criteria->primaryKeyName;
             $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $this->_prepareValue('"' . $criteria->$pk . '"');
         } else {
             throw new \InvalidArgumentException('Invalid arguments to delete');
@@ -384,7 +384,7 @@ class GMySqlCursor extends GDbCursor
         list($names, $values) = $this->_prepareInsert($properties);
         $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
         $this->runQuery($query);
-        if (is_object($result) && ($pk = $result->primaryKey)) {
+        if (is_object($result) && ($pk = $result->primaryKeyName)) {
             $result->$pk = $this->getLastInsertId();
         }
         return $this->affected();
@@ -538,7 +538,7 @@ class GMySqlCursor extends GDbCursor
         $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
 
         if (!$updates && is_object($result)) {
-            $pk = $result->primaryKey;
+            $pk = $result->primaryKeyName;
             $props = $result instanceof IObject ? $result->props() : get_object_vars($result);
             $properties = [];
             foreach($props as $name => $value) {
@@ -560,7 +560,7 @@ class GMySqlCursor extends GDbCursor
         }
         $query .= " ON DUPLICATE KEY UPDATE " . $updates;
         $this->runQuery($query);
-        if (is_object($result) && ($pk = $result->primaryKey)) {
+        if (is_object($result) && ($pk = $result->primaryKeyName)) {
             if (($id = $this->getLastInsertId())) {
                 $result->$pk = $id;
             }
@@ -679,7 +679,7 @@ class GMySqlCursor extends GDbCursor
     private function _prepareCriteria($criteria, $logic = 'AND', $op = null, $eq = '='): string
     {
         if ($criteria instanceof IModel) {
-            $pk = $criteria->primaryKey;
+            $pk = $criteria->primaryKeyName;
             $result = $this->_prepareCriteria([$pk => '"' . $criteria->$pk . '"']);
         } elseif (is_string($criteria) || is_numeric($criteria)) {
             $result = $criteria;
@@ -867,7 +867,7 @@ class GMySqlCursor extends GDbCursor
             if (!$properties) {
                 $properties = array_keys($source instanceof IModel ? $source->props() : get_class_vars(get_class($source)));
             }
-            $pk = $source->primaryKey;
+            $pk = $source->primaryKeyName;
             if (\Arrays::IsAssoc($properties)) {
                 foreach ($properties as $name => $value) {
                     if (!$pk || $pk !== $name) {
