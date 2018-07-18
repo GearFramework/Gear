@@ -376,7 +376,7 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Удаление записей, соответствующих критерию, либо найденных
      * в результате последнего выполненного SELECT-запроса
      *
-     * @param null|array $criteria
+     * @param null|array|IModel $criteria
      * @return integer
      * @since 0.0.1
      * @version 0.0.1
