@@ -118,11 +118,11 @@ class GMySqlConnectionComponent extends GDbConnection
     /**
      * Подключение к серверу баз данных
      *
-     * @return GDbConnection
+     * @return IDbConnection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function open(): GDbConnection
+    public function open(): IDbConnection
     {
         if (!$this->isConnected()) {
             $this->handler = new \mysqli($this->host, $this->user, $this->password, $this->database, $this->this, $this->socket);
