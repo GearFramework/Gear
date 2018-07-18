@@ -42,11 +42,11 @@ class GModel extends GObject implements IModel
     /**
      * Возвращает значение поля, которое является первичным ключом
      *
-     * @return string
+     * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getPrimaryKey(): string
+    public function getPrimaryKey()
     {
         return $this->props($this->primaryKeyName);
     }

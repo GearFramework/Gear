@@ -70,11 +70,11 @@ interface IModel extends IObject
     /**
      * Возвращает значение поля, которое является первичным ключом
      *
-     * @return string
+     * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getPrimaryKey(): string;
+    public function getPrimaryKey();
 
     /**
      * Возвращает название поля, которое является первичным ключом
