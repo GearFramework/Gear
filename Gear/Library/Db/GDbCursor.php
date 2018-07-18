@@ -462,12 +462,12 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Обновление указанных полей для записей, соответствующих критерию
      *
      * @param null|string|array|IModel $criteria
-     * @param array $update
+     * @param array $properties
      * @return integer
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function update($criteria = [], array $update = []): int;
+    abstract public function update($criteria = [], array $properties = []): int;
 
     /**
      * Формирование критерия поиска

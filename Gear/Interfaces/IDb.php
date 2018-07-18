@@ -539,12 +539,12 @@ interface IDbCursor
      * Обновление указанных полей для записей, соответствующих критерию
      *
      * @param null|string|array|IModel $criteria
-     * @param array $update
+     * @param array $properties
      * @return integer
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update($criteria = [], array $update = []): int;
+    public function update($criteria = [], array $properties = []): int;
 
     /**
      * Формирование критерия поиска

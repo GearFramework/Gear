@@ -3,6 +3,7 @@
 namespace Gear\Components\Db\Mysql;
 
 use Gear\Core;
+use Gear\Interfaces\IDbCursor;
 use Gear\Interfaces\IModel;
 use Gear\Interfaces\IObject;
 use Gear\Library\Db\GDbCursor;
@@ -83,7 +84,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function asAssoc(): ?array
+    public function asAssoc(): ?iterable
     {
         if (!$this->result) {
             $this->query();
@@ -114,7 +115,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function asRow(): ?array
+    public function asRow(): ?iterable
     {
         if (!$this->result) {
             $this->query();
@@ -221,11 +222,11 @@ class GMySqlCursor extends GDbCursor
      * Экранирование спецсимволов и обрамление кавычками
      *
      * @param string $value
-     * @return mixed
+     * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function escape($value)
+    public function escape($value): string
     {
         return $this->handler->real_escape_string($value);
     }
@@ -271,7 +272,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function find($criteria = [], $fields = []): GDbCursor
+    public function find($criteria = [], $fields = []): IDbCursor
     {
         $this->reset();
         $from = $this->getCollectionName() . ($this->collection->alias ? ' AS ' . $this->collection->alias : '');
@@ -302,7 +303,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function group($group = ''): GDbCursor
+    public function group($group = ''): IDbCursor
     {
         $tempGroup = $this->_queryBuild->group;
         if (is_array($group)) {
@@ -397,7 +398,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function join($collection, $criteria = []): GDbCursor
+    public function join($collection, $criteria = []): IDbCursor
     {
         $this->_join('join', $collection, $criteria);
         return $this;
@@ -412,7 +413,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function left($collection, array $criteria = []): GDbCursor
+    public function left($collection, array $criteria = []): IDbCursor
     {
         $this->_join('left', $collection, $criteria);
         return $this;
@@ -431,7 +432,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function limit(...$limit): GDbCursor
+    public function limit(...$limit): IDbCursor
     {
         if (!$limit) {
             $this->_queryBuild->limit = [0, 1];
@@ -476,7 +477,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function right($collection, array $criteria = []): GDbCursor
+    public function right($collection, array $criteria = []): IDbCursor
     {
         $this->_join('right', $collection, $criteria);
         return $this;
@@ -491,7 +492,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function runQuery(string $query, ...$params): GDbCursor
+    public function runQuery(string $query, ...$params): IDbCursor
     {
         if ($params) {
             $bindParams = [];
@@ -574,7 +575,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function sort($sort = ''): GDbCursor
+    public function sort($sort = ''): IDbCursor
     {
         $tempSort = $this->_queryBuild->order;
         if (is_array($sort)) {
@@ -609,7 +610,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update(?array $criteria, array $properties = []): int
+    public function update($criteria = [], array $properties = []): int
     {
         $this->reset();
         $result = $criteria;
@@ -634,7 +635,7 @@ class GMySqlCursor extends GDbCursor
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function where($criteria = []): GDbCursor
+    public function where($criteria = []): IDbCursor
     {
         $where = $this->_queryBuild->where;
         $criteria = $this->_prepareCriteria($criteria);
