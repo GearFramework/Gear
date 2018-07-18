@@ -238,6 +238,25 @@ class GRequest extends GPlugin implements IRequest
     }
 
     /**
+     * Возвращает адрес клиента, пославшего запрос
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRemoteAddress(): string
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+    }
+
+    /**
      * Возвращает обработчик указанного метода запроса
      *
      * @param string $name
