@@ -116,7 +116,7 @@ final class Core {
                 'loader' => ['class' => '\Gear\Components\Loader\GLoaderComponent'],
             ],
             'helpers' => [
-                'Array' => '\Gear\Helpers\HArray',
+                'Arrays' => '\Gear\Helpers\HArray',
                 'Html' => '\Gear\Helpers\HHtml',
             ],
         ],

@@ -549,7 +549,7 @@ class GMySqlCursor extends GDbCursor
         } else if ($updates) {
             if (is_object($result)) {
                 $updates = $this->_prepareUpdate($updates, $result);
-            } else if (\ArrayHelper::IsAssoc($updates)) {
+            } else if (\Arrays::IsAssoc($updates)) {
                 $updates = $this->_prepareUpdate($updates);
             } else {
                 throw new \InvalidArgumentException('Invalid argument <updates> to save');
@@ -764,7 +764,7 @@ class GMySqlCursor extends GDbCursor
                 } else {
                     $left = $this->_prepareOperand($left, true);
                     if (is_array($right)) {
-                        if (!\ArrayHelper::isAssoc($right)) {
+                        if (!\Arrays::isAssoc($right)) {
                             $result[] = ($result ? $logic : "") . " $left IN (" . implode(', ', $this->_prepareValue($right)) . ')';
                         } else {
                             $result[] = ($result ? $logic : "") . " " . $this->_prepareCriteria($right, $logic, $left, $eq);
@@ -793,9 +793,9 @@ class GMySqlCursor extends GDbCursor
     private function _prepareInsert(array $properties): array
     {
         /**
-         * \ArrayHelper это алиас класса \gear\helpers\HArray
+         * \Arrays это алиас класса \gear\helpers\HArray
          */
-        if (\ArrayHelper::isAssoc($properties)) {
+        if (\Arrays::isAssoc($properties)) {
             $names = array_keys($properties);
             foreach($properties as &$value) {
                 $value = '"' . $this->escape($value) . '"';
@@ -867,7 +867,7 @@ class GMySqlCursor extends GDbCursor
                 $properties = array_keys($source instanceof IModel ? $source->props() : get_class_vars(get_class($source)));
             }
             $pk = $source->primaryKey;
-            if (\ArrayHelper::IsAssoc($properties)) {
+            if (\Arrays::IsAssoc($properties)) {
                 foreach ($properties as $name => $value) {
                     if (!$pk || $pk !== $name) {
                         $source->$name = $value;
