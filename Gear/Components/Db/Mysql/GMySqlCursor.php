@@ -363,7 +363,7 @@ class GMySqlCursor extends GDbCursor
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|object $properties
-     * @return integer|object
+     * @return integer
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -386,7 +386,7 @@ class GMySqlCursor extends GDbCursor
         if (is_object($result) && ($pk = $result->primaryKey)) {
             $result->$pk = $this->getLastInsertId();
         }
-        return is_object($result) ? $result : $this->affected();
+        return $this->affected();
     }
 
     /**
@@ -516,11 +516,11 @@ class GMySqlCursor extends GDbCursor
      *
      * @param array|IObject $properties
      * @param array $updates
-     * @return integer|object
+     * @return integer
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function save($properties, array $updates = [])
+    public function save($properties, array $updates = []): int
     {
         $this->reset();
         $result = 0;
@@ -564,7 +564,7 @@ class GMySqlCursor extends GDbCursor
                 $result->$pk = $id;
             }
         }
-        return is_object($result) ? $result : $this->affected();
+        return $this->affected();
     }
 
     /**
@@ -624,7 +624,7 @@ class GMySqlCursor extends GDbCursor
         $criteria = $this->_prepareCriteria($result);
         $query = 'UPDATE `' . $this->getCollectionName() . '` SET ' . $properties . ($criteria ? ' WHERE ' . $criteria : '');
         $this->runQuery($query);
-        return is_object($result) ? $result : $this->affected();
+        return $this->affected();
     }
 
     /**
