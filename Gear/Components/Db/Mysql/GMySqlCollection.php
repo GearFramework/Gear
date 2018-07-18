@@ -2,6 +2,7 @@
 
 namespace Gear\Components\Db\Mysql;
 
+use Gear\Interfaces\IDbCollection;
 use Gear\Library\Db\GDbCollection;
 
 /**
@@ -84,11 +85,11 @@ class GMySqlCollection extends GDbCollection
     /**
      * Очистка таблицы от записей
      *
-     * @return GDbCollection
+     * @return IDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function truncate(): GDbCollection
+    public function truncate(): IDbCollection
     {
         $this->cursor->runQuery('TRUNCATE TABLE `%s`', $this->name);
     }
