@@ -209,6 +209,7 @@ class GMySqlCursor extends GDbCursor
 
         } else if (is_array($criteria)) {
             $criteria = $this->_prepareCriteria($criteria);
+            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE " . $criteria;
         } else if ($criteria instanceof IModel) {
             $pk = $criteria->primaryKey;
             $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $this->_prepareValue('"' . $criteria->$pk . '"');
