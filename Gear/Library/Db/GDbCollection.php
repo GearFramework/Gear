@@ -163,12 +163,12 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Удаление таблицы или указанной модели из таблицы
      *
-     * @param null|IModel $model
+     * @param null|array|IModel $model
      * @return IDbCollection
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function remove(?IModel $model = null): IDbCollection
+    public function remove($model = []): IDbCollection
     {
         if ($model) {
             $this->cursor->remove($model);
