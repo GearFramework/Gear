@@ -218,6 +218,7 @@ class GController extends GModel implements IController
     public function run(IRequest $request)
     {
         $result = null;
+        $api = '';
         $this->request = $request;
         if ($this->beforeRun()) {
             $route = $request->param('r', $this->defaultApi);
