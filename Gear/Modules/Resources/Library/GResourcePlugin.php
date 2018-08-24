@@ -267,7 +267,7 @@ abstract class GResourcePlugin extends GPlugin implements IResourcePlugin
                 copy($resource, $mappingResource);
             }
         }
-        return $this->mappingFolder . '/' . $mappingFile;
+        return $this->urlMapped ? $this->urlMapped . '/' . $mappingFile : $this->mappingFolder . '/' . $mappingFile;
     }
 
     /**

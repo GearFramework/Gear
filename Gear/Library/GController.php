@@ -199,7 +199,7 @@ class GController extends GModel implements IController
         $viewer = $this->{$this->viewerName};
         if ($this->layout) {
             $contentPage = $viewer->render($template, $context, true);
-            $result = $viewer->render($this->_layout, ['contentLayout' => $contentPage], $buffered);
+            $result = $viewer->render($this->layout, array_merge($context, ['contentLayout' => $contentPage]), $buffered);
         } else {
             $result = $viewer->render($template, $context, $buffered);
         }
