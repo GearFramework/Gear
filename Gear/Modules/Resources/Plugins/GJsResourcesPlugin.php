@@ -43,6 +43,9 @@ class GJsResourcesPlugin extends GResourcePlugin
         foreach ($options as $param => $value) {
             $opt[] = $param . "=\"$value\"";
         }
+        if ($this->forceNoCache === true) {
+            $url .= '?' . (time() + microtime(true));
+        }
         return '<script src="' . $url . '" ' . implode(' ', $opt) . "></script>\n";
     }
 }

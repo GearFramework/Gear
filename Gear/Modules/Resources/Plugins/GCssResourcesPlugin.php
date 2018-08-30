@@ -43,6 +43,9 @@ class GCssResourcesPlugin extends GResourcePlugin
         foreach ($options as $param => $value) {
             $opt[] = $param . "=\"$value\"";
         }
+        if ($this->forceNoCache === true) {
+            $url .= '?' . (time() + microtime(true));
+        }
         return '<link href="' . $url . '" ' . implode(' ', $opt) . " rel=\"stylesheet\" />\n";
     }
 }
