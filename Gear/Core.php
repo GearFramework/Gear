@@ -104,7 +104,7 @@ final class Core {
      * @var array $_config конфигурация ядра и системы
      */
     private static $_config = [
-        /* Элементы, которые будут загружены при инициализации ядра фреймворка */
+        /* Дополнительные элементы, которые будут загружены при инициализации ядра фреймворка */
         'bootstrap' => [
             /* Список пользовательских загружаемых библиотек */
             'libraries' => [],
@@ -116,8 +116,8 @@ final class Core {
                 'loader' => ['class' => '\Gear\Components\Loader\GLoaderComponent'],
             ],
             'helpers' => [
-                'Arrays' => '\Gear\Helpers\HArray',
-                'Html' => '\Gear\Helpers\HHtml',
+                'Arrays' => ['class' => '\Gear\Helpers\HArray'],
+                'Html' => ['class' => '\Gear\Helpers\HHtml'],
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */
@@ -127,6 +127,8 @@ final class Core {
         ],
         /* Список глобальных зарегистрированных компонентов системы */
         'components' => [],
+        /* Список пользовательских хэлперов */
+        'helpers' => [],
         /* Список глобальных свойств ядра */
         'properties' => [
             /* Режим запуска приложения */
@@ -305,8 +307,9 @@ final class Core {
      */
     private static function _bootstrapHelpers(array $section)
     {
-        foreach ($section as $helperAlias => $helperClass) {
-            self::c('loader')->setAlias($helperClass, "\\$helperAlias");
+        foreach ($section as $helperAlias => $helper) {
+            list($helperClass,,) = self::configure($helper);
+            self::c(self::props('loaderName'))->setAlias($helperClass, "\\$helperAlias");
         }
     }
 
@@ -611,6 +614,32 @@ final class Core {
         elseif ($service instanceof \Gear\Interfaces\IHelper)
             $type = 'helper';
         return $type;
+    }
+
+    /**
+     * Возвращает инстанс указанного хелпера
+     *
+     * @param string $helperName
+     * @return Library\GHelper
+     * @throws \CoreException
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function h(string $helperName): \Gear\Library\GHelper
+    {
+        if (!isset(self::$_services['helpers'][$helperName])) {
+            if (isset(self::$_config['bootstrap']['helpers'][$helperName])) {
+                list($helperClass,, $properties) = self::configure(self::$_config['bootstrap']['helpers'][$helperName]);
+            } elseif (isset(self::$_config['helpers'][$helperName])) {
+                list($helperClass,, $properties) = self::configure(self::$_config['helpers'][$helperName]);
+            } else {
+                throw self::CoreException('Helper <{helperName}> not found', ['helperName' => $helperName]);
+            }
+            $aliasHelperClass = '\\' . $helperName;
+            self::c(self::props('loaderName'))->setAlias($helperClass, $aliasHelperClass);
+            self::$_services['helpers'][$helperName] = new $aliasHelperClass($properties);
+        }
+        return self::$_services['helpers'][$helperName];
     }
 
     /**

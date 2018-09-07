@@ -45,6 +45,6 @@ trait THelper
      */
     public function __call(string $name, array $arguments)
     {
-        return static::$name(...$arguments);
+        return self::__callStatic($name, $arguments);
     }
 }

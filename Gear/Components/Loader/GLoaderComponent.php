@@ -220,7 +220,9 @@ class GLoaderComponent extends GComponent
      */
     public function setAlias(string $className, string $alias)
     {
-        $this->_aliases[$alias] = ['class' => $className];
+        if (!isset($this->_aliases[$alias])) {
+            $this->_aliases[$alias] = ['class' => $className];
+        }
     }
 
     /**
