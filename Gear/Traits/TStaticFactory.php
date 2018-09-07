@@ -18,10 +18,6 @@ use gear\library\GEvent;
  */
 trait TStaticFactory
 {
-    protected static $_factoryProperties = [
-        'class' => '\Gear\Library\GModel'
-    ];
-
     /**
      * @param IObject $object
      * @return mixed
@@ -60,7 +56,7 @@ trait TStaticFactory
             throw self::FactoryInvalidItemPropertiesException();
         }
         $object = null;
-        if ($owner->beforeFactory($properties)) {
+        if (null === $owner || ($owner && $owner->beforeFactory($properties))) {
             $properties = array_replace_recursive(self::$_factoryProperties, $properties);
             list($class, $config, $properties) = Core::configure($properties);
             if (method_exists($class, 'install')) {
@@ -71,7 +67,9 @@ trait TStaticFactory
                 }
                 $object = new $class($properties, $owner);
             }
-            $owner->afterFactory($object);
+            if ($owner) {
+                $owner->afterFactory($object);
+            }
         }
         return $object;
     }

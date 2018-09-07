@@ -29,6 +29,7 @@ class GEvent implements IEvent
     /* Protected */
     protected $_bubble = true;
     protected $_sender = null;
+    protected $_properties = [];
     /* Public */
 
     /**

@@ -52,6 +52,10 @@ class GObject implements IObject
      * @var null|string пространство имён класса объекта
      */
     protected $_namespace = null;
+    /**
+     * @var array $_properties свойства объектов
+     */
+    protected $_properties = [];
     /* Public */
 
     /**

@@ -24,10 +24,6 @@ trait TProperties
     protected static $_validators = [
         'object' => '\Gear\Validators\GObjectValidator',
     ];
-    /**
-     * @var array $_properties свойства объектов
-     */
-    protected $_properties = [];
 
     /**
      * генератор валидаторов объекта

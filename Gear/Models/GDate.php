@@ -82,6 +82,20 @@ class GDate extends GModel
     }
 
     /**
+     * Устанавливает формат отображения даты
+     *
+     * @param string $format
+     * @return $this
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function format(string $format)
+    {
+        static::$_config['options']['format'] = $format;
+        return $this;
+    }
+
+    /**
      * Возвращает отформатированную дату и время
      *
      * @param array|string|GCalendarOptions $options
@@ -91,7 +105,7 @@ class GDate extends GModel
      */
     public function getDate($options = []): string
     {
-        $this->options = $this->_prepareOptions($options);
+        $this->options = $options = $this->_prepareOptions($options);
         return date($options->format, $this->timestamp);
     }
 
