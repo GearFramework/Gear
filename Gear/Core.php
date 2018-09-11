@@ -155,6 +155,7 @@ final class Core {
             /* Название компонента автозагрузчика классов */
             'loaderName' => 'loader',
             'international' => 'lang',
+            'routerName' => 'router',
         ],
     ];
     /**

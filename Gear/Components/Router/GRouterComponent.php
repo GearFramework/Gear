@@ -36,6 +36,35 @@ class GRouterComponent extends GComponent
     /* Public */
 
     /**
+     * Добавляет соответствие пути к классу контроллера
+     *
+     * @param string $path
+     * @param string|array $class
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function addRoute(string $path, $class)
+    {
+        $this->_routes[$path] = $class;
+    }
+
+    /**
+     * Добавляет массив соответствий путей к соответствующим классам контроллеров
+     *
+     * @param iterable $routes
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function addRoutes(iterable $routes)
+    {
+        foreach ($routes as $pathRoute => $class) {
+            $this->addRoute($pathRoute, $class);
+        }
+    }
+
+    /**
      * Получение роута и запуск соответствующего контроллера
      *
      * @param IRequest $request

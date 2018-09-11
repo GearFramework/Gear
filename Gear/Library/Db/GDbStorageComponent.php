@@ -107,7 +107,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     public function findOne($criteria = [])
     {
         $result = $this->selectCollection()->findOne($criteria);
-        return $result ? $this->factory($result) : $result;
+        return $result ? $this->factory($result) : null;
     }
 
     /**
