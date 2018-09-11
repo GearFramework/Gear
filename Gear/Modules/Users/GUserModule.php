@@ -110,9 +110,9 @@ class GUserModule extends GModule
         return $this->userComponent->login(...$arguments);
     }
 
-    public function logout()
+    public function logout(IUser $user)
     {
-        $this->userComponent->logout();
+        $this->userComponent->logout($user);
     }
 
     /**

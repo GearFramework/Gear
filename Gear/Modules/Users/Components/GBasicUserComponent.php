@@ -15,6 +15,9 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
+ *
+ * @property null|IUser user
+ *
  * @since 0.0.1
  * @version 0.0.1
  */
@@ -126,6 +129,14 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
         }
     }
 
+    /**
+     * Загрзука пользователя из базы данных согласно указанному критерию
+     *
+     * @param array $criteria
+     * @return IUser|null
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function loadUser(array $criteria): ?IUser
     {
         return $this->findOne($criteria);
@@ -141,7 +152,10 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
      */
     public function login($criteria = []): ?IUser
     {
-        // TODO: Implement login() method.
+        if ($user = $this->loadUser($criteria)) {
+            $this->trigger('onUserLogin', new GEvent($this, ['user' => $user]));
+        }
+        return $user;
     }
 
     /**
@@ -153,6 +167,6 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
      */
     public function logout()
     {
-
+        $this->trigger('onUserLogout', new GEvent($this, ['user' => $this->user]));
     }
 }

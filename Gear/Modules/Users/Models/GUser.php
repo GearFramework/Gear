@@ -13,6 +13,9 @@ use Gear\Modules\Users\Interfaces\IUser;
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
+ *
+ * @properties ISession session
+ *
  * @since 0.0.1
  * @version 0.0.1
  */
@@ -47,7 +50,7 @@ class GUser extends GModel implements IUser
      */
     public function setSession(?ISession $session)
     {
-        if ($this->id !== $session->user) {
+        if ($session && $this->id !== $session->user) {
             throw self::InvalidUserSessionException('Session <{hash}> is invalid for user <{username}>', [
                 'hash' => $session->hash,
                 'username' => $this->username,

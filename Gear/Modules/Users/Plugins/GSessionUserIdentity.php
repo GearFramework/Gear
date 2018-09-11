@@ -2,6 +2,7 @@
 
 namespace Gear\Modules\Users\Plugins;
 
+use Gear\Core;
 use Gear\Interfaces\IModel;
 use Gear\Library\Db\GDbStoragePlugin;
 use Gear\Library\GEvent;
@@ -58,6 +59,8 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
     public function afterInstallService()
     {
         $this->on('onUserIdentity', [$this, 'handlerAfterUserIdentity']);
+        $this->on('onUserLogin', [$this, 'handlerUserLogin']);
+        $this->on('onUserLogout', [$this, 'handlerUserLogout']);
         return parent::afterInstallService();
     }
 
@@ -149,6 +152,38 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
     public function handlerAfterUserIdentity(GEvent $event)
     {
         $this->updateSession($event->user);
+        return true;
+    }
+
+    /**
+     * Обработчик события onUserLogin, возникающего после удачной
+     * аутентификации пользователя
+     *
+     * @param GEvent $event
+     * @return bool
+     * @throws \CoreException
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function handlerUserLogin(GEvent $event)
+    {
+        $this->startNewSession($event->user);
+        return true;
+    }
+
+    /**
+     * Обработчик события onUserLogout, возникающего после как пользователь
+     * вышел
+     *
+     * @param GEvent $event
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function handlerUserLogout(GEvent $event)
+    {
+        $this->removeSession($event->user->session);
+        $event->user->session = null;
         return true;
     }
 
@@ -304,6 +339,7 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
      *
      * @param IUser $user
      * @return ISession
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -320,6 +356,7 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
         $session = $this->factory([
             'hash' => $this->hash,
             'user' => $user->getPrimaryKey(),
+            'ip' => Core::app()->request->getRemoteAddress(),
             'lastTime' => date('Y-m-d H:i:s')
         ], $this);
         $this->save($session);
@@ -337,8 +374,9 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
      */
     public function updateSession(IUser $user)
     {
-        $this->session->props(['hash' => $this->hash, 'lastTime' => date('Y-m-d H:i:s')]);
-        $this->update($this->session);
+        $user->session->props(['hash' => $this->hash, 'lastTime' => date('Y-m-d H:i:s')]);
+        $this->update($user->session);
+        $this->session = $user->session;
         $_SESSION[$this->sessionName] = $this->session->props();
         setcookie($this->sessionName, $this->session->hash, time() + $this->cookieLifeTime);
     }
