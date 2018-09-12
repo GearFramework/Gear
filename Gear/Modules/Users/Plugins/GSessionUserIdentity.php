@@ -18,7 +18,11 @@ use Gear\Modules\Users\Interfaces\IUserIdentityPlugin;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  *
+ * @property string collectionName
+ * @property string connectionName
  * @property null|int cookieLifeTime
+ * @property string dbName
+ * @property array factoryProperties
  * @property int maxSessionsByUser
  * @property null|ISession session
  * @property null|int sessionLifeTime
@@ -74,6 +78,20 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
     public function getCookieLifeTime(): int
     {
         return $this->_cookieLifeTime;
+    }
+
+    /**
+     * Возвращает количество одновременных сессий одного пользователя
+     *
+     * @param mixed $user
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getCountSessionsByUser($user): int
+    {
+        $count = $this->find(['user' => $user])->count();
+        return $count ? $count : 0;
     }
 
     /**
@@ -223,20 +241,6 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
     public function isValid(ISession $session): bool
     {
         return !(time() - strtotime($session->lastTime) > $this->sessionLifeTime);
-    }
-
-    /**
-     * Возвращает количество одновременных сессий одного пользователя
-     *
-     * @param mixed $user
-     * @return int
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getCountSessionsByUser($user): int
-    {
-        $count = $this->find(['user' => $user])->count();
-        return $count ? $count : 0;
     }
 
     /**

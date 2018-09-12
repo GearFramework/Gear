@@ -38,6 +38,17 @@ interface IUser{}
  */
 interface IUserComponent
 {
+
+    /**
+     * Проверка и подтверждение регистрации нового пользователя
+     *
+     * @param array $arguments
+     * @return IUser
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function confirmRegistered(...$arguments): IUser;
+
     /**
      * Возвращает текущего идентифицированного пользователя или NULL, если такового нет
      *
@@ -84,6 +95,16 @@ interface IUserComponent
      * @version 0.0.1
      */
     public function logout();
+
+    /**
+     * Регистрация нового пользователя
+     *
+     * @param array $properties
+     * @return IUser
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function register(array $properties): IUser;
 }
 
 /**

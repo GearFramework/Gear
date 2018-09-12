@@ -16,6 +16,13 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  *
+ * @property string collectionName
+ * @property int confirmRegistered
+ * @property string connectionName
+ * @property string dbName
+ * @property array factoryProperties
+ * @property null|string guestUsername
+ * @property array of strings identityPlugins
  * @property null|IUser user
  *
  * @since 0.0.1
@@ -25,6 +32,9 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
 {
     /* Traits */
     /* Const */
+    const NO_CONFIRM = 0;
+    const CONFIRM_EMAIL = 1;
+    const CONFIRM_SMS = 2;
     /* Private */
     /* Protected */
     protected static $_initialized = false;
@@ -39,22 +49,44 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
         ],
     ];
     protected $_collectionName = 'users';
+    protected $_confirmRegistered = self::NO_CONFIRM;
     protected $_connectionName = 'db';
     protected $_dbName = 'simple';
     protected $_factoryProperties = [
         'class' => '\Gear\Modules\Users\Models\GUser',
     ];
-    protected $_guestUser = 'guest';
+    protected $_guestUsername = 'guest';
     protected $_identityPlugins = ['session'];
     protected $_user = null;
     /* Public */
 
+    /**
+     * Вызывается после установки модуля.
+     * Устанавливает плагины аутентификации
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function afterInstallService()
     {
         foreach ($this->_identityPlugins as $pluginName) {
             $this->p($pluginName);
         }
         return parent::afterInstallService();
+    }
+
+    /**
+     * Проверка и подтверждение регистрации нового пользователя
+     *
+     * @param array $arguments
+     * @return IUser
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function confirmRegistered(...$arguments): IUser
+    {
+        // TODO: Implement confirmRegistered() method.
     }
 
     /**
@@ -67,6 +99,42 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
     public function getAuthModule(): GUserModule
     {
         return $this->owner;
+    }
+
+    /**
+     * Возвращает тип проверки регистрации пользователя
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getConfirmRegistered(): int
+    {
+        return $this->_confirmRegistered;
+    }
+
+    /**
+     * Возвращает логин гостевого пользователя
+     *
+     * @return null|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getGuestUsername(): ?string
+    {
+        return $this->_guestUsername;
+    }
+
+    /**
+     * Возвращает список плагинов идентификации пользователей
+     *
+     * @return iterable
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getIdentityPlugins(): iterable
+    {
+        return $this->_identityPlugins;
     }
 
     /**
@@ -105,6 +173,18 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
             }
         }
         return $user;
+    }
+
+    /**
+     * Возвращает true, если сервис требует проверки регистрации нового пользователя
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isRegistrationConfirm()
+    {
+        return (bool)$this->confirmRegistered;
     }
 
     /**
@@ -168,5 +248,70 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
     public function logout()
     {
         $this->trigger('onUserLogout', new GEvent($this, ['user' => $this->user]));
+    }
+
+    /**
+     * Регистрация нового пользователя
+     *
+     * @param array $properties
+     * @return IUser
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function register(array $properties): IUser
+    {
+        // TODO: Implement register() method.
+    }
+
+    /**
+     * Установка типа проверки регистрации пользователя или отмена проверки
+     *
+     * @param int $confirm
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setConfirmRegistered(int $confirm)
+    {
+        $this->_confirmRegistered = $confirm;
+    }
+
+    /**
+     * Установка логина для гостевого пользователя
+     *
+     * @param string $guestName
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setGuestUsername(string $guestName)
+    {
+        $this->_guestUsername = $guestName;
+    }
+
+    /**
+     * Установка списка плагинов идентификации пользователей
+     *
+     * @param iterable $plugins
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setIdentityPlugins(iterable $plugins)
+    {
+        $this->_identityPlugins = $plugins;
+    }
+
+    /**
+     * Установка текущего идентифицированного пользователя или NULL, если такового нет
+     *
+     * @param IUser|null $user
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setUser(?IUser $user)
+    {
+        $this->_user = $user;
     }
 }
