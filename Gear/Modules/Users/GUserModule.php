@@ -44,7 +44,6 @@ class GUserModule extends GModule
     protected $_redirectRoutes = [
         'afterLogin' => 'home',
         'afterLogout' => 'home',
-        'afterIdentity' => 'home',
         'afterInvalidLogin' => 'auth',
         'afterInvalidIdentity' => 'auth',
     ];
