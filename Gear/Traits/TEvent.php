@@ -93,8 +93,8 @@ trait TEvent
      *
      * @param string|array $eventName
      * @param null|array|callable|\Closure|IEventHandler $handler
-     * @throws \ObjectException
      * @return void
+     * @throws \EventException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -111,6 +111,7 @@ trait TEvent
      *
      * @param array $events
      * @return void
+     * @throws \EventException
      * @since 0.0.1
      * @version 0.0.1
      */

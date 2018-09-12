@@ -4,6 +4,8 @@ namespace Gear\Modules\Users;
 
 use Gear\Components\Router\GRouterComponent;
 use Gear\Core;
+use Gear\Interfaces\IModel;
+use Gear\Library\GModel;
 use Gear\Library\GModule;
 use Gear\Modules\Users\Interfaces\IUser;
 use Gear\Modules\Users\Interfaces\IUserComponent;
@@ -16,7 +18,7 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  *
- * @property array redirectRoutes
+ * @property array|IModel redirectRoutes
  * @property array routes
  * @property string userComponentName
  *
@@ -101,12 +103,15 @@ class GUserModule extends GModule
     /**
      * Возвращает список редиректов
      *
-     * @return iterable
+     * @return IModel
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getRedirectRoutes(): iterable
+    public function getRedirectRoutes(): IModel
     {
+        if (is_array($this->_redirectRoutes)) {
+            $this->_redirectRoutes = new GModel($this->_redirectRoutes);
+        }
         return $this->_redirectRoutes;
     }
 
