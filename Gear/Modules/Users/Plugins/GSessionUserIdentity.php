@@ -56,7 +56,7 @@ class GSessionUserIdentity extends GDbStoragePlugin implements IUserIdentityPlug
      * Вызывается после утсновки плагина и выполняет установку обработчиков событий владельца
      *
      * @return mixed
-     * @throws \ObjectException
+     * @throws \EventException
      * @since 0.0.1
      * @version 0.0.1
      */

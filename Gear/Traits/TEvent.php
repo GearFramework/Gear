@@ -36,7 +36,7 @@ trait TEvent
      */
     public function attachEvent(string $name, $handlers)
     {
-        if (is_array($handlers) && !\Arrays::isAssoc($handlers)) {
+        if (is_array($handlers) && !is_callable($handlers)) {
             foreach ($handlers as $handler) {
                 $this->attachEvent($name, $handler);
             }
