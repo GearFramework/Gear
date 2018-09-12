@@ -158,6 +158,7 @@ final class Core {
             'routerName' => 'router',
         ],
     ];
+    private static $_configSections = ['libraries', 'components', 'modules', 'helpers'];
     /**
      * @var string[] Строковые значения режимов запуска
      */
@@ -271,10 +272,13 @@ final class Core {
     private static function _bootstrap()
     {
         self::_bootstrapLibraries(self::$_bootstrapLibraries);
-        foreach (self::$_config['bootstrap'] as $sectionName => $section) {
-            $method = '_bootstrap' . ucfirst($sectionName);
-            if (method_exists(self::class, $method)) {
-                self::$method($section);
+        foreach (self::$_configSections as $sectionName) {
+            if (isset(self::$_config['bootstrap'][$sectionName])) {
+                $section = self::$_config['bootstrap'][$sectionName];
+                $method = '_bootstrap' . ucfirst($sectionName);
+                if (method_exists(self::class, $method)) {
+                    self::$method($section);
+                }
             }
         }
     }
