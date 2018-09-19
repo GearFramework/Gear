@@ -48,7 +48,7 @@ class HHtml extends GHelper
                 array_unshift($params, "r=$controller" . ($api ? "/a/$api" : ''));
             }
             $params = implode('&', $params);
-            $url = '/' . ($params ? "?$params" : '');
+            $url = 'index.php' . ($params ? "?$params" : '');
         }
         return $url;
     }
