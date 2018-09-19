@@ -209,15 +209,14 @@ class GUserModule extends GModule
     /**
      * Возвращает роут по его названию
      *
-     * @param string $name
+     * @param string|null $name
      * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function route(string $name): string
+    public function route(string $name): ?string
     {
-        $routes = $this->redirectRoutes;
-        return isset($routes[$name]) ? $routes[$name] : '';
+        return $this->redirectRoutes->$name;
     }
 
     /**
