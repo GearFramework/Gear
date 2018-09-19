@@ -40,7 +40,7 @@ class HHtml extends GHelper
             $value = "$name=" . urlencode($value);
         }
         unset($value);
-        if (Core::app()->controllers->rewrite) {
+        if (Core::app()->{Core::props('routerName')}->rewrite) {
             $params = implode('&', $params);
             $url = '/' . ($controller ? $controller . '/' : '') . ($api ? "a/$api/" : '') . ($params ? "?$params" : '');
         } else {
