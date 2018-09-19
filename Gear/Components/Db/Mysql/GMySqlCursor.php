@@ -840,7 +840,7 @@ class GMySqlCursor extends GDbCursor
                 $operand = (preg_match('/^[A-Z0-9_]+$/i', $left) ? "`$left`" : $left) . " AS `$alias`";
             } elseif ($operand[0] === ':') { // Column in table $operand == ':id'
                 $operand = '`' . substr($operand, 1) . '`';
-            } elseif ($operand[0] === '$') { // Function $operand == '$SUM(price)'
+            } elseif (preg_match('/^\$[A-Z0-9_]+\(.*\)$/i', $operand)) { // Function $operand == '$SUM(price)'
                 $operand = substr($operand, 1);
             } elseif (!preg_match('/^[a-z0-9_]+\(.*\)$/i', $operand)) {
                 $operand = $strictLeft ? "`$operand`" : false;
