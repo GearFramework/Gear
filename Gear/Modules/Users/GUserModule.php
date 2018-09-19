@@ -48,6 +48,9 @@ class GUserModule extends GModule
         'afterLogout' => 'home',
         'afterInvalidLogin' => 'auth',
         'afterInvalidIdentity' => 'auth',
+        'auth' => 'auth',
+        'login' => 'login',
+        'logout' => 'logout',
     ];
     protected $_routes = [
         'auth' => '\Gear\Modules\Users\Controllers\Auth',
@@ -213,7 +216,7 @@ class GUserModule extends GModule
      */
     public function route(string $name): string
     {
-        $routes = $this->routes;
+        $routes = $this->redirectRoutes;
         return isset($routes[$name]) ? $routes[$name] : '';
     }
 
