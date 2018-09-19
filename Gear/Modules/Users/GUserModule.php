@@ -116,6 +116,19 @@ class GUserModule extends GModule
     }
 
     /**
+     * Возвращает роут по его названию
+     *
+     * @param string $name
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRoute(string $name): string
+    {
+        return $this->route($name);
+    }
+
+    /**
      * Возвращает список роутов к контроллерам модуля
      *
      * @return iterable
@@ -188,6 +201,20 @@ class GUserModule extends GModule
     public function isValid(IUser $user): bool
     {
         return $this->userComponent->isValid($user);
+    }
+
+    /**
+     * Возвращает роут по его названию
+     *
+     * @param string $name
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function route(string $name): string
+    {
+        $routes = $this->routes;
+        return isset($routes[$name]) ? $routes[$name] : '';
     }
 
     /**
