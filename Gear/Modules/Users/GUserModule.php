@@ -270,4 +270,18 @@ class GUserModule extends GModule
     {
         $this->_userComponentName = $name;
     }
+
+    /**
+     * Проверка праролей на идентичность
+     *
+     * @param $password
+     * @param $passwordUser
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function verifyPassword($password, $passwordUser): bool
+    {
+        return password_verify($password, $passwordUser);
+    }
 }
