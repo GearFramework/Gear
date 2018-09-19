@@ -104,6 +104,19 @@ class GUserModule extends GModule
     }
 
     /**
+     * Возвращает хэш-пароля
+     *
+     * @param string $passwordPlain
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function createPasswordHash(string $passwordPlain): string
+    {
+        return password_hash($passwordPlain, PASSWORD_BCRYPT, ['cost' => 12]);
+    }
+
+    /**
      * Возвращает список редиректов
      *
      * @return IModel
