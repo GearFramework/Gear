@@ -272,7 +272,7 @@ class GUserModule extends GModule
     }
 
     /**
-     * Проверка праролей на идентичность
+     * Проверка праролей на соответствие
      *
      * @param $password
      * @param $passwordUser
@@ -280,8 +280,8 @@ class GUserModule extends GModule
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function verifyPassword($password, $passwordUser): bool
+    public function verifyPassword($password, $passwordHash): bool
     {
-        return password_verify($password, $passwordUser);
+        return password_verify($password, $passwordHash);
     }
 }
