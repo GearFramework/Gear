@@ -7,6 +7,7 @@ use Gear\Library\GEvent;
 use Gear\Modules\Users\GUserModule;
 use Gear\Modules\Users\Interfaces\IUser;
 use Gear\Modules\Users\Interfaces\IUserComponent;
+use Gear\Modules\Users\Interfaces\IUserIdentityPlugin;
 
 /**
  * Базовый компонент для работы с пользователями
@@ -16,6 +17,7 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  *
+ * @property GUserModule authModule
  * @property string collectionName
  * @property int confirmRegistered
  * @property string connectionName
@@ -23,6 +25,8 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @property array factoryProperties
  * @property null|string guestUsername
  * @property array of strings identityPlugins
+ * @property GUserModule owner
+ * @property IUserIdentityPlugin session
  * @property null|IUser user
  *
  * @since 0.0.1
@@ -72,6 +76,9 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
     {
         foreach ($this->_identityPlugins as $pluginName) {
             $this->p($pluginName);
+            if ($this->authModule->debug === true) {
+                $this->authModule->log->notice('Installed identity plugin <{pluginName}>', ['pluginName' => $pluginName]);
+            }
         }
         return parent::afterInstallService();
     }
@@ -163,7 +170,14 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
          */
         $user = null;
         foreach ($this->_identityPlugins as $pluginName) {
-            $criteria = $this->p($pluginName)->identity();
+            /**
+             * @var IUserIdentityPlugin $plugin
+             */
+            $plugin = $this->p($pluginName);
+            if ($this->authModule->debug === true) {
+                $this->authModule->log->notice('Identity user by plugin <{pluginName}>', ['pluginName' => $pluginName]);
+            }
+            $criteria = $plugin->identity();
             if ($criteria) {
                 $user = $this->loadUser($criteria);
                 if ($this->isValid($user)) {
@@ -200,13 +214,17 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
     {
         if ($this->_guestUser) {
             if ($this->user instanceof IUser && $this->username !== $this->_guestUser) {
-                return true;
+                $result = true;
             } else {
-                return false;
+                $result = false;
             }
         } else {
-            return $this->user instanceof IUser;
+            $result = $this->user instanceof IUser;
         }
+        if ($this->authModule->debug) {
+            $this->authModule->log->info('Validate user <{result}>', ['result' => $result ? 'TRUE' : 'FALSE']);
+        }
+        return $result;
     }
 
     /**
@@ -219,6 +237,9 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
      */
     public function loadUser(array $criteria): ?IUser
     {
+        if ($this->authModule->debug) {
+            $this->authModule->log->info('Loading user by criteria <{criteria}>', ['criteria' => \Arrays::toString($criteria)]);
+        }
         return $this->findOne($criteria);
     }
 
@@ -232,8 +253,18 @@ class GBasicUserComponent extends GDbStorageComponent implements IUserComponent
      */
     public function login($criteria = []): ?IUser
     {
+        if ($this->authModule->debug) {
+            $this->authModule->log->info('Login user by criteria <{criteria}>', ['criteria' => \Arrays::toString($criteria)]);
+        }
         if ($user = $this->loadUser($criteria)) {
+            if ($this->authModule->debug) {
+                $this->authModule->log->info('Login user <OK>');
+            }
             $this->trigger('onUserLogin', new GEvent($this, ['user' => $user]));
+        } else {
+            if ($this->authModule->debug) {
+                $this->authModule->log->error('User not found');
+            }
         }
         return $user;
     }
