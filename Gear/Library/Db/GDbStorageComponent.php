@@ -2,13 +2,7 @@
 
 namespace Gear\Library\Db;
 
-use Gear\Core;
-use Gear\Interfaces\IDbCollection;
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IDbCursor;
-use Gear\Interfaces\IDbDatabase;
 use Gear\Interfaces\IFactory;
-use Gear\Interfaces\IModel;
 use Gear\Library\GComponent;
 use Gear\Traits\TDbStorage;
 use Gear\Traits\TDelegateFactory;
