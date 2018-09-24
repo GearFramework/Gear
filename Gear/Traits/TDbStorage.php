@@ -62,6 +62,10 @@ trait TDbStorage
         return $result ? $this->factory($result) : $result;
     }
 
+    public function exists($criteria): bool
+    {
+        return $this->selectCollection()->exists($criteria);
+    }
     /**
      * Поиск моделей по указанному критерию
      *

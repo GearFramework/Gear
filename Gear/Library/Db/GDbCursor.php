@@ -148,6 +148,19 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     abstract public function escape($value): string;
 
     /**
+     * Возвращает true, если элемент по указанному критерию существует в коллекции, иначе false
+     *
+     * @param mixed $criteria
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function exists($criteria): bool
+    {
+        return $this->find($criteria)->count() > 0 ? true : false;
+    }
+
+    /**
      * Поиск записей по указханному критерию
      *
      * @param string|array $criteria
