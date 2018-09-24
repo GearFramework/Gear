@@ -2,6 +2,7 @@
 
 namespace Gear\Modules\Users;
 
+use Gear\Components\Log\GLogComponent;
 use Gear\Components\Router\GRouterComponent;
 use Gear\Core;
 use Gear\Interfaces\IModel;
@@ -18,8 +19,11 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  *
+ * @property bool debug
+ * @property GLogComponent log
  * @property array|IModel redirectRoutes
  * @property array routes
+ * @property IUserComponent userComponent
  * @property string userComponentName
  *
  * @since 0.0.1
@@ -41,8 +45,28 @@ class GUserModule extends GModule
                 'dbName' => 'simple',
                 'collectionName' => 'users',
             ],
+            'log' => [
+                'class' => [
+                    'name' => '\Gear\Components\Log\GLogComponent',
+                    'plugins' => [
+                        'file' => [
+                            'class' => '\Gear\Plugins\Log\GFileLogger',
+                            'location' => '\Gear\Modules\Users\Logs\User.log',
+                            'levels' => [
+                                Core::ALERT,
+                                Core::INFO,
+                                Core::NOTICE,
+                                Core::WARNING,
+                                Core::ERROR,
+                                Core::EXCEPTION,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ];
+    protected $_debug = false;
     protected $_redirectRoutes = [
         'afterLogin' => 'home',
         'afterLogout' => 'home',
@@ -101,6 +125,24 @@ class GUserModule extends GModule
         $router = Core::app()->c(Core::props('routerName'));
         $router->addRoutes($this->routes);
         return parent::afterInstallService();
+    }
+
+    /**
+     * Возвращает хэш-пароля
+     *
+     * @param string $passwordPlain
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function createPasswordHash(string $passwordPlain): string
+    {
+        return password_hash($passwordPlain, PASSWORD_BCRYPT, ['cost' => 12]);
+    }
+
+    public function getDebug(): bool
+    {
+        return $this->_debug;
     }
 
     /**
@@ -190,6 +232,9 @@ class GUserModule extends GModule
      */
     public function identity(...$arguments): ?IUser
     {
+        if ($this->debug) {
+            $this->log->info('Start user identity by <{component}>', ['component' => $this->userComponentName]);
+        }
         return $this->userComponent->identity(...$arguments);
     }
 
@@ -203,6 +248,9 @@ class GUserModule extends GModule
      */
     public function isValid(IUser $user): bool
     {
+        if ($this->debug) {
+            $this->log->info('Validate user');
+        }
         return $this->userComponent->isValid($user);
     }
 
@@ -217,6 +265,11 @@ class GUserModule extends GModule
     public function route(string $name): ?string
     {
         return $this->redirectRoutes->$name;
+    }
+
+    public function setDebug(bool $debug)
+    {
+        $this->_debug = $debug;
     }
 
     /**
@@ -256,5 +309,23 @@ class GUserModule extends GModule
     public function setUserComponentName(string $name)
     {
         $this->_userComponentName = $name;
+    }
+
+    /**
+     * Проверка праролей на соответствие
+     *
+     * @param $password
+     * @param $passwordUser
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function verifyPassword($password, $passwordHash): bool
+    {
+        $result = password_verify($password, $passwordHash);
+        if ($this->debug) {
+            $this->log->info('Verifed password width hash <{result}>', ['result' => $result ? 'TRUE' : 'FALSE']);
+        }
+        return $result;
     }
 }
