@@ -24,9 +24,29 @@ class HArray extends GHelper
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function helpIsAssoc(array $array)
+    public static function helpIsAssoc(array $array): bool
     {
         $keys = array_keys($array);
         return array_keys($keys) !== $keys;
+    }
+
+    public static function helpToString(iterable $array): string
+    {
+        $string = '';
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $value = self::helpToString($value);
+            } elseif (is_object($value)) {
+                $value = get_class($value);
+            } elseif (is_bool($value)) {
+                $value = $value ? 'TRUE' : 'FALSE';
+            } elseif (is_null($value)) {
+                $value = 'NULL';
+            } elseif (!is_numeric($value)) {
+                $value = '"' . addslashes($value) . '"';
+            }
+            $string .= "$key: $value, ";
+        }
+        return "[$string]";
     }
 }

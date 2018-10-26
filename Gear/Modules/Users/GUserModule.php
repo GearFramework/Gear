@@ -2,6 +2,7 @@
 
 namespace Gear\Modules\Users;
 
+use Gear\Components\Log\GLogComponent;
 use Gear\Components\Router\GRouterComponent;
 use Gear\Core;
 use Gear\Interfaces\IModel;
@@ -18,8 +19,11 @@ use Gear\Modules\Users\Interfaces\IUserComponent;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  *
+ * @property bool debug
+ * @property GLogComponent log
  * @property array|IModel redirectRoutes
  * @property array routes
+ * @property IUserComponent userComponent
  * @property string userComponentName
  *
  * @since 0.0.1
@@ -41,13 +45,36 @@ class GUserModule extends GModule
                 'dbName' => 'simple',
                 'collectionName' => 'users',
             ],
+            'log' => [
+                'class' => [
+                    'name' => '\Gear\Components\Log\GLogComponent',
+                    'plugins' => [
+                        'file' => [
+                            'class' => '\Gear\Plugins\Log\GFileLogger',
+                            'location' => '\Gear\Modules\Users\Logs\User.log',
+                            'levels' => [
+                                Core::ALERT,
+                                Core::INFO,
+                                Core::NOTICE,
+                                Core::WARNING,
+                                Core::ERROR,
+                                Core::EXCEPTION,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ];
+    protected $_debug = false;
     protected $_redirectRoutes = [
         'afterLogin' => 'home',
         'afterLogout' => 'home',
         'afterInvalidLogin' => 'auth',
         'afterInvalidIdentity' => 'auth',
+        'auth' => 'auth',
+        'login' => 'login',
+        'logout' => 'logout',
     ];
     protected $_routes = [
         'auth' => '\Gear\Modules\Users\Controllers\Auth',
@@ -101,6 +128,24 @@ class GUserModule extends GModule
     }
 
     /**
+     * Возвращает хэш-пароля
+     *
+     * @param string $passwordPlain
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function createPasswordHash(string $passwordPlain): string
+    {
+        return password_hash($passwordPlain, PASSWORD_BCRYPT, ['cost' => 12]);
+    }
+
+    public function getDebug(): bool
+    {
+        return $this->_debug;
+    }
+
+    /**
      * Возвращает список редиректов
      *
      * @return IModel
@@ -113,6 +158,19 @@ class GUserModule extends GModule
             $this->_redirectRoutes = new GModel($this->_redirectRoutes);
         }
         return $this->_redirectRoutes;
+    }
+
+    /**
+     * Возвращает роут по его названию
+     *
+     * @param string $name
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRoute(string $name): string
+    {
+        return $this->route($name);
     }
 
     /**
@@ -174,6 +232,9 @@ class GUserModule extends GModule
      */
     public function identity(...$arguments): ?IUser
     {
+        if ($this->debug) {
+            $this->log->info('Start user identity by <{component}>', ['component' => $this->userComponentName]);
+        }
         return $this->userComponent->identity(...$arguments);
     }
 
@@ -187,7 +248,28 @@ class GUserModule extends GModule
      */
     public function isValid(IUser $user): bool
     {
+        if ($this->debug) {
+            $this->log->info('Validate user');
+        }
         return $this->userComponent->isValid($user);
+    }
+
+    /**
+     * Возвращает роут по его названию
+     *
+     * @param string|null $name
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function route(string $name): ?string
+    {
+        return $this->redirectRoutes->$name;
+    }
+
+    public function setDebug(bool $debug)
+    {
+        $this->_debug = $debug;
     }
 
     /**
@@ -227,5 +309,23 @@ class GUserModule extends GModule
     public function setUserComponentName(string $name)
     {
         $this->_userComponentName = $name;
+    }
+
+    /**
+     * Проверка праролей на соответствие
+     *
+     * @param $password
+     * @param $passwordUser
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function verifyPassword($password, $passwordHash): bool
+    {
+        $result = password_verify($password, $passwordHash);
+        if ($this->debug) {
+            $this->log->info('Verifed password width hash <{result}>', ['result' => $result ? 'TRUE' : 'FALSE']);
+        }
+        return $result;
     }
 }
