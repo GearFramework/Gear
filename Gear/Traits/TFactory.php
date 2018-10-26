@@ -92,7 +92,7 @@ trait TFactory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getFactoryProperties(array $properties): array
+    public function getFactoryProperties(array $properties = []): array
     {
         return $this->_factoryProperties ?? [];
     }

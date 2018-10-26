@@ -82,7 +82,7 @@ trait TStaticFactory
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getFactoryProperties(array $properties): array
+    public static function getFactoryProperties(array $properties = []): array
     {
         return self::$_factoryProperties;
     }
