@@ -57,7 +57,7 @@ trait TDbStorage
      */
     public function byPk($pkValue)
     {
-        $class = $this->factory['class'];
+        $class = $this->_factoryProperties['class'];
         $result = $this->selectCollection()->findOne([$class::primaryKey() => "'$pkValue'"]);
         return $result ? $this->factory($result) : $result;
     }
