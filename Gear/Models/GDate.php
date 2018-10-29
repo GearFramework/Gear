@@ -9,6 +9,9 @@ use Gear\Library\GModel;
  * Модель даты
  *
  * @package Gear Framework
+ *
+ * @property int timestamp
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -119,6 +122,11 @@ class GDate extends GModel
     public function getDay(): int
     {
         return date('j', $this->timestamp);
+    }
+
+    public function getIso(): string
+    {
+        return date('Y-m-d', $this->timestamp) . 'T' . date('H:i:s', $this->timestamp);
     }
 
     /**
