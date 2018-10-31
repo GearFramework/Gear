@@ -3,6 +3,7 @@
 namespace Gear\Models\Calendar;
 
 use Gear\Library\Calendar\GCalendarOptions;
+use Gear\Library\Calendar\GLocale;
 use Gear\Library\GModel;
 
 /**
