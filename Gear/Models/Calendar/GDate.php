@@ -1,6 +1,6 @@
 <?php
 
-namespace Gear\Models;
+namespace Gear\Models\Calendar;
 
 use Gear\Library\Calendar\GCalendarOptions;
 use Gear\Library\GModel;

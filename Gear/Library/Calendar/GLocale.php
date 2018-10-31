@@ -20,14 +20,5 @@ abstract class GLocale extends GModel
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
-    protected $_factoryProperties = [
-        'class' => '\Gear\Library\GModel',
-    ];
-    protected $_connection = null;
-    protected $_connectionName = 'db';
-    protected $_dbName = '';
-    protected $_collectionName = '';
-    protected $_defaultParams = [];
     /* Public */
 }
