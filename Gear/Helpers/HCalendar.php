@@ -115,18 +115,6 @@ class HCalendar extends GHelper
     }
 
     /**
-     * Установка текущей даты в календаре
-     *
-     * @param int|string|GDate $date
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function setDate($date)
-    {
-        self::$_currentDate = self::date($date);
-    }
-
-    /**
      * Возвращает год
      *
      * @param null $date
@@ -140,5 +128,17 @@ class HCalendar extends GHelper
         $date = self::date($date);
         $options = self::_prepareOptions($options);
         return $date->year($options);
+    }
+
+    /**
+     * Установка текущей даты в календаре
+     *
+     * @param int|string|GDate $date
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function setDate($date)
+    {
+        self::$_currentDate = self::date($date);
     }
 }

@@ -69,7 +69,7 @@ trait TFactory
         }
         $object = null;
         if ($this->beforeFactory($properties)) {
-            $properties = array_replace_recursive($this->factoryProperties, $properties);
+            $properties = array_replace_recursive($this->getFactoryProperties($properties), $properties);
             list($class, $config, $properties) = Core::configure($properties);
             if (method_exists($class, 'install')) {
                 $object = $class::install($config, $properties, $owner);
@@ -85,13 +85,14 @@ trait TFactory
     }
 
     /**
-     * Возвращает параметры создаваемых объектов
+     * Возвращает параметры по-умолчанию создаваемых объектов
      *
+     * @param array $properties
      * @return array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getFactoryProperties(): array
+    public function getFactoryProperties(array $properties = []): array
     {
         return $this->_factoryProperties ?? [];
     }

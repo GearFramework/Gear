@@ -57,7 +57,7 @@ trait TStaticFactory
         }
         $object = null;
         if (null === $owner || ($owner && $owner->beforeFactory($properties))) {
-            $properties = array_replace_recursive(self::$_factoryProperties, $properties);
+            $properties = array_replace_recursive(self::getFactoryProperties($properties), $properties);
             list($class, $config, $properties) = Core::configure($properties);
             if (method_exists($class, 'install')) {
                 $object = $class::install($config, $properties, $owner);
@@ -72,5 +72,18 @@ trait TStaticFactory
             }
         }
         return $object;
+    }
+
+    /**
+     * Возвращает параметры по-умолчанию создаваемых объектов
+     *
+     * @param array $properties
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getFactoryProperties(array $properties = []): array
+    {
+        return self::$_factoryProperties;
     }
 }

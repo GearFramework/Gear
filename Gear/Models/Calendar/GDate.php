@@ -2,8 +2,7 @@
 
 namespace Gear\Models;
 
-use Gear\Library\Calendar\GCalendarOptions;
-use Gear\Library\Calendar\GLocale;
+use Gear\Helpers\GCalendarOptions;
 use Gear\Library\GModel;
 
 /**
@@ -99,7 +98,7 @@ class GDate extends GModel
      */
     public function format(string $format)
     {
-        $this->_prepareOptions(['format' => $format]);
+        static::$_config['options']['format'] = $format;
         return $this;
     }
 
@@ -127,6 +126,11 @@ class GDate extends GModel
     public function getDay(): int
     {
         return date('j', $this->timestamp);
+    }
+
+    public function getIso(): string
+    {
+        return date('Y-m-d', $this->timestamp) . 'T' . date('H:i:s', $this->timestamp);
     }
 
     /**
@@ -162,7 +166,7 @@ class GDate extends GModel
      */
     public function getTimestamp(): int
     {
-        return $this->_timestamp;
+        return $this->props('timestamp');
     }
 
     /**
