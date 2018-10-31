@@ -2,7 +2,7 @@
 
 namespace Gear\Models;
 
-use Gear\Helpers\GCalendarOptions;
+use Gear\Library\Calendar\GCalendarOptions;
 use Gear\Library\GModel;
 
 /**
