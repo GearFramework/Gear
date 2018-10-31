@@ -3,7 +3,10 @@
 namespace Gear\Library;
 
 use Gear\Interfaces\IHelper;
+use Gear\Traits\TGetter;
 use Gear\Traits\THelper;
+use Gear\Traits\TProperties;
+use Gear\Traits\TSetter;
 
 /**
  * Класс хелперов
@@ -19,8 +22,12 @@ class GHelper implements IHelper
 {
     /* Traits */
     use THelper;
+    use TGetter;
+    use TSetter;
+    use TProperties;
     /* Const */
     /* Private */
     /* Protected */
+    protected $_properties = [];
     /* Public */
 }

@@ -167,7 +167,7 @@ class GDate extends GModel
      */
     public function getTimestamp(): int
     {
-        return $this->props('timestamp');
+        return $this->_timestamp;
     }
 
     /**
