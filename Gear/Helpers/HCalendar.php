@@ -5,7 +5,7 @@ namespace Gear\Helpers;
 use Gear\Core;
 use Gear\Library\Calendar\GLocale;
 use Gear\Library\GHelper;
-use Gear\Models\GDate;
+use Gear\Models\Calendar\GDate;
 use Gear\Traits\TStaticFactory;
 
 /**
