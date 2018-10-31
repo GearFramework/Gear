@@ -17,9 +17,6 @@ use Gear\Library\GModel;
 abstract class GLocale extends GModel
 {
     /* Traits */
-    use TDbStorage;
-    use TFactory;
-    use TDelegateFactory;
     /* Const */
     /* Private */
     /* Protected */
