@@ -2,6 +2,8 @@
 
 namespace Gear\Helpers;
 
+use Gear\Core;
+use Gear\Library\Calendar\GLocale;
 use Gear\Library\GHelper;
 use Gear\Models\GDate;
 use Gear\Traits\TStaticFactory;
@@ -30,10 +32,21 @@ class HCalendar extends GHelper
         ],
     ];
     protected static $_factoryProperties = [
-        'class' => '\Gear\Models\GDate',
+        'class' => '\Gear\Models\Calendar\GDate',
     ];
     protected static $_currentDate = null;
+    protected static $_locale = null;
+    protected static $_namespaceLocales = '\Gear\Models\Calendar\Locales';
     /* Public */
+
+    public static function getLocale(): GLocale
+    {
+        if (!self::$_locale) {
+            $localeClass = self::$_namespaceLocales . '\\' . Core::props('locale');
+            self::$_locale = new $localeClass();
+        }
+        return self::$_locale;
+    }
 
     /**
      * Возвращает объект текущей даты или указанной в виде строки или UT
@@ -53,7 +66,7 @@ class HCalendar extends GHelper
         if (!is_int($date)) {
             throw Core::CalendarException('Invalid date <{date}>', ['date' => $date]);
         }
-        return self::factory(['timestamp' => $date]);
+        return self::factory(['timestamp' => $date, 'locale' => self::getLocale()]);
     }
 
     /**

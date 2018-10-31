@@ -13,6 +13,11 @@ use Gear\Traits\TView;
  * Базовый класс объектов
  *
  * @package Gear Framework
+ *
+ * @property int access
+ * @property string namespace
+ * @property array properties
+ *
  * @author Kukushkin Denis
  * @property IObject|null owner
  * @property array _events
@@ -84,6 +89,7 @@ class GObject implements IObject
      * @param string $name
      * @param array $arguments
      * @return mixed
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

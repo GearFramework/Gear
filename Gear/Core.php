@@ -137,6 +137,8 @@ final class Core {
             'locale' => 'ru_RU',
             /* Кодировка */
             'charset' => 'utf-8',
+            /* Временная зона */
+            'timezone' => 'Europe/Moscow',
             /* Файлы для записи логов ядра (должен быть прямой путь к файлу) */
             'syslog' => [
                 0 => GEAR . '/Logs/Core/Core.log',

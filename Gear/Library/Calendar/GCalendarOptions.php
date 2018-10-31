@@ -1,11 +1,24 @@
 <?php
 
-namespace Gear\Helpers;
+namespace Gear\Library\Calendar;
 
 use Gear\Traits\TGetter;
 use Gear\Traits\TProperties;
 use Gear\Traits\TSetter;
 
+/**
+ * Опции календаря
+ *
+ * @package Gear Framework
+ *
+ * @property string format
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
+ */
 class GCalendarOptions
 {
     /* Traits */

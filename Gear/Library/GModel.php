@@ -48,7 +48,7 @@ class GModel extends GObject implements IModel
      */
     public function getPrimaryKey()
     {
-        return $this->props($this->primaryKeyName);
+        return $this->props(static::$primaryKeyName);
     }
 
     /**
@@ -73,7 +73,7 @@ class GModel extends GObject implements IModel
      */
     public function setPrimaryKey($value)
     {
-        return $this->props($this->primaryKeyName, $value);
+        $this->props(static::$primaryKeyName, $value);
     }
 
     /**

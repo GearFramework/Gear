@@ -2,13 +2,19 @@
 
 namespace Gear\Models;
 
-use Gear\Helpers\GCalendarOptions;
+use Gear\Library\Calendar\GCalendarOptions;
+use Gear\Library\Calendar\GLocale;
 use Gear\Library\GModel;
 
 /**
  * Модель даты
  *
  * @package Gear Framework
+ *
+ * @property GLocale locale
+ * @property GCalendarOptions options
+ * @property int timestamp
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -27,6 +33,8 @@ class GDate extends GModel
         ]
     ];
     protected $_options = null;
+    protected $_timestamp = 0;
+    protected $_locale = null;
     /* Public */
 
     /**
@@ -91,7 +99,7 @@ class GDate extends GModel
      */
     public function format(string $format)
     {
-        static::$_config['options']['format'] = $format;
+        $this->_prepareOptions(['format' => $format]);
         return $this;
     }
 
@@ -154,7 +162,7 @@ class GDate extends GModel
      */
     public function getTimestamp(): int
     {
-        return $this->props('timestamp');
+        return $this->_timestamp;
     }
 
     /**
@@ -182,6 +190,18 @@ class GDate extends GModel
     }
 
     /**
+     * Установка текущекй локали
+     *
+     * @param GLocale $locale
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setLocale(GLocale $locale)
+    {
+        $this->_locale = $locale;
+    }
+
+    /**
      * Установка параметров
      *
      * @param string|array|GCalendarOptions $options
@@ -191,6 +211,19 @@ class GDate extends GModel
     public function setOptions($options)
     {
         $this->_prepareOptions($options);
+    }
+
+    /**
+     * Установка UNIX Timestamp
+     *
+     * @param int $timestamp
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setTimestamp(int $timestamp)
+    {
+        $this->_timestamp = $timestamp;
     }
 
     /**
