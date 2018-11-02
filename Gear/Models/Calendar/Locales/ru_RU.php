@@ -60,7 +60,7 @@ class ru_RU extends GLocale
     protected static $_registerTokens = ['D', 'l', 'M', 'F', 'w'];
     /* Public */
 
-    public function format(int $timestamp = 0, GCalendarOptions $options): string
+    public function format(int $timestamp, GCalendarOptions $options): string
     {
         $result = '';
         foreach(preg_split('//', $options->format, 0, PREG_SPLIT_NO_EMPTY) as $token) {
