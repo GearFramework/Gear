@@ -128,7 +128,7 @@ class GDate extends GModel
     public function getDate($options = []): string
     {
         $this->options = $options = $this->_prepareOptions($options);
-        return $this->locale->format($options->format, $this->timestamp);
+        return $this->locale->format($this->timestamp, $this->options);
     }
 
     /**
