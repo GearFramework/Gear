@@ -110,7 +110,7 @@ class HCalendar extends GHelper
      */
     public static function helpNow(): GDate
     {
-        self::$_currentDate = self::date(time());
+        self::setDate(time());
         return self::$_currentDate;
     }
 
@@ -134,6 +134,7 @@ class HCalendar extends GHelper
      * Установка текущей даты в календаре
      *
      * @param int|string|GDate $date
+     * @return void
      * @since 0.0.1
      * @version 0.0.1
      */

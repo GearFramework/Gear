@@ -2,6 +2,7 @@
 
 namespace Gear\Models\Calendar;
 
+use Gear\Core;
 use Gear\Library\Calendar\GCalendarOptions;
 use Gear\Library\Calendar\GLocale;
 use Gear\Library\GModel;
@@ -73,6 +74,19 @@ class GDate extends GModel
         }
         $this->_options = $options;
         return $options;
+    }
+
+    /**
+     * Вызывается после создания объекта
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function afterConstruct()
+    {
+        date_default_timezone_set(Core::props('timezone'));
+        return parent::afterConstruct();
     }
 
     /**
