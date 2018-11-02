@@ -12,6 +12,8 @@ use Gear\Traits\TSetter;
  * @package Gear Framework
  *
  * @property string format
+ * @property string humanize
+ * @property string natural
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -29,8 +31,10 @@ class GCalendarOptions
     /* Private */
     /* Protected */
     protected $_properties = [
-        'format' => 'Y-m-d H:i:s',
         'asUT' => false,
+        'format' => 'Y-m-d H:i:s',
+        'humanize' => false,
+        'natural' => true,
     ];
     /* Public */
 

@@ -39,9 +39,16 @@ class HCalendar extends GHelper
     protected static $_namespaceLocales = '\Gear\Models\Calendar\Locales';
     /* Public */
 
-    public static function getLocale(): GLocale
+    /**
+     * Возвращает установленную локаль
+     *
+     * @return null|GLocale
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getLocale(): ?GLocale
     {
-        if (!self::$_locale) {
+        if (!self::$_locale && Core::props('locale')) {
             $localeClass = self::$_namespaceLocales . '\\' . Core::props('locale');
             self::$_locale = new $localeClass();
         }

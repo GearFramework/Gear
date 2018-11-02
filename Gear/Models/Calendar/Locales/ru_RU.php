@@ -2,12 +2,17 @@
 
 namespace Gear\Models\Calendar\Locales;
 
+use Gear\Library\Calendar\GCalendarOptions;
 use Gear\Library\Calendar\GLocale;
+use Gear\Models\Calendar\GDate;
 
 /**
  * Русская локаль
  *
  * @package Gear Framework
+ *
+ * @property GDate owner
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -51,9 +56,101 @@ class ru_RU extends GLocale
         ],
     ];
     protected static $_sizes = ['Б', 'КБ', 'МБ', 'ГБ', 'ТБ', 'ПБ'];
+    protected static $_defaultTokens = ['a', 'A', 'B', 'c', 'd', 'e', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'L', 'm', 'n', 'N', 'o', 'O', 'P', 'r', 's', 'S', 't', 'T', 'u', 'U', 'W', 'y', 'Y', 'z', 'Z'];
+    protected static $_registerTokens = ['D', 'l', 'M', 'F', 'w'];
     /* Public */
-    public static $registerTokens = ['D', 'l', 'M', 'F', 'w'];
-    
+
+    public function format(int $timestamp = 0, GCalendarOptions $options): string
+    {
+        $result = '';
+        foreach(preg_split('//', $options->format, 0, PREG_SPLIT_NO_EMPTY) as $token) {
+            if (in_array($token, static::$_registerTokens, true)) {
+                $result .= $this->getTokenValue($token, $timestamp, $options);
+            } elseif (in_array($token, self::$_defaultTokens, true)) {
+                $result .= date($token, $timestamp);
+            } else {
+                $result .= $token;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает полное название месяца для указанной даты
+     *
+     * @param integer $timestamp
+     * @return string
+     */
+    public function getFullMonth(int $timestamp, GCalendarOptions $options): string
+    {
+        return static::$_data['month']['full'][(int)date('n', $timestamp)][$options->natural];
+    }
+
+    /**
+     * Возвращает полное название дня недели для указанной даты
+     *
+     * @param integer $timestamp
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getFullWeek($timestamp)
+    {
+        $dw = (int)date('w', $timestamp);
+        if (!$dw)
+            $dw = $this->getLastNumberDayOfWeek();
+        return static::$_data['week']['full'][$dw];
+    }
+
+    /**
+     * Возвращает короткое название месяца для указанной даты
+     *
+     * @param integer $timestamp
+     * @return string
+     */
+    public function getShortMonth(int $timestamp): string
+    {
+        return static::$_data['month']['short'][(int)date('n', $timestamp)];
+    }
+
+    /**
+     * Возвращает короткое название дня недели для указанной даты
+     *
+     * @param integer $timestamp
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getShortWeek($timestamp)
+    {
+        $dw = (int)date('w', $timestamp);
+        if (!$dw) {
+            $dw = $this->getLastNumberDayOfWeek();
+        }
+        return static::$_data['week']['short'][$dw];
+    }
+
+    /**
+     * Получение локализованных значений элементов шаблона даты
+     *
+     * @param string $token
+     * @param integer $timestamp
+     * @param boolean $natural
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getTokenValue($token, $timestamp, $options)
+    {
+        switch($token) {
+            case 'D' : return $this->getShortWeek($timestamp);
+            case 'l' : return $this->getFullWeek($timestamp);
+            case 'M' : return $this->getShortMonth($timestamp);
+            case 'F' : return $this->getFullMonth($timestamp, $options);
+            case 'w' : return ($dayOfWeek = date($token, $timestamp)) ? $dayOfWeek : 7;
+        }
+    }
+
     /**
      * Склонение числительных годов, месяцев, дней, часов, минут, секунд
      * 
@@ -87,27 +184,6 @@ class ru_RU extends GLocale
             return static::$_human['now'][0];
     }
 
-    /**
-     * Получение локализованных значений элементов шаблона даты
-     * 
-     * @param string $token
-     * @param integer $timestamp
-     * @param boolean $natural
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function getTokenValue($token, $timestamp, $natural)
-    {
-        switch($token) {
-            case 'D' : return static::getShortWeek($timestamp);
-            case 'l' : return static::getFullWeek($timestamp);
-            case 'M' : return static::getShortMonth($timestamp);
-            case 'F' : return static::getFullMonth($timestamp, $natural);
-            case 'w' : return ($dayOfWeek = date($token, $timestamp)) ? $dayOfWeek : 7;
-        }
-    }
-    
     public static function getHuman($seconds, $mode, $short)
     {
         if (isset(static::$_human[$mode][$short][2]))
@@ -118,46 +194,13 @@ class ru_RU extends GLocale
     }
 
     /**
-     * Возвращает короткое название дня недели для указанной даты
-     * 
-     * @param integer $timestamp
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function getShortWeek($timestamp)
-    {
-        $dw = (int)date('w', $timestamp);
-        if (!$dw) {
-            $dw = 7;
-        }
-        return static::$_data['week']['short'][$dw];
-    }
-
-    /**
-     * Возвращает полное название дня недели для указанной даты
-     * 
-     * @param integer $timestamp
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function getFullWeek($timestamp)
-    {
-        $dw = (int)date('w', $timestamp);
-        if (!$dw)
-            $dw = 7;
-        return static::$_data['week']['full'][$dw];
-    }
-
-    /**
      * Возвращает номер дня недели
      * 
      * @return array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getNumberDayOfWeek($timestamp)
+    public function getNumberDayOfWeek($timestamp)
     {
         $dayOfWeek = date('w', $timestamp);
         return $dayOfWeek ? $dayOfWeek : 7;
@@ -170,7 +213,7 @@ class ru_RU extends GLocale
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getFirstNumberDayOfWeek() { return 1; }
+    public function getFirstNumberDayOfWeek() { return 1; }
     
     /**
      * Возвращает номер последнего дня недели
@@ -179,7 +222,7 @@ class ru_RU extends GLocale
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getLastNumberDayOfWeek() { return 7; }
+    public function getLastNumberDayOfWeek() { return 7; }
 
     /**
      * Возвращает массив номеров дней недели
@@ -188,5 +231,5 @@ class ru_RU extends GLocale
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getNumbersDayOfWeek() { return range(1, 7); }
+    public function getNumbersDayOfWeek() { return range(1, 7); }
 }

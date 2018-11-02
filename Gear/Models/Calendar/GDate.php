@@ -128,7 +128,7 @@ class GDate extends GModel
     public function getDate($options = []): string
     {
         $this->options = $options = $this->_prepareOptions($options);
-        return date($options->format, $this->timestamp);
+        return $this->locale->format($options->format, $this->timestamp);
     }
 
     /**
@@ -146,6 +146,21 @@ class GDate extends GModel
     public function getIso(): string
     {
         return date('Y-m-d', $this->timestamp) . 'T' . date('H:i:s', $this->timestamp);
+    }
+
+    /**
+     * Возвращает локаль
+     *
+     * @return null|GLocale
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getLocale(): ?GLocale
+    {
+        if (!($this->_locale instanceof GLocale)) {
+            $this->locale = \Calendar::getLocale();
+        }
+        return $this->_locale;
     }
 
     /**
@@ -211,11 +226,11 @@ class GDate extends GModel
     /**
      * Установка текущекй локали
      *
-     * @param GLocale $locale
+     * @param null|GLocale $locale
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setLocale(GLocale $locale)
+    public function setLocale(?GLocale $locale)
     {
         $this->_locale = $locale;
     }
