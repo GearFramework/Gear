@@ -8,6 +8,7 @@ use Gear\Interfaces\IDbConnection;
 use Gear\Interfaces\IDbCursor;
 use Gear\Interfaces\IDbDatabase;
 use Gear\Interfaces\IModel;
+use Gear\Interfaces\IService;
 
 /**
  * Трейт компонентов для выполнения операций с моделями
@@ -30,6 +31,8 @@ use Gear\Interfaces\IModel;
  */
 trait TDbStorage
 {
+    protected $_servicesHandled = [];
+
     /**
      * Добавление модели в набор (сохранение в коллекции-таблице в базе данных)
      *
@@ -70,12 +73,29 @@ trait TDbStorage
         return $result ? $this->factory($result) : $result;
     }
 
-    public function count($criteria): int
+    /**
+     * Возвращает количество элементов в коллекции, удовлетворяющих
+     * критерию
+     *
+     * @param array $criteria
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function count($criteria = []): int
     {
         return $this->selectCollection()->find($criteria)->count();
     }
 
-    public function exists($criteria): bool
+    /**
+     * Возвращает true, если указанный в критерии элемент существует в коллекции
+     *
+     * @param array $criteria
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function exists($criteria = []): bool
     {
         return $this->selectCollection()->exists($criteria);
     }
@@ -193,7 +213,9 @@ trait TDbStorage
     public function getDefaultCursor(): IDbCursor
     {
         $criteria = [];
+        $cursor = $this->selectCollection()->find();
         if ($this->_defaultParams['where']) {
+            $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
             $criteria = $this->_defaultParams['where'];
         }
         $fields = [];
@@ -364,5 +386,67 @@ trait TDbStorage
             $result = $this->selectCollection()->update($model);
         }
         return $result;
+    }
+
+    /**
+     * @param string $path
+     * @return IService
+     * @throws \CoreException
+     */
+    protected function _getComponentFromPath(string $path): IService
+    {
+        if (!isset($this->_servicesHandled[$path])) {
+            $wayPoints = explode('.', $path);
+            $first = true;
+            /**
+             * @var IService|TServiceContained|TDbStorage $component
+             */
+            $component = null;
+            foreach ($wayPoints as $componentName) {
+                if (true === $first) {
+                    $component = Core::service($componentName);
+                    $first = false;
+                } else {
+                    $component = $component->service($componentName);
+                }
+            }
+            $this->_servicesHandled[$path] = $component;
+        }
+        return $this->_servicesHandled[$path];
+    }
+
+    protected function _prepareDefaultFields(IDbCursor $cursor, array $defaultFields)
+    {
+        $fields = [];
+        foreach ($defaultFields as $key => $value) {
+            if (!is_numeric($key)) {
+                /**
+                 * @var IService|TServiceContained|TDbStorage $component
+                 */
+                $component = $this->_getComponentFromPath($key);
+                $aliasCollection = $component->alias;
+                if (is_array($value)) {
+                    foreach ($value as $fieldName => $aliasField) {
+                        if (is_numeric($fieldName)) {
+                            $fieldName = $aliasField;
+                            $fields[] = "$aliasCollection.$fieldName";
+                        } else {
+                            $fields[$aliasCollection.$fieldName] = $aliasField;
+                        }
+                    }
+                } else {
+                    $fields[] = "$aliasCollection.$value";
+                }
+            } else {
+                is_array($value) ? $fields = array_merge($fields, $value) : $fields[] = $value;
+            }
+        }
+        $cursor->fields($fields);
+    }
+
+    protected function _prepareDefaultWhere(IDbCursor $cursor, $defaultWhere)
+    {
+        $cursor->where($defaultWhere);
+
     }
 }
