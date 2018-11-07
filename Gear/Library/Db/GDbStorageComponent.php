@@ -31,6 +31,7 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     protected $_factoryProperties = [
         'class' => '\Gear\Library\GModel',
     ];
+    protected $_alias = '';
     protected $_connection = null;
     protected $_connectionName = 'db';
     protected $_dbName = '';

@@ -30,6 +30,7 @@ abstract class GDbStoragePlugin extends GPlugin implements \IteratorAggregate
     protected $_factoryProperties = [
         'class' => '\Gear\Library\GModel',
     ];
+    protected $_alias = '';
     protected $_connection = null;
     protected $_connectionName = 'db';
     protected $_dbName = '';

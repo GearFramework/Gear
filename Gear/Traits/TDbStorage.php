@@ -15,6 +15,7 @@ use Gear\Interfaces\IModel;
  *
  * @package Gear Framework
  *
+ * @property string alias
  * @property string collectionName
  * @property string connectionName
  * @property IDbCursor cursor
@@ -83,11 +84,11 @@ trait TDbStorage
      *
      * @param array|string $criteria
      * @param array|string $fields
-     * @return \Iterator
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function find($criteria = [], $fields = [])
+    public function find($criteria = [], $fields = []): iterable
     {
         return $this->getIterator($this->selectCollection()->find($criteria, $fields));
     }
@@ -104,6 +105,18 @@ trait TDbStorage
     {
         $result = $this->selectCollection()->findOne($criteria);
         return $result ? $this->factory($result) : $result;
+    }
+
+    /**
+     * Возвращает алиас для коллекции
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getAlias(): string
+    {
+        return $this->_alias;
     }
 
     /**
@@ -264,6 +277,18 @@ trait TDbStorage
     public function selectDB(): IDbDatabase
     {
         return $this->connection->selectDB($this->dbName);
+    }
+
+    /**
+     * Установка алиаса для коллекции
+     *
+     * @param string $alias
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setAlias(string $alias)
+    {
+        $this->_alias = $alias;
     }
 
     /**
