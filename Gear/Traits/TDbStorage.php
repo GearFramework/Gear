@@ -14,6 +14,13 @@ use Gear\Interfaces\IModel;
  * в базах данных
  *
  * @package Gear Framework
+ *
+ * @property string collectionName
+ * @property string connectionName
+ * @property IDbCursor cursor
+ * @property string dbName
+ * @property IDbCursor defaultCursor
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -60,6 +67,11 @@ trait TDbStorage
         $class = $this->_factoryProperties['class'];
         $result = $this->selectCollection()->findOne([$class::$primaryKeyName => "'$pkValue'"]);
         return $result ? $this->factory($result) : $result;
+    }
+
+    public function count($criteria): int
+    {
+        return $this->selectCollection()->find($criteria)->count();
     }
 
     public function exists($criteria): bool
