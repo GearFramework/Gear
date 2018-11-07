@@ -5,6 +5,7 @@ namespace Gear\Library;
 use Gear\Interfaces\IModule;
 use Gear\Traits\TComponentContained;
 use Gear\Traits\TPluginContained;
+use Gear\Traits\TServiceContained;
 
 /**
  * Класс модулей
@@ -19,6 +20,7 @@ use Gear\Traits\TPluginContained;
 class GModule extends GService implements IModule
 {
     /* Traits */
+    use TServiceContained;
     use TComponentContained;
     use TPluginContained;
     /* Const */

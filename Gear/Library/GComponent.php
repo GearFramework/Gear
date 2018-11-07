@@ -4,6 +4,7 @@ namespace Gear\Library;
 
 use Gear\Interfaces\IComponent;
 use Gear\Traits\TPluginContained;
+use Gear\Traits\TServiceContained;
 
 /**
  * Класс компонентов
@@ -18,6 +19,7 @@ use Gear\Traits\TPluginContained;
 class GComponent extends GService implements IComponent
 {
     /* Traits */
+    use TServiceContained;
     use TPluginContained;
     /* Const */
     /* Private */
