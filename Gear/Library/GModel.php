@@ -5,6 +5,7 @@ namespace Gear\Library;
 use Gear\Interfaces\IModel;
 use Gear\Interfaces\IObject;
 use Gear\Traits\TPluginContained;
+use Gear\Traits\TServiceContained;
 
 /**
  * Базовый класс моделей
@@ -19,6 +20,7 @@ use Gear\Traits\TPluginContained;
 class GModel extends GObject implements IModel
 {
     /* Traits */
+    use TServiceContained;
     use TPluginContained;
     /* Const */
     /* Private */
