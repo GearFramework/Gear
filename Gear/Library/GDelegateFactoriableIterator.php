@@ -24,6 +24,18 @@ class GDelegateFactoriableIterator extends GModel implements \Iterator
     /* Public */
 
     /**
+     * Возвращает количество элементов в источнике
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function count(): int
+    {
+        return $this->source->count();
+    }
+
+    /**
      * Возвращает фабрику
      *
      * @return IFactory
