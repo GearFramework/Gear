@@ -249,7 +249,7 @@ class GMySqlCursor extends GDbCursor
             foreach($fields as $name => $entry) {
                 if (is_numeric($name)) {
                     $name = $entry;
-                    if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
+                    if ($name !== '*' && !strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
                         strpos($name, '(') === false) {
                         $name = "`$name`";
                     }
