@@ -402,10 +402,10 @@ trait TDbStorage
             $component = null;
             foreach ($wayPoints as $componentName) {
                 if (true === $first) {
-                    $component = Core::service($componentName);
+                    $component = $this->$componentName;
                     $first = false;
                 } else {
-                    $component = $component->service($componentName);
+                    $component = $component->$componentName;
                 }
             }
             $this->_servicesHandled[$path] = $component;
