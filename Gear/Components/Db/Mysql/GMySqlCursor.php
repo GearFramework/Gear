@@ -656,13 +656,13 @@ class GMySqlCursor extends GDbCursor
         $alias = '';
         $joinCollection = $type;
         if (is_array($collection)) {
-            $alias = current($collection);
+            $alias = reset($collection);
             $collection = key($collection);
         }
         if (is_object($collection)) {
-            $join[] = " `" . $collection->name . '`';
+            $joinCollection = " `" . $collection->name . '`';
         } else {
-            $join[] = " `" . $collection . '`';
+            $joinCollection = " `" . $collection . '`';
         }
         $join[] = "$joinCollection " . ($alias !== '' ? " AS $alias" : '') . " ON $criteria";
         $this->_queryBuild->join = $join;
