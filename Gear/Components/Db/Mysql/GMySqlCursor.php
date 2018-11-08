@@ -393,7 +393,7 @@ class GMySqlCursor extends GDbCursor
     /**
      * Подключение таблицы
      *
-     * @param string|object $collection
+     * @param string|array|object $collection
      * @param array $criteria
      * @return GDbCursor
      * @since 0.0.1
@@ -408,7 +408,7 @@ class GMySqlCursor extends GDbCursor
     /**
      * Левое подключение таблицы
      *
-     * @param string|object $collection
+     * @param string|array|object $collection
      * @param array $criteria
      * @return GDbCursor
      * @since 0.0.1
@@ -472,7 +472,7 @@ class GMySqlCursor extends GDbCursor
     /**
      * Правое подключение таблицы
      *
-     * @param string|object $collection
+     * @param string|array|object $collection
      * @param array $criteria
      * @return GDbCursor
      * @since 0.0.1
@@ -653,7 +653,18 @@ class GMySqlCursor extends GDbCursor
         $join = $this->_queryBuild->join;
         $criteria = $this->_prepareCriteria($criteria);
         $type = $joinTypes[strtolower($type)];
-        $join[] = "$type `" . (is_object($collection) ? $collection->name : $collection) . '` ON ' . $criteria;
+        $alias = '';
+        $joinCollection = $type;
+        if (is_array($collection)) {
+            $alias = current($collection);
+            $collection = key($collection);
+        }
+        if (is_object($collection)) {
+            $join[] = " `" . $collection->name . '`';
+        } else {
+            $join[] = " `" . $collection . '`';
+        }
+        $join[] = "$joinCollection " . ($alias !== '' ? " AS $alias" : '') . " ON $criteria";
         $this->_queryBuild->join = $join;
     }
 
