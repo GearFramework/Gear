@@ -220,6 +220,15 @@ trait TDbStorage
         if ($this->_defaultParams['fields']) {
             $this->_prepareDefaultFields($cursor, $this->_defaultParams['fields']);
         }
+        if ($this->_defaultParams['joins']) {
+            $this->_prepareDefaultJoins($cursor, $this->_defaultParams['joins']);
+        }
+        if ($this->_defaultParams['left']) {
+            $this->_prepareDefaultLeft($cursor, $this->_defaultParams['left']);
+        }
+        if ($this->_defaultParams['fields']) {
+            $this->_prepareDefaultRight($cursor, $this->_defaultParams['right']);
+        }
         if ($this->_defaultParams['sort']) {
             $cursor->sort($this->_defaultParams['sort']);
         }
