@@ -247,12 +247,28 @@ class GMySqlCursor extends GDbCursor
         $tempFields = $this->_queryBuild->fields;
         if (is_array($fields)) {
             foreach($fields as $name => $entry) {
-                if (is_numeric($name) || $entry > 0) {
+                if (is_numeric($name)) {
+                    $name = $entry;
                     if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
                         strpos($name, '(') === false) {
                         $name = "`$name`";
                     }
                     $tempFields[] = $name;
+                } else {
+                    if (is_numeric($entry) && $entry > 0) {
+                        if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
+                            strpos($name, '(') === false) {
+                            $name = "`$name`";
+                        }
+                        $tempFields[] = $name;
+                    } elseif (!is_numeric($entry)) {
+                        if (!strpos($name, '.') && !preg_match('/\s(as)\s/i', $name) &&
+                            strpos($name, '(') === false) {
+                            $name = "`$name`";
+                        }
+                        $name .= " AS $entry";
+                        $tempFields[] = $name;
+                    }
                 }
             }
         } else if (is_string($fields)) {
