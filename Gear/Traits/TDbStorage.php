@@ -441,7 +441,7 @@ trait TDbStorage
                             $fieldName = $aliasField;
                             $fields[] = "$aliasCollection.$fieldName";
                         } else {
-                            $fields[$aliasCollection.$fieldName] = $aliasField;
+                            $fields["$aliasCollection.$fieldName"] = $aliasField;
                         }
                     }
                 } else {
