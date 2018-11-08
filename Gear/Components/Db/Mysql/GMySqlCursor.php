@@ -518,6 +518,9 @@ class GMySqlCursor extends GDbCursor
             }
             $query = sprintf($query, ...$bindParams);
         }
+        if (defined('DEBUG') && DEBUG === true) {
+            Core::syslog(Core::INFO, 'Run MySQL query {query}', ['query' => $query, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+        }
         if (!($this->result = $this->handler->query($query))) {
             $handler = $this->handler;
             throw self::DbCursorException('Invalid run query: {errorMessage}', ['query' => $query, 'errorMessage' => $handler->error]);
