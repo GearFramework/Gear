@@ -110,7 +110,7 @@ trait TDbStorage
      */
     public function find($criteria = [], $fields = []): iterable
     {
-        return $this->getIterator($this->selectCollection($this->alias)->find($criteria, $fields));
+        return $this->getIterator($this->selectCollection()->find($criteria, $fields));
     }
 
     /**
@@ -125,7 +125,7 @@ trait TDbStorage
      */
     public function findOne($criteria = [], $fields = [], $sort = [])
     {
-        $cursor = $this->getDefaultCursor();
+        $cursor = $this->getDefaultCursor()->where($criteria);
         $result = $this->selectCollection($this->alias)->findOne($cursor, $fields, $sort);
         return $result ? $this->factory($result) : $result;
     }
