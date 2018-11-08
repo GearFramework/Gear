@@ -216,13 +216,10 @@ trait TDbStorage
         $cursor = $this->selectCollection()->find();
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
-            $criteria = $this->_defaultParams['where'];
         }
-        $fields = [];
         if ($this->_defaultParams['fields']) {
-            $fields = $this->_defaultParams['fields'];
+            $this->_prepareDefaultFields($cursor, $this->_defaultParams['fields']);
         }
-        $cursor = $this->cursor->find($criteria, $fields);
         if ($this->_defaultParams['sort']) {
             $cursor->sort($this->_defaultParams['sort']);
         }
@@ -396,7 +393,8 @@ trait TDbStorage
     protected function _getComponentFromPath(string $path): IService
     {
         if (!isset($this->_servicesHandled[$path])) {
-            $wayPoints = explode('.', $path);
+            $tempPath = preg_replace('/#\d+$/', '', $path);
+            $wayPoints = explode('.', $tempPath);
             $first = true;
             /**
              * @var IService|TServiceContained|TDbStorage $component
@@ -444,9 +442,47 @@ trait TDbStorage
         $cursor->fields($fields);
     }
 
+    protected function _prepareDefaultJoins(IDbCursor $cursor, array $defaultJoins)
+    {
+        foreach ($defaultJoins as $service => $criteria) {
+            /**
+             * @var IService|TServiceContained|TDbStorage $component
+             */
+            $component = $this->_getComponentFromPath($service);
+            $alias = $component->alias;
+            list($fieldChild, $fieldOwner) = $criteria;
+            $cursor->join($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$alias.$fieldOwner"]);
+        }
+    }
+
+    protected function _prepareDefaultLeft(IDbCursor $cursor, array $defaultLeft)
+    {
+        foreach ($defaultLeft as $service => $criteria) {
+            /**
+             * @var IService|TServiceContained|TDbStorage $component
+             */
+            $component = $this->_getComponentFromPath($service);
+            $alias = $component->alias;
+            list($fieldChild, $fieldOwner) = $criteria;
+            $cursor->left($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$alias.$fieldOwner"]);
+        }
+    }
+
+    protected function _prepareDefaultRight(IDbCursor $cursor, array $defaultRight)
+    {
+        foreach ($defaultRight as $service => $criteria) {
+            /**
+             * @var IService|TServiceContained|TDbStorage $component
+             */
+            $component = $this->_getComponentFromPath($service);
+            $alias = $component->alias;
+            list($fieldChild, $fieldOwner) = $criteria;
+            $cursor->right($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$alias.$fieldOwner"]);
+        }
+    }
+
     protected function _prepareDefaultWhere(IDbCursor $cursor, $defaultWhere)
     {
         $cursor->where($defaultWhere);
-
     }
 }
