@@ -450,8 +450,9 @@ trait TDbStorage
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
+            $ownerAlias = $this->alias;
             list($fieldChild, $fieldOwner) = $criteria;
-            $cursor->join($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$alias.$fieldOwner"]);
+            $cursor->join($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$ownerAlias.$fieldOwner"]);
         }
     }
 
@@ -463,8 +464,9 @@ trait TDbStorage
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
+            $ownerAlias = $this->alias;
             list($fieldChild, $fieldOwner) = $criteria;
-            $cursor->left($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$alias.$fieldOwner"]);
+            $cursor->left($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$ownerAlias.$fieldOwner"]);
         }
     }
 
@@ -476,8 +478,9 @@ trait TDbStorage
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
+            $ownerAlias = $this->alias;
             list($fieldChild, $fieldOwner) = $criteria;
-            $cursor->right($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$alias.$fieldOwner"]);
+            $cursor->right($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$ownerAlias.$fieldOwner"]);
         }
     }
 
