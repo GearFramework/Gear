@@ -213,7 +213,7 @@ trait TDbStorage
     public function getDefaultCursor(): IDbCursor
     {
         $criteria = [];
-        $cursor = $this->selectCollection()->find();
+        $cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }
