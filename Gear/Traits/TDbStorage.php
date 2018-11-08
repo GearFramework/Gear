@@ -402,8 +402,8 @@ trait TDbStorage
     protected function _getComponentFromPath(string $path): IService
     {
         if (!isset($this->_servicesHandled[$path])) {
-            $tempPath = preg_replace('/#\d+$/', '', $path);
-            $wayPoints = explode('.', $tempPath);
+            $path = preg_replace('/#\d+$/', '', $path);
+            $wayPoints = explode('.', $path);
             $first = true;
             /**
              * @var IService|TServiceContained|TDbStorage $component
@@ -432,6 +432,9 @@ trait TDbStorage
                  */
                 $component = $this->_getComponentFromPath($key);
                 $aliasCollection = $component->alias;
+                if (preg_match('/#(\d+)$/', $key, $match)) {
+                    $aliasCollection .= $match[1];
+                }
                 if (is_array($value)) {
                     foreach ($value as $fieldName => $aliasField) {
                         if (is_numeric($fieldName)) {
@@ -459,6 +462,9 @@ trait TDbStorage
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
+            if (preg_match('/#(\d+)$/', $service, $match)) {
+                $alias .= $match[1];
+            }
             $ownerAlias = $this->alias;
             list($fieldChild, $fieldOwner) = $criteria;
             $cursor->join($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$ownerAlias.$fieldOwner"]);
@@ -473,6 +479,9 @@ trait TDbStorage
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
+            if (preg_match('/#(\d+)$/', $service, $match)) {
+                $alias .= $match[1];
+            }
             $ownerAlias = $this->alias;
             list($fieldChild, $fieldOwner) = $criteria;
             $cursor->left($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$ownerAlias.$fieldOwner"]);
@@ -487,6 +496,9 @@ trait TDbStorage
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
+            if (preg_match('/#(\d+)$/', $service, $match)) {
+                $alias .= $match[1];
+            }
             $ownerAlias = $this->alias;
             list($fieldChild, $fieldOwner) = $criteria;
             $cursor->right($component->collectionName . ' AS ' . $alias, ["$alias.$fieldChild" => "$ownerAlias.$fieldOwner"]);
