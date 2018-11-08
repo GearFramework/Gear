@@ -334,12 +334,13 @@ interface IDbCursor
      *
      * @param string|array $criteria
      * @param string|array $fields
+     * @param array $sort
      * @param int $as
      * @return array|null
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function findOne($criteria = [], $fields = [], $as = self::AS_ASSOC);
+    public function findOne($criteria = [], $fields = [], $sort = [], $as = self::AS_ASSOC);
 
     /**
      * Возвращает первые N элементов из запроса

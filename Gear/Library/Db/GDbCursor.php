@@ -174,16 +174,21 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Возвращает первую запись, соответствующую указанному критерию
      *
-     * @param string|array $criteria
+     * @param string|array|IDbCursor $criteria
      * @param string|array $fields
+     * @param array $sort
      * @param int $as
      * @return array|null
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function findOne($criteria = [], $fields = [], $as = self::AS_ASSOC)
+    public function findOne($criteria = [], $fields = [], $sort = [], $as = self::AS_ASSOC)
     {
-        return $this->find($criteria, $fields)->limit(1)->asAssoc();
+        if ($criteria instanceof IDbCursor) {
+            return $this->fields($fields)->sort($sort)->limit(1)->asAssoc();
+        } else {
+            return $this->find($criteria, $fields)->sort($sort)->limit(1)->asAssoc();
+        }
     }
 
     /**
