@@ -226,7 +226,7 @@ trait TDbStorage
         if ($this->_defaultParams['left']) {
             $this->_prepareDefaultLeft($cursor, $this->_defaultParams['left']);
         }
-        if ($this->_defaultParams['fields']) {
+        if ($this->_defaultParams['right']) {
             $this->_prepareDefaultRight($cursor, $this->_defaultParams['right']);
         }
         if ($this->_defaultParams['sort']) {
