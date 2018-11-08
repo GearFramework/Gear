@@ -660,9 +660,9 @@ class GMySqlCursor extends GDbCursor
             $collection = key($collection);
         }
         if (is_object($collection)) {
-            $joinCollection = " `" . $collection->name . '`';
+            $joinCollection .= " `" . $collection->name . '`';
         } else {
-            $joinCollection = " `" . $collection . '`';
+            $joinCollection .= " `" . $collection . '`';
         }
         $join[] = "$joinCollection " . ($alias !== '' ? " AS $alias" : '') . " ON $criteria";
         $this->_queryBuild->join = $join;
