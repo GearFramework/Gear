@@ -77,7 +77,7 @@ trait TDbStorage
      * Возвращает количество элементов в коллекции, удовлетворяющих
      * критерию
      *
-     * @param array $criteria
+     * @param array|IDbCursor $criteria
      * @return int
      * @since 0.0.1
      * @version 0.0.1
@@ -90,7 +90,7 @@ trait TDbStorage
     /**
      * Возвращает true, если указанный в критерии элемент существует в коллекции
      *
-     * @param array $criteria
+     * @param array|IDbCursor $criteria
      * @return bool
      * @since 0.0.1
      * @version 0.0.1
@@ -116,7 +116,7 @@ trait TDbStorage
     /**
      * Поиск модели, соответствующей указанному критерию
      *
-     * @param array|string $criteria
+     * @param array|string|IDbCursor $criteria
      * @param array $fields
      * @param array $sort
      * @return \Gear\Interfaces\IObject|null
@@ -125,8 +125,7 @@ trait TDbStorage
      */
     public function findOne($criteria = [], $fields = [], $sort = [])
     {
-        $cursor = $this->getDefaultCursor()->where($criteria);
-        $result = $this->selectCollection($this->alias)->findOne($cursor, $fields, $sort);
+        $result = $this->selectCollection($this->alias)->findOne($criteria, $fields, $sort);
         return $result ? $this->factory($result) : $result;
     }
 
@@ -215,7 +214,7 @@ trait TDbStorage
      */
     public function getDefaultCursor(): IDbCursor
     {
-        $cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
+        $cursor = $this->selectCollection($this->alias ? $this->alias : '')->cursor;
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }

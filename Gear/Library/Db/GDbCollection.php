@@ -15,6 +15,10 @@ use Gear\Traits\TFactory;
  * Библиотека коллекций (таблиц)
  *
  * @package Gear Framework
+ *
+ * @property string alias
+ * @property IDbCursor cursor
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
