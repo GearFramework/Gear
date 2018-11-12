@@ -297,6 +297,20 @@ class GMySqlCursor extends GDbCursor
         return $this->fields($fields)->where($criteria);
     }
 
+    public function from($collection = '', string $alias = ''): IDbCursor
+    {
+        if (!$collection) {
+            $this->from = $this->getCollectionName();
+        } elseif ($collection instanceof GMySqlCollection) {
+            if ($alias) {
+                $collection->alias = $alias;
+            }
+            $this->from = $collection->name;
+        } else {
+            $this->from = $collection;
+        }
+    }
+
     /**
      * Возвращает ID последней вставленной записи
      *
