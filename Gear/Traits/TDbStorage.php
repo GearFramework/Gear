@@ -68,7 +68,8 @@ trait TDbStorage
      */
     public function byPk($pkValue)
     {
-        $class = $this->_factoryProperties['class'];
+
+        $class = $this->getFactoryProperties()['class'];
         $result = $this->selectCollection()->findOne([$class::$primaryKeyName => "'$pkValue'"]);
         return $result ? $this->factory($result) : $result;
     }
@@ -257,6 +258,12 @@ trait TDbStorage
             $cursor = $this->delegate($this->getDefaultCursor());
         }
         return $cursor;
+    }
+
+    public function getPrimaryKeyName(): string
+    {
+        $class = $this->getFactoryProperties()['class'];
+        return $class::$primaryKeyName;
     }
 
     /**
