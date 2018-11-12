@@ -309,6 +309,7 @@ class GMySqlCursor extends GDbCursor
         } else {
             $this->from = $collection;
         }
+        return $this;
     }
 
     /**
