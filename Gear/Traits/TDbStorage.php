@@ -22,6 +22,8 @@ use Gear\Interfaces\IService;
  * @property IDbCursor cursor
  * @property string dbName
  * @property IDbCursor defaultCursor
+ * @property string primaryKeyName
+ * @proeprty mixed primaryKey
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -260,10 +262,19 @@ trait TDbStorage
         return $cursor;
     }
 
+    public function getPrimaryKey($object): string
+    {
+        if (is_object($object)) {
+            return $object->props($this->primaryKeyName);
+        } elseif (is_array($object) && isset($object[$this->primaryKeyName])) {
+            return $this->primaryKeyName;
+        }
+        return '';
+    }
+
     public function getPrimaryKeyName(): string
     {
-        $class = $this->getFactoryProperties()['class'];
-        return $class::$primaryKeyName;
+        return $this->_primaryKey;
     }
 
     /**

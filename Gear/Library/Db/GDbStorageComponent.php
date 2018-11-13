@@ -2,6 +2,7 @@
 
 namespace Gear\Library\Db;
 
+use Gear\Interfaces\IDbConnection;
 use Gear\Interfaces\IFactory;
 use Gear\Library\GComponent;
 use Gear\Traits\TDbStorage;
@@ -12,6 +13,15 @@ use Gear\Traits\TFactory;
  * Бибилиотека для компонентов, работающих с данными в базе данных
  *
  * @package Gear Framework
+ *
+ * @property string alias
+ * @property string collectionName
+ * @property IDbConnection $connection
+ * @property string connectionName
+ * @property string dbName
+ * @property array defaultParams
+ * @property string primaryKey
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -37,5 +47,6 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     protected $_dbName = '';
     protected $_collectionName = '';
     protected $_defaultParams = [];
+    protected $_primaryKey = 'id';
     /* Public */
 }
