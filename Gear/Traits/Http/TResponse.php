@@ -91,7 +91,7 @@ trait TResponse
         511 => 'Network Authentication Required',
     ];
     protected $_statusCode = 200;
-    protected $_reasonPhrase = '';
+    protected $_reasonPhrase = 'OK';
 
     /**
      * Gets the response status code.

@@ -14,6 +14,9 @@ use Gear\Traits\Http\TResponse;
  * @package Gear Framework
  *
  * @property array headers
+ * @property string protocolVersion
+ * @property string reasonPhrase
+ * @property int statusCode
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -30,7 +33,6 @@ class GResponse extends GPlugin implements IResponse
     /* Private */
     /* Protected */
     protected $_headers = [
-        'HTTP/1.0 200 OK',
         'Content-Type' => 'text/html',
     ];
     protected static $_isInitialized = false;
@@ -40,16 +42,17 @@ class GResponse extends GPlugin implements IResponse
      * Отправка заголовка-ответа с указанным статусом
      *
      * @param $code
+     * @return GResponse
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function sendStatus($code)
+    public function sendStatus($code): GResponse
     {
         if (!isset(self::$_phrases[$code])) {
             $code = 306;
         }
-        header("HTTP/1.0 $code " . isset(self::$_phrases[$code]));
-        die();
+        header("HTTP/" . $this->protocolVersion . " $code " . isset(self::$_phrases[$code]), true, $code);
+        return $this;
     }
 
     /**
@@ -77,17 +80,18 @@ class GResponse extends GPlugin implements IResponse
             } else if (is_array($data)) {
                 $data = json_encode($data);
             } else {
-                header('HTTP/1.0 200 OK', true, 200);
+                $this->sendStatus(200);
                 return;
             }
         } else {
             if (is_array($data)) {
                 $data = json_encode($data);
             } else if (!is_string($data)) {
-                header('HTTP/1.0 200 OK', true, 200);
+                $this->sendStatus(200);
                 return;
             }
         }
+        $this->sendStatus(200);
         foreach ($this->headers as $header => $value) {
             if (is_numeric($header)) {
                 header($value);
