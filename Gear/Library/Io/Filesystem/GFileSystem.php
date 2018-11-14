@@ -3,6 +3,8 @@
 namespace Gear\Library\Io\Filesystem;
 
 use gear\Core;
+use Gear\Interfaces\IDirectory;
+use Gear\Interfaces\IFile;
 use Gear\Interfaces\IFileSystem;
 use Gear\Interfaces\IObject;
 use Gear\Library\Io\GIo;
@@ -24,6 +26,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
     const DEFAULT_MODE = 0664;
     /* Private */
     /* Protected */
+    protected static $_defaultMime = 'text/plain';
     protected static $_mimes = [
         '123' => 'application/vnd.lotus-1-2-3',
         '3dml' => 'text/vnd.in3d.3dml',
@@ -1418,6 +1421,20 @@ abstract class GFileSystem extends GIo implements IFileSystem
             self::FileSystemException('Unknown filesystem element');
         }
         return array_replace_recursive($factory, $record);
+    }
+
+    /**
+     * Возвращает mime-тип для указанного файла
+     *
+     * @param string|IFile|IDirectory $file
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getMimeByFile($file): string
+    {
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        return isset(self::$_mimes[$ext]) ? self::$_mimes[$ext] : self::$_defaultMime;
     }
 
     /**
