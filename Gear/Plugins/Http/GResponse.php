@@ -90,12 +90,12 @@ class GResponse extends GPlugin implements IResponse
         }
         foreach ($this->headers as $header => $value) {
             if (is_numeric($header)) {
-                $header($value);
+                header($value);
             } else {
                 if (is_array($value)) {
                     $value = implode(', ', $value);
                 }
-                $header("$header: $value");
+                header("$header: $value");
             }
         }
         echo $data;
