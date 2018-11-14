@@ -12,6 +12,9 @@ use Gear\Traits\Http\TResponse;
  * Плагин для работы с ответами на запросы пользователей
  *
  * @package Gear Framework
+ *
+ * @property array headers
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -85,7 +88,7 @@ class GResponse extends GPlugin implements IResponse
                 return;
             }
         }
-        foreach ($this->getHeaders() as $header => $value) {
+        foreach ($this->headers as $header => $value) {
             if (is_numeric($header)) {
                 $header($value);
             } else {
