@@ -26,6 +26,10 @@ class GResponse extends GPlugin implements IResponse
     /* Const */
     /* Private */
     /* Protected */
+    protected $_headers = [
+        'HTTP/1.0 200 OK',
+        'Content-Type' => 'text/html',
+    ];
     protected static $_isInitialized = false;
     /* Public */
 
@@ -50,6 +54,7 @@ class GResponse extends GPlugin implements IResponse
      *
      * @param mixed $data
      * @return mixed
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -78,6 +83,16 @@ class GResponse extends GPlugin implements IResponse
             } else if (!is_string($data)) {
                 header('HTTP/1.0 200 OK', true, 200);
                 return;
+            }
+        }
+        foreach ($this->getHeaders() as $header => $value) {
+            if (is_numeric($header)) {
+                $header($value);
+            } else {
+                if (is_array($value)) {
+                    $value = implode(', ', $value);
+                }
+                $header("$header: $value");
             }
         }
         echo $data;

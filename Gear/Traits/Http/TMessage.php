@@ -24,7 +24,6 @@ use Psr\Http\Message\StreamInterface;
 trait TMessage
 {
     protected $_protocolVersion = '1.1';
-    protected $_headers = [];
     protected $_body = null;
 
     /**
