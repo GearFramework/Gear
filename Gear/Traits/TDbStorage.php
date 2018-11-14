@@ -70,9 +70,7 @@ trait TDbStorage
      */
     public function byPk($pkValue)
     {
-
-        $class = $this->getFactoryProperties()['class'];
-        $result = $this->selectCollection()->findOne([$class::$primaryKeyName => "'$pkValue'"]);
+        $result = $this->selectCollection()->findOne([$this->primaryKeyName => "'$pkValue'"]);
         return $result ? $this->factory($result) : $result;
     }
 
@@ -87,7 +85,7 @@ trait TDbStorage
      */
     public function count($criteria = []): int
     {
-        return $this->selectCollection()->find($criteria)->count();
+        return $this->selectCollection($this->alias)->find($criteria)->count();
     }
 
     /**
@@ -100,12 +98,12 @@ trait TDbStorage
      */
     public function exists($criteria = []): bool
     {
-        return $this->selectCollection()->exists($criteria);
+        return $this->selectCollection($this->alias)->exists($criteria);
     }
     /**
      * Поиск моделей по указанному критерию
      *
-     * @param array|string $criteria
+     * @param array|string|IDbCursor $criteria
      * @param array|string $fields
      * @return iterable
      * @since 0.0.1
@@ -113,7 +111,7 @@ trait TDbStorage
      */
     public function find($criteria = [], $fields = []): iterable
     {
-        return $this->getIterator($this->selectCollection()->find($criteria, $fields));
+        return $this->getIterator($this->selectCollection($this->alias)->find($criteria, $fields));
     }
 
     /**
