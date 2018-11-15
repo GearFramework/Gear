@@ -781,7 +781,6 @@ abstract class GFileSystem extends GIo implements IFileSystem
         'stl' => 'application/vnd.ms-pki.stl',
         'str' => 'application/vnd.pg.format',
         'stw' => 'application/vnd.sun.xml.writer.template',
-        'sub' => 'image/vnd.dvb.subtitle',
         'sub' => 'text/vnd.dvb.subtitle',
         'sus' => 'application/vnd.sus-calendar',
         'susp' => 'application/vnd.sus-calendar',
@@ -925,7 +924,6 @@ abstract class GFileSystem extends GIo implements IFileSystem
         'wmv' => 'video/x-ms-wmv',
         'wmx' => 'video/x-ms-wmx',
         'wmz' => 'application/x-ms-wmz',
-        'wmz' => 'application/x-msmetafile',
         'woff' => 'application/font-woff',
         'wpd' => 'application/vnd.wordperfect',
         'wpl' => 'application/vnd.ms-wpl',
@@ -1421,6 +1419,23 @@ abstract class GFileSystem extends GIo implements IFileSystem
             self::FileSystemException('Unknown filesystem element');
         }
         return array_replace_recursive($factory, $record);
+    }
+
+    /**
+     * Возвращает расширение файла по указанному mime-типу
+     *
+     * @param string $mime
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function getFileExtensionByMime(string $mime): string
+    {
+        if (($ext = array_search(strtolower($mime), self::$_mimes)) !== false) {
+            return $ext;
+        } else {
+            return 'unknown';
+        }
     }
 
     /**
