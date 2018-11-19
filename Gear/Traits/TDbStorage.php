@@ -85,7 +85,9 @@ trait TDbStorage
      */
     public function count($criteria = []): int
     {
-        return $this->selectCollection($this->alias)->find($criteria)->count();
+        $cursor = $this->selectCollection($this->alias)->find($this->getDefaultCursor());
+        $cursor->where($criteria);
+        return $cursor->count();
     }
 
     /**
