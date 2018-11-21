@@ -46,6 +46,6 @@ abstract class GDbStoragePlugin extends GPlugin implements \IteratorAggregate
     protected $_dbName = '';
     protected $_collectionName = '';
     protected $_defaultParams = [];
-    protected $_primaryKey = 'id';
+    protected $_primaryKeyName = 'id';
     /* Public */
 }
