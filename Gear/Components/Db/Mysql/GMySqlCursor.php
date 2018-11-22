@@ -619,7 +619,7 @@ class GMySqlCursor extends GDbCursor
                     if (preg_match('/^[a-z0-9_]+\.[a-z0-9_]+$/i', $col)) {
                         $rec = explode('.', $col);
                         $col = '`' . implode('`.`', $rec) . '`';
-                        $order = "`$col` " . ($order === self::ASC ? 'ASC' : 'DESC');
+                        $order = "$col " . ($order === self::ASC ? 'ASC' : 'DESC');
                     } elseif ($col[0] === '$') {
                         $order = strtoupper(substr($col, 1)) . '(' . is_array($order) ? implode(', ', $this->_prepareValue($order)) : $this->_prepareValue($order) . ')';
                     } else {
