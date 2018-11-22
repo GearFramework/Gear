@@ -291,10 +291,14 @@ class GMySqlCursor extends GDbCursor
      */
     public function find($criteria = [], $fields = []): IDbCursor
     {
-        $this->reset();
-        $from = $this->getCollectionName();
-        $this->_queryBuild->from = "`$from`" . ($this->collection->alias ? ' AS ' . $this->collection->alias : '');
-        return $this->fields($fields)->where($criteria);
+        if ($criteria instanceof IDbCursor) {
+            return $criteria->fields($fields);
+        } else {
+            $this->reset();
+            $from = $this->getCollectionName();
+            $this->_queryBuild->from = "`$from`" . ($this->collection->alias ? ' AS ' . $this->collection->alias : '');
+            return $this->fields($fields)->where($criteria);
+        }
     }
 
     public function from($collection = '', string $alias = ''): IDbCursor
