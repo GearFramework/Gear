@@ -616,7 +616,15 @@ class GMySqlCursor extends GDbCursor
         if (is_array($sort)) {
             foreach($sort as $col => &$order) {
                 if (!is_numeric($col)) {
-                    $order = "`$col` " . ($order === self::ASC ? 'ASC' : 'DESC');
+                    if (preg_match('/^[a-z0-9_]+\.[a-z0-9_]+$/i', $col)) {
+                        $rec = explode('.', $col);
+                        $col = '`' . implode('`.`', $rec) . '`';
+                        $order = "`$col` " . ($order === self::ASC ? 'ASC' : 'DESC');
+                    } elseif ($col[0] === '$') {
+                        $order = strtoupper(substr($col, 1)) . '(' . is_array($order) ? implode(', ', $this->_prepareValue($order)) : $this->_prepareValue($order) . ')';
+                    } else {
+                        $order = "`$col` " . ($order === self::ASC ? 'ASC' : 'DESC');
+                    }
                 }
             }
             $tempSort = array_merge($tempSort, $sort);
