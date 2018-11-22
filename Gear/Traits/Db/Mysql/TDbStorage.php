@@ -86,9 +86,7 @@ trait TDbStorage
      */
     public function byPk($pkValue)
     {
-        $cursor = $this->getDefaultCursor()->where([$this->primaryKeyName => "'$pkValue'"]);
-        $result = $this->findOne($cursor);
-        return $result;
+        return $this->findOne([$this->primaryKeyName => "'$pkValue'"]);
     }
 
     /**
@@ -213,7 +211,7 @@ trait TDbStorage
      */
     public function getCursor(): IDbCursor
     {
-        return $this->selectCollection()->cursor;
+        return $this->selectCollection($this->alias)->cursor;
     }
 
     /**
@@ -359,7 +357,7 @@ trait TDbStorage
      */
     public function selectCollection(string $alias = ""): IDbCollection
     {
-        return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias);
+        return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias ? $alias : $this->alias);
     }
 
     /**
