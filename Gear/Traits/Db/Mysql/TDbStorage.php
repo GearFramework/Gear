@@ -87,8 +87,8 @@ trait TDbStorage
     public function byPk($pkValue)
     {
         $cursor = $this->getDefaultCursor()->where([$this->primaryKeyName => "'$pkValue'"]);
-        $result = $cursor->findOne($cursor);
-        return $result ? $this->factory($result) : $result;
+        $result = $this->findOne($cursor);
+        return $result;
     }
 
     /**
@@ -144,7 +144,11 @@ trait TDbStorage
      */
     public function findOne($criteria = [], $fields = [], $sort = [])
     {
-        $result = $this->selectCollection($this->alias)->findOne($criteria, $fields, $sort);
+        if ($criteria instanceof IDbCursor) {
+            $criteria->findOne();
+        } else {
+            $result = $this->selectCollection($this->alias)->findOne($criteria, $fields, $sort);
+        }
         return $result ? $this->factory($result) : $result;
     }
 
