@@ -87,7 +87,7 @@ trait TDbStorage
     public function byPk($pkValue)
     {
         $cursor = $this->getDefaultCursor()->where([$this->primaryKeyName => "'$pkValue'"]);
-        $result = $this->selectCollection($this->alias)->findOne($cursor);
+        $result = $cursor->asAssoc();
         return $result ? $this->factory($result) : $result;
     }
 
