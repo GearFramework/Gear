@@ -142,11 +142,11 @@ trait TDbStorage
      */
     public function findOne($criteria = [], $fields = [], $sort = [])
     {
-        if ($criteria instanceof IDbCursor) {
-            $criteria->findOne();
-        } else {
+//        if ($criteria instanceof IDbCursor) {
+//            $criteria->findOne($criteria);
+//        } else {
             $result = $this->selectCollection($this->alias)->findOne($criteria, $fields, $sort);
-        }
+//        }
         return $result ? $this->factory($result) : $result;
     }
 
