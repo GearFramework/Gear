@@ -6,6 +6,30 @@ use Gear\Traits\TGetter;
 use Gear\Traits\TProperties;
 use Gear\Traits\TSetter;
 
+/**
+ * Параметры методов файловой системы
+ *
+ * @package Gear Framework
+ *
+ * @property bool append
+ * @property string force
+ * @property string format
+ * @property mixed group
+ * @property bool ignoreNewLines
+ * @property int|string|null mode
+ * @property bool overwrite
+ * @property mixed own
+ * @property mixed permission
+ * @property bool recursive
+ * @property bool skip
+ * @property mixed user
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
+ */
 class GFileSystemOptions
 {
     /* Traits */
@@ -16,19 +40,32 @@ class GFileSystemOptions
     /* Private */
     /* Protected */
     protected $_properties = [
-        'overwrite' => false,
-        'mode' => null,
-        'permission' => null,
-        'own' => null,
         'append' => false,
-        'skip' => false,
-        'recursive' => false,
-        'format' => '%01d %s',
         'force' => '',
-        'append' => false,
-        'ignoreNewLines' => false,
+        'format' => GFileSystem::DEFAULT_SIZEFORMAT,
         'group' => null,
+        'ignoreNewLines' => false,
+        'mode' => null,
+        'overwrite' => false,
+        'own' => null,
+        'permission' => null,
+        'recursive' => false,
+        'skip' => false,
         'user' => null,
     ];
     /* Public */
+
+    /**
+     * Конструктор
+     *
+     * @param iterable $options
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function __construct(iterable $options = [])
+    {
+        foreach ($options as $name => $value) {
+            $this->$name = $value;
+        }
+    }
 }

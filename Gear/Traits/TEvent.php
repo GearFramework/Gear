@@ -20,11 +20,6 @@ use Gear\Interfaces\IEventHandler;
 trait TEvent
 {
     /**
-     * @var array $_events события класса и их обработчики
-     */
-    protected $_events = [];
-
-    /**
      * Добавление обработчика указанного события
      *
      * @param string $name

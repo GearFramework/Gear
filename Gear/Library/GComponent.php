@@ -10,6 +10,10 @@ use Gear\Traits\TServiceContained;
  * Класс компонентов
  *
  * @package Gear Framework
+ *
+ * @property iterable plugins
+ * @property iterable registeredPlugins
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License

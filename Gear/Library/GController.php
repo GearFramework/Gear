@@ -11,6 +11,13 @@ use Gear\Interfaces\IRequest;
  * Контроллер
  *
  * @package Gear Framework
+ *
+ * @property iterable apis
+ * @property string defaultApi
+ * @property string layout
+ * @property IRequest|null request
+ * @property string title
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License

@@ -12,6 +12,9 @@ use Gear\Traits\TSetter;
  * Класс хелперов
  *
  * @package Gear Framework
+ *
+ * @property iterable properties
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License

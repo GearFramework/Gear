@@ -7,6 +7,7 @@ use Gear\Interfaces\IDirectory;
 use Gear\Interfaces\IFile;
 use Gear\Interfaces\IFileSystem;
 use Gear\Interfaces\IObject;
+use Gear\Library\GEvent;
 use Gear\Library\Io\GIo;
 
 /**
@@ -24,6 +25,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
     /* Traits */
     /* Const */
     const DEFAULT_MODE = 0664;
+    const DEFAULT_SIZEFORMAT = '%01d %s';
     /* Private */
     /* Protected */
     protected static $_defaultMime = 'text/plain';
@@ -1106,7 +1108,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
             $destination->create();
         }
         if ($target->exists() && !$options->overwrite) {
-            throw self::exceptionFileSystem('Destination <{dest}> alreadey exists', ['dest' => $target]);
+            throw $this->FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $target]);
         }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $target, 'options' => $options]));
     }
@@ -1122,7 +1124,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function beforeCreate(GFileSystemOptions $options)
     {
         if ($this->exists() && !$options->overwrite) {
-            throw self::exceptionFileSystem('Directory <{dir}> alreadey exists', ['dir' => $this]);
+            throw $this->FileSystemException('Directory <{dir}> alreadey exists', ['dir' => $this]);
         }
         $this->remove();
         return $this->trigger('onBeforeCreate', new GEvent($this, ['target' => $this, 'options' => $options]));
@@ -1139,7 +1141,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function beforeRemove(GFileSystemOptions $options)
     {
         if ($this instanceof IDirectory && !$this->isEmpty() && !$options->recursive) {
-            throw self::exceptionFileSystem('Deleting directory <{dir}> is not empty', ['dir' => $this]);
+            throw $this->FileSystemException('Deleting directory <{dir}> is not empty', ['dir' => $this]);
         }
         return $this->trigger('onBeforeRemove', new GEvent($this, ['target' => $this, 'options' => $options]));
     }
@@ -1156,7 +1158,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
     public function beforeRename(IFileSystem $destination, GFileSystemOptions $options)
     {
         if ($destination->exists() && !$options->overwrite) {
-            throw self::exceptionFileSystem('Destination <{dest}> alreadey exists', ['dest' => $destination]);
+            throw $this->FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $destination]);
         }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $destination, 'options' => $options]));
     }
@@ -1190,7 +1192,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
                 $permission = $this->_chmodTarget($permission);
             $result = chmod($this->path, $permission);
         } else {
-            static::exceptionFileSystem('Invalid value of permission <{permission}>', ['permission' => $options->permission]);
+            $this->FileSystemException('Invalid value of permission <{permission}>', ['permission' => $options->permission]);
         }
         return $result;
     }
@@ -1276,11 +1278,11 @@ abstract class GFileSystem extends GIo implements IFileSystem
 
     /**
      * Возвращает инстанс владельца элемента файловой системы
-     * @return IDirectory
+     * @return IObject
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function dir(): IDirectory
+    public function dir(): ?IObject
     {
         return $this->getOwner();
     }
@@ -1319,11 +1321,11 @@ abstract class GFileSystem extends GIo implements IFileSystem
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function formatSize(int $size, string $format = '%01d %s', string $force = ''): string
+    public function formatSize(int $size, string $format = self::DEFAULT_SIZEFORMAT, string $force = ''): string
     {
         $force = strtoupper($force);
         if (!$format) {
-            $format = '%01d %s';
+            $format = self::DEFAULT_SIZEFORMAT;
         }
         $size = max(0, (int)$size);
         $power = array_search($force, $this->_units);
@@ -1713,6 +1715,7 @@ abstract class GFileSystem extends GIo implements IFileSystem
      *
      * @param string $path
      * @return void
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

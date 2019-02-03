@@ -54,11 +54,11 @@ trait TPluginContained
     /**
      * Возвращает массив зарегистрированных плагинов
      *
-     * @return array
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getRegisteredPlugins(): array
+    public function getRegisteredPlugins(): iterable
     {
         return static::i('plugins');
     }

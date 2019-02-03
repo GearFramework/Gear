@@ -32,6 +32,7 @@ class GException extends \Exception
      * @param int $code
      * @param Throwable|null $previous
      * @param array $context
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -40,12 +41,29 @@ class GException extends \Exception
         if (empty($message)) {
             $message = $this->defaultMessage;
         }
-        $message = $this->makeMessage($message, $context);
+        $message = $this->_buildMessage($message, $context);
         if (Core::isInitialized() === true && Core::isComponentRegistered(Core::props('international'))) {
             $international = Core::service(Core::props('international'));
             $message = $international->tr($message, self::getLocaleSection());
         }
         parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * Создание сообщения на основе параметров контекста
+     *
+     * @param string $message
+     * @param array $context
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function _buildMessage(string $message, array $context): string
+    {
+        foreach ($context as $name => $value) {
+            $message = str_replace('{' . $name . '}', $value, $message);
+        }
+        return $message;
     }
 
     /**
@@ -58,22 +76,5 @@ class GException extends \Exception
     public static function getLocaleSection(): string
     {
         return static::$_localeSection;
-    }
-
-    /**
-     * Создание сообщения на основе параметров контекста
-     *
-     * @param string $message
-     * @param array $context
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function makeMessage(string $message, array $context): string
-    {
-        foreach ($context as $name => $value) {
-            $message = str_replace('{' . $name . '}', $value, $message);
-        }
-        return $message;
     }
 }

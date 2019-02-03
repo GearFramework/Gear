@@ -90,22 +90,27 @@ trait TObject
         throw self::ObjectException('Calling method <{methodName}> not exists in class <{class}>', ['methodName' => $name, 'class' => get_class($this)]);
     }
 
-    public function __set(string $name, $value)
+    /**
+     * GObject constructor.
+     *
+     * @param array|\Closure $properties
+     * @param null|IObject $owner
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    protected function __construct($properties = [], IObject $owner = null)
     {
-        $setter = 'set' . ucfirst($name);
-        if (method_exists($this, $setter)) {
-            $this->$setter($value);
-        } elseif (preg_match('/^on[A-Z]/', $name)) {
-            $this->on($name, $value);
-        } else {
-            if (method_exists($this, 'installComponent') && $value instanceof IComponent) {
-                $this->installComponent($value);
-            } elseif (method_exists($this, 'installPlugin') && $value instanceof IPlugin) {
-                $this->installPlugin($name, $value);
-            } else {
-                $this->_properties[$name] = $value;
-            }
+        $this->beforeConstruct($properties);
+        if ($properties instanceof \Closure)
+            $properties = $properties($this);
+        if (!is_array($properties))
+            $properties = [];
+        foreach ($properties as $name => $value) {
+            $this->$name = $value;
         }
+        if ($owner)
+            $this->owner = $owner;
+        $this->afterConstruct();
     }
 
     public function __get(string $name)
@@ -131,27 +136,22 @@ trait TObject
         return $value;
     }
 
-    /**
-     * GObject constructor.
-     *
-     * @param array|\Closure $properties
-     * @param null|IObject $owner
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    protected function __construct($properties = [], IObject $owner = null)
+    public function __set(string $name, $value)
     {
-        $this->beforeConstruct($properties);
-        if ($properties instanceof \Closure)
-            $properties = $properties($this);
-        if (!is_array($properties))
-            $properties = [];
-        foreach ($properties as $name => $value) {
-            $this->$name = $value;
+        $setter = 'set' . ucfirst($name);
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
+        } elseif (preg_match('/^on[A-Z]/', $name)) {
+            $this->on($name, $value);
+        } else {
+            if (method_exists($this, 'installComponent') && $value instanceof IComponent) {
+                $this->installComponent($value);
+            } elseif (method_exists($this, 'installPlugin') && $value instanceof IPlugin) {
+                $this->installPlugin($name, $value);
+            } else {
+                $this->_properties[$name] = $value;
+            }
         }
-        if ($owner)
-            $this->owner = $owner;
-        $this->afterConstruct();
     }
 
     /**

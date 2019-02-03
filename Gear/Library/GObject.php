@@ -15,12 +15,14 @@ use Gear\Traits\TView;
  * @package Gear Framework
  *
  * @property int access
+ * @property array events
  * @property string namespace
+ * @property IObject|null owner
  * @property array properties
+ * @property string viewerName
+ * @property string viewPath
  *
  * @author Kukushkin Denis
- * @property IObject|null owner
- * @property array _events
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
@@ -53,6 +55,10 @@ class GObject implements IObject
      * @var int $_access режим доступа к объекту
      */
     protected $_access = Core::ACCESS_PUBLIC;
+    /**
+     * @var array $_events события класса и их обработчики
+     */
+    protected $_events = [];
     /**
      * @var null|string пространство имён класса объекта
      */
