@@ -333,7 +333,7 @@ final class Core {
     private static function _bootstrapLibraries(array $section)
     {
         foreach ($section as $key => $library) {
-            if (preg_match('/[*|?]/', basename($library))) {
+            if (preg_match('#\*$#', basename($library))) {
                 /* Указана маска файлов библиотек, например, /usr/local/myproject/library/*.php */
                 $library = self::resolvePath($library, true);
                 foreach (glob($library) as $file) {
@@ -389,12 +389,12 @@ final class Core {
     /**
      * Возвращает текущий (выполняемый в данный момент) модуль приложения
      *
-     * @return Interfaces\IModule
+     * @return \Gear\Library\GApplication
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function app(): \Gear\Interfaces\IModule
+    public static function app(): \Gear\Library\GApplication
     {
         return self::m('app');
     }
@@ -464,10 +464,8 @@ final class Core {
      */
     public static function e(string $exceptionName, $message = '', $context = [], $code = 0, $previous = null): \Exception
     {
-        $exceptionClass =  '\\' . $exceptionName;
+        $exceptionClass =  "\\$exceptionName";
         $exception = null;
-        $args = func_get_args();
-        array_shift($args);
         if (is_array($message)) {
             $context = $message;
             $message = '';
