@@ -14,7 +14,7 @@ defined('ROOT') or define('ROOT', dirname(GEAR));
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
 final class Core {
     /* Traits */
@@ -467,20 +467,27 @@ final class Core {
         $exceptionClass =  "\\$exceptionName";
         $exception = null;
         if (is_array($message)) {
-            $context = $message;
-            $message = '';
+            $args = func_get_args();
+            array_unshift($args, '');
+            list($message, $context, $code, $previous) = array_pad($args, 4, null);
+            if ($context === null) {
+                $context = [];
+            }
+            if ($code === null) {
+                $code = 0;
+            }
+        }
+        foreach ($context as $name => $value) {
+            $message = str_replace('{' . $name . '}', $value, $message);
+        }
+        if (self::isInitialized() == true && self::isComponentRegistered(self::props('international'))) {
+            $international = self::service(self::props('international'));
+            $message = $international->tr($message, \Gear\Library\GException::getLocaleSection());
         }
         if (!class_exists($exceptionClass, false)) {
-            foreach ($context as $name => $value) {
-                $message = str_replace('{' . $name . '}', $value, $message);
-            }
-            if (self::isInitialized() == true && self::isComponentRegistered(self::props('international'))) {
-                $international = self::service(self::props('international'));
-                $message = $international->tr($message, 'exceptions');
-            }
             $exception = new \Exception($message, $code, $previous);
         } else {
-            $exception = new $exceptionClass($message, $code, $previous, $context);
+            $exception = new $exceptionClass($message, $code, $previous);
         }
         return $exception;
     }
