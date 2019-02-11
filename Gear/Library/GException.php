@@ -2,8 +2,6 @@
 
 namespace Gear\Library;
 
-use Throwable;
-
 /**
  * Класс исключений
  *
@@ -29,11 +27,11 @@ class GException extends \Exception
      *
      * @param string $message
      * @param int $code
-     * @param Throwable|null $previous
+     * @param \Throwable|null $previous
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $message = "", int $code = 0, ?\Throwable $previous = null)
     {
         if (empty($message)) {
             $message = $this->defaultMessage;

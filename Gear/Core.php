@@ -162,14 +162,14 @@ final class Core {
     ];
     private static $_configSections = ['libraries', 'components', 'modules', 'helpers'];
     /**
-     * @var string[] Строковые значения режимов запуска
+     * @var array of strings Строковые значения режимов запуска
      */
     private static $_modes = [
         self::DEVELOPMENT => 'Development',
         self::PRODUCTION => 'Production',
     ];
     /**
-     * @var \gear\interfaces\IService[] Массив установленных сервисов (модули, компоненты)
+     * @var array of \gear\interfaces\IService Массив установленных сервисов (модули, компоненты)
      */
     private static $_services = [];
     /**
@@ -588,20 +588,22 @@ final class Core {
     {
         $service = [];
         if (!$type) {
-            if (isset(self::$_config['_bootstrap']['components'][$name]))
+            if (isset(self::$_config['_bootstrap']['components'][$name])) {
                 $service = self::$_config['_bootstrap']['components'][$name];
-            elseif (isset(self::$_config['components'][$name]))
+            } elseif (isset(self::$_config['components'][$name])) {
                 $service = self::$_config['components'][$name];
-            elseif (isset(self::$_config['_bootstrap']['modules'][$name]))
+            } elseif (isset(self::$_config['_bootstrap']['modules'][$name])) {
                 $service = self::$_config['_bootstrap']['modules'][$name];
-            elseif (isset(self::$_config['modules'][$name]))
+            } elseif (isset(self::$_config['modules'][$name])) {
                 $service = self::$_config['modules'][$name];
+            }
         } else {
             $type .= 's';
-            if (isset(self::$_config['_bootstrap'][$type][$name]))
+            if (isset(self::$_config['_bootstrap'][$type][$name])) {
                 $service = self::$_config['_bootstrap'][$type][$name];
-            elseif (isset(self::$_config[$type][$name]))
+            } elseif (isset(self::$_config[$type][$name])) {
                 $service = self::$_config[$type][$name];
+            }
         }
         return $service;
     }
@@ -609,21 +611,21 @@ final class Core {
     /**
      * Возвращает тип сервиса
      *
-     * @param \Gear\Interfaces\IService $service
+     * @param \Gear\Interfaces\GServiceInterface $service
      * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getTypeService(\Gear\Interfaces\IService $service): string
+    public static function getTypeService(\Gear\Interfaces\GServiceInterface $service): string
     {
         $type = '';
-        if ($service instanceof \Gear\Interfaces\IModule)
+        if ($service instanceof \Gear\Interfaces\GModuleInterface)
             $type = 'module';
-        elseif ($service instanceof \Gear\Interfaces\IComponent)
+        elseif ($service instanceof \Gear\Interfaces\GComponentInterface)
             $type = 'component';
-        elseif ($service instanceof \Gear\Interfaces\IPlugin)
+        elseif ($service instanceof \Gear\Interfaces\GPluginInterface)
             $type = 'plugin';
-        elseif ($service instanceof \Gear\Interfaces\IHelper)
+        elseif ($service instanceof \Gear\Interfaces\GHelperInterface)
             $type = 'helper';
         return $type;
     }
