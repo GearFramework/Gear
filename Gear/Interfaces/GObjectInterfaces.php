@@ -277,7 +277,7 @@ interface GComponentContainedInterface
  * @since 0.0.1
  * @version 0.0.2
  */
-interface IPluginContained
+interface GPluginContainedInterface
 {
     /**
      * Возвращает установленный плагин
