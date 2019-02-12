@@ -3,7 +3,7 @@
 namespace Gear\Traits;
 
 use Gear\Core;
-use Gear\Interfaces\GValidatorInterface;
+use Gear\Interfaces\ValidatorInterface;
 use Gear\Interfaces\SchemaInterface;
 
 
@@ -17,7 +17,7 @@ use Gear\Interfaces\SchemaInterface;
  * @since 0.0.1
  * @version 0.0.2
  */
-trait GPropertiesTrait
+trait PropertiesTrait
 {
     /**
      * @var array $_defaultProperties значения по-умолчанию для объектов класса
@@ -214,7 +214,7 @@ trait GPropertiesTrait
                 return $validator($value);
             } elseif (class_exists($validator)) {
                 /**
-                 * @var GValidatorInterface $validator
+                 * @var ValidatorInterface $validator
                  */
                 $validator = new $validator();
                 return $validator->validateValue($value);
@@ -222,7 +222,7 @@ trait GPropertiesTrait
         } elseif (static::$_validators) {
             foreach ($this->getValidator() as $validator) {
                 /**
-                 * @var GValidatorInterface $validator
+                 * @var ValidatorInterface $validator
                  */
                 if (is_array($validator)) {
                     list($validator, $method) = $validator;

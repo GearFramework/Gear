@@ -12,12 +12,12 @@ namespace Gear\Interfaces;
  * @since 0.0.1
  * @version 0.0.2
  */
-interface IController
+interface ControllerInterface
 {
     /**
      * Вызов метода $this->exec()
      *
-     * @param GRequestInterface $request
+     * @param RequestInterface $request
      * @return mixed
      * @since 0.0.1
      * @version 0.0.2
@@ -27,7 +27,7 @@ interface IController
     /**
      * Запуск контроллера
      *
-     * @param GRequestInterface $request
+     * @param RequestInterface $request
      * @return mixed
      * @since 0.0.1
      * @version 0.0.2
@@ -45,7 +45,7 @@ interface IController
  * @since 0.0.1
  * @version 0.0.2
  */
-interface GApiInterface
+interface ApiInterface
 {
     /**
      * Вызов метода $this->exec();

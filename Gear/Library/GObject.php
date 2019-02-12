@@ -3,11 +3,11 @@
 namespace Gear\Library;
 
 use Gear\Core;
-use Gear\Interfaces\GObjectInterface;
-use Gear\Traits\GObjectTrait;
-use Gear\Traits\GPropertiesTrait;
-use Gear\Traits\TEvent;
-use Gear\Traits\TView;
+use Gear\Interfaces\ObjectInterface;
+use Gear\Traits\ObjectTrait;
+use Gear\Traits\PropertiesTrait;
+use Gear\Traits\EventTrait;
+use Gear\Traits\ViewTrait;
 
 /**
  * Базовый класс объектов
@@ -17,7 +17,7 @@ use Gear\Traits\TView;
  * @property int access
  * @property array events
  * @property string namespace
- * @property GObjectInterface|null owner
+ * @property ObjectInterface|null owner
  * @property array properties
  * @property string viewerName
  * @property string viewPath
@@ -28,13 +28,13 @@ use Gear\Traits\TView;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GObject implements GObjectInterface
+class GObject implements ObjectInterface
 {
     /* Traits */
-    use GObjectTrait;
-    use GPropertiesTrait;
-    use TEvent;
-    use TView;
+    use ObjectTrait;
+    use PropertiesTrait;
+    use EventTrait;
+    use ViewTrait;
     /* Const */
     /* Private */
     /* Protected */

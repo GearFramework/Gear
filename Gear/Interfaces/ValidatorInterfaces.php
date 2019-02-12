@@ -12,7 +12,7 @@ namespace Gear\Interfaces;
  * @since 0.0.2
  * @version 0.0.2
  */
-interface GValidatorInterface
+interface ValidatorInterface
 {
     /**
      * Валидация значения
@@ -27,12 +27,12 @@ interface GValidatorInterface
     /**
      * Валидация свойства объекта
      *
-     * @param GObjectInterface $object
+     * @param ObjectInterface $object
      * @param string $propertyName
      * @param mixed $defaultValue
      * @return bool
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function validateProperty(GObjectInterface $object, string $propertyName, $defaultValue = null): bool;
+    public function validateProperty(ObjectInterface $object, string $propertyName, $defaultValue = null): bool;
 }

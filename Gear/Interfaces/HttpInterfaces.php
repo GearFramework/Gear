@@ -2,9 +2,7 @@
 
 namespace Gear\Interfaces;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Интерфейс плагина для работы с запросами
@@ -16,7 +14,7 @@ use Psr\Http\Message\UriInterface;
  * @since 0.0.1
  * @version 0.0.2
  */
-interface GRequestInterface extends ServerRequestInterface
+interface RequestInterface extends ServerRequestInterface
 {
     /**
      * Возвращает параметры текущего запроса (GET или POST)
@@ -82,7 +80,7 @@ interface GRequestInterface extends ServerRequestInterface
  * @since 0.0.1
  * @version 0.0.2
  */
-interface GResponseInterface extends ResponseInterface
+interface ResponseInterface extends \Psr\Http\Message\ResponseInterface
 {
     /**
      * Отправляет клиенту данные
@@ -95,7 +93,7 @@ interface GResponseInterface extends ResponseInterface
     public function send($data);
 }
 
-interface GUriInterface extends UriInterface
+interface UriInterface extends \Psr\Http\Message\UriInterface
 {
 
 }

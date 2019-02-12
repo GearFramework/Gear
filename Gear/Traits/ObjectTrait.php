@@ -3,14 +3,14 @@
 namespace Gear\Traits;
 
 use Gear\Core;
-use Gear\Interfaces\GComponentContainedInterface;
-use Gear\Interfaces\GComponentInterface;
-use Gear\Interfaces\GDependentInterface;
-use Gear\Interfaces\GEventInterface;
-use Gear\Interfaces\GObjectInterface;
-use Gear\Interfaces\GPluginContainedInterface;
-use Gear\Interfaces\GPluginInterface;
-use gear\library\GEvent;
+use Gear\Interfaces\ComponentContainedInterface;
+use Gear\Interfaces\ComponentInterface;
+use Gear\Interfaces\DependentInterface;
+use Gear\Interfaces\EventInterface;
+use Gear\Interfaces\ObjectInterface;
+use Gear\Interfaces\PluginContainedInterface;
+use Gear\Interfaces\PluginInterface;
+use Gear\Library\GEvent;
 
 /**
  * Трэйт для добавления объектам базовых свойств и методов
@@ -22,10 +22,10 @@ use gear\library\GEvent;
  * @since 0.0.1
  * @version 0.0.2
  */
-trait GObjectTrait
+trait ObjectTrait
 {
     /**
-     * @var null|GObjectInterface владелец объекта
+     * @var null|ObjectInterface владелец объекта
      */
     protected $_owner = null;
 
@@ -35,7 +35,9 @@ trait GObjectTrait
      * @param string $name
      * @param array $arguments
      * @return mixed
+     * @throws \ComponentNotFoundException
      * @throws \CoreException
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.2
      */
@@ -45,7 +47,7 @@ trait GObjectTrait
             array_unshift($arguments, $name);
             return Core::e(...$arguments);
         } elseif (preg_match('/^on[A-Z]/', $name)) {
-            if (isset($arguments[0]) && $arguments[0] instanceof GEventInterface) {
+            if (isset($arguments[0]) && $arguments[0] instanceof EventInterface) {
                 $event = $arguments[0];
                 $event->target = $this;
             } else {
@@ -53,20 +55,20 @@ trait GObjectTrait
                 $event = new GEvent($this, $arguments);
             }
             return method_exists($this, 'trigger') ? $this->trigger($name, $event) : Core::trigger($name, $event);
-        } elseif ($this instanceof GComponentContainedInterface && $this->isComponent($name)) {
+        } elseif ($this instanceof ComponentContainedInterface && $this->isComponent($name)) {
             $component = $this->c($name);
             if (!is_callable($component)) {
                 throw self::ObjectException('Component object <{componentName}> not callable and cannot be execute as function', ['componentName' => $name]);
             }
             return $component(...$arguments);
-        } elseif ($this instanceof GPluginContainedInterface && $this->isPlugin($name)) {
+        } elseif ($this instanceof PluginContainedInterface && $this->isPlugin($name)) {
             $plugin = $this->p($name);
             if (!is_callable($plugin)) {
                 throw self::ObjectException('Plugin object <{pluginName}> not callable and cannot be execute as function', ['pluginName' => $name]);
             }
             return $plugin(...$arguments);
         } else {
-            if ($this instanceof GComponentContainedInterface) {
+            if ($this instanceof ComponentContainedInterface) {
                 foreach ($this->getComponents() as $componentName => $component) {
                     $component = $this->c($componentName);
                     if (method_exists($component, $name)) {
@@ -74,7 +76,7 @@ trait GObjectTrait
                     }
                 }
             }
-            if ($this instanceof GPluginContainedInterface) {
+            if ($this instanceof PluginContainedInterface) {
                 foreach ($this->getPlugins() as $pluginName => $plugin) {
                     $plugin = $this->p($pluginName);
                     if (method_exists($plugin, $name)) {
@@ -87,7 +89,7 @@ trait GObjectTrait
                 $this->_properties[$name] instanceof \Closure) {
                 return $this->_properties[$name](...$arguments);
             } elseif (is_object($this->owner)) {
-                return $this instanceof GDependentInterface ? $this->owner->$name($this, ...$arguments) : $this->owner->$name(...$arguments);
+                return $this instanceof DependentInterface ? $this->owner->$name($this, ...$arguments) : $this->owner->$name(...$arguments);
             }
         }
         throw self::ObjectException('Calling method <{methodName}> not exists in class <{class}>', ['methodName' => $name, 'class' => get_class($this)]);
@@ -97,11 +99,11 @@ trait GObjectTrait
      * GObject constructor.
      *
      * @param array|\Closure $properties
-     * @param null|GObjectInterface $owner
+     * @param null|ObjectInterface $owner
      * @since 0.0.1
      * @version 0.0.2
      */
-    protected function __construct($properties = [], GObjectInterface $owner = null)
+    protected function __construct($properties = [], ObjectInterface $owner = null)
     {
         $this->beforeConstruct($properties);
         if ($properties instanceof \Closure)
@@ -126,9 +128,9 @@ trait GObjectTrait
             $value = method_exists($this, 'trigger') ?
                 $this->trigger($name, new GEvent($this, ['target' => $this])) :
                 Core::trigger($name, new GEvent($this, ['target' => $this]));
-        } elseif ($this instanceof GComponentContainedInterface && $this->isComponent($name)) {
+        } elseif ($this instanceof ComponentContainedInterface && $this->isComponent($name)) {
             $value = $this->c($name);
-        } elseif ($this instanceof GPluginContainedInterface  && $this->isPlugin($name)) {
+        } elseif ($this instanceof PluginContainedInterface  && $this->isPlugin($name)) {
             $value = $this->p($name);
         } else {
             if (isset($this->_properties[$name])) {
@@ -148,9 +150,9 @@ trait GObjectTrait
         } elseif (preg_match('/^on[A-Z]/', $name) && method_exists($this, 'on')) {
             $this->on($name, $value);
         } else {
-            if (method_exists($this, 'installComponent') && $value instanceof GComponentInterface) {
+            if (method_exists($this, 'installComponent') && $value instanceof ComponentInterface) {
                 $this->installComponent($value);
-            } elseif (method_exists($this, 'installPlugin') && $value instanceof GPluginInterface) {
+            } elseif (method_exists($this, 'installPlugin') && $value instanceof PluginInterface) {
                 $this->installPlugin($name, $value);
             } else {
                 $this->_properties[$name] = $value;
@@ -225,11 +227,11 @@ trait GObjectTrait
     /**
      * Возвращает владельца объекта
      *
-     * @return null|GObjectInterface
+     * @return null|ObjectInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function getOwner(): ?GObjectInterface
+    public function getOwner(): ?ObjectInterface
     {
         return $this->_owner;
     }
@@ -278,11 +280,11 @@ trait GObjectTrait
     /**
      * Установка владельца объекта
      *
-     * @param GObjectInterface $owner
+     * @param ObjectInterface $owner
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function setOwner(GObjectInterface $owner)
+    public function setOwner(ObjectInterface $owner)
     {
         $this->_owner = $owner;
     }

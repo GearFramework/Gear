@@ -12,7 +12,7 @@ namespace Gear\Interfaces;
  * @since 0.0.1
  * @version 0.0.2
  */
-interface GEventInterface
+interface EventInterface
 {
     /**
      * Получение состояния всплытия события
@@ -26,11 +26,11 @@ interface GEventInterface
     /**
      * Возвращает поставщика события
      *
-     * @return null|GObjectInterface
+     * @return null|ObjectInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function getSender(): ?GObjectInterface;
+    public function getSender(): ?ObjectInterface;
 
     /**
      * Установка или отмена всплытия события
@@ -45,7 +45,7 @@ interface GEventInterface
     /**
      * Установка поставщика события
      *
-     * @param string|GObjectInterface $sender
+     * @param string|ObjectInterface $sender
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -73,7 +73,7 @@ interface GEventInterface
  * @since 0.0.1
  * @version 0.0.2
  */
-interface GEventHandlerInterface
+interface EventHandlerInterface
 {
     /**
      * Запуск обработчика события

@@ -2,11 +2,11 @@
 
 namespace Gear\Library;
 
-use Gear\Interfaces\GEventInterface;
-use Gear\Interfaces\GObjectInterface;
-use Gear\Traits\TGetter;
-use Gear\Traits\TProperties;
-use Gear\Traits\TSetter;
+use Gear\Interfaces\EventInterface;
+use Gear\Interfaces\ObjectInterface;
+use Gear\Traits\PropertiesTrait;
+use Gear\Traits\GetterTrait;
+use Gear\Traits\SetterTrait;
 
 /**
  * Базовый класс событий
@@ -23,12 +23,12 @@ use Gear\Traits\TSetter;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GEvent implements GEventInterface
+class GEvent implements EventInterface
 {
     /* Traits */
-    use TProperties;
-    use TGetter;
-    use TSetter;
+    use PropertiesTrait;
+    use GetterTrait;
+    use SetterTrait;
     /* Const */
     /* Private */
     /* Protected */
@@ -40,7 +40,7 @@ class GEvent implements GEventInterface
     /**
      * Конструктор события
      *
-     * @param string|GObjectInterface $sender
+     * @param string|ObjectInterface $sender
      * @param array $params
      * @since 0.0.1
      * @version 0.0.2
@@ -68,11 +68,11 @@ class GEvent implements GEventInterface
     /**
      * Возвращает поставщика события
      *
-     * @return null|GObjectInterface
+     * @return null|ObjectInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function getSender(): ?GObjectInterface
+    public function getSender(): ?ObjectInterface
     {
         return $this->_sender;
     }
@@ -93,7 +93,7 @@ class GEvent implements GEventInterface
     /**
      * Установка поставщика события
      *
-     * @param string|GObjectInterface $sender
+     * @param string|ObjectInterface $sender
      * @return void
      * @since 0.0.1
      * @version 0.0.2
