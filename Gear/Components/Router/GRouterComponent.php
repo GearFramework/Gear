@@ -4,6 +4,7 @@ namespace Gear\Components\Router;
 
 use Gear\Core;
 use Gear\Interfaces\ControllerInterface;
+use Gear\Interfaces\FactoryInterface;
 use Gear\Interfaces\RequestInterface;
 use Gear\Interfaces\ResponseInterface;
 use Gear\Library\GComponent;
@@ -27,7 +28,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GRouterComponent extends GComponent
+class GRouterComponent extends GComponent implements FactoryInterface
 {
     /* Traits */
     use FactoryTrait;

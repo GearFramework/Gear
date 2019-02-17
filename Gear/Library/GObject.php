@@ -80,38 +80,4 @@ class GObject implements ObjectInterface
      * @version 0.0.1
      */
     protected function __clone() {}
-
-    /**
-     * Возвращает название класса
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function __toString(): string
-    {
-        return static::class;
-    }
-
-    /**
-     * Обработка вызовов несуществующих статических методов класса
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     * @throws \CoreException
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function __callStatic(string $name, array $arguments)
-    {
-        if (preg_match('/Exception$/', $name)) {
-            array_unshift($arguments, $name);
-            return Core::e(...$arguments);
-        } elseif (preg_match('/^on[A-Z]/', $name)) {
-            array_unshift($arguments, $name);
-            return Core::trigger(...$arguments);
-        }
-        throw self::ObjectException('Static method <{methodName}> not exists', ['methodName' => $name]);
-    }
 }
