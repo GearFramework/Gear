@@ -436,14 +436,14 @@ final class Core {
      * Возвращает экземляр зарегистрированного компонента ядра
      *
      * @param string $name
-     * @param \Gear\Interfaces\IObject $owner
+     * @param \Gear\Interfaces\ObjectInterface|null $owner
      * @param bool $clone
-     * @return \Gear\Interfaces\IComponent
+     * @return \Gear\Interfaces\ComponentInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function c(string $name, \Gear\Interfaces\IObject $owner = null, bool $clone = false): \Gear\Interfaces\IComponent
+    public static function c(string $name, ?\Gear\Interfaces\IObject $owner = null, bool $clone = false): \Gear\Interfaces\ComponentInterface
     {
         $component = self::service($name, 'component', $owner);
         return $clone ? clone $component : $component;
@@ -528,11 +528,11 @@ final class Core {
      *
      * @param string $name
      * @param string|null $type
-     * @return \Gear\Interfaces\IService
+     * @return \Gear\Interfaces\ServiceInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function getInstalledService(string $name, string $type = null): \Gear\Interfaces\IService
+    public static function getInstalledService(string $name, string $type = null): \Gear\Interfaces\ServiceInterface
     {
         $service = null;
         if (!$type) {
@@ -611,21 +611,21 @@ final class Core {
     /**
      * Возвращает тип сервиса
      *
-     * @param \Gear\Interfaces\GServiceInterface $service
+     * @param \Gear\Interfaces\ServiceInterface $service
      * @return string
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function getTypeService(\Gear\Interfaces\GServiceInterface $service): string
+    public static function getTypeService(\Gear\Interfaces\ServiceInterface $service): string
     {
         $type = '';
-        if ($service instanceof \Gear\Interfaces\GModuleInterface)
+        if ($service instanceof \Gear\Interfaces\ModuleInterface)
             $type = 'module';
-        elseif ($service instanceof \Gear\Interfaces\GComponentInterface)
+        elseif ($service instanceof \Gear\Interfaces\ComponentInterface)
             $type = 'component';
-        elseif ($service instanceof \Gear\Interfaces\GPluginInterface)
+        elseif ($service instanceof \Gear\Interfaces\PluginInterface)
             $type = 'plugin';
-        elseif ($service instanceof \Gear\Interfaces\GHelperInterface)
+        elseif ($service instanceof \Gear\Interfaces\HelperInterface)
             $type = 'helper';
         return $type;
     }
@@ -698,14 +698,14 @@ final class Core {
      * Установка компонента в ядро
      *
      * @param string $name
-     * @param \Gear\Interfaces\IComponent|array $component
-     * @param \Gear\Interfaces\IObject|null $owner
-     * @return \Gear\Interfaces\IComponent
+     * @param \Gear\Interfaces\ComponentInterface|array $component
+     * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @return \Gear\Interfaces\ComponentInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function installComponent(string $name, $component, $owner = null): \Gear\Interfaces\IComponent
+    public static function installComponent(string $name, $component, $owner = null): \Gear\Interfaces\ComponentInterface
     {
         return self::installService($name, $component, 'component', $owner);
     }
@@ -714,13 +714,13 @@ final class Core {
      * Установка компонента в ядро
      *
      * @param string $name
-     * @param \Gear\Interfaces\IModule|array $module
-     * @return \Gear\Interfaces\IModule
+     * @param \Gear\Interfaces\ModuleInterface|array $module
+     * @return \Gear\Interfaces\ModuleInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function installModule(string $name, $module): \Gear\Interfaces\IModule
+    public static function installModule(string $name, $module): \Gear\Interfaces\ModuleInterface
     {
         return self::installService($name, $module, 'module');
     }
@@ -729,15 +729,15 @@ final class Core {
      * Установка сервиса в ядро
      *
      * @param string $name
-     * @param \Gear\Interfaces\IService|array $service
+     * @param \Gear\Interfaces\ServiceInterface|array $service
      * @param string|null $type
-     * @param \Gear\Interfaces\IObject|null $owner
-     * @return \Gear\Interfaces\IService
+     * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @return \Gear\Interfaces\ServiceInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function installService(string $name, $service, $type = '', $owner = null): \Gear\Interfaces\IService
+    public static function installService(string $name, $service, $type = '', $owner = null): \Gear\Interfaces\ServiceInterface
     {
         if (is_array($service)) {
             list($class, $config, $properties) = self::configure($service);
@@ -753,7 +753,7 @@ final class Core {
             }
             $service = $class::install($config, $properties, $owner);
         }
-        if (!($service instanceof \Gear\Interfaces\IService))
+        if (!($service instanceof \Gear\Interfaces\ServiceInterface))
             throw self::CoreException('Installed service must be an instance of interface \Gear\Interfaces\IService');
         $type = (!$type ? self::getTypeService($service) : $type) . 's';
         if (isset(self::$_services[$type][$name])) {
@@ -884,12 +884,12 @@ final class Core {
 
     /**
      * @param string $name
-     * @return \Gear\Interfaces\IModule
+     * @return \Gear\Interfaces\ModuleInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function m(string $name): \Gear\Interfaces\IModule
+    public static function m(string $name): \Gear\Interfaces\ModuleInterface
     {
         return self::service($name, 'module');
     }
@@ -1031,13 +1031,13 @@ final class Core {
      *
      * @param string $name
      * @param string|null $type
-     * @param \Gear\Interfaces\IObject|null $owner
-     * @return \Gear\Interfaces\IService
+     * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @return \Gear\Interfaces\ServiceInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function service(string $name, string $type = null, \Gear\Interfaces\IObject $owner = null): \Gear\Interfaces\IService
+    public static function service(string $name, string $type = null, \Gear\Interfaces\ObjectInterface $owner = null): \Gear\Interfaces\ServiceInterface
     {
         if (!self::isServiceInstalled($name, $type)) {
             if (!self::isServiceRegistered($name, $type)) {
@@ -1240,7 +1240,7 @@ final class Core {
      * @param mixed $name
      * @param string $type
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public static function unregisterService($name, string $type = '')
     {
@@ -1257,6 +1257,6 @@ final class Core {
         } elseif (isset(self::$_config[$type][$name])) {
             unset(self::$_config[$type][$name]);
         }
-        self::trigger('onUnregisteredService', new GEvent(self::class, ['serviceName' => $name]));
+        self::trigger('onUnregisteredService', new \Gear\Library\GEvent(self::class, ['serviceName' => $name]));
     }
 }
