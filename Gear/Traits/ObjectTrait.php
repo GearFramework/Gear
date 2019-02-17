@@ -16,6 +16,12 @@ use Gear\Library\GEvent;
  * Трэйт для добавления объектам базовых свойств и методов
  *
  * @package Gear Framework
+ *
+ * @property int access
+ * @property array getters
+ * @property ObjectInterface owner
+ * @property array setters
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -147,6 +153,13 @@ trait ObjectTrait
         $setter = 'set' . ucfirst($name);
         if (method_exists($this, $setter)) {
             $this->$setter($value);
+        } elseif (isset($this->setters[$name])) {
+            $setter = $this->setters[$name];
+            if ($setter instanceof \Closure) {
+
+            } else {
+                $this->$setter($value);
+            }
         } elseif (preg_match('/^on[A-Z]/', $name) && method_exists($this, 'on')) {
             $this->on($name, $value);
         } else {
@@ -225,6 +238,18 @@ trait ObjectTrait
     }
 
     /**
+     * Возвращает набор геттеров
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getGetters(): array
+    {
+        return $this->_getters;
+    }
+
+    /**
      * Возвращает владельца объекта
      *
      * @return null|ObjectInterface
@@ -234,6 +259,18 @@ trait ObjectTrait
     public function getOwner(): ?ObjectInterface
     {
         return $this->_owner;
+    }
+
+    /**
+     * Возвращает набор сеттеров
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getSetters(): array
+    {
+        return $this->_setters;
     }
 
     /**
@@ -278,6 +315,19 @@ trait ObjectTrait
     }
 
     /**
+     * Устанавливает набор геттеров
+     *
+     * @param array $getters
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setGetters(array $getters)
+    {
+        $this->_getters = $getters;
+    }
+
+    /**
      * Установка владельца объекта
      *
      * @param ObjectInterface $owner
@@ -287,5 +337,18 @@ trait ObjectTrait
     public function setOwner(ObjectInterface $owner)
     {
         $this->_owner = $owner;
+    }
+
+    /**
+     * Устанавливает набор сеттеров
+     *
+     * @param array $setters
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setSetters(array $setters)
+    {
+        $this->_setters = $setters;
     }
 }

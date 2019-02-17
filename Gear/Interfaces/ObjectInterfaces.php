@@ -183,6 +183,16 @@ interface ModelInterface extends ObjectInterface
  */
 interface ObjectInterface
 {
+
+    /**
+     * Возвращает режим доступа к объекту
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getAccess(): int;
+
     /**
      * Возвращает пространство имен класса
      *
@@ -193,6 +203,15 @@ interface ObjectInterface
     public static function getNamespace(): string;
 
     /**
+     * Возвращает набор геттеров
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getGetters(): array;
+
+    /**
      * Возвращает владельца объекта
      *
      * @return ObjectInterface|null
@@ -200,6 +219,15 @@ interface ObjectInterface
      * @version 0.0.1
      */
     public function getOwner(): ?ObjectInterface;
+
+    /**
+     * Возвращает набор сеттеров
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getSetters(): array;
 
     /**
      * Получение или установка значения для указанного свойства объекта. При отсутствии параметров возвращает
@@ -214,6 +242,25 @@ interface ObjectInterface
     public function props($name = null, $value = null);
 
     /**
+     * Устанавливает режим доступа к объекту
+     *
+     * @param int $access
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setAccess(int $access);
+
+    /**
+     * Устанавливает набор геттеров
+     *
+     * @param array $getters
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setGetters(array $getters);
+
+    /**
      * Установка владельца объекта
      *
      * @param ObjectInterface $owner
@@ -222,6 +269,16 @@ interface ObjectInterface
      * @version 0.0.1
      */
     public function setOwner(ObjectInterface $owner);
+
+    /**
+     * Устанавливает набор сеттеров
+     *
+     * @param array $setters
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setSetters(array $setters);
 }
 
 /**

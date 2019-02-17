@@ -2,26 +2,36 @@
 
 namespace Gear\Traits;
 
+/**
+ * Трэйт для моделей
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.2
+ * @version 0.0.2
+ */
 trait ModelTrait
 {
     /**
      * Возвращает значение поля, которое является первичным ключом
      *
      * @return mixed
-     * @since 0.0.1
-     * @version 0.0.1
+     * @since 0.0.2
+     * @version 0.0.2
      */
     public function getPrimaryKey()
     {
-        return $this->props(static::getPrimaryKeyName());
+        return $this->{static::getPrimaryKeyName()};
     }
 
     /**
      * Возвращает название поля, которое является первичным ключом
      *
      * @return string
-     * @since 0.0.1
-     * @version 0.0.1
+     * @since 0.0.2
+     * @version 0.0.2
      */
     public static function getPrimaryKeyName(): string
     {
@@ -33,12 +43,12 @@ trait ModelTrait
      *
      * @param mixed $value
      * @return void
-     * @since 0.0.1
-     * @version 0.0.1
+     * @since 0.0.2
+     * @version 0.0.2
      */
     public function setPrimaryKey($value)
     {
-        $this->props(static::getPrimaryKeyName(), $value);
+        $this->{static::getPrimaryKeyName()} = $value;
     }
 
     /**
@@ -46,8 +56,8 @@ trait ModelTrait
      *
      * @param string $pkName
      * @return void
-     * @since 0.0.1
-     * @version 0.0.1
+     * @since 0.0.2
+     * @version 0.0.2
      */
     public static function setPrimaryKeyName(string $pkName)
     {

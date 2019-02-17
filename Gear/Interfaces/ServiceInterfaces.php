@@ -86,6 +86,26 @@ interface PluginInterface extends ServiceInterface {}
 interface ServiceInterface
 {
     /**
+     * Генерация события onAfterInstallService после процедуры установки сервиса
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function afterInstallService();
+
+    /**
+     * Генерация события onBeforeInstallService перед установкой сервиса
+     *
+     * @param array $config
+     * @param array $properties
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function beforeInstallService($config, $properties);
+
+    /**
      * Инициализация сервиса
      *
      * @param array|string $config

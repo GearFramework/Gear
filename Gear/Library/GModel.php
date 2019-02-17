@@ -3,7 +3,7 @@
 namespace Gear\Library;
 use Gear\Interfaces\ModelInterface;
 use Gear\Interfaces\ObjectInterface;
-use Gear\Traits\PluginContainedTrait;
+use Gear\Traits\ModelTrait;
 
 /**
  * Базовый класс моделей
@@ -24,8 +24,7 @@ use Gear\Traits\PluginContainedTrait;
 class GModel extends GObject implements ModelInterface
 {
     /* Traits */
-    use ServiceContainedT;
-    use PluginContainedTrait;
+    use ModelTrait;
     /* Const */
     /* Private */
     /* Protected */

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <title><?=$this->title?></title>
+        <?=\gear\Core::m('resources')->publicate([
+            'jquery-3.3.1.min.js',
+            'common.css'
+        ])?>
+    </head>
+
+    <body>
+        <?=$contentLayout?>
+    </body>
+
+</html>

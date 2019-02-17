@@ -22,7 +22,7 @@ interface ControllerInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function __invoke(GRequestInterface $request);
+    public function __invoke(RequestInterface $request);
 
     /**
      * Запуск контроллера
@@ -32,7 +32,7 @@ interface ControllerInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function run(GRequestInterface $request);
+    public function run(RequestInterface $request);
 }
 
 /**

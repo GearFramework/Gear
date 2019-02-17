@@ -5,8 +5,10 @@ namespace Gear\Library;
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
 use Gear\Traits\ObjectTrait;
+use Gear\Traits\PluginContainedTrait;
 use Gear\Traits\PropertiesTrait;
 use Gear\Traits\EventTrait;
+use Gear\Traits\ServiceContainedTrait;
 use Gear\Traits\ViewTrait;
 
 /**
@@ -31,9 +33,11 @@ use Gear\Traits\ViewTrait;
 class GObject implements ObjectInterface
 {
     /* Traits */
-    use ObjectTrait;
-    use PropertiesTrait;
     use EventTrait;
+    use ObjectTrait;
+    use PluginContainedTrait;
+    use PropertiesTrait;
+    use ServiceContainedTrait;
     use ViewTrait;
     /* Const */
     /* Private */
