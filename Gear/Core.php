@@ -116,8 +116,8 @@ final class Core {
                 'loader' => ['class' => '\Gear\Components\Loader\GLoaderComponent'],
             ],
             'helpers' => [
-                'Arrays' => ['class' => '\Gear\Helpers\HArray'],
-                'Html' => ['class' => '\Gear\Helpers\HHtml'],
+                'Arrays' => ['class' => '\Gear\Helpers\ArrayHelper'],
+                'Html' => ['class' => '\Gear\Helpers\HtmlHelper'],
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */

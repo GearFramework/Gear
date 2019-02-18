@@ -16,9 +16,9 @@ use Gear\Traits\Factory\StaticFactoryTrait;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-class HCalendar extends GHelper
+class CalendarHelper extends GHelper
 {
     /* Traits */
     use StaticFactoryTrait;

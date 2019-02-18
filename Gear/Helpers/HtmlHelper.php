@@ -13,9 +13,9 @@ use Gear\Library\GHelper;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-class HHtml extends GHelper
+class HtmlHelper extends GHelper
 {
     /* Traits */
     /* Const */
