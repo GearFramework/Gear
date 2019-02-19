@@ -52,7 +52,6 @@ class GFileLogger extends GPlugin
      * @param string $level
      * @param string $message
      * @param array $context
-     * @throws \FileSystemException
      * @since 0.0.1
      * @version 0.0.2
      */
