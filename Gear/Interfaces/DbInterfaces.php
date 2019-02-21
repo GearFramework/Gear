@@ -10,28 +10,28 @@ namespace Gear\Interfaces;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-interface IDbConnection
+interface DbConnectionInterface
 {
     /**
      * Завершение соединения с сервером баз данных
      *
      * @abstract
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function close(): IDbConnection;
+    public function close(): DbConnectionInterface;
 
     /**
      * Подготовка и вызов метода непосредственного подключения к серверу баз данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function connect(): IDbConnection;
+    public function connect(): DbConnectionInterface;
 
     /**
      * Возвращает true если соединение уже установлено, иначе false
@@ -45,21 +45,21 @@ interface IDbConnection
     /**
      * Подключение к серверу базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function open(): IDbConnection;
+    public function open(): DbConnectionInterface;
 
     /**
      * Выполняет подключение к серверу, если соединение ещё не было
      * установлено
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function reconnect(): IDbConnection;
+    public function reconnect(): DbConnectionInterface;
 
     /**
      * Выбор указанной базы данных и таблицы
@@ -67,21 +67,21 @@ interface IDbConnection
      * @param string $dbName
      * @param string $collectionName
      * @param string $alias
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectCollection(string $dbName, string $collectionName, string $alias = ''): IDbCollection;
+    public function selectCollection(string $dbName, string $collectionName, string $alias = ''): DbCollectionInterface;
 
     /**
      * Выбор указанной базы данных
      *
      * @param string $name
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectDB(string $name): IDbDatabase;
+    public function selectDB(string $name): DbDatabaseInterface;
 }
 
 /**
@@ -92,56 +92,56 @@ interface IDbConnection
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-interface IDbDatabase
+interface DbDatabaseInterface
 {
     /**
      * Создание базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function create(): IDbDatabase;
+    public function create(): DbDatabaseInterface;
 
     /**
      * Удаление базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function drop(): IDbDatabase;
+    public function drop(): DbDatabaseInterface;
 
     /**
      * Удаление базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function remove(): IDbDatabase;
+    public function remove(): DbDatabaseInterface;
 
     /**
      * Выбор текущей базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function select(): IDbDatabase;
+    public function select(): DbDatabaseInterface;
 
     /**
      * Возвращает коллекцию
      *
      * @param string $name
      * @param string $alias
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectCollection(string $name, string $alias = ''): IDbCollection;
+    public function selectCollection(string $name, string $alias = ''): DbCollectionInterface;
 }
 
 /**
@@ -152,9 +152,9 @@ interface IDbDatabase
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-interface IDbCollection
+interface DbCollectionInterface
 {
     /**
      * Удаление базы коллекции
@@ -168,27 +168,27 @@ interface IDbCollection
     /**
      * Возвращает коллекцию, т.е. саму себя
      *
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCollection(): IDbCollection;
+    public function getCollection(): DbCollectionInterface;
     /**
      * Возвращает соединение с сервером базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection;
+    public function getConnection(): DbConnectionInterface;
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getDatabase(): IDbDatabase;
+    public function getDatabase(): DbDatabaseInterface;
 
     /**
      * Возвращает ID последней вставленной записи в таблицу
@@ -202,21 +202,21 @@ interface IDbCollection
     /**
      * Удаление таблицы или указанной модели из таблицы
      *
-     * @param null|array|IModel $model
-     * @return IDbCollection
+     * @param null|array|ModelInterface $model
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function remove($model = []): IDbCollection;
+    public function remove($model = []): DbCollectionInterface;
 
     /**
      * Очистка таблицы от записей
      *
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function truncate(): IDbCollection;
+    public function truncate(): DbCollectionInterface;
 }
 
 /**
@@ -227,9 +227,9 @@ interface IDbCollection
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-interface IDbCursor
+interface DbCursorInterface
 {
     /**
      * Возвращает количество строк, затронутых последним выполненным запросом
@@ -263,11 +263,11 @@ interface IDbCursor
      * Выполняет запрос и возвращает объект найденной записи, реализующий интерфейс IModel
      *
      * @param string $class
-     * @return IModel|null
+     * @return ModelInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function asObject(string $class = '\Gear\Library\GModel'): ?IModel;
+    public function asObject(string $class = '\Gear\Library\GModel'): ?ModelInterface;
 
     /**
      * Выполняет запрос и возвращает индексный массив найденной записи
@@ -301,10 +301,10 @@ interface IDbCursor
     /**
      * Удаление записей соответствующих критерию
      *
-     * @param array|IModel $criteria
+     * @param array|ModelInterface $criteria
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function delete($criteria = []): int;
 
@@ -323,11 +323,11 @@ interface IDbCursor
      *
      * @param string|array $criteria
      * @param string|array $fields
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function find($criteria = [], $fields = []): IDbCursor;
+    public function find($criteria = [], $fields = []): DbCursorInterface;
 
     /**
      * Возвращает первую запись, соответствующую указанному критерию
@@ -356,11 +356,11 @@ interface IDbCursor
     /**
      * Возвращает коллекцию, для которой создан курсор
      *
-     * @return IDbCollection|null
+     * @return DbCollectionInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCollection(): ?IDbCollection;
+    public function getCollection(): ?DbCollectionInterface;
 
     /**
      * Возвращает название коллекции (таблицы), дял которой создан курсор
@@ -374,19 +374,19 @@ interface IDbCursor
     /**
      * Возвращает ссылку на компонент подключения базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection;
+    public function getConnection(): DbConnectionInterface;
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
      *
-     * @return IDbDatabase|null
+     * @return DbDatabaseInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getDatabase(): ?IDbDatabase;
+    public function getDatabase(): ?DbDatabaseInterface;
 
     /**
      * Возвращает ID последней вставленной записи
@@ -410,34 +410,34 @@ interface IDbCursor
      * Установка группировки результатов запроса
      *
      * @param string|array $group
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function group($group = []): IDbCursor;
+    public function group($group = []): DbCursorInterface;
 
     /**
      * Добавление в коллекцию новой записи
      * Возвращает количество затронутых строк
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
-     * @param array|IModel $properties
+     * @param array|ModelInterface $properties
      * @return integer
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function insert($properties): int;
 
     /**
      * Подключение таблицы
      *
-     * @param string|IDbCollection $collection
+     * @param string|DbCollectionInterface $collection
      * @param array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function join($collection, $criteria = []): IDbCursor;
+    public function join($collection, $criteria = []): DbCursorInterface;
 
     /**
      * Возвращает первые N элементов из запроса
@@ -452,32 +452,32 @@ interface IDbCursor
     /**
      * Левое подключение таблицы
      *
-     * @param string|IDbCollection $collection
+     * @param string|DbCollectionInterface $collection
      * @param array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function left($collection, array $criteria = []): IDbCursor;
+    public function left($collection, array $criteria = []): DbCursorInterface;
 
     /**
      * Установка позиции и количества возвращаемых записей
      *
      * @param array $limit
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function limit(...$limit): IDbCursor;
+    public function limit(...$limit): DbCursorInterface;
 
     /**
      * Создание и выполнение запроса
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function query(): IDbCursor;
+    public function query(): DbCursorInterface;
 
     /**
      * Удаление записей, соответствующих критерию, либо найденных
@@ -493,24 +493,24 @@ interface IDbCursor
     /**
      * Правое подключение таблицы
      *
-     * @param string|IDbCollection $collection
+     * @param string|DbCollectionInterface $collection
      * @param array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function right($collection, array $criteria = []): IDbCursor;
+    public function right($collection, array $criteria = []): DbCursorInterface;
 
     /**
      * Выполнение составленного SQL-запроса
      *
      * @param string $query
      * @param array $params
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function runQuery(string $query, ...$params): IDbCursor;
+    public function runQuery(string $query, ...$params): DbCursorInterface;
 
     /**
      * Добавление в коллекцию новой записи. В случае совпадения
@@ -518,11 +518,11 @@ interface IDbCursor
      * записи
      * Возвращает количество затронутых полей
      *
-     * @param array|IModel $properties
+     * @param array|ModelInterface $properties
      * @param array $updates
      * @return integer|object
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function save($properties, array $updates = []);
 
@@ -530,16 +530,16 @@ interface IDbCursor
      * Установка сортировки результатов запроса
      *
      * @param string|array $sort
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function sort($sort = []): IDbCursor;
+    public function sort($sort = []): DbCursorInterface;
 
     /**
      * Обновление указанных полей для записей, соответствующих критерию
      *
-     * @param null|string|array|IModel $criteria
+     * @param null|string|array|ModelInterface $criteria
      * @param array $properties
      * @return integer
      * @since 0.0.1
@@ -551,11 +551,11 @@ interface IDbCursor
      * Формирование критерия поиска
      *
      * @param string|array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function where($criteria = []): IDbCursor;
+    public function where($criteria = []): DbCursorInterface;
 }
 
 /**
@@ -566,17 +566,17 @@ interface IDbCursor
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-interface IDbStorageComponent
+interface DbStorageComponentInterface
 {
     /**
      * Добавление модели в набор (сохранение в коллекции-таблице в базе данных)
      *
-     * @param IModel|array of IModel $model
+     * @param ModelInterface|array of IModel $model
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function add($model): int;
 
@@ -593,9 +593,9 @@ interface IDbStorageComponent
      * Выборка модели по значению первичного ключа
      *
      * @param int|string $pkValue
-     * @return \Gear\Interfaces\IObject|null
+     * @return \Gear\Interfaces\ObjectInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function byPk($pkValue);
 
@@ -614,9 +614,9 @@ interface IDbStorageComponent
      * Поиск модели, соответствующей указанному критерию
      *
      * @param array|string $criteria
-     * @return \Gear\Interfaces\IObject|null
+     * @return \Gear\Interfaces\ObjectInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function findOne($criteria = []);
 
@@ -632,12 +632,12 @@ interface IDbStorageComponent
     /**
      * Возвращает компонент подключения к базе данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection;
+    public function getConnection(): DbConnectionInterface;
 
     /**
      * Возвращает название компонента подключения к серверу базы данных
@@ -651,11 +651,11 @@ interface IDbStorageComponent
     /**
      * Возвращает курсор коллекции
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getCursor(): IDbCursor;
+    public function getCursor(): DbCursorInterface;
 
     /**
      * Возвращает название базы данных
@@ -679,19 +679,19 @@ interface IDbStorageComponent
     /**
      * Удаление модели
      *
-     * @param array|IModel|array of IModel $model
+     * @param array|ModelInterface|array of IModel $model
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function remove($model);
 
     /**
      * Сохранение модели
      *
-     * @param array|IModel|array of IModel $model
+     * @param array|ModelInterface|array of IModel $model
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function save($model): int;
 
@@ -699,19 +699,19 @@ interface IDbStorageComponent
      * Выбор коллекции
      *
      * @param string $alias
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectCollection(string $alias = ""): IDbCollection;
+    public function selectCollection(string $alias = ""): DbCollectionInterface;
     /**
      * Выбор базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function selectDB(): IDbDatabase;
+    public function selectDB(): DbDatabaseInterface;
 
     /**
      * Обновление существующей модели

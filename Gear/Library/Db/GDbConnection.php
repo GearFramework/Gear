@@ -2,34 +2,39 @@
 
 namespace Gear\Library\Db;
 
-use Gear\Interfaces\IDbCollection;
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IDbCursor;
-use Gear\Interfaces\IDbDatabase;
+use Gear\Interfaces\DbCollectionInterface;
+use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\DbCursorInterface;
+use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Library\GComponent;
 use Gear\Library\GEvent;
-use Gear\Traits\TDelegateFactory;
-use Gear\Traits\TFactory;
+use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\FactoryTrait;
 
 /**
  * Компонент подключения к базе данных
  *
  * @package Gear Framework
+ *
+ * @property DbConnectionInterface connection
+ * @property DbDatabaseInterface current
+ * @property DbCursorInterface cursor
+ * @property mixed handler
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-abstract class GDbConnection extends GComponent implements \IteratorAggregate, IDbConnection
+abstract class GDbConnection extends GComponent implements \IteratorAggregate, DbConnectionInterface
 {
     /* Traits */
-    use TFactory;
-    use TDelegateFactory;
+    use FactoryTrait;
+    use DelegateFactoryTrait;
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
     protected static $_defaultProperties = [
         'host' => 'localhost',
         'user' => '',
@@ -72,20 +77,20 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
      * Завершение соединения с сервером баз данных
      *
      * @abstract
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function close(): IDbConnection;
+    abstract public function close(): DbConnectionInterface;
 
     /**
      * Подготовка и вызов метода непосредственного подключения к серверу баз данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function connect(): IDbConnection
+    public function connect(): DbConnectionInterface
     {
         if ($this->beforeConnect()) {
             $this->open();
@@ -97,11 +102,11 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Возвращает ссылку на компонент подключения базы данных, т.е. на самого себя
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection
+    public function getConnection(): DbConnectionInterface
     {
         return $this;
     }
@@ -109,11 +114,11 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Возвращает текущую выбранную базу данных
      *
-     * @return null|IDbDatabase
+     * @return null|DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCurrent(): ?IDbDatabase
+    public function getCurrent(): DbDatabaseInterface
     {
         return $this->_current;
     }
@@ -121,11 +126,11 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Возвращает курсор
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCursor(): IDbCursor
+    public function getCursor(): DbCursorInterface
     {
         return $this->factory($this->_cursorFactory, $this);
     }
@@ -157,21 +162,21 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Подключение к серверу базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function open(): IDbConnection;
+    abstract public function open(): DbConnectionInterface;
 
     /**
      * Выполняет подключение к серверу, если соединение ещё не было
      * установлено
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function reconnect(): IDbConnection
+    public function reconnect(): DbConnectionInterface
     {
         if (!$this->isConnected()) {
             $this->connect();
@@ -185,11 +190,11 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
      * @param string $dbName
      * @param string $collectionName
      * @param string $alias
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectCollection(string $dbName, string $collectionName, string $alias = ''): IDbCollection
+    public function selectCollection(string $dbName, string $collectionName, string $alias = ''): DbCollectionInterface
     {
         return $this->selectDB($dbName)->selectCollection($collectionName, $alias);
     }
@@ -198,11 +203,11 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
      * Выбор указанной базы данных
      *
      * @param string $name
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectDB(string $name): IDbDatabase
+    public function selectDB(string $name): DbDatabaseInterface
     {
         if (isset($this->_items[$name])) {
             if (!$this->current || $this->current->name !== $name) {
@@ -220,12 +225,12 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, I
     /**
      * Установка текущей базы данных
      *
-     * @param IDbDatabase $current
+     * @param DbDatabaseInterface $current
      * @return void
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function setCurrent(IDbDatabase $current)
+    public function setCurrent(DbDatabaseInterface $current)
     {
         $this->_current = $current;
     }

@@ -3,12 +3,13 @@
 namespace Gear\Traits\Db\Mysql;
 
 use Gear\Core;
-use Gear\Interfaces\IDbCollection;
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IDbCursor;
-use Gear\Interfaces\IDbDatabase;
-use Gear\Interfaces\IModel;
-use Gear\Interfaces\IService;
+use Gear\Interfaces\DbCollectionInterface;
+use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\DbCursorInterface;
+use Gear\Interfaces\DbDatabaseInterface;
+use Gear\Interfaces\ModelInterface;
+use Gear\Interfaces\ServiceInterface;
+use Gear\Traits\ServiceContainedTrait;
 
 /**
  * Трейт компонентов для выполнения операций с моделями
@@ -18,10 +19,11 @@ use Gear\Interfaces\IService;
  *
  * @property string alias
  * @property string collectionName
+ * @property DbConnectionInterface connection
  * @property string connectionName
- * @property IDbCursor cursor
+ * @property DbCursorInterface cursor
  * @property string dbName
- * @property IDbCursor defaultCursor
+ * @property DbCursorInterface defaultCursor
  * @property string primaryKeyName
  * @proeprty mixed primaryKey
  *
@@ -29,29 +31,29 @@ use Gear\Interfaces\IService;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-trait TDbStorage
+trait DbStorageTrait
 {
     protected $_servicesHandled = [];
 
     /**
      * Добавление модели в набор (сохранение в коллекции-таблице в базе данных)
      *
-     * @param array|IModel|array of IModel $model
+     * @param array|ModelInterface|array of IModel $model
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function add($model): int
     {
-        if ($model instanceof IModel) {
+        if ($model instanceof ModelInterface) {
             $model = $model->props();
         } elseif (is_array($model)) {
             if (!\Arrays::isAssoc($model)) {
                 $models = [];
                 foreach ($model as $props) {
-                    if ($props instanceof IModel) {
+                    if ($props instanceof ModelInterface) {
                         $models[] = $props->props();
                     } else {
                         $models[] = $props;
@@ -66,10 +68,10 @@ trait TDbStorage
     /**
      * Выборка всех моделей из коллекции
      *
-     * @param array|IDbCursor $sort
+     * @param array|DbCursorInterface $sort
      * @return iterable
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function all($sort = []): iterable
     {
@@ -80,7 +82,7 @@ trait TDbStorage
      * Выборка модели по значению первичного ключа
      *
      * @param int|string $pkValue
-     * @return \Gear\Interfaces\IObject|null
+     * @return \Gear\Interfaces\ObjectInterface|null
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -93,10 +95,10 @@ trait TDbStorage
      * Возвращает количество элементов в коллекции, удовлетворяющих
      * критерию
      *
-     * @param array|IDbCursor $criteria
+     * @param array|DbCursorInterface $criteria
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function count($criteria = []): int
     {
@@ -107,10 +109,10 @@ trait TDbStorage
     /**
      * Возвращает true, если указанный в критерии элемент существует в коллекции
      *
-     * @param array|IDbCursor $criteria
+     * @param array|DbCursorInterface $criteria
      * @return bool
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function exists($criteria = []): bool
     {
@@ -119,11 +121,11 @@ trait TDbStorage
     /**
      * Поиск моделей по указанному критерию
      *
-     * @param array|string|IDbCursor $criteria
+     * @param array|string|DbCursorInterface $criteria
      * @param array|string $fields
      * @return iterable
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function find($criteria = [], $fields = []): iterable
     {
@@ -133,12 +135,12 @@ trait TDbStorage
     /**
      * Поиск модели, соответствующей указанному критерию
      *
-     * @param array|string|IDbCursor $criteria
+     * @param array|string|DbCursorInterface $criteria
      * @param array $fields
      * @param array $sort
-     * @return \Gear\Interfaces\IObject|null
+     * @return \Gear\Interfaces\ObjectInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function findOne($criteria = [], $fields = [], $sort = [])
     {
@@ -177,12 +179,12 @@ trait TDbStorage
     /**
      * Возвращает компонент подключения к базе данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection
+    public function getConnection(): DbConnectionInterface
     {
         if (!$this->_connection) {
             $this->_connection = Core::c($this->connectionName);
@@ -205,11 +207,11 @@ trait TDbStorage
     /**
      * Возвращает курсор коллекции
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCursor(): IDbCursor
+    public function getCursor(): DbCursorInterface
     {
         return $this->selectCollection($this->alias)->cursor;
     }
@@ -229,11 +231,11 @@ trait TDbStorage
     /**
      * Возвращает курсор с параметрами по-умолчанию
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getDefaultCursor(): IDbCursor
+    public function getDefaultCursor(): DbCursorInterface
     {
         $cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
         if ($this->_defaultParams['where']) {
@@ -283,14 +285,14 @@ trait TDbStorage
     /**
      * Возвращает значение PRIMARYKEY поля
      *
-     * @param array|IModel $object
+     * @param array|ModelInterface $object
      * @return string
      * @since 0.0.1
      * @version 0.0.1
      */
     public function getPrimaryKey($object)
     {
-        if ($object instanceof IModel) {
+        if ($object instanceof ModelInterface) {
             return $object->props($this->primaryKeyName);
         } elseif (is_array($object) && isset($object[$this->primaryKeyName])) {
             return $object[$this->primaryKeyName];
@@ -313,9 +315,9 @@ trait TDbStorage
     /**
      * Удаление модели
      *
-     * @param array|IModel|array of IModel $model
+     * @param array|ModelInterface $model
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function remove($model)
     {
@@ -325,18 +327,18 @@ trait TDbStorage
     /**
      * Сохранение модели
      *
-     * @param array|IModel|array of IModel $model
+     * @param array|ModelInterface $model
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function save($model)
     {
-        if ($model instanceof IModel) {
+        if ($model instanceof ModelInterface) {
             $model = $model->props();
         } elseif (is_array($model)) {
             $models = [];
             foreach ($model as $props) {
-                if ($props instanceof IModel) {
+                if ($props instanceof ModelInterface) {
                     $models[] = $props->props();
                 } else {
                     $models[] = $props;
@@ -351,11 +353,11 @@ trait TDbStorage
      * Выбор коллекции
      *
      * @param string $alias
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectCollection(string $alias = ""): IDbCollection
+    public function selectCollection(string $alias = ""): DbCollectionInterface
     {
         return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias ? $alias : $this->alias);
     }
@@ -363,11 +365,11 @@ trait TDbStorage
     /**
      * Выбор базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectDB(): IDbDatabase
+    public function selectDB(): DbDatabaseInterface
     {
         return $this->connection->selectDB($this->dbName);
     }
@@ -400,12 +402,12 @@ trait TDbStorage
     /**
      * Устновка подключения к серверу базы данных
      *
-     * @param IDbConnection $connection
+     * @param DbConnectionInterface $connection
      * @return void
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function setConnection(IDbConnection $connection)
+    public function setConnection(DbConnectionInterface $connection)
     {
         $this->_connection = $connection;
     }
@@ -440,16 +442,16 @@ trait TDbStorage
     /**
      * Обновление существующей модели
      *
-     * @param array|IModel|array of IModel $model
-     * @param array|IDbCursor $criteria
+     * @param array|ModelInterface|array of IModel $model
+     * @param array|DbCursorInterface $criteria
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function update($model, $criteria = [])
     {
         $result = 0;
-        if ($model instanceof IModel) {
+        if ($model instanceof ModelInterface) {
             if ($model->onBeforeUpdate()) {
                 $result = $this->selectCollection()->update($model);
                 $model->onAfterUpdate();
@@ -462,17 +464,17 @@ trait TDbStorage
 
     /**
      * @param string $path
-     * @return IService
+     * @return ServiceInterface
      * @throws \CoreException
      */
-    protected function _getComponentFromPath(string $path): IService
+    protected function _getComponentFromPath(string $path): ServiceInterface
     {
         if (!isset($this->_servicesHandled[$path])) {
             $path = preg_replace('/#\d+$/', '', $path);
             $wayPoints = explode('.', $path);
             $first = true;
             /**
-             * @var IService|TServiceContained|TDbStorage $component
+             * @var ServiceInterface|ServiceContainedTrait|DbStorageTrait $component
              */
             $component = null;
             foreach ($wayPoints as $componentName) {
@@ -488,13 +490,13 @@ trait TDbStorage
         return $this->_servicesHandled[$path];
     }
 
-    protected function _prepareDefaultFields(IDbCursor $cursor, array $defaultFields)
+    protected function _prepareDefaultFields(DbCursorInterface $cursor, array $defaultFields)
     {
         $fields = [];
         foreach ($defaultFields as $key => $value) {
             if (!is_numeric($key)) {
                 /**
-                 * @var IService|TServiceContained|TDbStorage $component
+                 * @var ServiceInterface|ServiceContainedTrait|DbStorageTrait $component
                  */
                 $component = $this->_getComponentFromPath($key);
                 $aliasCollection = $component->alias;
@@ -520,11 +522,11 @@ trait TDbStorage
         $cursor->fields($fields);
     }
 
-    protected function _prepareDefaultJoins(IDbCursor $cursor, array $defaultJoins)
+    protected function _prepareDefaultJoins(DbCursorInterface $cursor, array $defaultJoins)
     {
         foreach ($defaultJoins as $service => $criteria) {
             /**
-             * @var IService|TServiceContained|TDbStorage $component
+             * @var ServiceInterface|ServiceContainedTrait|DbStorageTrait $component
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
@@ -537,11 +539,11 @@ trait TDbStorage
         }
     }
 
-    protected function _prepareDefaultLeft(IDbCursor $cursor, array $defaultLeft)
+    protected function _prepareDefaultLeft(DbCursorInterface $cursor, array $defaultLeft)
     {
         foreach ($defaultLeft as $service => $criteria) {
             /**
-             * @var IService|TServiceContained|TDbStorage $component
+             * @var ServiceInterface|ServiceContainedTrait|DbStorageTrait $component
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
@@ -554,11 +556,11 @@ trait TDbStorage
         }
     }
 
-    protected function _prepareDefaultRight(IDbCursor $cursor, array $defaultRight)
+    protected function _prepareDefaultRight(DbCursorInterface $cursor, array $defaultRight)
     {
         foreach ($defaultRight as $service => $criteria) {
             /**
-             * @var IService|TServiceContained|TDbStorage $component
+             * @var ServiceInterface|ServiceContainedTrait|DbStorageTrait $component
              */
             $component = $this->_getComponentFromPath($service);
             $alias = $component->alias;
@@ -571,7 +573,7 @@ trait TDbStorage
         }
     }
 
-    protected function _prepareDefaultWhere(IDbCursor $cursor, $defaultWhere)
+    protected function _prepareDefaultWhere(DbCursorInterface $cursor, $defaultWhere)
     {
         $cursor->where($defaultWhere);
     }
