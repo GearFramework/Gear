@@ -6,6 +6,9 @@ namespace Gear\Interfaces;
  * Интерфейс компонента подключения к базе данных
  *
  * @package Gear Framework
+ *
+ * @property mixed handler
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -88,6 +91,10 @@ interface DbConnectionInterface
  * Интерфейс базы данных
  *
  * @package Gear Framework
+ *
+ * @property mixed handler
+ * @property string name
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -157,6 +164,10 @@ interface DbDatabaseInterface
  * Интерфейс коллекций базы данных (таблиц)
  *
  * @package Gear Framework
+ *
+ * @property mixed handler
+ * @property string name
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -232,6 +243,10 @@ interface DbCollectionInterface
  * Интерфейс запроса
  *
  * @package Gear Framework
+ *
+ * @property mixed handler
+ * @property int lastInsertId
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -328,6 +343,15 @@ interface DbCursorInterface
     public function escape($value): string;
 
     /**
+     * Установка полей, значения которых вернуться при выполненинии запроса
+     * @param $fields
+     * @return DbCursorInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function fields($fields): DbCursorInterface;
+
+    /**
      * Поиск записей по указханному критерию
      *
      * @param string|array $criteria
@@ -356,11 +380,11 @@ interface DbCursorInterface
      *
      * @param int $count
      * @param array $sort
-     * @return iterable
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function first(int $count = 1, $sort = []): iterable;
+    public function first(int $count = 1, $sort = []): DbCursorInterface;
 
     /**
      * Возвращает коллекцию, для которой создан курсор
@@ -498,6 +522,15 @@ interface DbCursorInterface
      * @version 0.0.1
      */
     public function remove($criteria = []): int;
+
+    /**
+     * Сброс результатов выполнения запроса
+     *
+     * @return DbCursorInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function reset(): DbCursorInterface;
 
     /**
      * Правое подключение таблицы

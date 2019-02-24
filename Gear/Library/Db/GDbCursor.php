@@ -2,11 +2,11 @@
 
 namespace Gear\Library\db;
 
-use Gear\Interfaces\IDbCollection;
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IDbCursor;
-use Gear\Interfaces\IDbDatabase;
-use Gear\Interfaces\IModel;
+use Gear\Interfaces\DbCollectionInterface;
+use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\DbCursorInterface;
+use Gear\Interfaces\DbDatabaseInterface;
+use Gear\Interfaces\ModelInterface;
 use Gear\Library\GEvent;
 use Gear\Library\GModel;
 
@@ -15,12 +15,13 @@ use Gear\Library\GModel;
  *
  * @package Gear Framework
  *
- * @property IDbCollection collection
+ * @property DbCollectionInterface collection
  * @property string collectionName
- * @property IDbConnection connection
- * @property IDbDatabase database
+ * @property DbConnectionInterface connection
+ * @property DbDatabaseInterface database
  * @property mixed handler
  * @property int lastInsertId
+ * @property DbCollectionInterface|DbConnectionInterface|DbDatabaseInterface owner
  * @property string query
  * @property mixed result
  *
@@ -28,9 +29,9 @@ use Gear\Library\GModel;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
+abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
 {
     /* Traits */
     /* Const */
@@ -89,11 +90,11 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Выполняет запрос и возвращает объект найденной записи, реализующий интерфейс IModel
      *
      * @param string $class
-     * @return IModel|null
+     * @return ModelInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function asObject(string $class = '\Gear\Library\GModel'): ?IModel;
+    abstract public function asObject(string $class = '\Gear\Library\GModel'): ?ModelInterface;
 
     /**
      * Выполняет запрос и возвращает индексный массив найденной записи
@@ -140,10 +141,10 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Удаление записей соответствующих критерию
      *
-     * @param array|IModel $criteria
+     * @param array|ModelInterface $criteria
      * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     abstract public function delete($criteria = []): int;
 
@@ -171,30 +172,42 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     }
 
     /**
+     * Установка полей, значения которых вернуться при выполненинии запроса
+     * @param $fields
+     * @return DbCursorInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    abstract public function fields($fields): DbCursorInterface;
+
+    /**
      * Поиск записей по указханному критерию
      *
      * @param string|array $criteria
      * @param string|array $fields
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function find($criteria = [], $fields = []): IDbCursor;
+    abstract public function find($criteria = [], $fields = []): DbCursorInterface;
 
     /**
      * Возвращает первую запись, соответствующую указанному критерию
      *
-     * @param string|array|IDbCursor $criteria
+     * @param string|array|DbCursorInterface $criteria
      * @param string|array $fields
      * @param array $sort
      * @param int $as
      * @return array|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function findOne($criteria = [], $fields = [], $sort = [], $as = self::AS_ASSOC)
     {
-        if ($criteria instanceof IDbCursor) {
+        if ($criteria instanceof DbCursorInterface) {
+            /**
+             * @var DbCursorInterface $criteria
+             */
             return $criteria->fields($fields)->sort($sort)->limit(1)->asAssoc();
         } else {
             return $this->find($criteria, $fields)->sort($sort)->limit(1)->asAssoc();
@@ -206,11 +219,11 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      *
      * @param int $count
      * @param array $sort
-     * @return iterable
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function first(int $count = 1, $sort = []): iterable
+    public function first(int $count = 1, $sort = []): DbCursorInterface
     {
         return $this->sort($sort)->limit($count);
     }
@@ -218,13 +231,13 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Возвращает коллекцию, для которой создан курсор
      *
-     * @return IDbCollection|null
+     * @return DbCollectionInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCollection(): ?IDbCollection
+    public function getCollection(): ?DbCollectionInterface
     {
-        return $this->owner instanceof IDbCollection ? $this->owner : null;
+        return $this->owner instanceof DbCollectionInterface ? $this->owner : null;
     }
 
     /**
@@ -232,21 +245,21 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      *
      * @return string|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function getCollectionName(): ?string
     {
-        return $this->owner instanceof IDbCollection ? $this->owner->name : null;
+        return $this->owner instanceof DbCollectionInterface ? $this->owner->name : null;
     }
 
     /**
      * Возвращает ссылку на компонент подключения базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection
+    public function getConnection(): DbConnectionInterface
     {
         return $this->owner->getConnection();
     }
@@ -254,11 +267,11 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
      *
-     * @return IDbDatabase|null
+     * @return DbDatabaseInterface|null
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getDatabase(): ?IDbDatabase
+    public function getDatabase(): ?DbDatabaseInterface
     {
         return method_exists($this->owner, 'getDatabase') ? $this->owner->getDatabase() : null;
     }
@@ -315,34 +328,34 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Установка группировки результатов запроса
      *
      * @param string|array $group
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function group($group = []): IDbCursor;
+    abstract public function group($group = []): DbCursorInterface;
 
     /**
      * Добавление в коллекцию новой записи
      * Возвращает количество затронутых строк
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
-     * @param array|IModel $properties
+     * @param array|ModelInterface $properties
      * @return integer
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     abstract public function insert($properties): int;
 
     /**
      * Подключение таблицы
      *
-     * @param string|IDbCollection $collection
+     * @param string|DbCollectionInterface $collection
      * @param array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function join($collection, $criteria = []): IDbCursor;
+    abstract public function join($collection, $criteria = []): DbCursorInterface;
 
     /**
      * Возвращает первые N элементов из запроса
@@ -360,25 +373,25 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Левое подключение таблицы
      *
-     * @param string|IDbCollection $collection
+     * @param string|DbCollectionInterface $collection
      * @param array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function left($collection, array $criteria = []): IDbCursor;
+    abstract public function left($collection, array $criteria = []): DbCursorInterface;
 
     /**
      * Установка позиции и количества возвращаемых записей
      *
      * @param array $limit
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function limit(...$limit): IDbCursor;
+    abstract public function limit(...$limit): DbCursorInterface;
 
-    public function onAfterConstruct($event)
+    public function onAfterConstruct(?GEvent $event = null)
     {
         $this->reset();
         return true;
@@ -387,11 +400,11 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Создание и выполнение запроса
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function query(): IDbCursor
+    public function query(): DbCursorInterface
     {
         if ($this->beforeQuery($this->query)) {
             $this->runQuery($this->query);
@@ -404,10 +417,10 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Удаление записей, соответствующих критерию, либо найденных
      * в результате последнего выполненного SELECT-запроса
      *
-     * @param null|array|IModel $criteria
+     * @param null|array|ModelInterface $criteria
      * @return integer
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function remove($criteria = []): int
     {
@@ -417,24 +430,24 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
     /**
      * Правое подключение таблицы
      *
-     * @param string|IDbCollection $collection
+     * @param string|DbCollectionInterface $collection
      * @param array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function right($collection, array $criteria = []): IDbCursor;
+    abstract public function right($collection, array $criteria = []): DbCursorInterface;
 
     /**
      * Выполнение составленного SQL-запроса
      *
      * @param string $query
      * @param array $params
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function runQuery(string $query, ...$params): IDbCursor;
+    abstract public function runQuery(string $query, ...$params): DbCursorInterface;
 
     /**
      * Добавление в коллекцию новой записи. В случае совпадения
@@ -442,11 +455,11 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * записи
      * Возвращает количество затронутых полей
      *
-     * @param array|IModel $properties
+     * @param array|ModelInterface $properties
      * @param array $updates
      * @return integer|object
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     abstract public function save($properties, array $updates = []);
 
@@ -480,20 +493,20 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Установка сортировки результатов запроса
      *
      * @param string|array $sort
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function sort($sort = []): IDbCursor;
+    abstract public function sort($sort = []): DbCursorInterface;
 
     /**
      * Обновление указанных полей для записей, соответствующих критерию
      *
-     * @param null|string|array|IModel $criteria
+     * @param null|string|array|ModelInterface $criteria
      * @param array $properties
      * @return integer
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     abstract public function update($criteria = [], array $properties = []): int;
 
@@ -501,9 +514,9 @@ abstract class GDbCursor extends GModel implements \Iterator, IDbCursor
      * Формирование критерия поиска
      *
      * @param string|array $criteria
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function where($criteria = []): IDbCursor;
+    abstract public function where($criteria = []): DbCursorInterface;
 }

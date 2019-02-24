@@ -21,6 +21,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @property null|DbCursorInterface current
  * @property DbCursorInterface cursor
  * @property DbDatabaseInterface database
+ * @property string name
  * @property DbDatabaseInterface owner
  *
  * @author Kukushkin Denis

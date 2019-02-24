@@ -22,6 +22,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @property DbDatabaseInterface database
  * @property array factoryProperties
  * @property mixed handler
+ * @property string name
  * @property DbConnectionInterface owner
  *
  * @author Kukushkin Denis
