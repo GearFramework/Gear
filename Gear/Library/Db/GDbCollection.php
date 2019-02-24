@@ -2,14 +2,14 @@
 
 namespace Gear\Library\Db;
 
-use Gear\Interfaces\IDbCollection;
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IDbCursor;
-use Gear\Interfaces\IDbDatabase;
-use Gear\Interfaces\IModel;
+use Gear\Interfaces\DbCollectionInterface;
+use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\DbCursorInterface;
+use Gear\Interfaces\DbDatabaseInterface;
+use Gear\Interfaces\ModelInterface;
 use Gear\Library\GModel;
-use Gear\Traits\TDelegateFactory;
-use Gear\Traits\TFactory;
+use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\FactoryTrait;
 
 /**
  * Библиотека коллекций (таблиц)
@@ -17,19 +17,23 @@ use Gear\Traits\TFactory;
  * @package Gear Framework
  *
  * @property string alias
- * @property IDbCursor cursor
+ * @property DbConnectionInterface connection
+ * @property null|DbCursorInterface current
+ * @property DbCursorInterface cursor
+ * @property DbDatabaseInterface database
+ * @property DbDatabaseInterface owner
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCollection
+abstract class GDbCollection extends GModel implements \IteratorAggregate, DbCollectionInterface
 {
     /* Traits */
-    use TFactory;
-    use TDelegateFactory;
+    use DelegateFactoryTrait;
+    use FactoryTrait;
     /* Const */
     /* Private */
     /* Protected */
@@ -45,7 +49,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
      * @param string $name
      * @param array $arguments
      * @return mixed|null
+     * @throws \ComponentNotFoundException
      * @throws \CoreException
+     * @throws \PluginNotFoundException
+     * @since 0.0.1
+     * @version 0.0.2
      */
     public function __call(string $name, array $arguments)
     {
@@ -82,11 +90,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Возвращает коллекцию, т.е. саму себя
      *
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCollection(): IDbCollection
+    public function getCollection(): DbCollectionInterface
     {
         return $this;
     }
@@ -94,11 +102,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Возвращает соединение с сервером базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection
+    public function getConnection(): DbConnectionInterface
     {
         return $this->getDatabase()->getConnection();
     }
@@ -106,11 +114,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Возвращает текущий выполняемый запрос
      *
-     * @return null|IDbCursor
+     * @return null|DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCurrent(): ?IDbCursor
+    public function getCurrent(): ?DbCursorInterface
     {
         return $this->_current;
     }
@@ -118,11 +126,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Возвращает инстанс курсора для работы с запросами
      *
-     * @return IDbCursor
+     * @return DbCursorInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCursor(): IDbCursor
+    public function getCursor(): DbCursorInterface
     {
         $this->current = $this->factory($this->factoryProperties, $this);
         return $this->current;
@@ -131,11 +139,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Возвращает базу данных, в которой находится коллекция курсора
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getDatabase(): IDbDatabase
+    public function getDatabase(): DbDatabaseInterface
     {
         return $this->owner;
     }
@@ -167,12 +175,12 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Удаление таблицы или указанной модели из таблицы
      *
-     * @param null|array|IModel $model
-     * @return IDbCollection
+     * @param null|array|ModelInterface $model
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function remove($model = []): IDbCollection
+    public function remove($model = []): DbCollectionInterface
     {
         if ($model) {
             $this->cursor->remove($model);
@@ -185,11 +193,11 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Сброс результатов выполнения последнего запроса
      *
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function reset(): IDbCollection
+    public function reset(): DbCollectionInterface
     {
         if ($this->current) {
             $this->current->reset();
@@ -213,12 +221,12 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Установка текущего выполняемого запроса
      *
-     * @param IDbCursor $cursor
+     * @param DbCursorInterface $cursor
      * @return void
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function setCurrent(IDbCursor $cursor)
+    public function setCurrent(DbCursorInterface $cursor)
     {
         $this->_current = $cursor;
     }
@@ -226,9 +234,9 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, IDbCo
     /**
      * Очистка таблицы от записей
      *
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function truncate(): IDbCollection;
+    abstract public function truncate(): DbCollectionInterface;
 }

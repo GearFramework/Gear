@@ -97,6 +97,15 @@ interface DbConnectionInterface
 interface DbDatabaseInterface
 {
     /**
+     * Возвращает соединение с сервером
+     *
+     * @return DbConnectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function getConnection(): DbConnectionInterface;
+
+    /**
      * Создание базы данных
      *
      * @return DbDatabaseInterface

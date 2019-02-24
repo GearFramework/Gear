@@ -2,38 +2,49 @@
 
 namespace Gear\Library\Db;
 
-use Gear\Interfaces\IDbCollection;
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IDbDatabase;
+use Gear\Interfaces\DbCollectionInterface;
+use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Library\GModel;
 use Gear\Library\GEvent;
-use Gear\Traits\TDelegateFactory;
-use Gear\Traits\TFactory;
+use Gear\Traits\Db\Mysql\DbCursorFactoryTrait;
+use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\FactoryTrait;
 
 /**
  * Библиотека базы данных
  *
  * @package Gear Framework
+ *
+ * @property DbConnectionInterface connection
+ * @property null|DbCollectionInterface current
+ * @property array cursorFactory
+ * @property DbDatabaseInterface database
+ * @property array factoryProperties
+ * @property mixed handler
+ * @property DbConnectionInterface owner
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbDatabase
+abstract class GDbDatabase extends GModel implements \IteratorAggregate, DbDatabaseInterface
 {
     /* Traits */
-    use TFactory;
-    use TDelegateFactory;
+    use DbCursorFactoryTrait;
+    use DelegateFactoryTrait;
+    use FactoryTrait;
     /* Const */
     /* Private */
     /* Protected */
     protected static $_initialized = false;
-    protected $_factoryProperties = [
-        'class' => '\Gear\Library\Db\GDbCollection',
-    ];
     protected $_cursorFactory = [
         'class' => '\Gear\Library\Db\GDbCursor',
+    ];
+    protected $_factoryProperties = [
+        'class' => '\Gear\Library\Db\GDbCollection',
     ];
     protected $_handler = null;
     protected $_items = [];
@@ -67,29 +78,29 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
     /**
      * Создание базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function create(): IDbDatabase;
+    abstract public function create(): DbDatabaseInterface;
 
     /**
      * Удаление базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function drop(): IDbDatabase;
+    abstract public function drop(): DbDatabaseInterface;
 
     /**
      * Возвращает подключение к серверу базы данных
      *
-     * @return IDbConnection
+     * @return DbConnectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getConnection(): IDbConnection
+    public function getConnection(): DbConnectionInterface
     {
         return $this->owner;
     }
@@ -97,35 +108,23 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
     /**
      * Возвращает текущую выбранную коллекцию
      *
-     * @return null|IDbCollection
+     * @return null|DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCurrent(): ?IDbCollection
+    public function getCurrent(): ?DbCollectionInterface
     {
         return $this->_current;
     }
 
     /**
-     * Возвращает курсор
-     *
-     * @return IDbCursor
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getCursor(): IDbCursor
-    {
-        return $this->factory($this->_cursorFactory, $this);
-    }
-
-    /**
      * Возвращает базу данных, т.е. саму себя
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getDatabase(): IDbDatabase
+    public function getDatabase(): DbDatabaseInterface
     {
         return $this;
     }
@@ -145,11 +144,11 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
     /**
      * Удаление базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function remove(): IDbDatabase
+    public function remove(): DbDatabaseInterface
     {
         $this->drop();
     }
@@ -157,22 +156,22 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
     /**
      * Выбор текущей базы данных
      *
-     * @return IDbDatabase
+     * @return DbDatabaseInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    abstract public function select(): IDbDatabase;
+    abstract public function select(): DbDatabaseInterface;
 
     /**
      * Возвращает коллекцию
      *
      * @param string $name
      * @param string $alias
-     * @return IDbCollection
+     * @return DbCollectionInterface
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function selectCollection(string $name, string $alias = ''): IDbCollection
+    public function selectCollection(string $name, string $alias = ''): DbCollectionInterface
     {
         if (isset($this->_items[$name])) {
             if ($alias) {
@@ -182,7 +181,7 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
                 $this->current = $this->_items[$name];
             }
         } else {
-            $properties = $alias ? ['name' => $name, 'alias' => $alias] : ['name' => $name];
+            $properties = ['name' => $name, 'alias' => $alias];
             $this->current = $this->_items[$name] = $this->factory($properties, $this);
         }
         return $this->current;
@@ -191,12 +190,12 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, IDbData
     /**
      * Установка текущей коллекции
      *
-     * @param IDbCollection $current
+     * @param DbCollectionInterface $current
      * @return void
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function setCurrent(IDbCollection $current)
+    public function setCurrent(DbCollectionInterface $current)
     {
         $this->_current = $current;
     }

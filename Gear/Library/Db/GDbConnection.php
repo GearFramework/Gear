@@ -8,6 +8,7 @@ use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Library\GComponent;
 use Gear\Library\GEvent;
+use Gear\Traits\Db\Mysql\DbCursorFactoryTrait;
 use Gear\Traits\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
 
@@ -17,8 +18,9 @@ use Gear\Traits\Factory\FactoryTrait;
  * @package Gear Framework
  *
  * @property DbConnectionInterface connection
- * @property DbDatabaseInterface current
+ * @property null|DbDatabaseInterface current
  * @property DbCursorInterface cursor
+ * @property array cursorFactory
  * @property mixed handler
  *
  * @author Kukushkin Denis
@@ -30,8 +32,9 @@ use Gear\Traits\Factory\FactoryTrait;
 abstract class GDbConnection extends GComponent implements \IteratorAggregate, DbConnectionInterface
 {
     /* Traits */
-    use FactoryTrait;
+    use DbCursorFactoryTrait;
     use DelegateFactoryTrait;
+    use FactoryTrait;
     /* Const */
     /* Private */
     /* Protected */
@@ -43,6 +46,9 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
     ];
     protected $_cursorFactory = [
         'class' => '\Gear\Library\Db\GDbCursor',
+    ];
+    protected $_factoryProperties = [
+        'class' => '\Gear\Library\Db\GDbDatabase',
     ];
     protected $_handler = null;
     protected $_items = [];
@@ -124,18 +130,6 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
     }
 
     /**
-     * Возвращает курсор
-     *
-     * @return DbCursorInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function getCursor(): DbCursorInterface
-    {
-        return $this->factory($this->_cursorFactory, $this);
-    }
-
-    /**
      * Возвращает ресурс подключения к базе данных
      *
      * @return mixed
@@ -156,7 +150,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
      */
     public function isConnected(): bool
     {
-        return $this->_handler ? true : false;
+        return $this->handler ? true : false;
     }
 
     /**
@@ -178,8 +172,9 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
      */
     public function reconnect(): DbConnectionInterface
     {
-        if (!$this->isConnected()) {
-            $this->connect();
+        if ($this->isConnected()) {
+            $this->close();
+            $this->open();
         }
         return $this;
     }
@@ -219,7 +214,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
             $this->current = $this->_items[$name] = $db;
             $this->current->select();
         }
-        return $this->_current;
+        return $this->current;
     }
 
     /**
