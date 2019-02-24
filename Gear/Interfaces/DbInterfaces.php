@@ -746,6 +746,7 @@ interface DbStorageComponentInterface
      * @version 0.0.2
      */
     public function selectCollection(string $alias = ""): DbCollectionInterface;
+
     /**
      * Выбор базы данных
      *
