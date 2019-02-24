@@ -2,12 +2,12 @@
 
 namespace Gear\Library\Db;
 
-use Gear\Interfaces\IDbConnection;
-use Gear\Interfaces\IFactory;
+use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\FactoryInterface;
 use Gear\Library\GComponent;
-use Gear\Traits\TDbStorage;
-use Gear\Traits\TDelegateFactory;
-use Gear\Traits\TFactory;
+use Gear\Traits\Db\Mysql\DbStorageTrait;
+use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\FactoryTrait;
 
 /**
  * Бибилиотека для компонентов, работающих с данными в базе данных
@@ -16,7 +16,7 @@ use Gear\Traits\TFactory;
  *
  * @property string alias
  * @property string collectionName
- * @property IDbConnection $connection
+ * @property DbConnectionInterface $connection
  * @property string connectionName
  * @property string dbName
  * @property array defaultParams
@@ -26,14 +26,14 @@ use Gear\Traits\TFactory;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate, IFactory
+abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate, FactoryInterface
 {
     /* Traits */
-    use TFactory;
-    use TDelegateFactory;
-    use TDbStorage;
+    use DbStorageTrait;
+    use DelegateFactoryTrait;
+    use FactoryTrait;
     /* Const */
     /* Private */
     /* Protected */
