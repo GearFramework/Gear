@@ -237,6 +237,9 @@ trait DbStorageTrait
      */
     public function getDefaultCursor(): DbCursorInterface
     {
+        /**
+         * @var DbCursorInterface $cursor
+         */
         $cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);

@@ -44,42 +44,6 @@ final class Core {
      * @var int публичный доступ к объекту, у которого свойство $object->_access имеет данное значение
      */
     const ACCESS_PUBLIC = 2;
-    /**
-     * @var string класс log-сообщений alert
-     */
-    const ALERT = 'alert';
-    /**
-     * @var string класс log-сообщений critical
-     */
-    const CRITICAL = 'critical';
-    /**
-     * @var string класс log-сообщений debug
-     */
-    const DEBUG = 'debug';
-    /**
-     * @var string класс log-сообщений emergency
-     */
-    const EMERGENCY = 'emergency';
-    /**
-     * @var string класс log-сообщений error
-     */
-    const ERROR = 'error';
-    /**
-     * @var string класс log-сообщений exception
-     */
-    const EXCEPTION = 'exception';
-    /**
-     * @var string класс log-сообщений info
-     */
-    const INFO = 'info';
-    /**
-     * @var string класс log-сообщений notice
-     */
-    const NOTICE = 'notice';
-    /**
-     * @var string класс log-сообщений warning
-     */
-    const WARNING = 'warning';
     /* Private */
     /**
      * @var array $_bootstrapLibraries обязательные библиотеки для начальной загрузки
@@ -142,15 +106,15 @@ final class Core {
             /* Файлы для записи логов ядра (должен быть прямой путь к файлу) */
             'syslog' => [
                 0 => GEAR . '/Logs/Core/Core.log',
-                self::ALERT => GEAR . '/Logs/Core/Core.alert.log',
-                self::CRITICAL =>  GEAR . '/Logs/Core/Core.critical.log',
-                self::DEBUG =>  GEAR . '/Logs/Core/Core.debug.log',
-                self::EMERGENCY => GEAR . '/Logs/Core/Core.emergency.log',
-                self::ERROR => GEAR . '/Logs/Core/Core.error.log',
-                self::EXCEPTION => GEAR . '/Logs/Core/Core.exception.log',
-                self::INFO => GEAR . '/Logs/Core/Core.info.log',
-                self::NOTICE => GEAR . '/Logs/Core/Core.notice.log',
-                self::WARNING => GEAR . '/Logs/Core/Core.warning.log',
+                \Psr\Log\LogLevel::ALERT => GEAR . '/Logs/Core/Core.alert.log',
+                \Psr\Log\LogLevel::CRITICAL =>  GEAR . '/Logs/Core/Core.critical.log',
+                \Psr\Log\LogLevel::DEBUG =>  GEAR . '/Logs/Core/Core.debug.log',
+                \Psr\Log\LogLevel::EMERGENCY => GEAR . '/Logs/Core/Core.emergency.log',
+                \Psr\Log\LogLevel::ERROR => GEAR . '/Logs/Core/Core.error.log',
+                \Psr\Log\LogLevel::EXCEPTION => GEAR . '/Logs/Core/Core.exception.log',
+                \Psr\Log\LogLevel::INFO => GEAR . '/Logs/Core/Core.info.log',
+                \Psr\Log\LogLevel::NOTICE => GEAR . '/Logs/Core/Core.notice.log',
+                \Psr\Log\LogLevel::WARNING => GEAR . '/Logs/Core/Core.warning.log',
             ],
             /* Разделять логи по файлам в зависимости от типа или всё писать в один общий лог */
             'splitLogs' => false,
@@ -392,7 +356,7 @@ final class Core {
      * @return \Gear\Library\GApplication
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public static function app(): \Gear\Library\GApplication
     {
@@ -443,8 +407,11 @@ final class Core {
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function c(string $name, ?\Gear\Interfaces\IObject $owner = null, bool $clone = false): \Gear\Interfaces\ComponentInterface
+    public static function c(string $name, ?\Gear\Interfaces\ObjectInterface $owner = null, bool $clone = false): \Gear\Interfaces\ComponentInterface
     {
+        /**
+         * @var \Gear\Interfaces\ComponentInterface $component
+         */
         $component = self::service($name, 'component', $owner);
         return $clone ? clone $component : $component;
     }
@@ -460,7 +427,7 @@ final class Core {
      * @return \Exception
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public static function e(string $exceptionName, $message = '', $context = [], $code = 0, $previous = null): \Exception
     {
@@ -481,6 +448,9 @@ final class Core {
             $message = str_replace('{' . $name . '}', $value, $message);
         }
         if (self::isInitialized() == true && self::isComponentRegistered(self::props('international'))) {
+            /**
+             * @var \Gear\Interfaces\InternationalInterface $international
+             */
             $international = self::service(self::props('international'));
             $message = $international->tr($message, \Gear\Library\GException::getLocaleSection());
         }

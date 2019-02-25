@@ -4,6 +4,7 @@ namespace Gear\Plugins\Log;
 
 use Gear\Core;
 use Gear\Library\GPlugin;
+use Psr\Log\LogLevel;
 
 /**
  * Плагин записи логов в файл
@@ -33,8 +34,8 @@ class GFileLogger extends GPlugin
     /* Private */
     /* Protected */
     protected static $_defaultProperties = [
-        'levels' => [Core::ERROR, Core::WARNING, Core::NOTICE, Core::INFO],
-        'location' => 'Log/application.log',
+        'levels' => [LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO],
+        'location' => 'Logs\application.log',
         'modeLocation' => 0700,
         'modeLogFile' => 0600,
         'maxLogFileSize' => 10 * 1048576,
@@ -43,7 +44,6 @@ class GFileLogger extends GPlugin
         /* Количество файлов участвующих в ротации */
         'maxRotateFiles' => 10,
     ];
-    protected static $_isInit = false;
     /* Public */
 
     /**
@@ -62,13 +62,12 @@ class GFileLogger extends GPlugin
             $dirname = dirname($fileLog);
             if (!file_exists($dirname)) {
                 if (!is_writable(dirname($dirname))) {
-                    throw $this->FileSystemException('Could not create logs directory {dirname}', ['dirname' => $dirname]);
+                    throw self::FileSystemException('Could not create logs directory {dirname}', ['dirname' => $dirname]);
                 }
-                @mkdir($dirname);
-                @chmod($dirname, $this->modeLocation);
+                @mkdir($dirname, $this->modeLocation, true);
             }
             if (!is_writable($dirname) || (file_exists($fileLog) && !is_writable($fileLog))) {
-                throw $this->FileSystemException('Log file {fileLog} is not writable', ['fileLog' => $fileLog]);
+                throw self::FileSystemException('Log file {fileLog} is not writable', ['fileLog' => $fileLog]);
             }
             $handle = @fopen($fileLog, 'a');
             if ($handle) {

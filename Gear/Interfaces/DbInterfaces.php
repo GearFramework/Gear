@@ -211,6 +211,18 @@ interface DbCollectionInterface
     public function getDatabase(): DbDatabaseInterface;
 
     /**
+     * Добавление в коллекцию новой записи
+     * Возвращает количество затронутых строк
+     * В случае совпадения PRIMARY KEY генерируется исключение
+     *
+     * @param array|ModelInterface $properties
+     * @return integer
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function insert($properties): int;
+
+    /**
      * Возвращает ID последней вставленной записи в таблицу
      *
      * @return int

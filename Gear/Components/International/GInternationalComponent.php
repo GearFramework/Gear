@@ -3,6 +3,7 @@
 namespace Gear\Components\International;
 
 use Gear\Core;
+use Gear\Interfaces\InternationalInterface;
 use Gear\Library\GComponent;
 
 /**
@@ -16,46 +17,28 @@ use Gear\Library\GComponent;
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
-class GInternationalComponent extends GComponent
+class GInternationalComponent extends GComponent implements InternationalInterface
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
     protected $_messages = [];
     /* Public */
 
     /**
-     * Возвращает перевод указанного сообщения
+     * Добавление новой секции сообщений
      *
-     * @param string $message
      * @param string $section
-     * @return string
-     * @throws \CoreException
+     * @param array $messages
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function tr(string $message, string $section): string
+    public function attachSection(string $section, array $messages)
     {
-        $section = Core::resolvePath('International\\' . $section . '\\' . Core::props('locale'));
-        if (!preg_match('/(\\\\|\/)/', $section)) {
-            $section = '\Gear\International\\' . $section;
-        } else {
-            $section = (Core::isModuleInstalled('app') ? Core::app()->namespace : '\Gear') . '\International\\' . $section . '\\' . Core::props('locale');
-        }
-        if (!($messages = $this->getMessages($section))) {
-            $sectionFileMessages = Core::resolvePath($section, !Core::isComponentInstalled(Core::props('loaderName'))) . '.php';
-            $messages = [];
-            if (file_exists($sectionFileMessages)) {
-                $messages = require($sectionFileMessages);
-            }
-            $this->attachSection($section, $messages);
-        }
-        $messages = $this->getMessages($section);
-        return isset($messages[$message]) ? $messages[$message] : $message;
+        $this->_messages[$section] = $messages;
     }
 
     /**
@@ -77,15 +60,32 @@ class GInternationalComponent extends GComponent
     }
 
     /**
-     * Добавление новой секции сообщений
+     * Возвращает перевод указанного сообщения
      *
+     * @param string $message
      * @param string $section
-     * @param array $messages
+     * @return string
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function attachSection(string $section, array $messages)
+    public function tr(string $message, string $section = ''): string
     {
-        $this->_messages[$section] = $messages;
+        $section = Core::resolvePath('International\\' . $section . '\\' . Core::props('locale'));
+        if (!preg_match('/(\\\\|\/)/', $section)) {
+            $section = '\Gear\International\\' . $section;
+        } else {
+            $section = (Core::isModuleInstalled('app') ? Core::app()->namespace : '\Gear') . '\International\\' . $section . '\\' . Core::props('locale');
+        }
+        if (!($messages = $this->getMessages($section))) {
+            $sectionFileMessages = Core::resolvePath($section, !Core::isComponentInstalled(Core::props('loaderName'))) . '.php';
+            $messages = [];
+            if (file_exists($sectionFileMessages)) {
+                $messages = require($sectionFileMessages);
+            }
+            $this->attachSection($section, $messages);
+        }
+        $messages = $this->getMessages($section);
+        return isset($messages[$message]) ? $messages[$message] : $message;
     }
 }

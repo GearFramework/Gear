@@ -76,6 +76,25 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, DbCol
      */
     abstract public function drop();
 
+    public function find($criteria = [], $fields = []): DbCursorInterface
+    {
+        return $this->cursor->find($criteria, $fields);
+    }
+
+    /**
+     * @param array $criteria
+     * @param array $fields
+     * @param array $sort
+     * @param int $as
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function findOne($criteria = [], $fields = [], $sort = [], $as = GDbCursor::AS_ASSOC): array
+    {
+        return $this->cursor->findOne($criteria, $fields, $sort, $as);
+    }
+
     /**
      * Возвращает псевдоним для коллекции
      *
@@ -159,6 +178,21 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, DbCol
     public function getHandler()
     {
         return $this->getConnection()->handler;
+    }
+
+    /**
+     * Добавление в коллекцию новой записи
+     * Возвращает количество затронутых строк
+     * В случае совпадения PRIMARY KEY генерируется исключение
+     *
+     * @param array|ModelInterface $properties
+     * @return integer
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function insert($properties): int
+    {
+        return $this->cursor->insert($properties);
     }
 
     /**

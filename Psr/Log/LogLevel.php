@@ -21,6 +21,7 @@ class LogLevel
     const DEBUG     = 'debug';
     const EMERGENCY = 'emergency';
     const ERROR     = 'error';
+    const EXCEPTION = 'exception';
     const INFO      = 'info';
     const NOTICE    = 'notice';
     const WARNING   = 'warning';

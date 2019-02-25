@@ -5,6 +5,7 @@ namespace Gear\Components\Log;
 use Gear\Core;
 use Gear\Interfaces\PluginInterface;
 use Gear\Library\GComponent;
+use Psr\Log\LogLevel;
 
 /**
  * Компонент логгирования операций
@@ -54,7 +55,7 @@ class GLogComponent extends GComponent
         } elseif (is_array($logger)) {
             $this->registerPlugin($name, $logger);
         } else {
-            throw $this->InvalidLogWriterException(['logger' => $name]);
+            throw self::InvalidLogWriterException(['logger' => $name]);
         }
     }
 
@@ -66,11 +67,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function alert($message, array $context = [])
     {
-        $this->log(Core::ALERT, $message, $context);
+        $this->log(LogLevel::ALERT, $message, $context);
     }
 
     /**
@@ -81,11 +82,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function critical($message, array $context = [])
     {
-        $this->log(Core::CRITICAL, $message, $context);
+        $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
     /**
@@ -96,11 +97,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function debug($message, array $context = [])
     {
-        $this->log(Core::DEBUG, $message, $context);
+        $this->log(LogLevel::DEBUG, $message, $context);
     }
 
     /**
@@ -111,11 +112,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function emergency($message, array $context = [])
     {
-        $this->log(Core::EMERGENCY, $message, $context);
+        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 
     /**
@@ -126,11 +127,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function error($message, array $context = [])
     {
-        $this->log(Core::ERROR, $message, $context);
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 
     /**
@@ -141,11 +142,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function exception($message, array $context = [])
     {
-        $this->log(Core::EXCEPTION, $message, $context);
+        $this->log(LogLevel::EXCEPTION, $message, $context);
     }
 
     /**
@@ -169,11 +170,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function info($message, array $context = [])
     {
-        $this->log(Core::INFO, $message, $context);
+        $this->log(LogLevel::INFO, $message, $context);
     }
 
     /**
@@ -205,11 +206,11 @@ class GLogComponent extends GComponent
      * @return void
      * @throws \PluginNotFoundException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function notice($message, array $context = [])
     {
-        $this->log(Core::NOTICE, $message, $context);
+        $this->log(LogLevel::NOTICE, $message, $context);
     }
 
     /**
@@ -252,6 +253,6 @@ class GLogComponent extends GComponent
      */
     public function warning($message, array $context = [])
     {
-        $this->log(Core::WARNING, $message, $context);
+        $this->log(LogLevel::WARNING, $message, $context);
     }
 }
