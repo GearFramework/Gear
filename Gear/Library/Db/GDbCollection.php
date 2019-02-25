@@ -76,6 +76,13 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, DbCol
      */
     abstract public function drop();
 
+    /**
+     * @param array $criteria
+     * @param array $fields
+     * @return DbCursorInterface
+     * @since 0.0.2
+     * @version 0.0.2
+     */
     public function find($criteria = [], $fields = []): DbCursorInterface
     {
         return $this->cursor->find($criteria, $fields);
