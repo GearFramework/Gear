@@ -2,7 +2,9 @@
 
 namespace Gear\Library;
 
+use Gear\Interfaces\ComponentContainedInterface;
 use Gear\Interfaces\ModuleInterface;
+use Gear\Interfaces\PluginContainedInterface;
 use Gear\Traits\ComponentContainedTrait;
 use Gear\Traits\PluginContainedTrait;
 use Gear\Traits\ServiceContainedTrait;
@@ -23,12 +25,11 @@ use Gear\Traits\ServiceContainedTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GModule extends GService implements ModuleInterface
+class GModule extends GService implements ModuleInterface, ComponentContainedInterface
 {
     /* Traits */
     use ServiceContainedTrait;
     use ComponentContainedTrait;
-    use PluginContainedTrait;
     /* Const */
     /* Private */
     /* Protected */

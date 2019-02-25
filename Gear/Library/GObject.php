@@ -4,6 +4,7 @@ namespace Gear\Library;
 
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
+use Gear\Interfaces\PluginContainedInterface;
 use Gear\Traits\ObjectTrait;
 use Gear\Traits\PluginContainedTrait;
 use Gear\Traits\PropertiesTrait;
@@ -30,7 +31,7 @@ use Gear\Traits\ViewTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GObject implements ObjectInterface
+class GObject implements ObjectInterface, PluginContainedInterface
 {
     /* Traits */
     use EventTrait;
