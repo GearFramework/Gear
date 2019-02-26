@@ -37,6 +37,7 @@ class GRouterComponent extends GComponent implements FactoryInterface
     private $_currentController = null;
     private $_defaultController = 'index';
     private $_defaultControllersPath = 'Controllers';
+    private $_factoryProperties = [];
     private $_request = null;
     private $_response = null;
     private $_routes = [];
@@ -174,11 +175,12 @@ class GRouterComponent extends GComponent implements FactoryInterface
                 throw self::ControllerClassIsEmptyException(['route' => $route]);
             }
             $nameRoute = substr($route, strrpos('/', $route));
-            $this->_currentController = $this->factory([
+            $controller = [
                 'class' => $class,
                 'name' => $nameRoute,
                 'route' => $route,
-            ]);
+            ];
+            $this->_currentController = $this->factory($controller, $this);
         }
         return $this->_currentController;
     }

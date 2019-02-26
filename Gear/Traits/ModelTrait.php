@@ -33,7 +33,7 @@ trait ModelTrait
      * @since 0.0.2
      * @version 0.0.2
      */
-    public static function getPrimaryKeyName(): string
+    public function getPrimaryKeyName(): string
     {
         return static::$primaryKeyName;
     }
@@ -59,7 +59,7 @@ trait ModelTrait
      * @since 0.0.2
      * @version 0.0.2
      */
-    public static function setPrimaryKeyName(string $pkName)
+    public function setPrimaryKeyName(string $pkName)
     {
         static::$primaryKeyName = $pkName;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Eb\Controllers\Clients;
+namespace Demo\Controllers;
 
 use Gear\Library\GController;
 
