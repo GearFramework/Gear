@@ -49,7 +49,10 @@ trait ObjectTrait
      */
     public function __call(string $name, array $arguments)
     {
-        if (preg_match('/Exception$/', $name)) {
+        if (method_exists(get_class($this), $name)) {
+            $class = get_class($this);
+            $class::$name(...$arguments);
+        } elseif (preg_match('/Exception$/', $name)) {
             array_unshift($arguments, $name);
             return Core::e(...$arguments);
         } elseif (preg_match('/^on[A-Z]/', $name)) {
@@ -175,13 +178,6 @@ trait ObjectTrait
         $setter = 'set' . ucfirst($name);
         if (method_exists($this, $setter)) {
             $this->$setter($value);
-        } elseif (isset($this->setters[$name])) {
-            $setter = $this->setters[$name];
-            if ($setter instanceof \Closure) {
-
-            } else {
-                $this->$setter($value);
-            }
         } elseif (preg_match('/^on[A-Z]/', $name) && method_exists($this, 'on')) {
             $this->on($name, $value);
         } else {
@@ -216,7 +212,7 @@ trait ObjectTrait
      */
     public static function getClassName(): string
     {
-        Core::getClassName(static::class);
+        return Core::getClassName(static::class);
     }
 
     /**
@@ -228,7 +224,7 @@ trait ObjectTrait
      */
     public static function getNamespace(): string
     {
-        return Core::getNamespace(static::getClassName());
+        return Core::getNamespace(static::class);
     }
 
     /**

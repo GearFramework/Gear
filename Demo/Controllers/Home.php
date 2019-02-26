@@ -26,6 +26,6 @@ class Home extends GController
 
     public function apiIndex()
     {
-        $this->render('Home');
+        $this->render('Index');
     }
 }

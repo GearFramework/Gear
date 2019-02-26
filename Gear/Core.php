@@ -435,6 +435,7 @@ final class Core {
         $exception = null;
         if (is_array($message)) {
             $args = func_get_args();
+            array_shift($args);
             array_unshift($args, '');
             list($message, $context, $code, $previous) = array_pad($args, 4, null);
             if ($context === null) {
@@ -444,9 +445,6 @@ final class Core {
                 $code = 0;
             }
         }
-        foreach ($context as $name => $value) {
-            $message = str_replace('{' . $name . '}', $value, $message);
-        }
         if (self::isInitialized() == true && self::isComponentRegistered(self::props('international'))) {
             /**
              * @var \Gear\Interfaces\InternationalInterface $international
@@ -455,9 +453,12 @@ final class Core {
             $message = $international->tr($message, \Gear\Library\GException::getLocaleSection());
         }
         if (!class_exists($exceptionClass, false)) {
+            foreach ($context as $name => $value) {
+                $message = str_replace('{' . $name . '}', $value, $message);
+            }
             $exception = new \Exception($message, $code, $previous);
         } else {
-            $exception = new $exceptionClass($message, $code, $previous);
+            $exception = new $exceptionClass($message, $code, $previous, $context);
         }
         return $exception;
     }
