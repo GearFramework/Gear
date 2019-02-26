@@ -205,8 +205,15 @@ class GController extends GModel implements ControllerInterface
     {
         $viewer = $this->{$this->viewerName};
         if ($this->layout) {
-            $contentPage = $viewer->render($template, $context, true);
-            $result = $viewer->render($this->layout, array_merge($context, ['contentLayout' => $contentPage]), $buffered);
+            if (is_array($template)) {
+                $contentPage = [];
+                foreach($template as $sectionName => $templateName) {
+                    $contentPage[$sectionName] = $viewer->render($templateName, $context, true);
+                }
+            } else {
+                $contentPage = ['contentLayout' => $viewer->render($template, $context, true)];
+            }
+            $result = $viewer->render($this->layout, array_merge($context, $contentPage), $buffered);
         } else {
             $result = $viewer->render($template, $context, $buffered);
         }
