@@ -4,9 +4,7 @@ namespace Gear\Library;
 
 use Gear\Interfaces\ComponentContainedInterface;
 use Gear\Interfaces\ModuleInterface;
-use Gear\Interfaces\PluginContainedInterface;
 use Gear\Traits\ComponentContainedTrait;
-use Gear\Traits\PluginContainedTrait;
 use Gear\Traits\ServiceContainedTrait;
 
 /**
