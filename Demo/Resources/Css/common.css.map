@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAAA,IAAI,CACA,gBAAgB,CAAE,IAAK,CACvB,KAAK,CAAE,IAAK",
+"mappings": "AAAA,IAAI,CACA,gBAAgB,CAAE,IAAK,CACvB,KAAK,CAAE,IAAK,CAEhB,EAAE,CACE,UAAU,CAAE,MAAM",
 "sources": ["Sass/common.sass"],
 "names": [],
 "file": "common.css"
