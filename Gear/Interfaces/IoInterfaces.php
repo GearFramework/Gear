@@ -24,7 +24,45 @@ interface IoInterface {}
  * @since 0.0.1
  * @version 0.0.2
  */
-interface FileSystemInterface extends IoInterface {}
+interface FileSystemInterface extends IoInterface
+{
+    /**
+     * Смена прав доступа к элементу
+     *
+     * @param integer|string|array|GFileSystemOptions $options
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function chmod($options = []): bool;
+
+    /**
+     * Меняет владельца (пользователя/группу) элемента файловой системы
+     * $this->chown(1001);
+     * $this->chown('user');
+     * $this->chown('user:group');
+     * $this->chown(':group');
+     * $this->chown('1001:50');
+     * $this->chown(':50');
+     * $this->chown(['user' => 1001, 'group' => 50]);
+     * и т.п.
+     *
+     * @param string|int|array|\Gear\Library\Io\Filesystem\GFileSystemOptions $options
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function chown($options = []);
+
+    /**
+     * Возвращает true если элемент файловой системы существует
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function exists(): bool;
+}
 
 /**
  * Интерфейс директорий

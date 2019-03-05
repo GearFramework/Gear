@@ -4,11 +4,14 @@ namespace Gear\Library\Io\Filesystem;
 
 use gear\Core;
 use Gear\Interfaces\DirectoryInterface;
+use Gear\Interfaces\FactoryInterface;
 use Gear\Interfaces\FileInterface;
 use Gear\Interfaces\FileSystemInterface;
 use Gear\Interfaces\ObjectInterface;
+use Gear\Interfaces\StaticFactoryInterface;
 use Gear\Library\GEvent;
 use Gear\Library\Io\GIo;
+use Gear\Traits\Factory\StaticFactoryTrait;
 
 /**
  * Класс файловой системы
@@ -20,15 +23,17 @@ use Gear\Library\Io\GIo;
  * @since 0.0.1
  * @version 0.0.2
  */
-abstract class GFileSystem extends GIo implements FileSystemInterface
+abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFactoryInterface
 {
     /* Traits */
+    use StaticFactoryTrait;
     /* Const */
     const DEFAULT_MODE = 0664;
     const DEFAULT_SIZEFORMAT = '%01d %s';
     /* Private */
     /* Protected */
     protected static $_defaultMime = 'text/plain';
+    protected static $_getterFactory = null;
     protected static $_mimes = [
         '123' => 'application/vnd.lotus-1-2-3',
         '3dml' => 'text/vnd.in3d.3dml',
@@ -1013,7 +1018,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
         'zirz' => 'application/vnd.zul',
         'zmm' => 'application/vnd.handheld-entertainment+xml',
     ];
-    protected static $_factory = [
+    protected static $_factoryProperties = [
         'dir' => ['class' => '\gear\library\io\filesystem\GDirectory'],
         'file' => ['class' => '\gear\library\io\filesystem\GFile'],
     ];
@@ -1038,14 +1043,11 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      * @param $options
      * @return GFileSystemOptions
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     protected function _prepareOptions($options): GFileSystemOptions
     {
-        if (is_array($options)) {
-            $options = new GFileSystemOptions($options);
-        }
-        return $options;
+        return new GFileSystemOptions(is_array($options) ? $options : []);
     }
 
     /**
@@ -1104,11 +1106,15 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      */
     public function beforeCopy(DirectoryInterface $destination, FileSystemInterface $target, GFileSystemOptions $options)
     {
+        /**
+         * @var GDirectory $destination
+         * @var FileSystemInterface $target
+         */
         if (!$destination->exists()) {
             $destination->create();
         }
         if ($target->exists() && !$options->overwrite) {
-            throw $this->FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $target]);
+            throw self::FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $target]);
         }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $target, 'options' => $options]));
     }
@@ -1124,7 +1130,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
     public function beforeCreate(GFileSystemOptions $options)
     {
         if ($this->exists() && !$options->overwrite) {
-            throw $this->FileSystemException('Directory <{dir}> alreadey exists', ['dir' => $this]);
+            throw self::FileSystemException('Directory <{dir}> alreadey exists', ['dir' => $this]);
         }
         $this->remove();
         return $this->trigger('onBeforeCreate', new GEvent($this, ['target' => $this, 'options' => $options]));
@@ -1141,7 +1147,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
     public function beforeRemove(GFileSystemOptions $options)
     {
         if ($this instanceof DirectoryInterface && !$this->isEmpty() && !$options->recursive) {
-            throw $this->FileSystemException('Deleting directory <{dir}> is not empty', ['dir' => $this]);
+            throw self::FileSystemException('Deleting directory <{dir}> is not empty', ['dir' => $this]);
         }
         return $this->trigger('onBeforeRemove', new GEvent($this, ['target' => $this, 'options' => $options]));
     }
@@ -1158,7 +1164,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
     public function beforeRename(FileSystemInterface $destination, GFileSystemOptions $options)
     {
         if ($destination->exists() && !$options->overwrite) {
-            throw $this->FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $destination]);
+            throw self::FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $destination]);
         }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $destination, 'options' => $options]));
     }
@@ -1169,7 +1175,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      * @param integer|string|array|GFileSystemOptions $options
      * @return bool
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function chmod($options = []): bool
     {
@@ -1192,7 +1198,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
                 $permission = $this->_chmodTarget($permission);
             $result = chmod($this->path, $permission);
         } else {
-            $this->FileSystemException('Invalid value of permission <{permission}>', ['permission' => $options->permission]);
+            throw self::FileSystemException('Invalid value of permission <{permission}>', ['permission' => $options->permission]);
         }
         return $result;
     }
@@ -1278,13 +1284,14 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
 
     /**
      * Возвращает инстанс владельца элемента файловой системы
-     * @return ObjectInterface
+     *
+     * @return null|DirectoryInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function dir(): ?ObjectInterface
+    public function dir(): ?DirectoryInterface
     {
-        return $this->getOwner();
+        return $this->owner;
     }
 
     /**
@@ -1408,17 +1415,17 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
         if ($record && isset($record['path'])) {
             if (file_exists($record['path'])) {
                 $type = filetype($record['path']);
-                if (isset(static::$_factory[$type])) {
-                    $factory = static::$_factory[$type];
+                if (isset(static::$_factoryProperties[$type])) {
+                    $factory = static::$_factoryProperties[$type];
                 }
             } elseif (isset($record['type'])) {
-                if (isset(static::$_factory[$record['type']])) {
-                    $factory = static::$_factory[$record['type']];
+                if (isset(static::$_factoryProperties[$record['type']])) {
+                    $factory = static::$_factoryProperties[$record['type']];
                 }
             }
         }
         if (!$factory) {
-            self::FileSystemException('Unknown filesystem element');
+            throw self::FileSystemException('Unknown filesystem element');
         }
         return array_replace_recursive($factory, $record);
     }

@@ -12,6 +12,7 @@ use Gear\Library\GEvent;
  * @package Gear Framework
  *
  * @property array factoryProperties
+ * @property \Closure getterFactory
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -85,6 +86,22 @@ trait FactoryTrait
     }
 
     /**
+     * Возвращает класс создаваемых фабрикой объектов
+     *
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getFactoryClass(): ?string
+    {
+        $class = null;
+        $properties = $this->factoryProperties;
+        if (isset($properties['class'])) {
+            $class = is_array($properties['class']) ? $properties['class']['name'] : $properties['class'];
+        }
+        return $class;
+    }
+
+    /**
      * Возвращает параметры по-умолчанию создаваемых объектов
      *
      * @param array $properties
@@ -94,7 +111,23 @@ trait FactoryTrait
      */
     public function getFactoryProperties(array $properties = []): array
     {
-        return array_replace_recursive($this->_factoryProperties, $properties);
+        if ($this->getterFactory) {
+            $this->getterFactory($this->_factoryProperties, $properties);
+        } else {
+            return array_replace_recursive($this->_factoryProperties, $properties);
+        }
+    }
+
+    /**
+     * Возвращает метод пользовательской обработки параметров фабрики
+     *
+     * @return \Closure|null
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getGetterFactory(): ?\Closure
+    {
+        return $this->_getterFactory;
     }
 
     /**
@@ -113,5 +146,17 @@ trait FactoryTrait
             throw self::FactoryInvalidItemPropertiesException();
         }
         $this->_factoryProperties = $properties;
+    }
+
+    /**
+     * Установка метода пользовательской обработки параметров фабрики
+     *
+     * @param \Closure $getter
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function setGetterFactory(\Closure $getter)
+    {
+        $this->_getterFactory = $getter;
     }
 }
