@@ -9,6 +9,7 @@ use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Interfaces\ModelInterface;
 use Gear\Library\GEvent;
 use Gear\Library\GModel;
+use Gear\Traits\Factory\FactoryTrait;
 
 /**
  * Класс запроса
@@ -34,6 +35,7 @@ use Gear\Library\GModel;
 abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
 {
     /* Traits */
+    use FactoryTrait;
     /* Const */
     const ASC = 1;
     const DESC = -1;
@@ -42,6 +44,9 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
     const AS_OBJECT = 3;
     /* Private */
     /* Protected */
+    protected $_factoryProperties = [
+        'class' => '\Gear\Library\GModel',
+    ];
     protected $_query = '';
     protected $_result = null;
     /* Public */

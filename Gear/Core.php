@@ -48,7 +48,7 @@ final class Core {
     /**
      * @var array $_bootstrapLibraries обязательные библиотеки для начальной загрузки
      */
-    private static $_bootstrapLibraries = [
+    private static $_coreLibraries = [
         '\Psr\Http\Message\*',
         '\Gear\Interfaces\*',
         '\Gear\Traits\*',
@@ -237,7 +237,7 @@ final class Core {
      */
     private static function _bootstrap()
     {
-        self::_bootstrapLibraries(self::$_bootstrapLibraries);
+        self::_bootstrapLibraries(self::$_coreLibraries);
         foreach (self::$_configSections as $sectionName) {
             if (isset(self::$_config['bootstrap'][$sectionName])) {
                 $section = self::$_config['bootstrap'][$sectionName];
