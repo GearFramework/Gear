@@ -1,6 +1,6 @@
 <?php
 
-namespace Gear\Traits;
+namespace Gear\Traits\Factory;
 
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
