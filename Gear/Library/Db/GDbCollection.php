@@ -8,7 +8,7 @@ use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Interfaces\ModelInterface;
 use Gear\Library\GModel;
-use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
 
 /**

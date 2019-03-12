@@ -9,7 +9,7 @@ use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Library\GComponent;
 use Gear\Library\GEvent;
 use Gear\Traits\Db\Mysql\DbCursorFactoryTrait;
-use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
 
 /**

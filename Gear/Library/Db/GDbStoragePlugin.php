@@ -7,7 +7,7 @@ use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\FactoryInterface;
 use Gear\Library\GPlugin;
 use Gear\Traits\Db\Mysql\DbStorageTrait;
-use Gear\Traits\DelegateFactoryTrait;
+use Gear\Traits\Factory\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
 
 /**

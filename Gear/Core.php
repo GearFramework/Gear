@@ -1056,6 +1056,10 @@ final class Core {
                     $message .= ' [' . implode(':', $info) . ']';
                 }
                 $log = date('d/m/Y H:i:s') . ' [' . strtoupper($level) . '] ' . $message . "\n";
+                $logDir = dirname($logFile);
+                if (!file_exists($logDir)) {
+                    mkdir(dirname($logDir), 0777, true);
+                }
                 file_put_contents($logFile, $log, file_exists($logFile) ? FILE_APPEND : 0);
             }
         }
