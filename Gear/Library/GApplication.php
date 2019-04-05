@@ -40,11 +40,11 @@ class GApplication extends GModule implements ModuleInterface
      * @param mixed $result
      * @return mixed
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function afterRun($result)
     {
-        return Core::onAfterRunApplication(new GEvent($this));
+        return Core::onAfterRunApplication(new GEvent($this, ['result' => $result]));
     }
 
     /**
@@ -62,6 +62,7 @@ class GApplication extends GModule implements ModuleInterface
     /**
      * Завершение работы приложения
      *
+     * @param mixed $result
      * @return void
      * @since 0.0.1
      * @version 0.0.1

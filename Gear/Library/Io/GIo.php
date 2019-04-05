@@ -6,11 +6,25 @@ use Gear\Interfaces\IoInterface;
 use Gear\Library\GModel;
 use Gear\Traits\Factory\StaticFactoryTrait;
 
+/**
+ * Класс ввода-вывода
+ *
+ * @package Gear Framework
+ *
+ * @property mixed handler
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.2
+ */
 abstract class GIo extends GModel implements IoInterface
 {
     /* Traits */
     use StaticFactoryTrait;
     /* Const */
+    const DEFAULT_LENGTH_READ = 8 * 1024;
     const UNKNOWN = 0;
     const FIFO = 1;
     const CHAR = 2;
@@ -65,7 +79,7 @@ abstract class GIo extends GModel implements IoInterface
 
     abstract public function open($options = []);
 
-    abstract public function read($length = 8192);
+    abstract public function read($length = self::DEFAULT_LENGTH_READ);
 
     abstract public function seek($offset);
 

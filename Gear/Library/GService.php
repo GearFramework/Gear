@@ -23,7 +23,6 @@ class GService extends GObject implements ServiceInterface
     /* Private */
     /* Protected */
     protected static $_config = [];
-    protected static $_isInitialized = false;
     /* Public */
 
     /**
@@ -102,19 +101,6 @@ class GService extends GObject implements ServiceInterface
     }
 
     /**
-     * Возврашает true, если класс сервиса уже был проинициализирован, иначе возвращает false
-     *
-     * @deprecated
-     * @return bool
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function isInitialized(): bool
-    {
-        return static::$_isInitialized;
-    }
-
-    /**
      * Получение экземпляра сервиса
      *
      * @param array|string $properties
@@ -141,20 +127,6 @@ class GService extends GObject implements ServiceInterface
         }
         $service = new static($properties, $owner);
         return $service;
-    }
-
-    /**
-     * Устнаваливает true или false для определения инициализации класса сервиса
-     *
-     * @deprecated
-     * @param bool $value
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public static function setInitialized(bool $value)
-    {
-        static::$_isInitialized = $value;
     }
 
     /**

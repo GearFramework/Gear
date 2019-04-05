@@ -1114,7 +1114,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
             $destination->create();
         }
         if ($target->exists() && !$options->overwrite) {
-            throw self::FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $target]);
+            throw self::FileSystemException('Destination <{dest}> already exists', ['dest' => $target]);
         }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $target, 'options' => $options]));
     }
@@ -1189,6 +1189,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
             $permission = str_replace(' ', '', $options->permission);
             $permissions = explode(',', $permission);
             foreach ($permissions as $permission) {
+                //TODO доделать
             }
             if (strpos($permission, ','))
                 $permission = $this->_chmodRelative(explode(',', $permission));
