@@ -277,7 +277,7 @@ trait DbStorageTrait
     {
         if (is_iterable($cursor)) {
             $cursor = $this->delegate($cursor);
-        } else if (is_string($cursor)) {
+        } elseif (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
         } else {
             $cursor = $this->delegate($this->getDefaultCursor());
@@ -331,10 +331,11 @@ trait DbStorageTrait
      * Сохранение модели
      *
      * @param array|ModelInterface $model
+     * @return int
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function save($model)
+    public function save($model): int
     {
         if ($model instanceof ModelInterface) {
             $model = $model->props();
@@ -451,7 +452,7 @@ trait DbStorageTrait
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function update($model, $criteria = [])
+    public function update($model, $criteria = []): int
     {
         $result = 0;
         if ($model instanceof ModelInterface) {

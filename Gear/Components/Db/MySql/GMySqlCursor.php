@@ -7,6 +7,7 @@ use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\ModelInterface;
 use Gear\Interfaces\ObjectInterface;
 use Gear\Library\Db\GDbCursor;
+use Psr\Log\LogLevel;
 
 
 /**
@@ -136,7 +137,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      */
     public function buildQuery(): string
     {
-        Core::syslog(Core::INFO, 'Build MySQL query ', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
+        Core::syslog(LogLevel::INFO, 'Build MySQL query ', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         $this->_query = 'SELECT SQL_CALC_FOUND_ROWS ';
         $fields = $this->_queryBuild->fields;
         if ($fields) {
@@ -539,7 +540,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
             $query = sprintf($query, ...$bindParams);
         }
         if (defined('DEBUG') && DEBUG === true) {
-            Core::syslog(Core::INFO, 'Run MySQL query {query}', ['query' => $query, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+            Core::syslog(LogLevel::INFO, 'Run MySQL query {query}', ['query' => $query, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         }
         if (!($this->result = $this->handler->query($query))) {
             $handler = $this->handler;
