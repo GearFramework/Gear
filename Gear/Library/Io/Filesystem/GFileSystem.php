@@ -25,8 +25,8 @@ use Gear\Traits\Factory\StaticFactoryTrait;
  * @property int mtime
  * @property string $name
  * @property ObjectInterface owner
- * @property int size
  * @property string path
+ * @property int size
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -1030,10 +1030,16 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
         'zmm' => 'application/vnd.handheld-entertainment+xml',
     ];
     protected static $_factoryProperties = [
-        'dir' => ['class' => '\gear\library\io\filesystem\GDirectory'],
-        'file' => ['class' => '\gear\library\io\filesystem\GFile'],
+        'dir' => [
+            'class' => '\gear\library\io\filesystem\GDirectory'
+        ],
+        'file' => [
+            'class' => '\gear\library\io\filesystem\GFile'
+        ],
     ];
-    protected $_units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    protected $_units = [
+        'B', 'KB', 'MB', 'GB', 'TB', 'PB'
+    ];
     /* Public */
 
     /**
@@ -1086,11 +1092,11 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      * @param string $format
      * @return int|string
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function atime(string $format = '')
     {
-        return $this->getAtime($format);
+        return $format ? date($format, $this->atime) : $this->atime;
     }
 
     /**
@@ -1108,18 +1114,18 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
     /**
      * Подготовка и генерация события, возникающего перед копированием элемента файловой системы
      *
-     * @param DirectoryInterface $destination
+     * @param FileSystemInterface $destination
      * @param FileSystemInterface $target
      * @param GFileSystemOptions $options
      * @return mixed
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function beforeCopy(DirectoryInterface $destination, FileSystemInterface $target, GFileSystemOptions $options)
+    public function beforeCopy(FileSystemInterface $destination, FileSystemInterface $target, GFileSystemOptions $options)
     {
         /**
-         * @var GDirectory $destination
-         * @var FileSystemInterface $target
+         * @var GDirectory|GFile $destination
+         * @var GFile $target
          */
         if (!$destination->exists()) {
             $destination->create();
@@ -1217,6 +1223,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
 
     /**
      * Меняет владельца (пользователя/группу) элемента файловой системы
+     *
      * $this->chown(1001);
      * $this->chown('user');
      * $this->chown('user:group');
@@ -1287,11 +1294,11 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      * @param string $format
      * @return int|string
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function ctime(string $format = '')
     {
-        return $this->getCtime($format);
+        return $format ? date($format, $this->ctime) : $this->ctime;
     }
 
     /**
@@ -1357,14 +1364,13 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
     /**
      * Возращает timestamp доступа к элементу файловой системы
      *
-     * @param string $format
-     * @return int|string
+     * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getAtime(string $format = '')
+    public function getAtime()
     {
-        return $format ? date($format, fileatime($this)) : fileatime($this);
+        return fileatime($this);
     }
 
     /**
@@ -1376,7 +1382,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      */
     public function getBasename(): string
     {
-        return basename($this->path);
+        return basename($this);
     }
 
     /**
@@ -1392,13 +1398,13 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      * Возращает timestamp создания элемента файловой системы
      *
      * @param string $format
-     * @return int|string
+     * @return int
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function getCtime(string $format = '')
+    public function getCtime()
     {
-        return $format ? date($format, filectime($this)) : filectime($this);
+        return filectime($this);
     }
 
     /**
