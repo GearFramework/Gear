@@ -4,7 +4,6 @@ namespace Gear\Library\Io\Filesystem;
 
 use gear\Core;
 use Gear\Interfaces\DirectoryInterface;
-use Gear\Interfaces\FactoryInterface;
 use Gear\Interfaces\FileInterface;
 use Gear\Interfaces\FileSystemInterface;
 use Gear\Interfaces\ObjectInterface;
@@ -17,6 +16,18 @@ use Gear\Traits\Factory\StaticFactoryTrait;
  * Класс файловой системы
  *
  * @package Gear Framework
+ *
+ * @property int atime
+ * @property string basename
+ * @property string content
+ * @property int ctime
+ * @property string dirname
+ * @property int mtime
+ * @property string $name
+ * @property ObjectInterface owner
+ * @property int size
+ * @property string path
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
