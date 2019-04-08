@@ -81,7 +81,7 @@ class GMySqlConnectionComponent extends GDbConnection implements DbConnectionInt
     public function getFactory(array $record = []): array
     {
         $record = ['name' => $record['Database']];
-        return $record ? array_replace_recursive($this->_factoryProperties, $record) : $this->_factory;
+        return $record ? array_replace_recursive($this->_factoryProperties, $record) : $this->_factoryProperties;
     }
 
     /**

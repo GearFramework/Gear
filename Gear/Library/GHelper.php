@@ -21,7 +21,7 @@ use Gear\Traits\SetterTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GHelper implements HelperInterface
+abstract class GHelper implements HelperInterface
 {
     /* Traits */
     use HelperTrait;

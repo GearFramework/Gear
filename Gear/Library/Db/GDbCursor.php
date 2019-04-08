@@ -203,11 +203,11 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
      * @param string|array $fields
      * @param array $sort
      * @param int $as
-     * @return array|null
+     * @return iterable|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function findOne($criteria = [], $fields = [], $sort = [], $as = self::AS_ASSOC)
+    public function findOne($criteria = [], $fields = [], $sort = [], $as = self::AS_ASSOC): ?iterable
     {
         if ($criteria instanceof DbCursorInterface) {
             /**

@@ -385,7 +385,7 @@ interface DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function findOne($criteria = [], $fields = [], $sort = [], $as = self::AS_ASSOC);
+    public function findOne($criteria = [], $fields = [], $sort = [], $as = 2);
 
     /**
      * Возвращает первые N элементов из запроса
