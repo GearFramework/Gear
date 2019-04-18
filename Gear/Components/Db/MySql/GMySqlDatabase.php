@@ -11,6 +11,7 @@ use Gear\Library\Db\GDbDatabase;
  * @package Gear Framework
  *
  * @property GMySqlConnectionComponent connection
+ * @property \mysqli handler
  * @property string name
  * @property GMySqlConnectionComponent owner
  *

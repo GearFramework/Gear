@@ -13,6 +13,7 @@ use Gear\Library\Db\GDbCollection;
  * @property string alias
  * @property GMySqlConnectionComponent connection
  * @property GMySqlDatabase database
+ * @property \mysqli handler
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -97,5 +98,6 @@ class GMySqlCollection extends GDbCollection implements DbCollectionInterface
     public function truncate(): DbCollectionInterface
     {
         $this->cursor->runQuery('TRUNCATE TABLE `%s`', $this->name);
+        return $this;
     }
 }

@@ -18,6 +18,7 @@ use Gear\Library\GEvent;
  * @property DbCursorInterface cursor
  * @property array cursorFactory
  * @property array factoryProperties
+ * @property \mysqli handler
  * @property string host
  * @property string password
  * @property int port

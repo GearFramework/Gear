@@ -18,6 +18,7 @@ use Psr\Log\LogLevel;
  * @property GMySqlCollection collection
  * @property GMySqlConnectionComponent connection
  * @property GMySqlDatabase database
+ * @property \mysqli handler
  * @property int lastInsertId
  *
  * @author Kukushkin Denis
