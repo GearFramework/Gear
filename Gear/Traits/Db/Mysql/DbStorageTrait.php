@@ -42,6 +42,7 @@ trait DbStorageTrait
      *
      * @param array|ModelInterface|array of IModel $model
      * @return int
+     * @uses \Gear\Helpers\ArrayHelper as \Arrays
      * @since 0.0.1
      * @version 0.0.2
      */
@@ -361,7 +362,7 @@ trait DbStorageTrait
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function selectCollection(string $alias = ""): DbCollectionInterface
+    public function selectCollection(?string $alias = ""): DbCollectionInterface
     {
         return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias ? $alias : $this->alias);
     }
@@ -461,7 +462,7 @@ trait DbStorageTrait
                 $model->onAfterUpdate();
             }
         } else {
-            $result = $this->selectCollection()->update($model);
+            $result = $this->selectCollection()->update($model, $criteria);
         }
         return $result;
     }

@@ -167,6 +167,7 @@ interface DbDatabaseInterface
  *
  * @property mixed handler
  * @property string name
+ * @property DbCursorInterface cursor
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
