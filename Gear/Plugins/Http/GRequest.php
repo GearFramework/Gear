@@ -163,6 +163,7 @@ class GRequest extends GPlugin implements RequestInterface
     public function getCli(): array
     {
         if ($this->_cli === null) {
+            $this->_cli = [];
             $short = '';
             $long = [];
             foreach ($_SERVER['argv'] as $value) {
@@ -318,7 +319,7 @@ class GRequest extends GPlugin implements RequestInterface
      */
     public function inCli(string $name): bool
     {
-        return array_key_exists($name, $this->cli);
+        return array_key_exists($name, $this->getCli());
     }
 
     /**
