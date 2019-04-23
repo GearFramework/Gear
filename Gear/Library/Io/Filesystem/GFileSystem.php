@@ -1423,11 +1423,12 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      * Возвращает данные создаваемого объекта
      *
      * @param array $record
+     * @param ObjectInterface|null $owner
      * @return array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function getFactory(array $record = []): array
+    public static function getFactoryProperties(array $record = [], ?ObjectInterface $owner = null): array
     {
         $factory = null;
         if ($record && isset($record['path'])) {

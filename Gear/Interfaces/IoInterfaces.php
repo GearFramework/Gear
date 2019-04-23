@@ -62,6 +62,24 @@ interface FileSystemInterface extends IoInterface
      * @version 0.0.1
      */
     public function exists(): bool;
+
+    /**
+     * Возвращает true если элемент является файлом, иначе false
+     *
+     * @return boolean
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isFile(): bool;
+
+    /**
+     * Возвращает true если элемент является папкой, иначе false
+     *
+     * @return boolean
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isDir(): bool;
 }
 
 /**

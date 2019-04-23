@@ -16,7 +16,7 @@ use Psr\Log\LogLevel;
  * @property int modeLocation
  * @property int modeLogGile
  * @property int maxLogFileSize
- * @property int overheadFileSize
+ * @property string overheadFileSize
  * @property int maxRotateFiles
  *
  * @author Kukushkin Denis
@@ -29,8 +29,8 @@ class GFileLogger extends GPlugin
 {
     /* Traits */
     /* Const */
-    const ROTATE = 1;
-    const OVERWRITE = 2;
+    const ROTATE = 'rotate';
+    const OVERWRITE = 'overwrite';
     /* Private */
     /* Protected */
     protected static $_defaultProperties = [
