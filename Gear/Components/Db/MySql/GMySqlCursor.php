@@ -111,7 +111,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         if (!$this->result) {
             $this->query();
         }
-        return ($properties = $this->result->fetch_assoc()) ? $this->factory($properties, $this->collection) : false;
+        return ($properties = $this->result->fetch_assoc()) ? $this->factory($properties, $this->collection) : null;
     }
 
     /**
