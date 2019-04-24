@@ -6,6 +6,7 @@ use Gear\Core;
 use Gear\Library\Calendar\GLocale;
 use Gear\Library\GHelper;
 use Gear\Models\Calendar\GDate;
+use Gear\Models\Calendar\GTimeInterval;
 use Gear\Traits\Factory\StaticFactoryTrait;
 
 /**
@@ -90,6 +91,17 @@ class CalendarHelper extends GHelper
         $date = self::date($date);
         $options = self::_prepareOptions($options);
         return $date->day($options);
+    }
+
+    /**
+     * @param int $seconds
+     * @return GTimeInterval
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function helpInterval(int $seconds): GTimeInterval
+    {
+        return new GTimeInterval(['interval' => $seconds]);
     }
 
     /**

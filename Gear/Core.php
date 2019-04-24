@@ -82,6 +82,7 @@ final class Core {
             'helpers' => [
                 'Arrays' => ['class' => '\Gear\Helpers\ArrayHelper'],
                 'Html' => ['class' => '\Gear\Helpers\HtmlHelper'],
+                'Calendar' => ['class' => '\Gear\Helpers\CalendarHelper'],
             ],
         ],
         /* Список глобальных зарегистрированных модулей системы */

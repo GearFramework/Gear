@@ -5,6 +5,7 @@ namespace Gear\Models\Ffmpeg;
 use Gear\Interfaces\DependentInterface;
 use Gear\Library\GModel;
 use Gear\Library\Io\Filesystem\GFile;
+use Gear\Models\Calendar\GTimeInterval;
 
 /**
  * Модель видео-файла
@@ -56,9 +57,9 @@ class FFMpegMovie extends GFile implements DependentInterface
         return (int)$this->info->video->nb_frames;
     }
 
-    public function getDuration(): int
+    public function getDuration(): GTimeInterval
     {
-        return (int)$this->info['duration'];
+        return \Calendar::interval((int)$this->info['duration']);
     }
 
     public function getFrames(int $count, $start = 0, $step = 1): array
