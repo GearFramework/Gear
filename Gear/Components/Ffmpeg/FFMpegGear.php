@@ -29,7 +29,9 @@ class FFMpegGear extends GComponent
     protected $_factoryProperties = [
         'class' => '\Gear\Models\Ffmpeg\FFMpegMovie',
     ];
-    protected $_shellCommand = '/usr/bin/ffmpeg';
+    protected $_ffmpegCommand = '/usr/bin/ffmpeg';
+    protected $_ffprobeCommand = '/usr/bin/ffprobe';
+    protected $_tempDir = '/tmp';
     /* Public */
 
     public function getShellCommand(): string
@@ -39,7 +41,7 @@ class FFMpegGear extends GComponent
 
     public function open($pathToFile): FFMpegMovie
     {
-        return new FFMpegMovie(['path' => $pathToFile]);
+        return $this->factory(['path' => $pathToFile], $this);
     }
 
     public function setShellCommand(string $command)

@@ -137,11 +137,11 @@ class GDirectory extends GFileSystem implements DirectoryInterface, \IteratorAgg
     /**
      * Возвращает контент файла
      *
-     * @return string
+     * @return array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getContent(): string
+    public function getContent(): array
     {
         return scandir($this);
     }

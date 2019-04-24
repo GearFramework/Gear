@@ -1388,11 +1388,11 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
     /**
      * Возвращает контент элемента файловой системы
      * 
-     * @return string
+     * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    abstract public function getContent(): string;
+    abstract public function getContent();
 
     /**
      * Возращает timestamp создания элемента файловой системы
