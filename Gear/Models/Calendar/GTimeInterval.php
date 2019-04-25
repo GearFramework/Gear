@@ -10,12 +10,13 @@ use Gear\Library\GModel;
  * @package Gear Framework
  *
  * @property int days
- * @property int months
- * @property int years
+ * @property string format
  * @property int hours
- * @property int minutes
- * @property int seconds
  * @property int interval
+ * @property int minutes
+ * @property int months
+ * @property int seconds
+ * @property int years
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -29,38 +30,55 @@ class GTimeInterval extends GModel
     /* Const */
     /* Private */
     /* Protected */
+    protected $_format = '%02H:%02I:%02S';
     protected $_interval = 0;
     /* Public */
 
     public function __toString(): string
     {
-        $f = [];
-        $v = [];
-        if ($this->years) {
-            $f[] = '%d y.';
-            $v[] = $this->years;
+        $tokens = str_split($this->format);
+        $tokensDefault = ['Y' => 'years','M' => 'months','D' => 'days','H' => 'hours','I' => 'minutes','S' => 'seconds'];
+        $resultFormat = '';
+        $isDig = false;
+        $printf = '';
+        foreach ($tokens as $token) {
+            if ($token === '%') {
+                $printf = $token;
+                $isDig = true;
+            } else {
+                if ($isDig && is_numeric($token)) {
+                    $printf .= $token;
+                } elseif ($isDig && isset($tokensDefault[$token])) {
+                    $isDig = false;
+                    $resultFormat .= sprintf($printf . "d", $this->{$tokensDefault[$token]});
+                    $printf = '';
+                } elseif (isset($tokensDefault[$token])) {
+                    $resultFormat .= sprintf('%d', $this->{$tokensDefault[$token]});
+                    $printf = '';
+                } else {
+                    $resultFormat .= $token;
+                }
+            }
         }
-        if ($this->months) {
-            $f[] = '%d m.';
-            $v[] = $this->months;
-        }
-        if ($this->days) {
-            $f[] = '%d d.';
-            $v[] = $this->days;
-        }
-        if ($this->hours) {
-            $f[] = '%d h.';
-            $v[] = $this->hours;
-        }
-        if ($this->minutes) {
-            $f[] = '%d min.';
-            $v[] = $this->minutes;
-        }
-        if ($this->seconds) {
-            $f[] = '%d s.';
-            $v[] = $this->seconds;
-        }
-        return printf(implode(' ', $f), ...$v);
+        return $resultFormat;
+    }
+
+    public function addInterval($interval): GTimeInterval
+    {
+        $addValue = $interval instanceof GTimeInterval ? $interval->getInterval() : (int)$interval;
+        $this->interval = $this->interval + $addValue;
+        return $this;
+    }
+
+    public function format(string $format): GTimeInterval
+    {
+        $this->format = $format;
+        return $this;
+    }
+
+    public function getFormat(): string
+    {
+        return $this->_format;
     }
 
     public function getInterval(): int
@@ -68,12 +86,17 @@ class GTimeInterval extends GModel
         return $this->_interval;
     }
 
+    public function setFormat(string $format)
+    {
+        $this->_format = $format;
+    }
+
     public function setInterval(int $interval)
     {
         $this->_interval = $interval;
         $periods = [31536000, 2678400, 86400, 3600, 60];
         $isZero = false;
-        $times = [];
+        $times = [0, 0, 0, 0, 0];
         foreach ($periods as $i => $p) {
             $period = floor($interval / $p);
             if (($period > 0) || ($period == 0 && $isZero)) {

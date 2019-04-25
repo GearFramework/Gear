@@ -14,6 +14,8 @@ namespace Gear\Traits;
  */
 trait ModelTrait
 {
+    public function __clone() {}
+
     /**
      * Возвращает значение поля, которое является первичным ключом
      *

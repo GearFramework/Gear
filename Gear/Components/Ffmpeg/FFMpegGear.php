@@ -34,9 +34,19 @@ class FFMpegGear extends GComponent
     protected $_tempDir = '/tmp';
     /* Public */
 
-    public function getShellCommand(): string
+    public function getFfmpegCommand(): string
     {
-        return $this->_shellCommand;
+        return $this->_ffmpegCommand;
+    }
+
+    public function getFfprobeCommand(): string
+    {
+        return $this->_ffprobeCommand;
+    }
+
+    public function getTempDir(): string
+    {
+        return $this->_tempDir;
     }
 
     public function open($pathToFile): FFMpegMovie
@@ -44,8 +54,18 @@ class FFMpegGear extends GComponent
         return $this->factory(['path' => $pathToFile], $this);
     }
 
-    public function setShellCommand(string $command)
+    public function setFfmpegCommand(string $command)
     {
-        $this->_shellCommand = $command;
+        $this->_ffmpegCommand = $command;
+    }
+
+    public function setFfprobeCommand(string $command)
+    {
+        $this->_ffprobeCommand = $command;
+    }
+
+    public function setTempDir(string $dir)
+    {
+        $this->_tempDir = $dir;
     }
 }
