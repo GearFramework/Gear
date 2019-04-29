@@ -69,7 +69,7 @@ trait PluginContainedTrait
      * Установка плагина
      *
      * @param string $name
-     * @param array|ComponentInterface|\Closure $plugin
+     * @param array|PluginInterface|\Closure $plugin
      * @param null|ObjectInterface $owner
      * @return PluginInterface
      * @since 0.0.1
@@ -89,9 +89,7 @@ trait PluginContainedTrait
             throw static::PluginInstallationIsInvalidException(['name' => $name, 'class' => get_class($this), 'file' => __FILE__, 'line' => __LINE__]);
         }
         $this->_plugins[$name] = $plugin;
-        /**
-         * @var PluginInterface $plugin
-         */
+        /** @var PluginInterface $plugin */
         return $plugin;
     }
 

@@ -11,6 +11,13 @@ use Gear\Interfaces\FileSystemInterface;
  * Класс файлов
  *
  * @package Gear Framework
+ *
+ * @property mixed content
+ * @property string ext
+ * @property string extension
+ * @property string mime
+ * @property string path
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
