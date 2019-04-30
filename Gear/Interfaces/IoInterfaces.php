@@ -80,6 +80,15 @@ interface FileSystemInterface extends IoInterface
      * @version 0.0.1
      */
     public function isDir(): bool;
+
+    /**
+     * Удаление элемента файловой системы
+     *
+     * @param array $options
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function remove($options = []);
 }
 
 /**
