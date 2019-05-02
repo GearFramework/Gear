@@ -6,5 +6,9 @@ use Gear\Library\GCollection;
 
 class GHtmlClassCollection extends GCollection
 {
-
+    /* Traits */
+    /* Const */
+    /* Private */
+    /* Protected */
+    /* Public */
 }
