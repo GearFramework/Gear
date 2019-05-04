@@ -78,6 +78,7 @@ final class Core {
             'components' => [
                 /* Автозагрузчик файлов с классами */
                 'loader' => ['class' => '\Gear\Components\Loader\GLoaderComponent'],
+                'lang' => ['class' => '\Gear\Components\International\GInternationalComponent'],
             ],
             'helpers' => [
                 'Arrays' => ['class' => '\Gear\Helpers\ArrayHelper'],

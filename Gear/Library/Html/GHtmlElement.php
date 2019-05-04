@@ -32,6 +32,7 @@ abstract class GHtmlElement extends GModel
     /* Private */
     /* Protected */
     protected $_attributes = null;
+    protected $_children = [];
     protected $_class = null;
     protected $_content = null;
     protected $_id = null;
@@ -40,6 +41,13 @@ abstract class GHtmlElement extends GModel
     protected $_tag = '';
     protected $_value = null;
     /* Public */
+
+    public function __call(string $name, array $args)
+    {
+        $element = \Html::$name(...$args);
+        $this->addChild($element);
+        return $element;
+    }
 
     /**
      * Добавление аттрибута
@@ -59,6 +67,12 @@ abstract class GHtmlElement extends GModel
         return $this;
     }
 
+    public function addChild(GHtmlElement $element): GHtmlElement
+    {
+        $this->_children[] = $element;
+        return $this;
+    }
+
     /**
      * Добавление класса к элементу
      *
@@ -70,7 +84,7 @@ abstract class GHtmlElement extends GModel
     public function addClass(string $className): GHtmlElement
     {
         if (!$this->_class) {
-            $this->_class = new GHtmlClassCollection([], $this);
+            $this->_class = new GHtmlClassCollection();
         }
         $this->_class->add($className);
         return $this;
@@ -80,13 +94,23 @@ abstract class GHtmlElement extends GModel
     /**
      * Возвращает набор аттрибутов элемента
      *
-     * @return iterable|null
+     * @return mixed
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function attributes(): ?iterable
+    public function attributes(?string $name = null, $value = null)
     {
-        return $this->attributes;
+        $ret = null;
+        if (!$name && !$value) {
+            return $this->attributes;
+        } else {
+            if ($value) {
+                $this->attributes->$name = $value;
+            } else {
+                $ret = $this->attributes->$name;
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -101,29 +125,76 @@ abstract class GHtmlElement extends GModel
         return $this->_attributes;
     }
 
+    /**
+     * Возвращает набор классов
+     *
+     * @return iterable|null
+     * @since 0.0.2
+     * @version 0.0.2
+     */
     public function getClass(): ?iterable
     {
         return $this->_class;
     }
 
+    /**
+     * Возвращает содержимое элемента
+     *
+     * @return mixed
+     * @since 0.0.2
+     * @version 0.0.2
+     */
     public function getContent()
     {
         return $this->_content;
     }
 
-    public function getName(): ?string
+    /**
+     * Возвращает значение аттрибута id
+     *
+     * @return mixed
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getId()
     {
-        return $this->_name;
+        return $this->attributes('id');
     }
 
+    /**
+     * Возвращает значение аттрибута name
+     *
+     * @return null|string
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getName(): ?string
+    {
+        return $this->attributes('name');
+    }
+
+    /**
+     * Возвращает название html-тэга
+     *
+     * @return string
+     * @since 0.0.2
+     * @version 0.0.2
+     */
     public function getTag(): string
     {
         return $this->_tag;
     }
 
+    /**
+     * Возвращает значение аттрибута value
+     *
+     * @return mixed
+     * @since 0.0.2
+     * @version 0.0.2
+     */
     public function getValue()
     {
-        return $this->_value;
+        return $this->attributes('value');
     }
 
     public function setClass(string $class): GHtmlElement
@@ -136,21 +207,19 @@ abstract class GHtmlElement extends GModel
         $this->_content = $content;
     }
 
-    public function setId($id): GHtmlElement
+    public function setId($id)
     {
-        $this->_id = $id;
-        return $this;
+        $this->attributes('id', $id);
     }
 
-    public function setName(string $name): GHtmlElement
+    public function setName(string $name)
     {
-        $this->name = $name;
-        return $this;
+        $this->attributes('name', $name);
     }
 
     public function setValue($value)
     {
-        $this->_value = $value;
+        $this->attributes('value', $value);
     }
 
     public function style(string $name, $value): GHtmlElement

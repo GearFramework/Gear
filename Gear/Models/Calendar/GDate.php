@@ -12,9 +12,14 @@ use Gear\Library\GModel;
  *
  * @package Gear Framework
  *
+ * @property string date
+ * @property int day
+ * @property string iso
  * @property GLocale locale
+ * @property int month
  * @property GCalendarOptions options
  * @property int timestamp
+ * @property int year
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -28,12 +33,9 @@ class GDate extends GModel
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
-        'options' => [
-            'format' => 'Y-m-d H:i:s',
-        ]
+    protected $_options = [
+        'format' => 'Y-m-d H:i:s',
     ];
-    protected $_options = null;
     protected $_timestamp = 0;
     protected $_locale = null;
     /* Public */

@@ -33,10 +33,7 @@ class GLogComponent extends GComponent
             ],
         ],
     ];
-    protected static $_initialized = false;
-    /**
-     * @var array $_loggers список логгеров (названия плагинов, производящих логгирование)
-     */
+    /** @var array $_loggers список логгеров (названия плагинов, производящих логгирование) */
     protected $_loggers = ['file'];
     /* Public */
 

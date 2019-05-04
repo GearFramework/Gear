@@ -67,25 +67,18 @@ class GInternationalComponent extends GComponent implements InternationalInterfa
      * @return string
      * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public function tr(string $message, string $section = ''): string
     {
-        $section = Core::resolvePath('International\\' . $section . '\\' . Core::props('locale'));
-        if (!preg_match('/(\\\\|\/)/', $section)) {
-            $section = '\Gear\International\\' . $section;
-        } else {
-            $section = (Core::isModuleInstalled('app') ? Core::app()->namespace : '\Gear') . '\International\\' . $section . '\\' . Core::props('locale');
-        }
         if (!($messages = $this->getMessages($section))) {
-            $sectionFileMessages = Core::resolvePath($section, !Core::isComponentInstalled(Core::props('loaderName'))) . '.php';
+            $path = $section = Core::resolvePath('International\\' . ($section ? $section . '\\' : '') . Core::props('locale') . '.php');
             $messages = [];
-            if (file_exists($sectionFileMessages)) {
-                $messages = require($sectionFileMessages);
+            if (file_exists($path)) {
+                $messages = require $path;
+                $this->attachSection($section, $messages);
             }
-            $this->attachSection($section, $messages);
         }
-        $messages = $this->getMessages($section);
         return isset($messages[$message]) ? $messages[$message] : $message;
     }
 }

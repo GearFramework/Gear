@@ -12,7 +12,7 @@ namespace Gear\Library;
  * @since 0.0.2
  * @version 0.0.2
  */
-class GCollection extends GModel implements \Iterator, \ArrayAccess, \Countable
+class GCollection implements \Iterator, \ArrayAccess, \Countable
 {
     /* Traits */
     /* Const */
@@ -20,6 +20,32 @@ class GCollection extends GModel implements \Iterator, \ArrayAccess, \Countable
     /* Protected */
     protected $_items = [];
     /* Public */
+
+    /**
+     * Получение значение коллекци по соответствующему ключу
+     *
+     * @param string $name
+     * @return mixed|null
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function __get(string $name)
+    {
+        return isset($this->_items[$name]) ? $this->_items[$name] : null;
+    }
+
+    /**
+     * Установка значения в коллекцию
+     *
+     * @param $name
+     * @param $value
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function __set($name, $value)
+    {
+        $this->_items[$name] = $value;
+    }
 
     /**
      * Добавление элемента(ов) в конец коллекции
@@ -215,18 +241,6 @@ class GCollection extends GModel implements \Iterator, \ArrayAccess, \Countable
     }
 
     /**
-     * Checks if current position is valid
-     * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
-     */
-    public function valid()
-    {
-        return !key($this->_items);
-    }
-
-    /**
      * Добавление элемента(ов) в начало коллекции
      *
      * @param mixed ...$values
@@ -238,5 +252,17 @@ class GCollection extends GModel implements \Iterator, \ArrayAccess, \Countable
     {
         array_unshift($this->_items, ...$values);
         return $this;
+    }
+
+    /**
+     * Checks if current position is valid
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     * @since 5.0.0
+     */
+    public function valid()
+    {
+        return !key($this->_items);
     }
 }

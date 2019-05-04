@@ -31,18 +31,11 @@ class GLoaderComponent extends GComponent
     protected static $_config = [
         'autoloadHandler' => 'loader'
     ];
-    protected static $_initialized = false;
-    /**
-     * @var array $_aliases список классов и соответствующих им алиасов (ключ массива - алиас, значение - класс)
-     */
+    /** @var array $_aliases список классов и соответствующих им алиасов (ключ массива - алиас, значение - класс) */
     protected $_aliases = [];
-    /**
-     * @var array $_paths список директорий и соответсвующих им классов
-     */
+    /** @var array $_paths список директорий и соответсвующих им классов */
     protected $_paths = [];
-    /**
-     * @var array $_resolvePaths список преобразованных директорий и соответствующих им оригинальных путей
-     */
+    /** @var array $_resolvePaths список преобразованных директорий и соответствующих им оригинальных путей */
     protected $_resolvePaths = [];
     protected $_usePaths = false;
     protected $_useResolvePaths = false;

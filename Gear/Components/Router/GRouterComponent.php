@@ -15,7 +15,7 @@ use Gear\Traits\Factory\FactoryTrait;
  *
  * @package Gear Framework
  *
- * @property null|ControllerInterface currentController
+ * @property null|ControllerInterface controller
  * @property string defaultController
  * @property string defaultControllersPath
  * @property RequestInterface request
