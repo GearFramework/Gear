@@ -70,7 +70,7 @@ class GDate extends GModel
             } elseif (is_string($options)) {
                 $options = ['format' => $options];
             } else {
-                $options = self::$_config['options'];
+                $options = $this->_options;
             }
             $options = new GCalendarOptions($options);
         }
@@ -186,6 +186,9 @@ class GDate extends GModel
      */
     public function getOptions(): ?GCalendarOptions
     {
+        if (is_array($this->_options)) {
+            $this->_prepareOptions([]);
+        }
         return $this->_options;
     }
 
