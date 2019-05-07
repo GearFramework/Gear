@@ -1172,15 +1172,15 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
     /**
      * Подготовка и генерация события, возникающего перед переименованием элемента файловой системы
      *
-     * @param FileSystemInterface $destination
+     * @param string $destination
      * @param GFileSystemOptions $options
      * @return mixed
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function beforeRename(FileSystemInterface $destination, GFileSystemOptions $options)
+    public function beforeRename(string $destination, GFileSystemOptions $options)
     {
-        if ($destination->exists() && !$options->overwrite) {
+        if (file_exists($destination) && !$options->overwrite) {
             throw self::FileSystemException('Destination <{dest}> alreadey exists', ['dest' => $destination]);
         }
         return $this->trigger('onBeforeCopy', new GEvent($this, ['target' => $this, 'destination' => $destination, 'options' => $options]));

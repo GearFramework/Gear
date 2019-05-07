@@ -281,14 +281,12 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
          * @var FileInterface $destination
          */
         $options = $this->_prepareOptions($options);
-        if (is_string($destination)) {
-            $destination = $this->factory(['path' => Core::resolvePath($destination)]);
-        }
         $this->beforeRename($destination, $options);
         if (!rename($this, $destination)) {
             throw static::FileSystemException('Failed rename from <{source}> to <{destination}>', ['source' => $this, 'destination' => $destination]);
         }
-        return $destination;
+        $this->path = $destination;
+        return $this;
     }
 
     public function seek($offset)
