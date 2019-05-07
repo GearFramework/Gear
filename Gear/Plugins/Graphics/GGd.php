@@ -15,7 +15,6 @@ use Gear\Library\GPlugin;
  * @property FileInterface image
  * @property FileInterface owner
  * @property string path
- * @property null|resource resource
  * @property array size
  * @property int width
  *
@@ -31,7 +30,6 @@ class GGd extends GPlugin
     /* Const */
     /* Private */
     /* Protected */
-    protected $_resource = null;
     /* Public */
 
     private function _prepareHeight($height)
@@ -91,18 +89,6 @@ class GGd extends GPlugin
     }
 
     /**
-     * Возвращает ресурс изображения
-     *
-     * @return resource|null
-     * @since 0.0.2
-     * @version 0.0.2
-     */
-    public function getResource()
-    {
-        return $this->_resource;
-    }
-
-    /**
      * Возвращает размеры исходного изображения
      *
      * @return array
@@ -139,7 +125,6 @@ class GGd extends GPlugin
      */
     public function resize($width, $height, int $quality = 100, string $mode = 'proportional', $fileDestination = null): ?FileInterface
     {
-        list($width, $height) = $this->_prepareSize($width, $height);
         $method = 'resize' . ucfirst($mode);
         try {
             $fileDestination = $this->$method($width, $height, $quality, $fileDestination);
@@ -152,6 +137,7 @@ class GGd extends GPlugin
 
     public function resizeCover($width, $height, int $quality = 100, $fileDestination = null): ?FileInterface
     {
+        list($width, $height) = $this->_prepareSize($width, $height);
         if (!($sourceHandler = @imagecreatefromjpeg($this->path))) {
             return null;
         }
@@ -181,6 +167,7 @@ class GGd extends GPlugin
 
     public function resizeProportional($width, $height, int $quality = 100, $fileDestination = null)
     {
+        list($width, $height) = $this->_prepareSize($width, $height);
         if (!($sourceHandler = @imagecreatefromjpeg($this->path))) {
             return null;
         }
@@ -200,18 +187,5 @@ class GGd extends GPlugin
         imagejpeg($destinationHandler, $fileDestination, $quality);
         unset($sourceHandler, $destinationHandler);
         return $fileDestination;
-    }
-
-    /**
-     * Устанавливает ресурс изображения
-     *
-     * @param resource $resource
-     * @return void
-     * @since 0.0.2
-     * @version 0.0.2
-     */
-    public function setResource($resource)
-    {
-        $this->_resource = $resource;
     }
 }
