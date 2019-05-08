@@ -1114,20 +1114,20 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
     /**
      * Подготовка и генерация события, возникающего перед копированием элемента файловой системы
      *
-     * @param FileSystemInterface $destination
-     * @param FileSystemInterface $target
+     * @param FileSystemInterface|string $destination
+     * @param FileSystemInterface|string $target
      * @param GFileSystemOptions $options
      * @return mixed
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function beforeCopy(FileSystemInterface $destination, FileSystemInterface $target, GFileSystemOptions $options)
+    public function beforeCopy($destination, $target, GFileSystemOptions $options)
     {
         /**
          * @var GDirectory|GFile $destination
          * @var GFile $target
          */
-        if (!$destination->exists()) {
+        if (!file_exists($destination)) {
             $destination->create();
         }
         if ($target->exists() && !$options->overwrite) {

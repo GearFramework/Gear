@@ -72,16 +72,20 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
      */
     public function copy($destination, $options = []): FileSystemInterface
     {
+        /** @var GFileSystemOptions $options */
         $options = $this->_prepareOptions($options);
-        if (is_string($destination)) {
-            $destination = $this->factory(['path' => Core::resolvePath($destination)]);
+        if (is_dir($destination)) {
+            $target = $destination . '/' .  $this->basename();
+        } else {
+            $target = (string)$destination;
         }
-        $target = $this->factory(['path' => $destination . '/' . $this->basename()]);
-        $this->beforeCopy($destination, $target, $options);
+//        $this->beforeCopy($destination, $target, $options);
         $result = copy($this, $target);
         if (!$result) {
-            throw static::FileSystemException('Failed to copy from <{source}> to <{destination}>', ['source' => $this, 'destination' => $target]);
+            throw self::FileSystemException('Failed to copy from <{source}> to <{destination}>', ['source' => $this, 'destination' => $target]);
         }
+        /** @var FileSystemInterface $target */
+        $target = $this->factory(['path' => $target]);
         return $target;
     }
 

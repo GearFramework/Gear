@@ -22,6 +22,7 @@ use Gear\Traits\SetterTrait;
  * @property mixed permission
  * @property bool recursive
  * @property bool skip
+ * @property string type
  * @property mixed user
  *
  * @author Kukushkin Denis
@@ -51,6 +52,7 @@ class GFileSystemOptions
         'permission' => null,
         'recursive' => false,
         'skip' => false,
+        'type' => null,
         'user' => null,
     ];
     /* Public */

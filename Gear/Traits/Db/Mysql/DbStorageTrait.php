@@ -63,7 +63,9 @@ trait DbStorageTrait
                 $model = $models;
             }
         }
-        return $this->selectCollection()->insert($model);
+        $collection = $this->selectCollection();
+        $collection->insert($model);
+        return $collection->lastInsertId();
     }
 
     /**

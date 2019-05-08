@@ -4,6 +4,7 @@ namespace Gear\Plugins\Graphics;
 
 use Gear\Interfaces\FileInterface;
 use Gear\Library\GPlugin;
+use Gear\Library\Io\Filesystem\GFileSystem;
 
 
 /**
@@ -162,6 +163,9 @@ class GGd extends GPlugin
         }
         imagejpeg($destinationHandler, $fileDestination, $quality);
         unset($sourceHandler, $destinationHandler);
+        if (is_string($fileDestination)) {
+            $fileDestination = GFileSystem::factory(['path' => $fileDestination]);
+        }
         return $fileDestination;
     }
 
@@ -186,6 +190,9 @@ class GGd extends GPlugin
         }
         imagejpeg($destinationHandler, $fileDestination, $quality);
         unset($sourceHandler, $destinationHandler);
+        if (is_string($fileDestination)) {
+            $fileDestination = GFileSystem::factory(['path' => $fileDestination]);
+        }
         return $fileDestination;
     }
 }
