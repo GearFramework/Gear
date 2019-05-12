@@ -88,8 +88,8 @@ class CalendarHelper extends GHelper
      */
     public static function helpDay($date = null, $options = ['format' => 'd'])
     {
-        $date = self::date($date);
-        $options = self::_prepareOptions($options);
+        /** @var GDate $date */
+        $date = self::helpDate($date);
         return $date->day($options);
     }
 
@@ -102,6 +102,39 @@ class CalendarHelper extends GHelper
     public function helpInterval(int $seconds): GTimeInterval
     {
         return new GTimeInterval(['interval' => $seconds]);
+    }
+
+    /**
+     * Возвращает true, если год високосный
+     *
+     * @param null|int|string|GDate $date
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function helpIsLeap($date = null): bool
+    {
+        $date = $date ? self::helpDate($date) : self::helpNow();
+        return date('L') ? true : false;
+    }
+
+    /**
+     * Возвращает метку времени Unix для заданной даты
+     *
+     * @param int $hour
+     * @param int $minute
+     * @param int $second
+     * @param int $month
+     * @param int $day
+     * @param int $year
+     * @return GDate
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function helpMakeTime(int $hour = 0, int $minute = 0, int $second = 0, int $month = 0, int $day = 0, $year = 0): GDate
+    {
+        $tm = mktime($hour, $minute, $second, $month, $day, $year);
+        return self::helpDate($tm);
     }
 
     /**

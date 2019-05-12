@@ -6,6 +6,7 @@ use Gear\Core;
 use Gear\Library\Calendar\GCalendarOptions;
 use Gear\Library\Calendar\GLocale;
 use Gear\Library\GModel;
+use MongoDB\BSON\Timestamp;
 
 /**
  * Модель даты
@@ -14,11 +15,19 @@ use Gear\Library\GModel;
  *
  * @property string date
  * @property int day
+ * @property int dayWeek
+ * @property int dayYear
+ * @property int hours
  * @property string iso
  * @property GLocale locale
+ * @property int minutes
  * @property int month
  * @property GCalendarOptions options
+ * @property int quarter
+ * @property string rfc
+ * @property int seconds
  * @property int timestamp
+ * @property int week
  * @property int year
  *
  * @author Kukushkin Denis
@@ -106,6 +115,38 @@ class GDate extends GModel
     }
 
     /**
+     * Возвращает день месяца
+     *
+     * @param string $format
+     * @return int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function day(string $format = '')
+    {
+        if ($format) {
+            return date($format, $this->timestamp);
+        } else {
+            return $this->getDay();
+        }
+    }
+
+    /**
+     * Возвращает разницу между датами
+     *
+     * @param int|string|GDate $date
+     * @return GTimeInterval
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function diff($date): GTimeInterval
+    {
+        /** @var GDate $date */
+        $date = \Calendar::date($date);
+        return new GTimeInterval(['interval' => abs($this->timestamp - $date->timestamp)]);
+    }
+
+    /**
      * Устанавливает формат отображения даты
      *
      * @param string $format
@@ -145,9 +186,52 @@ class GDate extends GModel
         return date('j', $this->timestamp);
     }
 
+    /**
+     * Возвращает порядковый день недели
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDayWeek(): int
+    {
+        return date('w', $this->timestamp);
+    }
+
+    /**
+     * Возвращает порядковый день года
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDayYear(): int
+    {
+        return date('z', $this->timestamp);
+    }
+
+    /**
+     * Возвращает часы в 24-ом формате без ведущего нуля
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getHours(): int
+    {
+        return (int)date('G', $this->timestamp);
+    }
+
+    /**
+     * Возвращает дату в формает iso
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function getIso(): string
     {
-        return date('Y-m-d', $this->timestamp) . 'T' . date('H:i:s', $this->timestamp);
+        return date('c', $this->timestamp);
     }
 
     /**
@@ -166,6 +250,18 @@ class GDate extends GModel
     }
 
     /**
+     * Возвращает минуты без ведущего нуля
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getMinutes(): int
+    {
+        return (int)date('i');
+    }
+
+    /**
      * Возвращает месяц без ведущего нуля
      *
      * @return int
@@ -175,6 +271,18 @@ class GDate extends GModel
     public function getMonth(): int
     {
         return date('n', $this->timestamp);
+    }
+
+    /**
+     * Возвращает следующую дату
+     *
+     * @return GDate
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getNextDate(): GDate
+    {
+        return \Calendar::makeDate($this->hours, $this->minutes, $this->seconds, $this->day + 1, $this->month, $this->year);
     }
 
     /**
@@ -193,6 +301,54 @@ class GDate extends GModel
     }
 
     /**
+     * Возвращает предыдущую дату
+     *
+     * @return GDate
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getPrevDate(): GDate
+    {
+        return \Calendar::makeDate($this->hours, $this->minutes, $this->seconds, $this->day - 1, $this->month, $this->year);
+    }
+
+    /**
+     * Возвращает номер квартала
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getQuarter(): int
+    {
+        return ceil($this->month / 3);
+    }
+
+    /**
+     * Возвращает дату в формате RFC 2822
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRfc(): string
+    {
+        return date('r', $this->timestamp);
+    }
+
+    /**
+     * Возвращает секунды без ведущего нуля
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getSeconds(): int
+    {
+        return (int)date('s');
+    }
+
+    /**
      * Возвращает UNIX Timestamp
      *
      * @return int
@@ -202,6 +358,18 @@ class GDate extends GModel
     public function getTimestamp(): int
     {
         return $this->_timestamp;
+    }
+
+    /**
+     * Возвращает порядковый номер недели в году
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getWeek(): int
+    {
+        return date('W', $this->timestamp);
     }
 
     /**
@@ -217,15 +385,150 @@ class GDate extends GModel
     }
 
     /**
-     * Возвращает месяц без ведущего нуля
+     * Возвращает часы
+     *
+     * @param string $format
+     * @return false|int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function hours(string $format = '')
+    {
+        if ($format) {
+            return date($format, $this->timestamp);
+        } else {
+            return $this->getHours();
+        }
+    }
+
+    /**
+     * Возвращает true, если год високосный
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isLeap(): bool
+    {
+        return \Calendar::isLeap($this);
+    }
+
+    /**
+     * Возвращает дату в формает iso
+     *
+     * @param bool $withoutGMT
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function iso(bool $withoutGMT = false): string
+    {
+        if ($withoutGMT) {
+            return date('Y-m-d', $this->timestamp) . 'T' . date('H:i:s', $this->timestamp);
+        } else {
+            return $this->getIso();
+        }
+    }
+
+    /**
+     * Возвращает минуты
+     *
+     * @param string $format
+     * @return false|int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function minutes(string $format = '')
+    {
+        if ($format) {
+            return date($format, $this->timestamp);
+        } else {
+            return $this->getMinutes();
+        }
+    }
+
+    /**
+     * Возвращает месяц
+     *
+     * @param string $format
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function month(string $format = '')
+    {
+        if ($format) {
+            $options = clone $this->_prepareOptions();
+            $options->format = $format;
+            return $this->locale->format((int)$this->timestamp, $options);
+        } else {
+            return $this->getMonth();
+        }
+    }
+
+    /**
+     * Возвращает следующую дату
+     *
+     * @return GDate
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function nextDate(): GDate
+    {
+        return $this->getNextDate();
+    }
+
+    /**
+     * Возвращает предыдущую дату
+     *
+     * @return GDate
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function prevDate(): GDate
+    {
+        return $this->getPrevDate();
+    }
+
+    /**
+     * Возвращает номер квартала
      *
      * @return int
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function month(): int
+    public function quarter(): int
     {
-        return $this->getMonth();
+        return $this->getQuarter();
+    }
+
+    /**
+     * Возвращает дату в формате RFC 2822
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function rfc(): string
+    {
+        return $this->getRfc();
+    }
+
+    /**
+     * Возвращает секунды
+     *
+     * @param string $format
+     * @return false|int|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function seconds(string $format = '')
+    {
+        if ($format) {
+            return date($format, $this->timestamp);
+        } else {
+            return $this->getHours();
+        }
     }
 
     /**
@@ -275,6 +578,25 @@ class GDate extends GModel
     public function timestamp(): int
     {
         return $this->getTimestamp();
+    }
+
+    /**
+     * Возвращает порядковый день недели или значение в указанному формате
+     *
+     * @param string $format
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function week(string $format = '')
+    {
+        if ($format) {
+            $options = clone $this->_prepareOptions();
+            $options->format = $format;
+            return $this->locale->format((int)$this->timestamp, $options);
+        } else {
+            return $this->getWeek();
+        }
     }
 
     /**
