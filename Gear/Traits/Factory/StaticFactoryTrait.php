@@ -28,7 +28,7 @@ trait StaticFactoryTrait
      */
     public static function afterFactory(ObjectInterface $object)
     {
-        return static::onAfterFactory(new GEvent(static::class, ['object' => $object]));
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ trait StaticFactoryTrait
      */
     public static function beforeFactory(array &$properties)
     {
-        return static::onBeforeFactory(new GEvent(static::class, ['properties' => &$properties]));
+        return true;
     }
 
     /**

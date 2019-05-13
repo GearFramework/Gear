@@ -84,7 +84,7 @@ class FFMpegMovie extends GFile implements DependentInterface
     {
         $start = new GTimeInterval(['interval' => $start]);
         $fileFrame = $this->tempDir . '/' . $this->name . '_frame.jpg';
-        $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $start . ' -f image2 ' . $fileFrame . ' 2>&1';
+        $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $start . ' -f image2 "' . $fileFrame . '" 2>&1';
         $out = null;
         $ret = null;
         exec($command, $out, $ret);
@@ -127,7 +127,7 @@ class FFMpegMovie extends GFile implements DependentInterface
         }
         foreach ($positions as $i => $pos) {
             $fileFrame = $this->tempDir . '/' . $this->name . '_frame' . $i . '.jpg';
-            $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $pos . ' -f image2 ' . $fileFrame . ' 2>&1';
+            $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $pos . ' -f image2 "' . $fileFrame . '" 2>&1';
             $out = null;
             $ret = null;
             exec($command, $out, $ret);
@@ -147,7 +147,7 @@ class FFMpegMovie extends GFile implements DependentInterface
         }
         $start = new GTimeInterval(['interval' => $start]);
         $fileFrame = $this->tempDir . '/' . $this->name . '_frame.jpg';
-        $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $start . ' -f image2 ' . $fileFrame . ' 2>&1';
+        $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $start . ' -f image2 "' . $fileFrame . '" 2>&1';
         $out = null;
         $ret = null;
         exec($command, $out, $ret);
