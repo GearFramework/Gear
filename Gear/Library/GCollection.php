@@ -5,8 +5,6 @@ namespace Gear\Library;
 use Gear\Interfaces\CollectionInterface;
 
 /**
- * TODO::Разобраться с итерацией, например, элементов 10, но при переборе отдается 9
- *
  * Класс коллекций
  *
  * @package Gear Framework
@@ -308,6 +306,6 @@ class GCollection implements CollectionInterface, \ArrayAccess, \Countable
      */
     public function valid()
     {
-        return !key($this->_items);
+        return key($this->_items) !== null;
     }
 }
