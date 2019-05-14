@@ -3,6 +3,7 @@
 namespace Gear\Models\Ffmpeg;
 
 use Gear\Interfaces\DependentInterface;
+use Gear\Library\GCollection;
 use Gear\Library\GModel;
 use Gear\Library\Io\Filesystem\GFile;
 use Gear\Library\Io\Filesystem\GFileSystem;
@@ -88,6 +89,7 @@ class FFMpegMovie extends GFile implements DependentInterface
         $out = null;
         $ret = null;
         exec($command, $out, $ret);
+        /** @var GFile $frame */
         $frame = null;
         if (file_exists($fileFrame)) {
             $frame = GFileSystem::factory(['path' => $fileFrame]);
@@ -99,9 +101,9 @@ class FFMpegMovie extends GFile implements DependentInterface
      * @param int $count
      * @param int $start
      * @param int $step
-     * @return array
+     * @return iterable
      */
-    public function getFrames(int $count, $start = 0, $step = 0): array
+    public function getFrames(int $count, $start = 0, $step = 0): iterable
     {
         $start = new GTimeInterval(['interval' => $start]);
         if (!$step) {
@@ -126,7 +128,7 @@ class FFMpegMovie extends GFile implements DependentInterface
             mkdir($this->tempDir, 777, true);
         }
         foreach ($positions as $i => $pos) {
-            $fileFrame = $this->tempDir . '/' . $this->name . '_frame' . $i . '.jpg';
+            $fileFrame = $this->tempDir . '/' . $this->name . '_frame' . ($i + 1) . '.jpg';
             $command = $this->ffmpegCommand . ' -i ' . $this . ' -r 1 -t 00:00:01 -ss ' . $pos . ' -f image2 "' . $fileFrame . '" 2>&1';
             $out = null;
             $ret = null;
@@ -135,7 +137,7 @@ class FFMpegMovie extends GFile implements DependentInterface
                 $frames[] = GFileSystem::factory(['path' => $fileFrame]);
             }
         }
-        return $frames;
+        return new GCollection($frames);
     }
 
     public function getRandomFrame(): ?GFile
@@ -151,6 +153,7 @@ class FFMpegMovie extends GFile implements DependentInterface
         $out = null;
         $ret = null;
         exec($command, $out, $ret);
+        /** @var GFile $frame */
         $frame = null;
         if (file_exists($fileFrame)) {
             $frame = GFileSystem::factory(['path' => $fileFrame]);

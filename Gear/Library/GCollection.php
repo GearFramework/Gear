@@ -2,7 +2,11 @@
 
 namespace Gear\Library;
 
+use Gear\Interfaces\CollectionInterface;
+
 /**
+ * TODO::Разобраться с итерацией, например, элементов 10, но при переборе отдается 9
+ *
  * Класс коллекций
  *
  * @package Gear Framework
@@ -12,7 +16,7 @@ namespace Gear\Library;
  * @since 0.0.2
  * @version 0.0.2
  */
-class GCollection implements \Iterator, \ArrayAccess, \Countable
+class GCollection implements CollectionInterface, \ArrayAccess, \Countable
 {
     /* Traits */
     /* Const */
@@ -20,6 +24,18 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
     /* Protected */
     protected $_items = [];
     /* Public */
+
+    /**
+     * GCollection constructor.
+     *
+     * @param array $items
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function __construct(array $items = [])
+    {
+        $this->_items = $items;
+    }
 
     /**
      * Получение значение коллекци по соответствующему ключу
@@ -51,11 +67,11 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
      * Добавление элемента(ов) в конец коллекции
      *
      * @param mixed ...$values
-     * @return GCollection
+     * @return CollectionInterface
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function add(...$values): GCollection
+    public function add(...$values): CollectionInterface
     {
         return $this->push(...$values);
     }
@@ -86,6 +102,23 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
     }
 
     /**
+     * Возвращает первый элемент массива
+     *
+     * @return mixed
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function first()
+    {
+        return reset($this->_items);
+    }
+
+    public function items(): array
+    {
+        return $this->_items;
+    }
+
+    /**
      * Return the key of the current element
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, or null on failure.
@@ -94,6 +127,18 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
     public function key()
     {
         key($this->_items);
+    }
+
+    /**
+     * Возвращает последний элемент массива
+     *
+     * @return mixed
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function last()
+    {
+        return end($this->_items);
     }
 
     /**
@@ -189,11 +234,11 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
      * Добавление элемента(ов) в конец коллекции
      *
      * @param mixed ...$values
-     * @return GCollection
+     * @return CollectionInterface
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function push(...$values): GCollection
+    public function push(...$values): CollectionInterface
     {
         array_push($this->_items, ...$values);
         return $this;
@@ -203,11 +248,11 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
      * Удаление элемента
      *
      * @param mixed $value
-     * @return GCollection
+     * @return CollectionInterface
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function remove($value): GCollection
+    public function remove($value): CollectionInterface
     {
         foreach ($this->_items as $key => $v) {
             if ($v === $value) {
@@ -244,11 +289,11 @@ class GCollection implements \Iterator, \ArrayAccess, \Countable
      * Добавление элемента(ов) в начало коллекции
      *
      * @param mixed ...$values
-     * @return GCollection
+     * @return CollectionInterface
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function unshift(...$values): GCollection
+    public function unshift(...$values): CollectionInterface
     {
         array_unshift($this->_items, ...$values);
         return $this;

@@ -2,7 +2,9 @@
 
 namespace Gear\Components\Ffmpeg;
 
+use Gear\Interfaces\FileInterface;
 use Gear\Library\GComponent;
+use Gear\Library\Io\Filesystem\GFileSystem;
 use Gear\Models\Ffmpeg\FFMpegMovie;
 use Gear\Traits\Factory\FactoryTrait;
 
@@ -67,5 +69,18 @@ class FFMpegGear extends GComponent
     public function setTempDir(string $dir)
     {
         $this->_tempDir = $dir;
+    }
+
+    public function createGifFromFiles($dir, string $filesTemplate, $filenameGif): ?FileInterface
+    {
+        $out = null;
+        $ret = null;
+        /** @var FileInterface $file */
+        $file = null;
+        exec($this->ffmpegCommand . ' -f image2 -framerate 3 -i ' . $dir . '/' . $filesTemplate . ' ' . $filenameGif . ' 2>&1', $out, $ret);
+        if (file_exists($filenameGif)) {
+            $file = GFileSystem::factory(['path' => $filenameGif]);
+        }
+        return $file;
     }
 }
