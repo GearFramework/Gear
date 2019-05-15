@@ -92,7 +92,7 @@ trait DbStorageTrait
      */
     public function byPk($pkValue)
     {
-        return $this->findOne([$this->primaryKeyName => "'$pkValue'"]);
+        return $this->findOne([$this->primaryKeyName => $pkValue]);
     }
 
     /**
@@ -106,11 +106,7 @@ trait DbStorageTrait
      */
     public function count($criteria = []): int
     {
-        if (!$criteria) {
-            $cursor = $this->getDefaultCursor();
-        } else {
-            $cursor = $this->cursor->find($criteria);
-        }
+        $cursor = $criteria ? $this->cursor->find($criteria) : $this->defaultCursor;
         return $cursor->count();
     }
 
@@ -124,7 +120,7 @@ trait DbStorageTrait
      */
     public function exists($criteria = []): bool
     {
-        return $this->getDefaultCursor()->exists($criteria);
+        return $this->cursor->exists($criteria);
     }
 
     /**
@@ -155,11 +151,7 @@ trait DbStorageTrait
      */
     public function findOne($criteria = [], $fields = [], $sort = []): ?ObjectInterface
     {
-//        if ($criteria instanceof IDbCursor) {
-//            $criteria->findOne($criteria);
-//        } else {
-        $result = $this->selectCollection($this->alias)->findOne($criteria, $fields, $sort);
-//        }
+        $result = $this->cursor->findOne($criteria, $fields, $sort);
         return $result ? $this->factory($result) : $result;
     }
 
@@ -300,7 +292,7 @@ trait DbStorageTrait
      * Возвращает значение PRIMARYKEY поля
      *
      * @param array|ModelInterface $object
-     * @return string
+     * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -311,7 +303,7 @@ trait DbStorageTrait
         } elseif (is_array($object) && isset($object[$this->primaryKeyName])) {
             return $object[$this->primaryKeyName];
         }
-        return '';
+        return null;
     }
 
     /**
@@ -372,7 +364,7 @@ trait DbStorageTrait
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function selectCollection(?string $alias = ""): DbCollectionInterface
+    public function selectCollection(string $alias = ''): DbCollectionInterface
     {
         return $this->connection->selectCollection($this->dbName, $this->collectionName, $alias ? $alias : $this->alias);
     }
