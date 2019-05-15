@@ -111,7 +111,6 @@ trait DbStorageTrait
         } else {
             $cursor = $this->cursor->find($criteria);
         }
-        $cursor = $this->getDefaultCursor();
         return $cursor->count();
     }
 
