@@ -8,6 +8,7 @@ use Gear\Interfaces\DbConnectionInterface;
 use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\DbDatabaseInterface;
 use Gear\Interfaces\ModelInterface;
+use Gear\Interfaces\ObjectInterface;
 use Gear\Interfaces\ServiceInterface;
 use Gear\Traits\ServiceContainedTrait;
 
@@ -105,8 +106,13 @@ trait DbStorageTrait
      */
     public function count($criteria = []): int
     {
+        if (!$criteria) {
+            $cursor = $this->getDefaultCursor();
+        } else {
+            $cursor = $this->cursor->find($criteria);
+        }
         $cursor = $this->getDefaultCursor();
-        return $cursor->where($criteria)->count();
+        return $cursor->count();
     }
 
     /**
@@ -121,18 +127,21 @@ trait DbStorageTrait
     {
         return $this->getDefaultCursor()->exists($criteria);
     }
+
     /**
      * Поиск моделей по указанному критерию
      *
      * @param array|string|DbCursorInterface $criteria
      * @param array|string $fields
+     * @param array $sort
+     * @param null $limit
      * @return iterable
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function find($criteria = [], $fields = []): iterable
+    public function find($criteria = [], $fields = [], array $sort = [], $limit = null): iterable
     {
-        return $this->getIterator($this->getDefaultCursor()->find($criteria, $fields));
+        return $this->getIterator($this->getDefaultCursor()->find($criteria, $fields)->sort($sort)->limit($limit));
     }
 
     /**
@@ -145,7 +154,7 @@ trait DbStorageTrait
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function findOne($criteria = [], $fields = [], $sort = [])
+    public function findOne($criteria = [], $fields = [], $sort = []): ?ObjectInterface
     {
 //        if ($criteria instanceof IDbCursor) {
 //            $criteria->findOne($criteria);
@@ -216,7 +225,7 @@ trait DbStorageTrait
      */
     public function getCursor(): DbCursorInterface
     {
-        return $this->selectCollection($this->alias)->cursor;
+        return $this->selectCollection($this->alias ? $this->alias : '')->cursor;
     }
 
     /**
@@ -243,7 +252,7 @@ trait DbStorageTrait
         /**
          * @var DbCursorInterface $cursor
          */
-        $cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
+        $cursor = $this->getCursor();
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }

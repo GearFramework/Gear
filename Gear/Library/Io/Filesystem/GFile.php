@@ -66,7 +66,6 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
      * @param string|DirectoryInterface $destination
      * @param array|GFileSystemOptions $options
      * @return FileSystemInterface
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
@@ -264,7 +263,7 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
     public function remove($options = [])
     {
         $options = $this->_prepareOptions($options);
-        if (!unlink($this)) {
+        if (!@unlink($this)) {
             throw self::FileSystemException('Failed to delete file <{file}>', ['file' => $this]);
         }
     }

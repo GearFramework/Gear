@@ -45,7 +45,7 @@ class GCollection implements CollectionInterface, \ArrayAccess, \Countable
      */
     public function __get(string $name)
     {
-        return isset($this->_items[$name]) ? $this->_items[$name] : null;
+        return array_key_exists($name, $this->_items) ? $this->_items[$name] : null;
     }
 
     /**
@@ -111,6 +111,13 @@ class GCollection implements CollectionInterface, \ArrayAccess, \Countable
         return reset($this->_items);
     }
 
+    /**
+     * Возвращает все элементы коллекции в виде массива
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
     public function items(): array
     {
         return $this->_items;

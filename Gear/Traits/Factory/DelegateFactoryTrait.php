@@ -4,13 +4,14 @@ namespace Gear\Traits\Factory;
 
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
+use Gear\Library\GDelegateFactoriableIterator;
 
 /**
  * Делегация фабрики
  *
  * @package Gear Framework
  *
- * @property array delegate
+ * @property array|GDelegateFactoriableIterator delegate
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
