@@ -75,11 +75,9 @@ class GResponse extends GPlugin implements ResponseInterface
             }
         }
         if (Core::app()->request->isAjax()) {
-            if (is_string($data)) {
-                $data = json_encode(['data-content' => $data, 'error' => 0]);
-            } else if (is_array($data)) {
+            if (is_array($data)) {
                 $data = json_encode($data);
-            } else {
+            } elseif (!is_string($data)) {
                 $this->sendStatus(200);
                 return;
             }

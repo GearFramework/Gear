@@ -243,7 +243,7 @@ trait DbStorageTrait
         /**
          * @var DbCursorInterface $cursor
          */
-        $cursor = $this->getCursor();
+        $cursor = $this->getCursor()->find();
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }
