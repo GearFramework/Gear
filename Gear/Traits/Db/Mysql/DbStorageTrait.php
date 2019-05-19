@@ -7,6 +7,7 @@ use Gear\Interfaces\DbCollectionInterface;
 use Gear\Interfaces\DbConnectionInterface;
 use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\DbDatabaseInterface;
+use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\ModelInterface;
 use Gear\Interfaces\ObjectInterface;
 use Gear\Interfaces\ServiceInterface;
@@ -37,6 +38,7 @@ use Gear\Traits\ServiceContainedTrait;
 trait DbStorageTrait
 {
     protected $_servicesHandled = [];
+    protected $_cursor = null;
 
     /**
      * Добавление модели в набор (сохранение в коллекции-таблице в базе данных)
@@ -99,15 +101,13 @@ trait DbStorageTrait
      * Возвращает количество элементов в коллекции, удовлетворяющих
      * критерию
      *
-     * @param array|DbCursorInterface $criteria
      * @return int
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function count($criteria = []): int
+    public function count(): int
     {
-        $cursor = $criteria ? $this->cursor->find($criteria) : $this->defaultCursor;
-        return $cursor->count();
+        return $this->cursor->count();
     }
 
     /**
@@ -120,7 +120,7 @@ trait DbStorageTrait
      */
     public function exists($criteria = []): bool
     {
-        return $this->cursor->exists($criteria);
+        return $this->cursor->reset()->exists($criteria);
     }
 
     /**
@@ -216,7 +216,10 @@ trait DbStorageTrait
      */
     public function getCursor(): DbCursorInterface
     {
-        return $this->selectCollection($this->alias ? $this->alias : '')->cursor;
+        if (!$this->_cursor) {
+            $this->_cursor = $this->selectCollection($this->alias ? $this->alias : '')->cursor;
+        }
+        return $this->_cursor;
     }
 
     /**
@@ -331,14 +334,28 @@ trait DbStorageTrait
     }
 
     /**
-     * Сохранение модели
+     * Сброс результатов выполнения запроса
      *
-     * @param array|ModelInterface $model
-     * @return int
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function save($model): int
+    public function reset(): DbStorageComponentInterface
+    {
+        $this->cursor->reset();
+        /** @var DbStorageComponentInterface $this */
+        return $this;
+    }
+
+    /**
+     * Сохранение модели
+     *
+     * @param array|ModelInterface $model
+     * @return DbStorageComponentInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function save($model): DbStorageComponentInterface
     {
         if ($model instanceof ModelInterface) {
             $model = $model->props();
@@ -434,6 +451,19 @@ trait DbStorageTrait
     }
 
     /**
+     * Установка текущего курсора коллекции
+     *
+     * @param DbCursorInterface $cursor
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function setCursor(DbCursorInterface $cursor)
+    {
+        $this->_cursor = $cursor;
+    }
+
+    /**
      * Установка названия базы данных с коллекциями моделей
      *
      * @param string $dbName
@@ -449,13 +479,13 @@ trait DbStorageTrait
     /**
      * Обновление существующей модели
      *
-     * @param array|ModelInterface|array of IModel $model
+     * @param $model
      * @param array|DbCursorInterface $criteria
-     * @return int
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function update($model, $criteria = []): int
+    public function update($model, $criteria = []): DbStorageComponentInterface
     {
         $result = 0;
         if ($model instanceof ModelInterface) {

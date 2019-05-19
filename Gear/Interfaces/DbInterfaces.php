@@ -339,11 +339,11 @@ interface DbCursorInterface
      * Удаление записей соответствующих критерию
      *
      * @param array|ModelInterface $criteria
-     * @return int
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function delete($criteria = []): int;
+    public function delete($criteria = []): DbCursorInterface;
 
     /**
      * Экранирование спецсимволов и обрамление кавычками
@@ -354,6 +354,16 @@ interface DbCursorInterface
      * @version 0.0.1
      */
     public function escape($value): string;
+
+    /**
+     * Возвращает true, если указанный в критерии элемент существует в коллекции
+     *
+     * @param array|DbCursorInterface $criteria
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function exists($criteria = []): bool;
 
     /**
      * Установка полей, значения которых вернуться при выполненинии запроса
@@ -392,12 +402,11 @@ interface DbCursorInterface
      * Возвращает первые N элементов из запроса
      *
      * @param int $count
-     * @param array $sort
-     * @return DbCursorInterface
+     * @return null|array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function first(int $count = 1, $sort = []): DbCursorInterface;
+    public function first(int $count = 1);
 
     /**
      * Возвращает коллекцию, для которой создан курсор
@@ -468,11 +477,11 @@ interface DbCursorInterface
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|ModelInterface $properties
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function insert($properties): int;
+    public function insert($properties): DbCursorInterface;
 
     /**
      * Подключение таблицы
@@ -489,11 +498,11 @@ interface DbCursorInterface
      * Возвращает первые N элементов из запроса
      *
      * @param int $count
-     * @return iterable
+     * @return null|array
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function last(int $count = 1): iterable;
+    public function last(int $count = 1);
 
     /**
      * Левое подключение таблицы
@@ -530,11 +539,11 @@ interface DbCursorInterface
      * в результате последнего выполненного SELECT-запроса
      *
      * @param null|array $criteria
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function remove($criteria = []): int;
+    public function remove($criteria = []): DbCursorInterface;
 
     /**
      * Сброс результатов выполнения запроса
@@ -596,11 +605,11 @@ interface DbCursorInterface
      *
      * @param null|string|array|ModelInterface $criteria
      * @param array $properties
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update($criteria = [], array $properties = []): int;
+    public function update($criteria = [], array $properties = []): DbCursorInterface;
 
     /**
      * Формирование критерия поиска
@@ -636,6 +645,16 @@ interface DbStorageComponentInterface
     public function add($model): int;
 
     /**
+     * Возвращает количество строк, затронутых последним выполненным запросом
+     * INSERT, UPDATE, DELETE
+     *
+     * @return integer
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function affected(): int;
+
+    /**
      * Выборка всех моделей из коллекции
      *
      * @return iterable
@@ -648,32 +667,42 @@ interface DbStorageComponentInterface
      * Выборка модели по значению первичного ключа
      *
      * @param int|string $pkValue
-     * @return \Gear\Interfaces\ObjectInterface|null
+     * @return ModelInterface|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function byPk($pkValue);
+    public function byPk($pkValue): ?ModelInterface;
+
+    /**
+     * Возвращает количество элементов в коллекции, удовлетворяющих
+     * критерию
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function count(): int;
 
     /**
      * Поиск моделей по указанному критерию
      *
      * @param array|string $criteria
      * @param array|string $fields
-     * @return \Iterator
+     * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function find($criteria = [], $fields = []);
+    public function find($criteria = [], $fields = []): iterable;
 
     /**
      * Поиск модели, соответствующей указанному критерию
      *
      * @param array|string $criteria
-     * @return \Gear\Interfaces\ObjectInterface|null
+     * @return ModelInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function findOne($criteria = []);
+    public function findOne($criteria = []): ModelInterface;
 
     /**
      * Возвращает название таблицы
@@ -737,18 +766,28 @@ interface DbStorageComponentInterface
      * @param array|ModelInterface|array of IModel $model
      * @since 0.0.1
      * @version 0.0.2
+     * @return DbStorageComponentInterface
      */
-    public function remove($model);
+    public function remove($model): DbStorageComponentInterface;
+
+    /**
+     * Сброс результатов выполнения запроса
+     *
+     * @return DbStorageComponentInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function reset(): DbStorageComponentInterface;
 
     /**
      * Сохранение модели
      *
      * @param array|ModelInterface|array of IModel $model
-     * @return int
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function save($model): int;
+    public function save($model): DbStorageComponentInterface;
 
     /**
      * Выбор коллекции
@@ -773,9 +812,9 @@ interface DbStorageComponentInterface
      * Обновление существующей модели
      *
      * @param $model
-     * @return int
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update($model): int;
+    public function update($model): DbStorageComponentInterface;
 }
