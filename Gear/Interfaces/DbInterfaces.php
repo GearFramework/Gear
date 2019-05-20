@@ -3,164 +3,6 @@
 namespace Gear\Interfaces;
 
 /**
- * Интерфейс компонента подключения к базе данных
- *
- * @package Gear Framework
- *
- * @property mixed handler
- *
- * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
- * @license http://www.spdx.org/licenses/MIT MIT License
- * @since 0.0.1
- * @version 0.0.2
- */
-interface DbConnectionInterface
-{
-    /**
-     * Завершение соединения с сервером баз данных
-     *
-     * @abstract
-     * @return DbConnectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function close(): DbConnectionInterface;
-
-    /**
-     * Подготовка и вызов метода непосредственного подключения к серверу баз данных
-     *
-     * @return DbConnectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function connect(): DbConnectionInterface;
-
-    /**
-     * Возвращает true если соединение уже установлено, иначе false
-     *
-     * @return bool
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function isConnected(): bool;
-
-    /**
-     * Подключение к серверу базы данных
-     *
-     * @return DbConnectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function open(): DbConnectionInterface;
-
-    /**
-     * Выполняет подключение к серверу, если соединение ещё не было
-     * установлено
-     *
-     * @return DbConnectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function reconnect(): DbConnectionInterface;
-
-    /**
-     * Выбор указанной базы данных и таблицы
-     *
-     * @param string $dbName
-     * @param string $collectionName
-     * @param string $alias
-     * @return DbCollectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function selectCollection(string $dbName, string $collectionName, string $alias = ''): DbCollectionInterface;
-
-    /**
-     * Выбор указанной базы данных
-     *
-     * @param string $name
-     * @return DbDatabaseInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function selectDB(string $name): DbDatabaseInterface;
-}
-
-/**
- * Интерфейс базы данных
- *
- * @package Gear Framework
- *
- * @property mixed handler
- * @property string name
- *
- * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
- * @license http://www.spdx.org/licenses/MIT MIT License
- * @since 0.0.1
- * @version 0.0.2
- */
-interface DbDatabaseInterface
-{
-    /**
-     * Возвращает соединение с сервером
-     *
-     * @return DbConnectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function getConnection(): DbConnectionInterface;
-
-    /**
-     * Создание базы данных
-     *
-     * @return DbDatabaseInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function create(): DbDatabaseInterface;
-
-    /**
-     * Удаление базы данных
-     *
-     * @return DbDatabaseInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function drop(): DbDatabaseInterface;
-
-    /**
-     * Удаление базы данных
-     *
-     * @return DbDatabaseInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function remove(): DbDatabaseInterface;
-
-    /**
-     * Выбор текущей базы данных
-     *
-     * @return DbDatabaseInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function select(): DbDatabaseInterface;
-
-    /**
-     * Возвращает коллекцию
-     *
-     * @param string $name
-     * @param string $alias
-     * @return DbCollectionInterface
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function selectCollection(string $name, string $alias = ''): DbCollectionInterface;
-}
-
-/**
  * Интерфейс коллекций базы данных (таблиц)
  *
  * @package Gear Framework
@@ -250,6 +92,91 @@ interface DbCollectionInterface
      * @version 0.0.2
      */
     public function truncate(): DbCollectionInterface;
+}
+
+/**
+ * Интерфейс компонента подключения к базе данных
+ *
+ * @package Gear Framework
+ *
+ * @property mixed handler
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.2
+ */
+interface DbConnectionInterface
+{
+    /**
+     * Завершение соединения с сервером баз данных
+     *
+     * @abstract
+     * @return DbConnectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function close(): DbConnectionInterface;
+
+    /**
+     * Подготовка и вызов метода непосредственного подключения к серверу баз данных
+     *
+     * @return DbConnectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function connect(): DbConnectionInterface;
+
+    /**
+     * Возвращает true если соединение уже установлено, иначе false
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isConnected(): bool;
+
+    /**
+     * Подключение к серверу базы данных
+     *
+     * @return DbConnectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function open(): DbConnectionInterface;
+
+    /**
+     * Выполняет подключение к серверу, если соединение ещё не было
+     * установлено
+     *
+     * @return DbConnectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function reconnect(): DbConnectionInterface;
+
+    /**
+     * Выбор указанной базы данных и таблицы
+     *
+     * @param string $dbName
+     * @param string $collectionName
+     * @param string $alias
+     * @return DbCollectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function selectCollection(string $dbName, string $collectionName, string $alias = ''): DbCollectionInterface;
+
+    /**
+     * Выбор указанной базы данных
+     *
+     * @param string $name
+     * @return DbDatabaseInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function selectDB(string $name): DbDatabaseInterface;
 }
 
 /**
@@ -623,6 +550,79 @@ interface DbCursorInterface
 }
 
 /**
+ * Интерфейс базы данных
+ *
+ * @package Gear Framework
+ *
+ * @property mixed handler
+ * @property string name
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.2
+ */
+interface DbDatabaseInterface
+{
+    /**
+     * Возвращает соединение с сервером
+     *
+     * @return DbConnectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function getConnection(): DbConnectionInterface;
+
+    /**
+     * Создание базы данных
+     *
+     * @return DbDatabaseInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function create(): DbDatabaseInterface;
+
+    /**
+     * Удаление базы данных
+     *
+     * @return DbDatabaseInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function drop(): DbDatabaseInterface;
+
+    /**
+     * Удаление базы данных
+     *
+     * @return DbDatabaseInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function remove(): DbDatabaseInterface;
+
+    /**
+     * Выбор текущей базы данных
+     *
+     * @return DbDatabaseInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function select(): DbDatabaseInterface;
+
+    /**
+     * Возвращает коллекцию
+     *
+     * @param string $name
+     * @param string $alias
+     * @return DbCollectionInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function selectCollection(string $name, string $alias = ''): DbCollectionInterface;
+}
+
+/**
  * Интерфейс компонентов, работающих с данными базы данных
  *
  * @package Gear Framework
@@ -818,3 +818,15 @@ interface DbStorageComponentInterface
      */
     public function update($model): DbStorageComponentInterface;
 }
+
+/**
+ * Интерфейс компонентов, работающих с данными базы данных
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.2
+ */
+interface DbStoragePluginInterface extends DbStorageComponentInterface {}

@@ -3,10 +3,8 @@
 namespace Gear\Library\Db;
 
 use Gear\Interfaces\DbConnectionInterface;
-use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\FactoryInterface;
 use Gear\Library\GComponent;
-use Gear\Traits\Db\Mysql\DbStorageTrait;
 use Gear\Traits\Factory\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
 
@@ -37,7 +35,6 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
     protected $_factoryProperties = [
         'class' => '\Gear\Library\GModel',
     ];

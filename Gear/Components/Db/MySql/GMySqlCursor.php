@@ -206,11 +206,11 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      * Удаление записей соответствующих критерию
      *
      * @param array|ModelInterface $criteria
-     * @return int
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function delete($criteria = []): int
+    public function delete($criteria = []): DbCursorInterface
     {
         if (!$criteria) {
 
@@ -223,7 +223,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         } else {
             throw new \InvalidArgumentException('Invalid arguments to delete');
         }
-        return $this->runQuery($query)->affected();
+        return $this->runQuery($query);
     }
 
     /**
@@ -402,11 +402,11 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|object $properties
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function insert($properties): int
+    public function insert($properties): DbCursorInterface
     {
         $this->reset();
         $result = 0;
@@ -425,7 +425,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         if (is_object($result) && ($pk = $result->primaryKeyName)) {
             $result->$pk = $this->getLastInsertId();
         }
-        return $this->affected();
+        return $this;
     }
 
     /**
@@ -558,11 +558,11 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      *
      * @param array|ObjectInterface $properties
      * @param array $updates
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function save($properties, array $updates = []): int
+    public function save($properties, array $updates = []): DbCursorInterface
     {
         $this->reset();
         $result = 0;
@@ -606,7 +606,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
                 $result->$pk = $id;
             }
         }
-        return $this->affected();
+        return $this;
     }
 
     /**
@@ -656,11 +656,11 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      *
      * @param array|object $criteria
      * @param array $properties
-     * @return int|object
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function update($criteria = [], array $properties = []): int
+    public function update($criteria = [], array $properties = []): DbCursorInterface
     {
         $this->reset();
         $result = $criteria;
@@ -674,7 +674,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         $criteria = $this->_prepareCriteria($result);
         $query = 'UPDATE `' . $this->getCollectionName() . '` SET ' . $properties . ($criteria ? ' WHERE ' . $criteria : '');
         $this->runQuery($query);
-        return $this->affected();
+        return $this;
     }
 
     /**
@@ -800,12 +800,12 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
                      * SQL: COL BETWEEN VAL1 AND VAL2
                      */
                     if (!$op) {
-                        // ['$bw' => ['a' => [1, 10]]]
+                        // ['$bw' => [':a' => [1, 10]]]
                         $operand = $this->_prepareOperand(key($right), true);
                         $values = $this->_prepareValue(current($right));
                         $result[] = ($result ? $logic : "") . " $operand BETWEEN " . implode(' AND ', $values);
                     } else {
-                        // ['a' => ['$bw' => [1 => 10]]]
+                        // [':a' => ['$bw' => [1 => 10]]]
                         $right = $this->_prepareValue($right);
                         $result[] = ($result ? $logic : "") . " $op BETWEEN " . implode(' AND ', $right);
                     }

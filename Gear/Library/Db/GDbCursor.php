@@ -147,11 +147,11 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
      * Удаление записей соответствующих критерию
      *
      * @param array|ModelInterface $criteria
-     * @return int
+     * @return DbCursorInterfacet
      * @since 0.0.1
      * @version 0.0.2
      */
-    abstract public function delete($criteria = []): int;
+    abstract public function delete($criteria = []): DbCursorInterface;
 
     /**
      * Экранирование спецсимволов и обрамление кавычками
@@ -171,7 +171,7 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function exists($criteria): bool
+    public function exists($criteria = []): bool
     {
         return $this->find($criteria)->count() > 0 ? true : false;
     }
@@ -345,11 +345,11 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|ModelInterface $properties
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    abstract public function insert($properties): int;
+    abstract public function insert($properties): DbCursorInterface;
 
     /**
      * Подключение таблицы
@@ -423,11 +423,11 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
      * в результате последнего выполненного SELECT-запроса
      *
      * @param null|array|ModelInterface $criteria
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function remove($criteria = []): int
+    public function remove($criteria = []): DbCursorInterface
     {
         return $this->delete($criteria);
     }
@@ -509,11 +509,11 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
      *
      * @param null|string|array|ModelInterface $criteria
      * @param array $properties
-     * @return integer
+     * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    abstract public function update($criteria = [], array $properties = []): int;
+    abstract public function update($criteria = [], array $properties = []): DbCursorInterface;
 
     /**
      * Формирование критерия поиска

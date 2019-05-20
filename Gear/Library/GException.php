@@ -31,7 +31,6 @@ class GException extends \Exception
      * @param int $code
      * @param \Throwable|null $previous
      * @param array $context
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
@@ -40,7 +39,7 @@ class GException extends \Exception
         if (empty($message)) {
             $message = $this->defaultMessage;
         }
-        $message = Core::lang()->tr($message, self::getLocaleSection());
+        //$message = Core::lang()->tr($message, self::getLocaleSection());
         foreach ($context as $name => $value) {
             $message = str_replace('{' . $name . '}', $value, $message);
         }

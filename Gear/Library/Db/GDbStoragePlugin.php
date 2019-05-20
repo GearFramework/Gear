@@ -3,10 +3,8 @@
 namespace Gear\Library\Db;
 
 use Gear\Interfaces\DbConnectionInterface;
-use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\FactoryInterface;
 use Gear\Library\GPlugin;
-use Gear\Traits\Db\Mysql\DbStorageTrait;
 use Gear\Traits\Factory\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
 
@@ -29,16 +27,14 @@ use Gear\Traits\Factory\FactoryTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-abstract class GDbStoragePlugin extends GPlugin implements \IteratorAggregate, FactoryInterface, DbStorageComponentInterface
+abstract class GDbStoragePlugin extends GPlugin implements \IteratorAggregate, FactoryInterface
 {
     /* Traits */
-    use DbStorageTrait;
     use DelegateFactoryTrait;
     use FactoryTrait;
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
     protected $_factoryProperties = [
         'class' => '\Gear\Library\GModel',
     ];
