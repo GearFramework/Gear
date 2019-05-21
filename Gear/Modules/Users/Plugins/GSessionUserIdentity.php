@@ -46,7 +46,6 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
     protected $_dbName = 'simple';
     protected $_factoryProperties = [
         'class' => '\Gear\Modules\Users\Models\GSession',
-        'maxSessionsByUser' => -1,
     ];
     protected $_maxSessionsByUser = -1;
     protected $_primaryKey = 'hash';
@@ -230,7 +229,7 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
             $hash = $_COOKIE[$this->sessionName];
         }
         if ($hash) {
-            $session = $this->loadSession(['hash' => $hash]);
+            $session = $this->loadSession(['hash' => $hash['hash']]);
             if ($session && $this->isValid($session)) {
                 $criteria = ['id' => $session->user];
             }
