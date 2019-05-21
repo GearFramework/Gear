@@ -569,15 +569,14 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         if ($properties instanceof ObjectInterface) {
             $result = $properties;
             $properties = $result->props();
-        } else if (is_object($properties)) {
+        } elseif (is_object($properties)) {
             $result = $properties;
             $properties = get_object_vars($result);
-        } else if (!is_array($properties)) {
+        } elseif (!is_array($properties)) {
             throw new \InvalidArgumentException('Invalid properties to insert');
         }
         list($names, $values) = $this->_prepareInsert($properties);
         $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
-
         if (!$updates && is_object($result)) {
             $pk = $result->primaryKeyName;
             $props = $result instanceof IObject ? $result->props() : get_object_vars($result);
@@ -588,7 +587,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
                 }
             }
             $updates = $this->_prepareUpdate($properties, $result);
-        } else if ($updates) {
+        } elseif ($updates) {
             if (is_object($result)) {
                 $updates = $this->_prepareUpdate($updates, $result);
             } else if (\Arrays::IsAssoc($updates)) {
