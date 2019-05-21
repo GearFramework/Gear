@@ -59,11 +59,11 @@ interface DbCollectionInterface
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|ModelInterface $properties
-     * @return integer
+     * @return DbCollectionInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function insert($properties): int;
+    public function insert($properties): DbCollectionInterface;
 
     /**
      * Возвращает ID последней вставленной записи в таблицу

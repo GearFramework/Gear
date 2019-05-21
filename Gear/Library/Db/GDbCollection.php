@@ -193,13 +193,14 @@ abstract class GDbCollection extends GModel implements \IteratorAggregate, DbCol
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|ModelInterface $properties
-     * @return integer
+     * @return DbCollectionInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function insert($properties): int
+    public function insert($properties): DbCollectionInterface
     {
-        return $this->cursor->insert($properties);
+        $this->cursor->insert($properties);
+        return $this;
     }
 
     /**

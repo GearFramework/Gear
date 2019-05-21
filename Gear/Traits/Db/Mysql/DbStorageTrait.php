@@ -216,9 +216,7 @@ trait DbStorageTrait
      */
     public function getCursor(): DbCursorInterface
     {
-        if (!$this->_cursor) {
-            $this->_cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
-        }
+        $this->_cursor = $this->selectCollection($this->alias ? $this->alias : '')->find();
         return $this->_cursor;
     }
 
