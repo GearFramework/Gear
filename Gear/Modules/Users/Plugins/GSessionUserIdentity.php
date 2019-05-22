@@ -372,6 +372,8 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
         ], $this);
         $this->add($session);
         $this->session = $user->session = $session;
+        $_SESSION[$this->sessionName] = $this->session->props();
+        setcookie($this->sessionName, $this->session->hash, time() + $this->cookieLifeTime);
         return $session;
     }
 
