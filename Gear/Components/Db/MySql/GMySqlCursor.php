@@ -473,14 +473,16 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      */
     public function limit(...$limit): DbCursorInterface
     {
-        if (!$limit) {
-            $this->_queryBuild->limit = [0, 1];
-        } else if (count($limit) === 1) {
-            $limit = reset($limit);
-            is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild->limit = [0, $limit];
-        } else if (count($limit) > 1) {
-            list($top, $limit) = $limit;
-            $this->_queryBuild->limit = [$top, $limit];
+        if ($limit !== null) {
+            if (!$limit) {
+                $this->_queryBuild->limit = [0, 1];
+            } elseif (count($limit) === 1) {
+                $limit = reset($limit);
+                is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild->limit = [0, $limit];
+            } elseif (count($limit) > 1) {
+                list($top, $limit) = $limit;
+                $this->_queryBuild->limit = [$top, $limit];
+            }
         }
         return $this;
     }

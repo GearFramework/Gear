@@ -136,7 +136,15 @@ trait DbStorageTrait
      */
     public function find($criteria = [], $fields = [], array $sort = [], $limit = null): iterable
     {
-        return $this->getIterator($this->getDefaultCursor()->find($criteria, $fields)->sort($sort)->limit($limit));
+        $cursor = $this->getDefaultCursor()->find($criteria, $fields);
+        if ($sort) {
+            $cursor->sort($sort);
+        }
+        if ($limit) {
+            $cursor->limit($limit);
+        }
+        /** @var iterable $this */
+        return $this;
     }
 
     /**
