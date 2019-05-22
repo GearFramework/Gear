@@ -6,6 +6,7 @@ use Gear\Library\Db\GDbStorageComponent;
 use Gear\Library\GEvent;
 use Gear\Modules\Users\GUserModule;
 use Gear\Modules\Users\Interfaces\UserComponentInterface;
+use Gear\Modules\Users\Interfaces\UserIdentityPluginInterface;
 use Gear\Modules\Users\Interfaces\UserInterface;
 use Gear\Traits\Db\Mysql\DbStorageTrait;
 
@@ -166,7 +167,11 @@ class GBasicUserComponent extends GDbStorageComponent implements UserComponentIn
         /** @var UserInterface $user */
         $user = null;
         foreach ($this->_identityPlugins as $pluginName) {
-            $criteria = $this->p($pluginName)->identity();
+            /** @var UserIdentityPluginInterface $plugin */
+            $plugin = $this->p($pluginName);
+            if ($this->authModule->debug === true) {
+            }
+            $criteria = $plugin->identity();
             if ($criteria) {
                 $user = $this->loadUser($criteria);
                 if ($this->isValid($user)) {

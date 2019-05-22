@@ -5,6 +5,7 @@ namespace Gear\Modules\Users\Plugins;
 use Gear\Core;
 use Gear\Library\Db\GDbStoragePlugin;
 use Gear\Library\GEvent;
+use Gear\Modules\Users\GUserModule;
 use Gear\Modules\Users\Interfaces\SessionInterface;
 use Gear\Modules\Users\Interfaces\UserIdentityPluginInterface;
 use Gear\Modules\Users\Interfaces\UserInterface;
@@ -45,9 +46,9 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
     protected $_dbName = 'simple';
     protected $_factoryProperties = [
         'class' => '\Gear\Modules\Users\Models\GSession',
-        'maxSessionsByUser' => -1,
     ];
     protected $_maxSessionsByUser = -1;
+    protected $_primaryKey = 'hash';
     protected $_session = null;
     protected $_sessionLifeTime = 900;
     protected $_sessionName = '_user_session_';
@@ -63,10 +64,15 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
      */
     public function afterInstallService()
     {
-        $this->on('onUserIdentity', [$this, 'handlerAfterUserIdentity']);
-        $this->on('onUserLogin', [$this, 'handlerUserLogin']);
-        $this->on('onUserLogout', [$this, 'handlerUserLogout']);
+        $this->owner->on('onUserIdentity', [$this, 'handlerAfterUserIdentity']);
+        $this->owner->on('onUserLogin', [$this, 'handlerUserLogin']);
+        $this->owner->on('onUserLogout', [$this, 'handlerUserLogout']);
         return parent::afterInstallService();
+    }
+
+    public function getAuthModule(): GUserModule
+    {
+        return $this->owner->authModule;
     }
 
     /**
@@ -217,14 +223,13 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
     {
         $hash = null;
         $criteria = null;
-        if (isset($_COOKIE[$this->sessionName])) {
-            $hash = $_COOKIE[$this->sessionName];
-        } elseif (isset($_SESSION[$this->sessionName])) {
+        if (isset($_SESSION[$this->sessionName])) {
             $hash = $_SESSION[$this->sessionName];
+        } elseif (isset($_COOKIE[$this->sessionName])) {
+            $hash = $_COOKIE[$this->sessionName];
         }
         if ($hash) {
-            /** @var GSession|null $session */
-            $session = $this->loadSession(['hash' => $hash]);
+            $session = $this->loadSession(['hash' => $hash['hash']]);
             if ($session && $this->isValid($session)) {
                 $criteria = ['id' => $session->user];
             }
@@ -365,7 +370,7 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
             'ip' => Core::app()->request->getRemoteAddress(),
             'lastTime' => date('Y-m-d H:i:s')
         ], $this);
-        $this->save($session);
+        $this->add($session);
         $this->session = $user->session = $session;
         return $session;
     }
