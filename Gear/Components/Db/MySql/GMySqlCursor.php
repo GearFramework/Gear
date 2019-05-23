@@ -146,6 +146,9 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         } else {
             $this->_query .= "*";
         }
+        if (!$this->_queryBuild->from) {
+            $this->from();
+        }
         $this->_query .= ' FROM ' . $this->_queryBuild->from;
         $join = $this->_queryBuild->join;
         if ($join) {
@@ -473,16 +476,18 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      */
     public function limit(...$limit): DbCursorInterface
     {
-        if ($limit !== null) {
-            if (!$limit) {
-                $this->_queryBuild->limit = [0, 1];
-            } elseif (count($limit) === 1) {
-                $limit = reset($limit);
-                is_array($limit) ? $this->limit(...$limit) : $this->_queryBuild->limit = [0, $limit];
-            } elseif (count($limit) > 1) {
-                list($top, $limit) = $limit;
+        $len = count($limit);
+        if ($len === 1) {
+            $limit = reset($limit);
+            if (is_array($limit)) {
+                $this->limit(...$limit);
+            } elseif ($limit) {
+                $top = 0;
                 $this->_queryBuild->limit = [$top, $limit];
             }
+        } elseif ($len >= 2) {
+            list($top, $limit) = $limit;
+            $this->_queryBuild->limit = [$top, $limit];
         }
         return $this;
     }

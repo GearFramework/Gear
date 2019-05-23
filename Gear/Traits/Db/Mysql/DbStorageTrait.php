@@ -71,6 +71,11 @@ trait DbStorageTrait
         return $collection->lastInsertId();
     }
 
+    public function affected(): int
+    {
+        return $this->cursor->affected();
+    }
+
     /**
      * Выборка всех моделей из коллекции
      *
@@ -88,11 +93,11 @@ trait DbStorageTrait
      * Выборка модели по значению первичного ключа
      *
      * @param int|string $pkValue
-     * @return \Gear\Interfaces\ObjectInterface|null
+     * @return ModelInterface|null
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function byPk($pkValue)
+    public function byPk($pkValue): ?ObjectInterface
     {
         return $this->findOne([$this->primaryKeyName => $pkValue]);
     }
@@ -130,19 +135,18 @@ trait DbStorageTrait
      * @param array|string $fields
      * @param array $sort
      * @param null $limit
-     * @return iterable
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function find($criteria = [], $fields = [], array $sort = [], $limit = null): iterable
+    public function find($criteria = [], $fields = [], array $sort = [], $limit = null): DbStorageComponentInterface
     {
-        $cursor = $this->getDefaultCursor()->find($criteria, $fields);
-        if ($sort) {
-            $cursor->sort($sort);
+        $this->reset();
+        $criteria = array_merge($this->getDefaultWhere(), $criteria);
+        if (!$sort) {
+            $sort = $this->getDefaultSort();
         }
-        if ($limit) {
-            $cursor->limit($limit);
-        }
+        $this->cursor->find($criteria, $fields)->sort($sort)->limit($limit);
         /** @var iterable $this */
         return $this;
     }
@@ -152,14 +156,16 @@ trait DbStorageTrait
      *
      * @param array|string|DbCursorInterface $criteria
      * @param array $fields
-     * @param array $sort
      * @return \Gear\Interfaces\ObjectInterface|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function findOne($criteria = [], $fields = [], $sort = []): ?ObjectInterface
+    public function findOne($criteria = [], $fields = []): ?ObjectInterface
     {
-        $result = $this->cursor->findOne($criteria, $fields, $sort);
+        $this->reset();
+        $criteria = array_merge($this->getDefaultWhere(), $criteria);
+        $result = $this->cursor->findOne($criteria, $fields);
+        /** @var ObjectInterface $result */
         return $result ? $this->factory($result) : $result;
     }
 
@@ -225,7 +231,7 @@ trait DbStorageTrait
     public function getCursor(): DbCursorInterface
     {
         if (!$this->_cursor) {
-            $this->_cursor = $this->getDefaultCursor();
+            $this->_cursor = $this->selectCollection($this->alias)->cursor;
         }
         return $this->_cursor;
     }
@@ -254,15 +260,15 @@ trait DbStorageTrait
         /**
          * @var DbCursorInterface $cursor
          */
-        $cursor = $this->selectCollection($this->alias)->find();
+        $cursor = $this->cursor;
         if ($this->_defaultParams['where']) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }
         if ($this->_defaultParams['fields']) {
             $this->_prepareDefaultFields($cursor, $this->_defaultParams['fields']);
         }
-        if ($this->_defaultParams['joins']) {
-            $this->_prepareDefaultJoins($cursor, $this->_defaultParams['joins']);
+        if ($this->_defaultParams['join']) {
+            $this->_prepareDefaultJoin($cursor, $this->_defaultParams['join']);
         }
         if ($this->_defaultParams['left']) {
             $this->_prepareDefaultLeft($cursor, $this->_defaultParams['left']);
@@ -277,6 +283,16 @@ trait DbStorageTrait
             $cursor->limit($this->_defaultParams['limit']);
         }
         return $cursor;
+    }
+
+    public function getDefaultSort(): array
+    {
+        return isset($this->_defaultParams['sort']) ? $this->_defaultParams['sort'] : [];
+    }
+
+    public function getDefaultWhere(): array
+    {
+        return isset($this->_defaultParams['where']) ? $this->_defaultParams['where'] : [];
     }
 
     /**
@@ -294,7 +310,7 @@ trait DbStorageTrait
         } elseif (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
         } else {
-            $cursor = $this->delegate($this->getDefaultCursor());
+            $cursor = $this->delegate($this->cursor);
         }
         return $cursor;
     }
@@ -330,15 +346,33 @@ trait DbStorageTrait
     }
 
     /**
+     * Ограничение выборки
+     *
+     * @param mixed ...$limit
+     * @return DbStorageComponentInterface
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function limit(...$limit): DbStorageComponentInterface
+    {
+        $this->cursor->limit(...$limit);
+        /** @var DbStorageComponentInterface $this */
+        return $this;
+    }
+
+    /**
      * Удаление модели
      *
      * @param array|ModelInterface $model
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function remove($model)
+    public function remove($model): DbStorageComponentInterface
     {
         $this->selectCollection()->remove($model);
+        /** @var DbStorageComponentInterface $this */
+        return $this;
     }
 
     /**
@@ -351,6 +385,7 @@ trait DbStorageTrait
     public function reset(): DbStorageComponentInterface
     {
         $this->cursor->reset();
+        $this->cursor = null;
         /** @var DbStorageComponentInterface $this */
         return $this;
     }
@@ -379,6 +414,8 @@ trait DbStorageTrait
             $model = $models;
         }
         $this->selectCollection($this->alias)->save($model);
+        /** @var DbStorageComponentInterface $this */
+        return $this;
     }
 
     /**
@@ -461,12 +498,12 @@ trait DbStorageTrait
     /**
      * Установка текущего курсора коллекции
      *
-     * @param DbCursorInterface $cursor
+     * @param DbCursorInterface|null $cursor
      * @return void
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function setCursor(DbCursorInterface $cursor)
+    public function setCursor(?DbCursorInterface $cursor)
     {
         $this->_cursor = $cursor;
     }
@@ -485,6 +522,21 @@ trait DbStorageTrait
     }
 
     /**
+     * Сортировка
+     *
+     * @param array $sort
+     * @return DbStorageComponentInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function sort(array $sort): DbStorageComponentInterface
+    {
+        $this->cursor->sort($sort);
+        /** @var DbStorageComponentInterface $this */
+        return $this;
+    }
+
+    /**
      * Обновление существующей модели
      *
      * @param $model
@@ -495,16 +547,16 @@ trait DbStorageTrait
      */
     public function update($model, $criteria = []): DbStorageComponentInterface
     {
-        $result = 0;
         if ($model instanceof ModelInterface) {
             if ($model->onBeforeUpdate()) {
-                $result = $this->selectCollection()->update($model);
+                $this->cursor->update($model);
                 $model->onAfterUpdate();
             }
         } else {
-            $result = $this->selectCollection()->update($model, $criteria);
+            $this->cursor->update($model, $criteria);
         }
-        return $result;
+        /** @var DbStorageComponentInterface $this */
+        return $this;
     }
 
     /**
@@ -567,7 +619,7 @@ trait DbStorageTrait
         $cursor->fields($fields);
     }
 
-    protected function _prepareDefaultJoins(DbCursorInterface $cursor, array $defaultJoins)
+    protected function _prepareDefaultJoin(DbCursorInterface $cursor, array $defaultJoins)
     {
         foreach ($defaultJoins as $service => $criteria) {
             /**

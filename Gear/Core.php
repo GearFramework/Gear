@@ -411,7 +411,6 @@ final class Core {
      */
     public static function c(string $name, ?\Gear\Interfaces\ObjectInterface $owner = null, bool $clone = false): \Gear\Interfaces\ComponentInterface
     {
-        self::syslog('info', 'Get component <{name}> ', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         /**
          * @var \Gear\Interfaces\ComponentInterface $component
          */
@@ -616,7 +615,6 @@ final class Core {
      */
     public static function h(string $helperName): \Gear\Library\GHelper
     {
-        self::syslog('info', 'Get help <{name}> ', ['name' => $helperName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         if (!isset(self::$_services['helpers'][$helperName])) {
             if (isset(self::$_config['bootstrap']['helpers'][$helperName])) {
                 list($helperClass,, $properties) = self::configure(self::$_config['bootstrap']['helpers'][$helperName]);
@@ -683,7 +681,6 @@ final class Core {
      */
     public static function installComponent(string $name, $component, $owner = null): \Gear\Interfaces\ComponentInterface
     {
-        self::syslog('info', 'Install component <{name}> ', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return self::installService($name, $component, 'component', $owner);
     }
 
@@ -699,7 +696,6 @@ final class Core {
      */
     public static function installModule(string $name, $module): \Gear\Interfaces\ModuleInterface
     {
-        self::syslog('info', 'Install module <{name}> ', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return self::installService($name, $module, 'module');
     }
 
@@ -869,7 +865,6 @@ final class Core {
      */
     public static function m(string $name): \Gear\Interfaces\ModuleInterface
     {
-        self::syslog('info', 'Get module <{name}> ', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         return self::service($name, 'module');
     }
 
@@ -1126,7 +1121,6 @@ final class Core {
      */
     public static function trigger(string $name, $event): bool
     {
-        self::syslog('info', 'Trigger name <{name}> ', ['name' => $name, '__func__' => __METHOD__, '__line__' => __LINE__], true);
         $result = true;
         if (is_object($event->target) && method_exists($event->target, $name)) {
             $result = $event->target->$name($event);

@@ -667,11 +667,11 @@ interface DbStorageComponentInterface
      * Выборка модели по значению первичного ключа
      *
      * @param int|string $pkValue
-     * @return ModelInterface|null
+     * @return ObjectInterface|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function byPk($pkValue): ?ModelInterface;
+    public function byPk($pkValue): ?ObjectInterface;
 
     /**
      * Возвращает количество элементов в коллекции, удовлетворяющих
@@ -688,21 +688,21 @@ interface DbStorageComponentInterface
      *
      * @param array|string $criteria
      * @param array|string $fields
-     * @return iterable
+     * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function find($criteria = [], $fields = []): iterable;
+    public function find($criteria = [], $fields = []): DbStorageComponentInterface;
 
     /**
      * Поиск модели, соответствующей указанному критерию
      *
      * @param array|string $criteria
-     * @return ModelInterface
+     * @return ObjectInterface|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function findOne($criteria = []): ModelInterface;
+    public function findOne($criteria = []): ?ObjectInterface;
 
     /**
      * Возвращает название таблицы
@@ -753,12 +753,11 @@ interface DbStorageComponentInterface
     /**
      * Возвращает итератор со записями
      *
-     * @param mixed $cursor
      * @return iterable
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function getIterator($cursor = null): iterable;
+    public function getIterator();
 
     /**
      * Удаление модели
