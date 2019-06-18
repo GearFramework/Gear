@@ -306,11 +306,11 @@ trait DbStorageTrait
     public function getIterator($cursor = null): iterable
     {
         if (is_iterable($cursor)) {
-            $cursor = $this->delegate($cursor);
+            $cursor = $this->delegate(clone $cursor);
         } elseif (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
         } else {
-            $cursor = $this->delegate($this->cursor);
+            $cursor = $this->delegate(clone $this->cursor);
         }
         return $cursor;
     }
