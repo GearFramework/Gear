@@ -209,20 +209,24 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      * Удаление записей соответствующих критерию
      *
      * @param array|ModelInterface $criteria
+     * @param string $from
      * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function delete($criteria = []): DbCursorInterface
+    public function delete($criteria = [], string $from = ''): DbCursorInterface
     {
+        if (!$from) {
+            $from = $this->getCollectionName();
+        }
         if (!$criteria) {
 
         } else if (is_array($criteria)) {
             $criteria = $this->_prepareCriteria($criteria);
-            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE " . $criteria;
+            $query = 'DELETE FROM `' . $from . "` WHERE " . $criteria;
         } else if ($criteria instanceof ModelInterface) {
             $pk = $criteria->primaryKeyName;
-            $query = 'DELETE FROM `' . $this->getCollectionName() . "` WHERE `$pk` = " . $this->_prepareValue('"' . $criteria->$pk . '"');
+            $query = 'DELETE FROM `' . $from . "` WHERE `$pk` = " . $this->_prepareValue('"' . $criteria->$pk . '"');
         } else {
             throw new \InvalidArgumentException('Invalid arguments to delete');
         }
@@ -240,6 +244,13 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
     public function escape($value): string
     {
         return $this->handler->real_escape_string($value);
+    }
+
+    public function exec()
+    {
+        if (!$this->result) {
+            $this->query();
+        }
     }
 
     /**
@@ -405,12 +416,16 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      * В случае совпадения PRIMARY KEY генерируется исключение
      *
      * @param array|object $properties
+     * @param string|null $collection
      * @return DbCursorInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function insert($properties): DbCursorInterface
+    public function insert($properties, string $collection = null): DbCursorInterface
     {
+        if (!$collection) {
+            $collection = $this->getCollectionName();
+        }
         $this->reset();
         $result = 0;
         if ($properties instanceof ModelInterface) {
@@ -423,7 +438,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
             throw new \InvalidArgumentException('Invalid properties to insert');
         }
         list($names, $values) = $this->_prepareInsert($properties);
-        $query = "INSERT INTO `" . $this->getCollectionName() . "` $names VALUES $values";
+        $query = "INSERT INTO `$collection` $names VALUES $values";
         $this->runQuery($query);
         if (is_object($result) && ($pk = $result->primaryKeyName)) {
             $result->$pk = $this->getLastInsertId();
