@@ -253,6 +253,11 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
         return fread($this->_handler, $length);
     }
 
+    public function readArray(int $flags = FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
+    {
+        return file($this->path, $flags);
+    }
+
     /**
      * Удаление файла
      *

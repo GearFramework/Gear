@@ -517,7 +517,9 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
     public function reset(): DbCursorInterface
     {
         if ($this->result) {
-            $this->result->free();
+            if (is_object($this->result)) {
+                $this->result->free();
+            }
             $this->result = null;
         }
         $this->_query = null;
@@ -558,7 +560,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         if ($params) {
             $bindParams = [];
             foreach($params as $param) {
-                $bindParams[] = $this->eascape($param);
+                $bindParams[] = $this->escape($param);
             }
             $query = sprintf($query, ...$bindParams);
         }
