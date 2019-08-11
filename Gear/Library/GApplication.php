@@ -2,6 +2,7 @@
 
 namespace Gear\Library;
 
+use Gear\Components\Router\GRouterComponent;
 use Gear\Core;
 use Gear\Interfaces\ModuleInterface;
 
@@ -9,6 +10,9 @@ use Gear\Interfaces\ModuleInterface;
  * Класс приложений
  *
  * @package Gear Framework
+ *
+ * @property GRouterComponent router
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -76,22 +80,12 @@ class GApplication extends GModule implements ModuleInterface
 
     public function redirect($path, $params = [])
     {
-        if (is_array($params) && $params) {
-            $p = [];
-            foreach($params as $name => $value) {
-                $p[] = "$name=$value";
-            }
-            $path .= '?' . implode('&', $p);
-        } else if (is_string($params) && trim($params)) {
-            $path .= "?$params";
-        }
-        $this->redirectUri("/$path");
+        $this->router->redirect($path, $params);
     }
 
     public function redirectUri(string $uri)
     {
-        header("Location: $uri");
-        die();
+        $this->router->redirectUri($uri);
     }
 
     /**

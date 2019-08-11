@@ -168,6 +168,7 @@ class GRouterComponent extends GComponent implements FactoryInterface
      */
     public function getController(): ControllerInterface
     {
+        /** @var ControllerInterface _currentController */
         if ($this->_currentController === null) {
             $route = $this->getRequestRoute();
             $class = $this->getClassByRoute($route);
@@ -259,6 +260,26 @@ class GRouterComponent extends GComponent implements FactoryInterface
     public function getRoutes(): array
     {
         return $this->_routes;
+    }
+
+    public function redirect($path, $params = [])
+    {
+        if (is_array($params) && $params) {
+            $p = [];
+            foreach($params as $name => $value) {
+                $p[] = "$name=$value";
+            }
+            $path .= '?' . implode('&', $p);
+        } else if (is_string($params) && trim($params)) {
+            $path .= "?$params";
+        }
+        $this->redirectUri("/$path");
+    }
+
+    public function redirectUri(string $uri)
+    {
+        header("Location: $uri");
+        die();
     }
 
     /**

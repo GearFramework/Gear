@@ -16,6 +16,7 @@ use Gear\Traits\SetterTrait;
  * @property bool bubble
  * @property iterable properties
  * @property object|null sender
+ * @property object|null target
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -75,6 +76,11 @@ class GEvent implements EventInterface
     public function getSender(): ?ObjectInterface
     {
         return $this->_sender;
+    }
+
+    public function getTarget(): ?ObjectInterface
+    {
+        return $this->props('target');
     }
 
     /**
