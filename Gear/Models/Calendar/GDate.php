@@ -532,6 +532,18 @@ class GDate extends GModel
     }
 
     /**
+     * Установка дня месяца
+     *
+     * @param int $day
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setDay(int $day)
+    {
+        $this->timestamp = mktime($this->hours, $this->minutes, $this->seconds, $this->month, $day, $this->year);
+    }
+
+    /**
      * Установка текущекй локали
      *
      * @param null|GLocale $locale
@@ -541,6 +553,18 @@ class GDate extends GModel
     public function setLocale(?GLocale $locale)
     {
         $this->_locale = $locale;
+    }
+
+    /**
+     * Установка месяца
+     *
+     * @param int $month
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setMonth(int $month)
+    {
+        $this->timestamp = mktime($this->hours, $this->minutes, $this->seconds, $month, $this->day, $this->year);
     }
 
     /**
@@ -566,6 +590,18 @@ class GDate extends GModel
     public function setTimestamp(int $timestamp)
     {
         $this->_timestamp = $timestamp;
+    }
+
+    /**
+     * Установка года
+     *
+     * @param int $year
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function setYear(int $year)
+    {
+        $this->timestamp = mktime($this->hours, $this->minutes, $this->seconds, $this->month, $this->day, $year);
     }
 
     /**

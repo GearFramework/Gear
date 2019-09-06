@@ -104,7 +104,7 @@ trait DbStorageTrait
 
     /**
      * Возвращает количество элементов в коллекции, удовлетворяющих
-     * критерию
+     * критерию и ограниченная LIMIT
      *
      * @return int
      * @since 0.0.1
@@ -147,7 +147,7 @@ trait DbStorageTrait
             $sort = $this->getDefaultSort();
         }
         $this->cursor->find($criteria, $fields)->sort($sort)->limit($limit);
-        /** @var iterable $this */
+        /** @var DbStorageComponentInterface $this */
         return $this;
     }
 
@@ -358,6 +358,19 @@ trait DbStorageTrait
         $this->cursor->limit(...$limit);
         /** @var DbStorageComponentInterface $this */
         return $this;
+    }
+
+    /**
+     * Возвращает количество элементов в коллекции, удовлетворяющих
+     * критерию и не ограниченная LIMIT
+     *
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function realCount(): int
+    {
+        return $this->cursor->realCount();
     }
 
     /**

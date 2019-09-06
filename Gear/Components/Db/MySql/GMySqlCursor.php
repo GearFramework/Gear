@@ -181,7 +181,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      * Получение количества выбранных строк в результате выполнения запроса,
      * либо добавляет COUNT() внутрь SELECT запроса
      *
-     * @param string $field
+     * @param string|array $field
      * @return integer|GDbCursor
      * @since 0.0.1
      * @version 0.0.1
@@ -189,18 +189,19 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
     public function count(string $field = '')
     {
         if ($field) {
-            $this->_queryBuild->fields[] = "COUNT($field)";
+            if (is_string($field)) {
+                $this->_queryBuild->fields[] = "COUNT($field)";
+            } else {
+                $fieldName = reset($field);
+                $alias = key($field);
+                $this->_queryBuild->fields[] = "COUNT($fieldName) AS $alias";
+            }
             $count = $this;
         } else {
             if (!$this->result) {
                 $this->query();
-                $result = $this->result;
-                $this->runQuery('SELECT FOUND_ROWS() AS countFoundRows');
-                $count = $this->asAssoc()['countFoundRows'];
-                $this->result = $result;
-            } else {
-                $count = $this->result->num_rows;
             }
+            $count = $this->result->num_rows;
         }
         return $count;
     }
@@ -505,6 +506,26 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
             $this->_queryBuild->limit = [$top, $limit];
         }
         return $this;
+    }
+
+    /**
+     * Получение количества выбранных строк в результате выполнения запроса,
+     * либо добавляет COUNT() внутрь SELECT запроса
+     *
+     * @return integer
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function realCount(): int
+    {
+        if (!$this->result) {
+            $this->query();
+        }
+        $result = $this->result;
+        $this->runQuery('SELECT FOUND_ROWS() AS countFoundRows');
+        $count = $this->asAssoc()['countFoundRows'];
+        $this->result = $result;
+        return $count;
     }
 
     /**

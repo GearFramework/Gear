@@ -57,6 +57,22 @@ class CalendarHelper extends GHelper
     }
 
     /**
+     * Возвращает количество дней в месяце
+     *
+     * @param GDate|null $date
+     * @return int
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function countDays(?GDate $date = null): int
+    {
+        if (!$date) {
+            $date = self::helpNow();
+        }
+        return (int)date('t', $date->timestamp);
+    }
+
+    /**
      * Возвращает объект текущей даты или указанной в виде строки или UT
      *
      * @param null|string|int $date
@@ -94,6 +110,22 @@ class CalendarHelper extends GHelper
     }
 
     /**
+     * Возвращает дату первого дня месяца
+     *
+     * @param GDate|null $date
+     * @return GDate
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function helpFirstDate(?GDate $date = null): GDate
+    {
+        if (!$date) {
+            $date = self::helpNow();
+        }
+        return self::helpMakeTime(0, 0, 0, $date->month, 1, $date->year);
+    }
+
+    /**
      * @param int $seconds
      * @return GTimeInterval
      * @since 0.0.2
@@ -116,6 +148,22 @@ class CalendarHelper extends GHelper
     {
         $date = $date ? self::helpDate($date) : self::helpNow();
         return date('L') ? true : false;
+    }
+
+    /**
+     * Возвращает дату первого дня месяца
+     *
+     * @param GDate|null $date
+     * @return GDate
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public static function helpLastDate(?GDate $date = null): GDate
+    {
+        if (!$date) {
+            $date = self::helpNow();
+        }
+        return self::helpMakeTime(0, 0, 0, $date->month, date('t', $date->timestamp), $date->year);
     }
 
     /**

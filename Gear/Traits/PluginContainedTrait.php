@@ -5,6 +5,7 @@ namespace Gear\Traits;
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
 use Gear\Interfaces\PluginInterface;
+use VideoRg\Components\Paginator\RgPaginatorComponent;
 
 /**
  * Трэйт для объектов, которым необходимо поддерживать плагины
@@ -177,7 +178,7 @@ trait PluginContainedTrait
         }
         if (!($plugin = $this->isPluginInstalled($name))) {
             if (!($plugin = $this->isPluginRegistered($name))) {
-                throw static::PluginNotFoundException(['name' => $name, 'class' => get_class($this), 'file' => __FILE__, 'line' => __LINE__]);
+                throw static::PluginNotFoundException(['pluginName' => $name, 'class' => get_class($this), 'file' => __FILE__, 'line' => __LINE__]);
             }
             $plugin = $this->installPlugin($name, $plugin, $owner);
         }
