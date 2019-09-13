@@ -310,7 +310,7 @@ trait DbStorageTrait
         } elseif (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
         } else {
-            $cursor = $this->delegate(clone $this->cursor);
+            $cursor = $this->delegate(clone $this->find()->cursor);
         }
         return $cursor;
     }
@@ -342,7 +342,7 @@ trait DbStorageTrait
      */
     public function getPrimaryKeyName(): string
     {
-        return $this->alias ? $this->alias . '.' . $this->_primaryKeyName : $this->_primaryKeyName;
+        return $this->_primaryKeyName;
     }
 
     /**

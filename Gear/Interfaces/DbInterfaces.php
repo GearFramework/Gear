@@ -808,6 +808,16 @@ interface DbStorageComponentInterface
     public function selectDB(): DbDatabaseInterface;
 
     /**
+     * Сортировка
+     *
+     * @param array $sort
+     * @return DbStorageComponentInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function sort(array $sort): DbStorageComponentInterface;
+
+    /**
      * Обновление существующей модели
      *
      * @param $model
