@@ -413,7 +413,7 @@ interface DbCursorInterface
     /**
      * Подключение таблицы
      *
-     * @param string|DbCollectionInterface $collection
+     * @param string|array|DbCollectionInterface $collection
      * @param array $criteria
      * @return DbCursorInterface
      * @since 0.0.1
@@ -434,7 +434,7 @@ interface DbCursorInterface
     /**
      * Левое подключение таблицы
      *
-     * @param string|DbCollectionInterface $collection
+     * @param array|string|DbCollectionInterface $collection
      * @param array $criteria
      * @return DbCursorInterface
      * @since 0.0.1
@@ -626,6 +626,9 @@ interface DbDatabaseInterface
  * Интерфейс компонентов, работающих с данными базы данных
  *
  * @package Gear Framework
+ *
+ * @property DbCursorInterface cursor
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -758,6 +761,16 @@ interface DbStorageComponentInterface
      * @version 0.0.1
      */
     public function getIterator();
+
+    /**
+     * Ограничение выборки
+     *
+     * @param mixed ...$limit
+     * @return DbStorageComponentInterface
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function limit(...$limit): DbStorageComponentInterface;
 
     /**
      * Удаление модели

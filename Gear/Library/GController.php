@@ -236,9 +236,9 @@ class GController extends GModel implements ControllerInterface
         $this->request = $request;
         if ($this->beforeRun()) {
             $route = $request->param('r', $this->defaultApi);
-            preg_match('#/a(($)|(/[A-Za-z0-9_]*))#', $route, $match);
+            preg_match('#/a(($)|(/[A-Za-z0-9_]*)+)#', $route, $match);
             if ($match) {
-                $api = preg_replace('#^/+#', '', $match[1]);
+                $api = trim($match[1], "/");
             }
             if (!$api) {
                 $api = $this->_defaultApi;

@@ -2,6 +2,7 @@
 
 namespace Gear\Traits\Db\Mysql;
 
+use Gear\Components\Db\Mysql\GMySqlCursor;
 use Gear\Core;
 use Gear\Interfaces\DbCollectionInterface;
 use Gear\Interfaces\DbConnectionInterface;
@@ -99,7 +100,7 @@ trait DbStorageTrait
      */
     public function byPk($pkValue): ?ObjectInterface
     {
-        return $this->findOne([$this->primaryKeyName => $pkValue]);
+        return $this->findOne(["{$this->alias}.{$this->primaryKeyName}" => $pkValue]);
     }
 
     /**
@@ -133,20 +134,19 @@ trait DbStorageTrait
      *
      * @param array|string|DbCursorInterface $criteria
      * @param array|string $fields
-     * @param array $sort
-     * @param null $limit
+     * @param bool $useDefaults
      * @return DbStorageComponentInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function find($criteria = [], $fields = [], array $sort = [], $limit = null): DbStorageComponentInterface
+    public function find($criteria = [], $fields = [], bool $useDefaults = true): DbStorageComponentInterface
     {
         $this->reset();
         $criteria = array_merge($this->getDefaultWhere(), $criteria);
-        if (!$sort) {
-            $sort = $this->getDefaultSort();
+        $this->cursor->find($criteria, $fields);
+        if ($useDefaults) {
+            $this->sort($this->getDefaultSort());
         }
-        $this->cursor->find($criteria, $fields)->sort($sort)->limit($limit);
         /** @var DbStorageComponentInterface $this */
         return $this;
     }
@@ -170,58 +170,6 @@ trait DbStorageTrait
     }
 
     /**
-     * Возвращает алиас для коллекции
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getAlias(): string
-    {
-        return $this->_alias;
-    }
-
-    /**
-     * Возвращает название таблицы
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getCollectionName(): string
-    {
-        return $this->_collectionName;
-    }
-
-    /**
-     * Возвращает компонент подключения к базе данных
-     *
-     * @return DbConnectionInterface
-     * @throws \CoreException
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function getConnection(): DbConnectionInterface
-    {
-        if (!$this->_connection) {
-            $this->_connection = Core::c($this->connectionName);
-        }
-        return $this->_connection;
-    }
-
-    /**
-     * Возвращает название компонента подключения к серверу базы данных
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getConnectionName(): string
-    {
-        return $this->_connectionName;
-    }
-
-    /**
      * Возвращает курсор коллекции
      *
      * @return DbCursorInterface
@@ -234,18 +182,6 @@ trait DbStorageTrait
             $this->_cursor = $this->selectCollection($this->alias)->cursor;
         }
         return $this->_cursor;
-    }
-
-    /**
-     * Возвращает название базы данных
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getDbName(): string
-    {
-        return $this->_dbName;
     }
 
     /**
@@ -310,7 +246,11 @@ trait DbStorageTrait
         } elseif (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
         } else {
-            $cursor = $this->delegate(clone $this->find()->cursor);
+            if ($this->isValidCursor()) {
+                $cursor = $this->delegate(clone $this->cursor);
+            } else {
+                $cursor = $this->delegate(clone $this->getDefaultCursor());
+            }
         }
         return $cursor;
     }
@@ -343,6 +283,11 @@ trait DbStorageTrait
     public function getPrimaryKeyName(): string
     {
         return $this->_primaryKeyName;
+    }
+
+    public function isValidCursor(): bool
+    {
+        return $this->_cursor instanceof DbCursorInterface;
     }
 
     /**
@@ -457,58 +402,6 @@ trait DbStorageTrait
     }
 
     /**
-     * Установка алиаса для коллекции
-     *
-     * @param string $alias
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setAlias(string $alias)
-    {
-        $this->_alias = $alias;
-    }
-
-    /**
-     * Устновка названия коллекции, в которой располагаются модели
-     *
-     * @param string $collectionName
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setCollectionName(string $collectionName)
-    {
-        $this->_collectionName = $collectionName;
-    }
-
-    /**
-     * Устновка подключения к серверу базы данных
-     *
-     * @param DbConnectionInterface $connection
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.2
-     */
-    public function setConnection(DbConnectionInterface $connection)
-    {
-        $this->_connection = $connection;
-    }
-
-    /**
-     * Установка названия компонента, выполняющего подключение к
-     * серверу базы данных
-     *
-     * @param string $connectionName
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setConnectionName(string $connectionName)
-    {
-        $this->_connectionName = $connectionName;
-    }
-
-    /**
      * Установка текущего курсора коллекции
      *
      * @param DbCursorInterface|null $cursor
@@ -519,19 +412,6 @@ trait DbStorageTrait
     public function setCursor(?DbCursorInterface $cursor)
     {
         $this->_cursor = $cursor;
-    }
-
-    /**
-     * Установка названия базы данных с коллекциями моделей
-     *
-     * @param string $dbName
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setDbName(string $dbName)
-    {
-        $this->_dbName = $dbName;
     }
 
     /**

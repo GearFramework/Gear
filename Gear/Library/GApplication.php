@@ -5,12 +5,16 @@ namespace Gear\Library;
 use Gear\Components\Router\GRouterComponent;
 use Gear\Core;
 use Gear\Interfaces\ModuleInterface;
+use Gear\Plugins\Http\GRequest;
+use Gear\Plugins\Http\GResponse;
 
 /**
  * Класс приложений
  *
  * @package Gear Framework
  *
+ * @property GRequest request
+ * @property GResponse response
  * @property GRouterComponent router
  *
  * @author Kukushkin Denis
@@ -68,6 +72,7 @@ class GApplication extends GModule implements ModuleInterface
      *
      * @param mixed $result
      * @return void
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -92,6 +97,7 @@ class GApplication extends GModule implements ModuleInterface
      * Запуск приложения
      *
      * @return void
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */

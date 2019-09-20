@@ -16,6 +16,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @package Gear Framework
  *
  * @property null|ControllerInterface controller
+ * @property null|ControllerInterface currentController
  * @property string defaultController
  * @property string defaultControllersPath
  * @property RequestInterface request
@@ -181,8 +182,14 @@ class GRouterComponent extends GComponent implements FactoryInterface
                 'name' => $nameRoute,
                 'route' => $route,
             ];
-            $this->_currentController = $this->factory($controller, $this);
+            $this->currentController = $this->factory($controller, $this);
         }
+        /** @var ControllerInterface $this->_currentController */
+        return $this->currentController;
+    }
+
+    public function getCurrentController(): ?ControllerInterface
+    {
         return $this->_currentController;
     }
 
@@ -280,6 +287,11 @@ class GRouterComponent extends GComponent implements FactoryInterface
     {
         header("Location: $uri");
         die();
+    }
+
+    public function setCurrentController(ControllerInterface $controller)
+    {
+        $this->_currentController = $controller;
     }
 
     /**

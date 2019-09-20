@@ -50,7 +50,7 @@ trait FactoryTrait
     /**
      * Метод создания объекта
      *
-     * @param array|\Closure $properties
+     * @param array|iterable|\Closure $properties
      * @param ObjectInterface|null $owner
      * @return ObjectInterface|null
      * @since 0.0.1
