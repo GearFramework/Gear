@@ -6,11 +6,10 @@ use gear\Core;
 use Gear\Interfaces\DirectoryInterface;
 use Gear\Interfaces\FileInterface;
 use Gear\Interfaces\FileSystemInterface;
+use Gear\Interfaces\IoInterface;
 use Gear\Interfaces\ObjectInterface;
-use Gear\Interfaces\StaticFactoryInterface;
 use Gear\Library\GEvent;
 use Gear\Library\Io\GIo;
-use Gear\Traits\Factory\StaticFactoryTrait;
 
 /**
  * Класс файловой системы
@@ -19,12 +18,13 @@ use Gear\Traits\Factory\StaticFactoryTrait;
  *
  * @property int atime
  * @property string basename
- * @property string content
+ * @property mixed content
  * @property int ctime
  * @property string dirname
+ * @property int|string mode
  * @property int mtime
- * @property string $name
- * @property ObjectInterface owner
+ * @property string name
+ * @property IoInterface owner
  * @property string path
  * @property int size
  *
@@ -34,17 +34,15 @@ use Gear\Traits\Factory\StaticFactoryTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFactoryInterface
+abstract class GFileSystem extends GIo implements FileSystemInterface
 {
     /* Traits */
-    use StaticFactoryTrait;
     /* Const */
     const DEFAULT_MODE = 0664;
     const DEFAULT_SIZEFORMAT = '%01d %s';
     /* Private */
     /* Protected */
     protected static $_defaultMime = 'text/plain';
-    protected static $_getterFactory = null;
     protected static $_mimes = [
         '123' => 'application/vnd.lotus-1-2-3',
         '3dml' => 'text/vnd.in3d.3dml',
@@ -1310,6 +1308,10 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      */
     public function dir(): ?DirectoryInterface
     {
+        /** @var DirectoryInterface|null owner */
+        if (!$this->owner) {
+            $this->owner = self::factory(['path' => $this->dirname]);
+        }
         return $this->owner;
     }
 
@@ -1552,7 +1554,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface, StaticFac
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function getOwner(): ?ObjectInterface
+    public function getOwner(): ?IoInterface
     {
         if ($this->_owner === null) {
             $this->owner = $this->factory(['path' => $this->dirname()]);

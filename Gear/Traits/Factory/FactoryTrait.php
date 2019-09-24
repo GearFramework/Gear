@@ -12,6 +12,7 @@ use Gear\Library\GEvent;
  * @package Gear Framework
  *
  * @property array factoryProperties
+ * @property array model
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -50,22 +51,16 @@ trait FactoryTrait
     /**
      * Метод создания объекта
      *
-     * @param array|iterable|\Closure $properties
+     * @param iterable $properties
      * @param ObjectInterface|null $owner
      * @return ObjectInterface|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function factory($properties, ObjectInterface $owner = null): ?ObjectInterface
+    public function factory(iterable $properties, ObjectInterface $owner = null): ?ObjectInterface
     {
         if (!$owner) {
             $owner = $this;
-        }
-        if ($properties instanceof \Closure) {
-            $properties = $properties($owner);
-        }
-        if (!is_array($properties)) {
-            throw self::FactoryInvalidItemPropertiesException();
         }
         $object = null;
         if ($this->beforeFactory($properties)) {
@@ -87,13 +82,15 @@ trait FactoryTrait
     /**
      * Возвращает класс создаваемых фабрикой объектов
      *
+     * @param array $properties
+     * @return string|null
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function getFactoryClass(): ?string
+    public function getFactoryClass(array $properties = []): ?string
     {
         $class = null;
-        $properties = $this->factoryProperties;
+        $properties = $this->getFactoryProperties($properties);
         if (isset($properties['class'])) {
             $class = is_array($properties['class']) ? $properties['class']['name'] : $properties['class'];
         }
@@ -110,24 +107,50 @@ trait FactoryTrait
      */
     public function getFactoryProperties(array $properties = []): array
     {
-        return array_replace_recursive($this->_factoryProperties, $properties);
+        return array_replace_recursive($this->model, $properties);
+    }
+
+    /**
+     * Возвращает параметры создаваемой модели
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getModel(): array
+    {
+        $model = [];
+        if (is_string($this->_model)) {
+            if ($this->_model[0] === '@') {
+                $model = Core::model(substr($this->_model, 1));
+            }
+        } else {
+            $model = $this->_model;
+        }
+        return $model;
     }
 
     /**
      * Установка параметров создаваемых объектов
      *
-     * @param array|\Closure $properties
+     * @param array $properties
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function setFactoryProperties($properties)
+    public function setFactoryProperties(array $properties)
     {
-        if ($properties instanceof \Closure) {
-            $properties = $properties($this);
-        }
-        if (!is_array($properties)) {
-            throw self::FactoryInvalidItemPropertiesException();
-        }
-        $this->_factoryProperties = $properties;
+        $this->model = $properties;
+    }
+
+    /**
+     * Установка параметров создаваемых объектов
+     *
+     * @param array $model
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function setModel(array $model)
+    {
+        $this->_model = $model;
     }
 }

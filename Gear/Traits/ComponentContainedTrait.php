@@ -46,7 +46,6 @@ trait ComponentContainedTrait
      *
      * @param string $name
      * @param ObjectInterface|null $owner
-     * @throws \ComponentNotFoundException
      * @return ComponentInterface
      * @since 0.0.1
      * @version 0.0.2
@@ -163,7 +162,7 @@ trait ComponentContainedTrait
      * Регистрация компонента
      *
      * @param string $name
-     * @param array|\Closure $component
+     * @param array|string|\Closure $component
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -182,7 +181,6 @@ trait ComponentContainedTrait
      *
      * @param string $name
      * @return void
-     * @throws \ComponentNotFoundException
      * @since 0.0.1
      * @version 0.0.2
      */

@@ -4,7 +4,6 @@ namespace Gear\Traits\Factory;
 
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
-use gear\library\GEvent;
 
 /**
  * Методы статической фабрики объектов
@@ -45,20 +44,14 @@ trait StaticFactoryTrait
     }
 
     /**
-     * @param $properties
+     * @param iterable $properties
      * @param ObjectInterface|null $owner
      * @return ObjectInterface|null
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function factory($properties, ObjectInterface $owner = null): ?ObjectInterface
+    public static function factory(iterable $properties, ObjectInterface $owner = null): ?ObjectInterface
     {
-        if ($properties instanceof \Closure) {
-            $properties = $properties($owner);
-        }
-        if (!is_array($properties)) {
-            throw self::FactoryInvalidItemPropertiesException();
-        }
         $object = null;
         if (static::beforeFactory($properties)) {
             $properties = self::getFactoryProperties($properties);
@@ -77,15 +70,53 @@ trait StaticFactoryTrait
     }
 
     /**
+     * Возвращает класс создаваемых фабрикой объектов
+     *
+     * @param array $properties
+     * @return string|null
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public static function getFactoryClass(array $properties = []): ?string
+    {
+        $class = null;
+        $properties = static::getFactoryProperties($properties);
+        if (isset($properties['class'])) {
+            $class = is_array($properties['class']) ? $properties['class']['name'] : $properties['class'];
+        }
+        return $class;
+    }
+
+    /**
      * Возвращает параметры по-умолчанию создаваемых объектов
      *
      * @param array $properties
      * @return array
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
     public static function getFactoryProperties(array $properties = []): array
     {
-        return array_replace_recursive(static::$_factoryProperties, $properties);
+        return array_replace_recursive(static::getModel(), $properties);
+    }
+
+    /**
+     * Возвращает параметры создаваемой модели
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public static function getModel(): array
+    {
+        $model = [];
+        if (is_string(static::$_model)) {
+            if (static::$_model[0] === '@') {
+                $model = Core::model(substr(static::$_model, 1));
+            }
+        } else {
+            $model = static::$_model;
+        }
+        return $model;
     }
 }

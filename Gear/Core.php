@@ -95,6 +95,8 @@ final class Core {
         'components' => [],
         /* Список пользовательских хэлперов */
         'helpers' => [],
+        /* Список моделей */
+        'models' => [],
         /* Список глобальных свойств ядра */
         'properties' => [
             /* Режим запуска приложения */
@@ -362,7 +364,9 @@ final class Core {
      */
     public static function app(): \Gear\Library\GApplication
     {
-        return self::m('app');
+        /** @var \Gear\Library\GApplication $app */
+        $app = self::m('app');
+        return $app;
     }
 
     /**
@@ -372,14 +376,24 @@ final class Core {
      * 1 => Статические свойства класса (конфигурация класса protected static $_config)
      * 2 => Свойства объекта
      *
-     * @param array $config
+     * @param array|string $config
      * @return array
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public static function configure(array $config): array
+    public static function configure($config): array
     {
         $class = null;
+        if (is_string($config)) {
+            if ($config[0] === '@') {
+                $config = self::getRegisteredService(substr($config, 1), 'component');
+            } elseif ($config[0] === '%') {
+                $config = self::props(substr($config, 1));
+            }
+        }
+        if (!is_array($config)) {
+            $config = [];
+        }
         $properties = $config;
         $config = [];
         if (isset($properties['class'])) {
@@ -866,6 +880,22 @@ final class Core {
     public static function m(string $name): \Gear\Interfaces\ModuleInterface
     {
         return self::service($name, 'module');
+    }
+
+    /**
+     * Возвращает описание запрошенной модели
+     *
+     * @param string $name
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public static function model(string $name): array
+    {
+        if (!isset(self::$_config['models'][$name])) {
+            self::CoreException('Model <{name}>', ['name' => $name]);
+        }
+        return self::$_config['models'][$name];
     }
 
     /**

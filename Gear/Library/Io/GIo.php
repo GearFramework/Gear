@@ -3,6 +3,7 @@
 namespace Gear\Library\Io;
 
 use Gear\Interfaces\IoInterface;
+use Gear\Interfaces\StaticFactoryInterface;
 use Gear\Library\GModel;
 use Gear\Traits\Factory\StaticFactoryTrait;
 
@@ -19,7 +20,7 @@ use Gear\Traits\Factory\StaticFactoryTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-abstract class GIo extends GModel implements IoInterface
+abstract class GIo extends GModel implements IoInterface, StaticFactoryInterface
 {
     /* Traits */
     use StaticFactoryTrait;
