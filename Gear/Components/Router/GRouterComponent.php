@@ -169,8 +169,7 @@ class GRouterComponent extends GComponent implements FactoryInterface
      */
     public function getController(): ControllerInterface
     {
-        /** @var ControllerInterface _currentController */
-        if ($this->_currentController === null) {
+        if ($this->currentController === null) {
             $route = $this->getRequestRoute();
             $class = $this->getClassByRoute($route);
             if (empty($class)) {
@@ -184,10 +183,16 @@ class GRouterComponent extends GComponent implements FactoryInterface
             ];
             $this->currentController = $this->factory($controller, $this);
         }
-        /** @var ControllerInterface $this->_currentController */
         return $this->currentController;
     }
 
+    /**
+     * Возвращает инстантс или NULL текушего контроллера
+     *
+     * @return ControllerInterface|null
+     * @since 0.0.1
+     * @version 0.0.2
+     */
     public function getCurrentController(): ?ControllerInterface
     {
         return $this->_currentController;
@@ -289,6 +294,13 @@ class GRouterComponent extends GComponent implements FactoryInterface
         die();
     }
 
+    /**
+     * Установка инстанса текушего исполняемого контроллера
+     *
+     * @param ControllerInterface $controller
+     * @since 0.0.1
+     * @version 0.0.2
+     */
     public function setCurrentController(ControllerInterface $controller)
     {
         $this->_currentController = $controller;
@@ -349,19 +361,13 @@ class GRouterComponent extends GComponent implements FactoryInterface
     /**
      * Устанавливает список роутов
      *
-     * @param \Closure|array $routes
+     * @param array $routes
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function setRoutes($routes)
+    public function setRoutes(array $routes)
     {
-        if ($routes instanceof \Closure) {
-            $routes = $routes($this);
-        }
-        if (!is_array($routes)) {
-            throw self::InvalidRoutesException();
-        }
         $this->_routes = $routes;
     }
 }
