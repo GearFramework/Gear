@@ -30,6 +30,11 @@ class HtmlHelper extends GHelper implements StaticFactoryInterface
             'class' => '\Gear\Models\Html\GHtmlDiv',
         ],
     ];
+    protected static $_model = [
+        'div' => [
+            'class' => '\Gear\Models\Html\GHtmlDiv',
+        ],
+    ];
     /* Public */
 
     /**

@@ -37,6 +37,9 @@ class GMySqlCollection extends GDbCollection implements DbCollectionInterface
     protected $_factoryProperties = [
         'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
     ];
+    protected $_model = [
+        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
+    ];
     protected $_alias = '';
     /* Public */
 

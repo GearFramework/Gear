@@ -35,6 +35,9 @@ class CalendarHelper extends GHelper
     protected static $_factoryProperties = [
         'class' => '\Gear\Models\Calendar\GDate',
     ];
+    protected static $_model = [
+        'class' => '\Gear\Models\Calendar\GDate',
+    ];
     protected static $_currentDate = null;
     protected static $_locale = null;
     protected static $_namespaceLocales = '\Gear\Models\Calendar\Locales';

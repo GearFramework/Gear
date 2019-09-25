@@ -36,6 +36,9 @@ class GMySqlDatabase extends GDbDatabase implements DbDatabaseInterface
     protected $_factoryProperties = [
         'class' => '\Gear\Components\Db\MySql\GMySqlCollection',
     ];
+    protected $_model = [
+        'class' => '\Gear\Components\Db\MySql\GMySqlCollection',
+    ];
     /* Public */
 
     /**

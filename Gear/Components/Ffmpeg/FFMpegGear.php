@@ -33,6 +33,9 @@ class FFMpegGear extends GComponent
     ];
     protected $_ffmpegCommand = '/usr/bin/ffmpeg';
     protected $_ffprobeCommand = '/usr/bin/ffprobe';
+    protected $_model = [
+        'class' => '\Gear\Models\Ffmpeg\FFMpegMovie',
+    ];
     protected $_tempDir = '/tmp';
     /* Public */
 

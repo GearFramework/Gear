@@ -48,6 +48,9 @@ abstract class GDbStorageComponent extends GComponent implements \IteratorAggreg
     protected $_dbName = '';
     protected $_collectionName = '';
     protected $_defaultParams = [];
+    protected $_model = [
+        'class' => '\Gear\Library\GModel',
+    ];
     protected $_primaryKeyName = 'id';
     /* Public */
 

@@ -47,6 +47,9 @@ abstract class GDbCursor extends GModel implements \Iterator, DbCursorInterface
     protected $_factoryProperties = [
         'class' => '\Gear\Library\GModel',
     ];
+    protected $_model = [
+        'class' => '\Gear\Library\GModel',
+    ];
     protected $_query = '';
     protected $_result = null;
     /* Public */

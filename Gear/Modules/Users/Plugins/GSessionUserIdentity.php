@@ -48,6 +48,9 @@ class GSessionUserIdentity extends GDbStoragePlugin implements UserIdentityPlugi
         'class' => '\Gear\Modules\Users\Models\GSession',
     ];
     protected $_maxSessionsByUser = -1;
+    protected $_model = [
+        'class' => '\Gear\Modules\Users\Models\GSession',
+    ];
     protected $_primaryKey = 'hash';
     protected $_session = null;
     protected $_sessionLifeTime = 900;

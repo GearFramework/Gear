@@ -40,7 +40,7 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, DbDatab
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
+    protected $_current = null;
     protected $_cursorFactory = [
         'class' => '\Gear\Library\Db\GDbCursor',
     ];
@@ -49,7 +49,9 @@ abstract class GDbDatabase extends GModel implements \IteratorAggregate, DbDatab
     ];
     protected $_handler = null;
     protected $_items = [];
-    protected $_current = null;
+    protected $_model = [
+        'class' => '\Gear\Library\Db\GDbCollection',
+    ];
     /* Public */
 
     /**

@@ -54,6 +54,9 @@ class GMySqlConnectionComponent extends GDbConnection implements DbConnectionInt
     protected $_factoryProperties = [
         'class' => '\Gear\Components\Db\MySql\GMySqlDatabase',
     ];
+    protected $_model = [
+        'class' => '\Gear\Components\Db\MySql\GMySqlDatabase',
+    ];
     /* Public */
 
     /**

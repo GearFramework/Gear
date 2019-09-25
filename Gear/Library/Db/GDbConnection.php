@@ -44,6 +44,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
         'password' => '',
         'port' => '',
     ];
+    protected $_current = null;
     protected $_cursorFactory = [
         'class' => '\Gear\Library\Db\GDbCursor',
     ];
@@ -52,7 +53,9 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
     ];
     protected $_handler = null;
     protected $_items = [];
-    protected $_current = null;
+    protected $_model = [
+        'class' => '\Gear\Library\Db\GDbDatabase',
+    ];
     /* Public */
 
     /**

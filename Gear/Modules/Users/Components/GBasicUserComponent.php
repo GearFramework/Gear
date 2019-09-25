@@ -61,6 +61,9 @@ class GBasicUserComponent extends GDbStorageComponent implements UserComponentIn
     ];
     protected $_guestUsername = 'guest';
     protected $_identityPlugins = ['session'];
+    protected $_model = [
+        'class' => '\Gear\Modules\Users\Models\GUser',
+    ];
     protected $_user = null;
     /* Public */
 

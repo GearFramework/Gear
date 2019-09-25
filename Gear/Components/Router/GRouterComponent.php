@@ -39,6 +39,7 @@ class GRouterComponent extends GComponent implements FactoryInterface
     private $_defaultController = 'index';
     private $_defaultControllersPath = 'Controllers';
     private $_factoryProperties = [];
+    private $_model = [];
     private $_request = null;
     private $_response = null;
     private $_routes = [];
