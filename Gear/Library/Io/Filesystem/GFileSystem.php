@@ -1554,11 +1554,11 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function getOwner(): ?IoInterface
+    public function getOwner(): ?ObjectInterface
     {
-        if ($this->_owner === null) {
-            $this->owner = $this->factory(['path' => $this->dirname()]);
-        }
+//        if ($this->_owner === null) {
+  //          $this->owner = $this->factory(['path' => $this->dirname()]);
+    //    }
         return $this->_owner;
     }
 
