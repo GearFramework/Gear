@@ -8,6 +8,7 @@ use Gear\Interfaces\FileInterface;
 use Gear\Interfaces\FileSystemInterface;
 use Gear\Library\GPlugin;
 use Gear\Library\Io\Filesystem\GFile;
+use Gear\Modules\Resources\GResourcesModule;
 use Gear\Modules\Resources\Interfaces\ResourcePluginInterface;
 
 /**
@@ -21,6 +22,7 @@ use Gear\Modules\Resources\Interfaces\ResourcePluginInterface;
  * @property bool hashingName
  * @property string|DirectoryInterface mappingFolder
  * @property string mime
+ * @property GResourcesModule owner
  * @property string typeResource
  *
  * @author Kukushkin Denis
@@ -292,6 +294,7 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
      *
      * @param string|FileInterface $resource
      * @return FileInterface
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
@@ -312,6 +315,7 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
      * @param array $options
      * @param bool $compile
      * @return string
+     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
