@@ -36,6 +36,7 @@ class GEvent implements EventInterface
     protected $_bubble = true;
     protected $_sender = null;
     protected $_properties = [];
+    protected $_target = null;
     /* Public */
 
     /**
@@ -80,7 +81,7 @@ class GEvent implements EventInterface
 
     public function getTarget(): ?ObjectInterface
     {
-        return $this->props('target');
+        return $this->_target;
     }
 
     /**
@@ -107,6 +108,11 @@ class GEvent implements EventInterface
     public function setSender($sender)
     {
         $this->_sender = $sender;
+    }
+
+    public function setTarget(ObjectInterface $target)
+    {
+        return $this->_target = $target;
     }
 
     /**

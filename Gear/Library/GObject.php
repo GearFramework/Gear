@@ -44,33 +44,23 @@ class GObject implements ObjectInterface, PluginContainedInterface
     /* Private */
     /* Protected */
     /* Public */
-    /**
-     * @var array $_config конфигурация класса
-     */
+    /** @var array $_config конфигурация класса */
     protected static $_config = [
         'plugins' => [
             'view' => ['class' => '\Gear\Plugins\Templater\GViewerPlugin']
         ]
     ];
-    /**
-     * @var array $_defaultProperties значения по-умолчанию для объектов класса
-     */
+    /** @var array $_defaultProperties значения по-умолчанию для объектов класса */
     protected static $_sleepProperties = ['access', 'owner'];
-    /**
-     * @var int $_access режим доступа к объекту
-     */
+    /** @var int $_access режим доступа к объекту */
     protected $_access = Core::ACCESS_PUBLIC;
-    /**
-     * @var array $_events события класса и их обработчики
-     */
+    /** @var array $_events события класса и их обработчики */
     protected $_events = [];
-    /**
-     * @var null|string пространство имён класса объекта
-     */
+    /** @var null|string пространство имён класса объекта */
     protected $_namespace = null;
-    /**
-     * @var array $_properties свойства объектов
-     */
+    /** @var null|ObjectInterface владелец объекта */
+    protected $_owner = null;
+    /** @var array $_properties свойства объектов */
     protected $_properties = [];
     /* Public */
 

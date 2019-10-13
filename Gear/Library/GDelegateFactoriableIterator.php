@@ -49,7 +49,7 @@ class GDelegateFactoriableIterator extends GModel implements \Iterator
      */
     public function getFabrica(): FactoryInterface
     {
-        return $this->_owner;
+        return $this->owner;
     }
 
     /**

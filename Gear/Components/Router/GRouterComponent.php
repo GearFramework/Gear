@@ -7,6 +7,7 @@ use Gear\Interfaces\ControllerInterface;
 use Gear\Interfaces\FactoryInterface;
 use Gear\Interfaces\RequestInterface;
 use Gear\Interfaces\ResponseInterface;
+use Gear\Interfaces\RouterInterface;
 use Gear\Library\GComponent;
 use Gear\Traits\Factory\FactoryTrait;
 
@@ -29,7 +30,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GRouterComponent extends GComponent implements FactoryInterface
+class GRouterComponent extends GComponent implements FactoryInterface, RouterInterface
 {
     /* Traits */
     use FactoryTrait;
@@ -90,7 +91,7 @@ class GRouterComponent extends GComponent implements FactoryInterface
         $this->request = $request;
         $this->response = $response;
         $controller = $this->getController();
-        return $controller->run($this->request);
+        return $controller->run($this->request, $this->response);
     }
 
     /**

@@ -31,11 +31,6 @@ use Gear\Library\GEvent;
 trait ObjectTrait
 {
     /**
-     * @var null|ObjectInterface владелец объекта
-     */
-    protected $_owner = null;
-
-    /**
      * Обработка вызовов несуществующих статических методов класса
      *
      * @param string $name
@@ -134,7 +129,7 @@ trait ObjectTrait
      * @since 0.0.1
      * @version 0.0.2
      */
-    protected function __construct($properties = [], ObjectInterface $owner = null)
+    protected function __construct($properties = [], ?ObjectInterface $owner = null)
     {
         $this->beforeConstruct($properties);
         if ($properties instanceof \Closure)

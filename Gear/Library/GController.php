@@ -6,6 +6,8 @@ use Gear\Core;
 use Gear\Interfaces\ApiInterface;
 use Gear\Interfaces\ControllerInterface;
 use Gear\Interfaces\RequestInterface;
+use Gear\Interfaces\ResponseInterface;
+use Gear\Interfaces\RouterInterface;
 
 /**
  * Контроллер
@@ -15,7 +17,9 @@ use Gear\Interfaces\RequestInterface;
  * @property iterable apis
  * @property string defaultApi
  * @property string layout
+ * @property RouterInterface owner
  * @property RequestInterface|null request
+ * @property ResponseInterface|null response
  * @property string title
  *
  * @author Kukushkin Denis
@@ -34,6 +38,7 @@ class GController extends GModel implements ControllerInterface
     protected $_defaultApi = 'index';
     protected $_layout = '';
     protected $_request = null;
+    protected $_response = null;
     protected $_title = 'Title';
     /* Public */
 
@@ -41,14 +46,16 @@ class GController extends GModel implements ControllerInterface
      * Вызов метода $this->run()
      *
      * @param RequestInterface $request
+     * @param ResponseInterface $response
      * @return mixed
      * @throws \ReflectionException
+     * @uses $this->run()
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function __invoke(RequestInterface $request)
+    public function __invoke(RequestInterface $request, ResponseInterface $response)
     {
-        return $this->run($request);
+        return $this->run($request, $response);
     }
 
     /**
@@ -180,6 +187,18 @@ class GController extends GModel implements ControllerInterface
     }
 
     /**
+     * Возвращает экземпляр ответа
+     *
+     * @return ResponseInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function getResponse(): ResponseInterface
+    {
+        return $this->_response;
+    }
+
+    /**
      * Возвращает название страницы, которую обслуживает контролле
      *
      * @return string
@@ -224,16 +243,18 @@ class GController extends GModel implements ControllerInterface
      * Начало работы контроллера
      *
      * @param RequestInterface $request
+     * @param ResponseInterface $response
      * @return mixed
      * @throws \ReflectionException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function run(RequestInterface $request)
+    public function run(RequestInterface $request, ResponseInterface $response)
     {
         $result = null;
         $api = '';
         $this->request = $request;
+        $this->response = $response;
         if ($this->beforeRun()) {
             $route = $request->param('r', $this->defaultApi);
             preg_match('#/a(($)|(/[A-Za-z0-9_]*)+)#', $route, $match);
@@ -314,5 +335,18 @@ class GController extends GModel implements ControllerInterface
     public function setRequest(RequestInterface $request)
     {
         $this->_request = $request;
+    }
+
+    /**
+     * Установка ответа
+     *
+     * @param ResponseInterface $response
+     * @return void
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function setResponse(ResponseInterface $response)
+    {
+        $this->_response = $response;
     }
 }

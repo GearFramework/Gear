@@ -124,6 +124,10 @@ interface DependentInterface {}
  * Интерфейс моделей
  *
  * @package Gear Framework
+ *
+ * @property mixed primaryKey
+ * @property string primaryKeyName
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License

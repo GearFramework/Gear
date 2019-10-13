@@ -85,7 +85,7 @@ class GService extends GObject implements ServiceInterface
      *
      * @param array|string $config
      * @param array|string $properties
-     * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @param ObjectInterface|null $owner
      * @return ServiceInterface
      * @throws \CoreException
      * @since 0.0.1
@@ -120,7 +120,7 @@ class GService extends GObject implements ServiceInterface
             if (file_exists($path) === false) {
                 throw static::ServiceConstructException();
             }
-            $properties = include($path);
+            $properties = include $path;
         }
         if (is_array($properties) === false) {
             throw static::ServiceConstructException();
