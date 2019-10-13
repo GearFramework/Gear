@@ -3,13 +3,14 @@
 namespace Gear\Library;
 
 use Gear\Interfaces\FactoryInterface;
+use Gear\Interfaces\ObjectInterface;
 
 /**
  * Библиотека для делегируемой фабрики
  *
  * @package Gear Framework
  *
- * @property FactoryInterface fabrica
+ * @property FactoryInterface factory
  * @property FactoryInterface owner
  * @property \Iterator source
  *
@@ -47,7 +48,7 @@ class GDelegateFactoriableIterator extends GModel implements \Iterator
      * @since 0.0.1
      * @version 0.0.2
      */
-    public function getFabrica(): FactoryInterface
+    public function getFactory(): FactoryInterface
     {
         return $this->owner;
     }
@@ -86,8 +87,9 @@ class GDelegateFactoriableIterator extends GModel implements \Iterator
     public function current()
     {
         $properties = $this->source->current();
-        $fabrica = $this->fabrica;
-        return $properties ? $fabrica->factory($properties, $fabrica) : null;
+        /** @var ObjectInterface&FactoryInterface $factory */
+        $factory = $this->factory;
+        return $properties ? $factory->factory($properties, $factory) : null;
     }
 
     /**

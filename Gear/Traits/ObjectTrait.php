@@ -17,10 +17,12 @@ use Gear\Library\GEvent;
  *
  * @package Gear Framework
  *
+ * @property array _config
  * @property int access
- * @property array getters
  * @property ObjectInterface owner
- * @property array setters
+ * @method mixed onBeforeConstruct(GEvent $event)
+ * @method mixed onAfterConstruct(GEvent $event)
+ * @method mixed ObjectException(string|array $message, array|null $context)
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -150,7 +152,7 @@ trait ObjectTrait
         $getter = 'get' . ucfirst($name);
         if (method_exists($this, $getter)) {
             $value = $this->$getter();
-        } elseif (preg_match('/^on[A-Z]/', $name)) {
+        } elseif (preg_match('#^on[A-Z]#', $name)) {
             $value = method_exists($this, 'trigger') ?
                 $this->trigger($name, new GEvent($this, ['target' => $this])) :
                 Core::trigger($name, new GEvent($this, ['target' => $this]));
@@ -173,7 +175,7 @@ trait ObjectTrait
         $setter = 'set' . ucfirst($name);
         if (method_exists($this, $setter)) {
             $this->$setter($value);
-        } elseif (preg_match('/^on[A-Z]/', $name) && method_exists($this, 'on')) {
+        } elseif (preg_match('#^on[A-Z]#', $name) && method_exists($this, 'on')) {
             $this->on($name, $value);
         } else {
             if (method_exists($this, 'installComponent') && $value instanceof ComponentInterface) {
@@ -242,12 +244,12 @@ trait ObjectTrait
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function beforeConstruct($properties)
+    public function beforeConstruct(&$properties)
     {
         if (method_exists($this, 'restoreDefaultProperties')) {
             $this->restoreDefaultProperties();
         }
-        return $this->onBeforeConstruct(new GEvent($this, ['properties' => $properties]));
+        return $this->onBeforeConstruct(new GEvent($this, ['properties' => &$properties]));
     }
 
     /**
@@ -263,18 +265,6 @@ trait ObjectTrait
     }
 
     /**
-     * Возвращает набор геттеров
-     *
-     * @return array
-     * @since 0.0.2
-     * @version 0.0.2
-     */
-    public function getGetters(): array
-    {
-        return $this->_getters;
-    }
-
-    /**
      * Возвращает владельца объекта
      *
      * @return null|ObjectInterface
@@ -284,18 +274,6 @@ trait ObjectTrait
     public function getOwner(): ?ObjectInterface
     {
         return $this->_owner;
-    }
-
-    /**
-     * Возвращает набор сеттеров
-     *
-     * @return array
-     * @since 0.0.2
-     * @version 0.0.2
-     */
-    public function getSetters(): array
-    {
-        return $this->_setters;
     }
 
     /**
@@ -340,19 +318,6 @@ trait ObjectTrait
     }
 
     /**
-     * Устанавливает набор геттеров
-     *
-     * @param array $getters
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setGetters(array $getters)
-    {
-        $this->_getters = $getters;
-    }
-
-    /**
      * Установка владельца объекта
      *
      * @param ObjectInterface $owner
@@ -362,18 +327,5 @@ trait ObjectTrait
     public function setOwner(ObjectInterface $owner)
     {
         $this->_owner = $owner;
-    }
-
-    /**
-     * Устанавливает набор сеттеров
-     *
-     * @param array $setters
-     * @return void
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function setSetters(array $setters)
-    {
-        $this->_setters = $setters;
     }
 }
