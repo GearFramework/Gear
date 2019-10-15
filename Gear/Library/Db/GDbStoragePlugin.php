@@ -2,6 +2,7 @@
 
 namespace Gear\Library\Db;
 
+use Gear\Core;
 use Gear\Interfaces\DbConnectionInterface;
 use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\FactoryInterface;
