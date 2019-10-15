@@ -109,10 +109,11 @@ trait StaticFactoryTrait
      */
     public static function getModel(): array
     {
-        $model = [];
         if (is_string(static::$_model)) {
             if (static::$_model[0] === '@') {
                 $model = Core::model(substr(static::$_model, 1));
+            } else {
+                $model = ['class' => static::$_model];
             }
         } else {
             $model = static::$_model;

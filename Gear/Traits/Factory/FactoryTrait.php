@@ -119,10 +119,11 @@ trait FactoryTrait
      */
     public function getModel(): array
     {
-        $model = [];
         if (is_string($this->_model)) {
             if ($this->_model[0] === '@') {
                 $model = Core::model(substr($this->_model, 1));
+            } else {
+                $model = ['class' => $this->_model];
             }
         } else {
             $model = $this->_model;
@@ -145,11 +146,11 @@ trait FactoryTrait
     /**
      * Установка параметров создаваемых объектов
      *
-     * @param array $model
+     * @param array|string $model
      * @since 0.0.2
      * @version 0.0.2
      */
-    public function setModel(array $model)
+    public function setModel($model)
     {
         $this->_model = $model;
     }
