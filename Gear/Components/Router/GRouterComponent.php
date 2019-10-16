@@ -21,6 +21,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @property string defaultController
  * @property string defaultControllersPath
  * @property RequestInterface request
+ * @property string requestRoute
  * @property ResponseInterface response
  * @property array routes
  *

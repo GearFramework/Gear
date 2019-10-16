@@ -2,9 +2,10 @@
 
 namespace Gear\Components\Log;
 
-use Gear\Core;
+use Gear\Interfaces\LoggerComponentInterface;
 use Gear\Interfaces\PluginInterface;
 use Gear\Library\GComponent;
+use Gear\Plugins\Log\GFileLogger;
 use Psr\Log\LogLevel;
 
 /**
@@ -12,6 +13,7 @@ use Psr\Log\LogLevel;
  *
  * @package Gear Framework
  *
+ * @property GFileLogger file
  * @property array loggers
  *
  * @author Kukushkin Denis
@@ -20,7 +22,7 @@ use Psr\Log\LogLevel;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GLogComponent extends GComponent
+class GLogComponent extends GComponent implements LoggerComponentInterface
 {
     /* Traits */
     /* Const */

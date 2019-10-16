@@ -3,6 +3,7 @@
 namespace Gear\Components\Loader;
 
 use Gear\Core;
+use Gear\Interfaces\AutoloaderInterface;
 use Gear\Library\GComponent;
 
 /**
@@ -22,7 +23,7 @@ use Gear\Library\GComponent;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GLoaderComponent extends GComponent
+class GLoaderComponent extends GComponent implements AutoloaderInterface
 {
     /* Traits */
     /* Const */
