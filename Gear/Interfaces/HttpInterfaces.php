@@ -27,26 +27,104 @@ interface RequestInterface extends ServerRequestInterface
     public function __invoke(string $name = '');
 
     /**
-     * Возвращает параметры get-запроса или значение указанного параметра
+     * Обработка и получение параметров командой строки
      *
      * @param string $name
+     * @param mixed $default
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function get(string $name = '');
+    public function cli(string $name = '', $default = null);
+
+    /**
+     * Обработка cookie
+     *
+     * @param string $name
+     * @param array ...$params
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function cookie(string $name = '', ...$params);
 
     /**
      * Возвращает параметры get-запроса или значение указанного параметра
      *
      * @param string $name
+     * @param mixed $default
      * @return mixed
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function post(string $name = '');
+    public function get(string $name = '', $default = null);
 
-    public function cookie();
+    /**
+     * Возвращает метод по-умолчанию
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getDefaultMethod(): string;
+
+    /**
+     * Возвращает нормализованный список загруженных файлов на сервер
+     *
+     * @return array
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getFiles(): array;
+
+    /**
+     * Возвращает метод запроса
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getMethod(): string;
+
+    /**
+     * Возвращает адрес клиента, пославшего запрос
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRemoteAddress(): string;
+
+    /**
+     * Возвращает true, если был сделан ajax-запрос
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isAjax(): bool;
+
+    /**
+     * Возвращает значение указанного параметра, независимо от метода запроса
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function param(string $name, $default = null);
+
+    /**
+     * Работа с параметрами GET запроса
+     *
+     * @param string $name
+     * @param null $default
+     * @return mixed
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function post(string $name = '', $default = null);
 
     /**
      * Возвращает параметры cессии
