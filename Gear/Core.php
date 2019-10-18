@@ -6,7 +6,7 @@ defined('GEAR') or define('GEAR', __DIR__);
 defined('ROOT') or define('ROOT', dirname(GEAR));
 
 /**
- * Ядра фреймворка
+ * Ядро фреймворка
  *
  * @final
  * @package Gear Framework
@@ -16,7 +16,8 @@ defined('ROOT') or define('ROOT', dirname(GEAR));
  * @since 0.0.1
  * @version 0.0.2
  */
-final class Core {
+final class Core
+{
     /* Traits */
     /* Const */
     const CLI = 1;
@@ -111,8 +112,8 @@ final class Core {
             'syslog' => [
                 0 => GEAR . '/Logs/Core/Core.log',
                 'alert' => GEAR . '/Logs/Core/Core.alert.log',
-                'critical' =>  GEAR . '/Logs/Core/Core.critical.log',
-                'debug' =>  GEAR . '/Logs/Core/Core.debug.log',
+                'critical' => GEAR . '/Logs/Core/Core.critical.log',
+                'debug' => GEAR . '/Logs/Core/Core.debug.log',
                 'emergency' => GEAR . '/Logs/Core/Core.emergency.log',
                 'error' => GEAR . '/Logs/Core/Core.error.log',
                 'exception' => GEAR . '/Logs/Core/Core.exception.log',
@@ -153,7 +154,7 @@ final class Core {
 
     /**
      * В зависимости от указанных параметров метод может возвращать
-     *  - Генерация исключения, если $name начинаяется с 'exception'
+     *  - Генерация исключения, если $name заканчивается на 'Exception'
      *  - Вызов события если $name начинается с 'on' с последующей заглавной буквой
      *  - Зарегестрированный сервис (модуль, компонент)
      *  - Значение свойства ядра
@@ -201,7 +202,9 @@ final class Core {
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     /**
      * Конструктор класса, закрыт
@@ -209,7 +212,9 @@ final class Core {
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Сериализация закрыта
@@ -217,7 +222,9 @@ final class Core {
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __sleep() {}
+    private function __sleep()
+    {
+    }
 
     /**
      * Десериализация закрыта
@@ -225,7 +232,9 @@ final class Core {
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __wakeup() {}
+    private function __wakeup()
+    {
+    }
 
     /**
      * Начальная загрузка необходимых библиотек и сервисов для дальнейшей работы ядра и приложения
@@ -283,7 +292,7 @@ final class Core {
     private static function _bootstrapHelpers(array $section)
     {
         foreach ($section as $helperAlias => $helper) {
-            list($helperClass,,) = self::configure($helper);
+            list($helperClass, ,) = self::configure($helper);
             self::c(self::props('loaderName'))->setAlias($helperClass, "\\$helperAlias");
         }
     }
@@ -448,7 +457,7 @@ final class Core {
     public static function e(string $exceptionName, $message = '', $context = [], $code = 0, $previous = null): \Exception
     {
         self::syslog('info', 'Throw exception <{name}> ', ['name' => $exceptionName, '__func__' => __METHOD__, '__line__' => __LINE__], true);
-        $exceptionClass =  "\\$exceptionName";
+        $exceptionClass = "\\$exceptionName";
         $exception = null;
         if (is_array($message)) {
             $args = func_get_args();
@@ -631,9 +640,9 @@ final class Core {
     {
         if (!isset(self::$_services['helpers'][$helperName])) {
             if (isset(self::$_config['bootstrap']['helpers'][$helperName])) {
-                list($helperClass,, $properties) = self::configure(self::$_config['bootstrap']['helpers'][$helperName]);
+                list($helperClass, , $properties) = self::configure(self::$_config['bootstrap']['helpers'][$helperName]);
             } elseif (isset(self::$_config['helpers'][$helperName])) {
-                list($helperClass,, $properties) = self::configure(self::$_config['helpers'][$helperName]);
+                list($helperClass, , $properties) = self::configure(self::$_config['helpers'][$helperName]);
             } else {
                 throw self::CoreException('Helper <{helperName}> not found', ['helperName' => $helperName]);
             }
