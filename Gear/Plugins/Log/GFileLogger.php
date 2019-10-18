@@ -3,6 +3,7 @@
 namespace Gear\Plugins\Log;
 
 use Gear\Core;
+use Gear\Interfaces\LoggerInterface;
 use Gear\Library\GPlugin;
 use Psr\Log\LogLevel;
 
@@ -25,7 +26,7 @@ use Psr\Log\LogLevel;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GFileLogger extends GPlugin
+class GFileLogger extends GPlugin implements LoggerInterface
 {
     /* Traits */
     /* Const */
