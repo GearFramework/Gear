@@ -1,6 +1,26 @@
-// Type definitions for jQuery 1.10.x / 2.0.x
+// Type definitions for jQuery 2.0
 // Project: http://jquery.com/
-// Definitions by: Boris Yankov <https://github.com/borisyankov/>, Christian Hoffmeister <https://github.com/choffmeister>, Steve Fenton <https://github.com/Steve-Fenton>, Diullei Gomes <https://github.com/Diullei>, Tass Iliopoulos <https://github.com/tasoili>, Jason Swearingen <https://github.com/jasons-novaleaf>, Sean Hill <https://github.com/seanski>, Guus Goossens <https://github.com/Guuz>, Kelly Summerlin <https://github.com/ksummerlin>, Basarat Ali Syed <https://github.com/basarat>, Nicholas Wolverson <https://github.com/nwolverson>, Derek Cicerone <https://github.com/derekcicerone>, Andrew Gaspar <https://github.com/AndrewGaspar>, James Harrison Fisher <https://github.com/jameshfisher>, Seikichi Kondo <https://github.com/seikichi>, Benjamin Jackman <https://github.com/benjaminjackman>, Poul Sorensen <https://github.com/s093294>, Josh Strobl <https://github.com/JoshStrobl>, John Reilly <https://github.com/johnnyreilly/>, Dick van den Brink <https://github.com/DickvdBrink>, Thomas Schulz <https://github.com/King2500>
+// Definitions by: Boris Yankov <https://github.com/borisyankov/>
+//                 Christian Hoffmeister <https://github.com/choffmeister>
+//                 Steve Fenton <https://github.com/Steve-Fenton>
+//                 Diullei Gomes <https://github.com/Diullei>
+//                 Tass Iliopoulos <https://github.com/tasoili>
+//                 Jason Swearingen <https://github.com/jasons-novaleaf>
+//                 Sean Hill <https://github.com/seanski>
+//                 Guus Goossens <https://github.com/Guuz>
+//                 Kelly Summerlin <https://github.com/ksummerlin>
+//                 Basarat Ali Syed <https://github.com/basarat>
+//                 Nicholas Wolverson <https://github.com/nwolverson>
+//                 Derek Cicerone <https://github.com/derekcicerone>
+//                 Andrew Gaspar <https://github.com/AndrewGaspar>
+//                 Seikichi Kondo <https://github.com/seikichi>
+//                 Benjamin Jackman <https://github.com/benjaminjackman>
+//                 Poul Sorensen <https://github.com/s093294>
+//                 Josh Strobl <https://github.com/JoshStrobl>
+//                 John Reilly <https://github.com/johnnyreilly/>
+//                 Dick van den Brink <https://github.com/DickvdBrink>
+//                 Thomas Schulz <https://github.com/King2500>
+//                 Leonard Thieu <https://github.com/leonard-thieu>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 /* *****************************************************************************
@@ -572,6 +592,7 @@ interface BaseJQueryEventObject extends Event {
     pageY: number;
     /**
      * For key or mouse events, this property indicates the specific key or button that was pressed.
+     * @deprecated Use `key` for KeyEvents or `button` for MouseEvents instead.
      * @see {@link https://api.jquery.com/event.which/}
      */
     which: number;
@@ -580,6 +601,14 @@ interface BaseJQueryEventObject extends Event {
      * @see {@link https://api.jquery.com/event.metaKey/}
      */
     metaKey: boolean;
+}
+
+interface JQueryCustomEventObject extends BaseJQueryEventObject {
+    /**
+     * @see {@link https://api.jquery.com/category/events/event-object/}
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent}
+     */
+    detail?: any;
 }
 
 interface JQueryInputEventObject extends BaseJQueryEventObject {
@@ -602,13 +631,16 @@ interface JQueryMouseEventObject extends JQueryInputEventObject {
 }
 
 interface JQueryKeyEventObject extends JQueryInputEventObject {
-    char: any;
+    /** @deprecated */
+    char: string;
+    /** @deprecated */
     charCode: number;
-    key: any;
+    key: string;
+    /** @deprecated */
     keyCode: number;
 }
 
-interface JQueryEventObject extends BaseJQueryEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject{
+interface JQueryEventObject extends BaseJQueryEventObject, JQueryCustomEventObject, JQueryInputEventObject, JQueryMouseEventObject, JQueryKeyEventObject {
 }
 
 /**
@@ -677,6 +709,16 @@ interface JQueryEventConstructor {
 interface JQueryCoordinates {
     left: number;
     top: number;
+}
+
+/**
+ * The interface used to specify the properties parameter in css()
+ */
+interface cssPropertySetter {
+    (index: number, value?: string): string | number;
+}
+interface JQueryCssProperties {
+    [propertyName: string]: string | number | cssPropertySetter;
 }
 
 /**
@@ -786,7 +828,7 @@ interface JQueryStatic {
      */
     ajaxPrefilter(handler: (opts: any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) => any): void;
 
-     /**
+    /**
      * Creates an object that handles the actual transmission of Ajax data.
      *
      * @param dataType A string identifying the data type to use.
@@ -794,15 +836,15 @@ interface JQueryStatic {
      * @see {@link https://api.jquery.com/jQuery.ajaxTransport/}
      */
     ajaxTransport(dataType: string, handler: (opts: any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) => any): void;
-    
+
     ajaxSettings: JQueryAjaxSettings;
 
-     /**
-      * Set default values for future Ajax requests. Its use is not recommended.
-      *
-      * @param options A set of key/value pairs that configure the default Ajax request. All options are optional.
-      * @see {@link https://api.jquery.com/jQuery.ajaxSetup/}
-      */
+    /**
+     * Set default values for future Ajax requests. Its use is not recommended.
+     *
+     * @param options A set of key/value pairs that configure the default Ajax request. All options are optional.
+     * @see {@link https://api.jquery.com/jQuery.ajaxSetup/}
+     */
     ajaxSetup(options: JQueryAjaxSettings): void;
 
     /**
@@ -1146,7 +1188,7 @@ interface JQueryStatic {
     error(message: any): JQuery;
 
     expr: any;
-    fn: any;  //TODO: Decide how we want to type this
+    readonly fn: JQuery;
 
     isReady: boolean;
 
@@ -1173,7 +1215,7 @@ interface JQueryStatic {
     each<T>(
         collection: T[],
         callback: (indexInArray: number, valueOfElement: T) => boolean | void
-        ): T[];
+    ): T[];
 
     /**
      * A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties.
@@ -1187,7 +1229,7 @@ interface JQueryStatic {
         collection: T,
         // TODO: `(keyInObject: keyof T, valueOfElement: T[keyof T])`, when TypeScript 2.1 allowed in repository
         callback: (keyInObject: string, valueOfElement: any) => boolean | void
-        ): T;
+    ): T;
 
     /**
      * Merge the contents of two or more objects together into the first object.
@@ -1372,16 +1414,6 @@ interface JQueryStatic {
      * @see {@link https://api.jquery.com/jQuery.unique/}
      */
     unique<T extends Element>(array: T[]): T[];
-
-    /**
-     * Parses a string into an array of DOM nodes.
-     *
-     * @param data HTML string to be parsed
-     * @param context DOM element to serve as the context in which the HTML fragment will be created
-     * @param keepScripts A Boolean indicating whether to include scripts passed in the HTML string
-     * @see {@link https://api.jquery.com/jQuery.parseHTML/}
-     */
-    parseHTML(data: string, context?: HTMLElement, keepScripts?: boolean): any[];
 
     /**
      * Parses a string into an array of DOM nodes.
@@ -1658,6 +1690,14 @@ interface JQuery {
      */
     css(propertyName: string): string;
     /**
+     * Get the value of style properties for the first element in the set of matched elements.
+     * Results in an object of property-value pairs.
+     *
+     * @param propertyNames An array of one or more CSS properties.
+     * @see {@link https://api.jquery.com/css/#css-propertyNames}
+     */
+    css(propertyNames: string[]): any;
+    /**
      * Set one or more CSS properties for the set of matched elements.
      *
      * @param propertyName A CSS property name.
@@ -1679,7 +1719,7 @@ interface JQuery {
      * @param properties An object of property-value pairs to set.
      * @see {@link https://api.jquery.com/css/#css-properties}
      */
-    css(properties: Object): JQuery;
+    css(properties: JQueryCssProperties): JQuery;
 
     /**
      * Get the current computed height for the first element in the set of matched elements.
@@ -1733,7 +1773,7 @@ interface JQuery {
      * Get the current coordinates of the first element in the set of matched elements, relative to the document.
      * @see {@link https://api.jquery.com/offset/#offset}
      */
-    offset(): JQueryCoordinates;
+    offset(): JQueryCoordinates | undefined;
     /**
      * An object containing the properties top and left, which are integers indicating the new top and left coordinates for the elements.
      *
@@ -2738,7 +2778,7 @@ interface JQuery {
      * @param data Data to be passed to the handler in event.data when an event is triggered.
      * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
      * @see {@link https://api.jquery.com/on/#on-events-selector-data-handler}
-    */
+     */
     on(events: string, data : any, handler: (eventObject: JQueryEventObject, ...args: any[]) => any): JQuery;
     /**
      * Attach an event handler function for one or more events to the selected elements.
@@ -2767,7 +2807,7 @@ interface JQuery {
      * @param data Data to be passed to the handler in event.data when an event occurs.
      * @see {@link https://api.jquery.com/on/#on-events-selector-data}
      */
-    on(events: { [key: string]: any; }, selector?: string, data?: any): JQuery;
+    on(events: { [key: string]: (eventObject: JQueryEventObject, ...args: any[]) => any; }, selector?: string, data?: any): JQuery;
     /**
      * Attach an event handler function for one or more events to the selected elements.
      *
@@ -2775,7 +2815,7 @@ interface JQuery {
      * @param data Data to be passed to the handler in event.data when an event occurs.
      * @see {@link https://api.jquery.com/on/#on-events-selector-data}
      */
-    on(events: { [key: string]: any; }, data?: any): JQuery;
+    on(events: { [key: string]: (eventObject: JQueryEventObject, ...args: any[]) => any; }, data?: any): JQuery;
 
     /**
      * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
@@ -3248,7 +3288,7 @@ interface JQuery {
      * @name toArray
      * @see {@link https://api.jquery.com/toArray/}
      */
-    toArray(): HTMLElement[];
+    toArray(): Element[];
 
     /**
      * Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
@@ -3315,13 +3355,13 @@ interface JQuery {
      * @param index A zero-based integer indicating which element to retrieve.
      * @see {@link https://api.jquery.com/get/#get-index}
      */
-    get(index: number): HTMLElement;
+    get(index: number): Element;
     /**
      * Retrieve the elements matched by the jQuery object.
      * @alias toArray
      * @see {@link https://api.jquery.com/get/#get}
      */
-    get(): HTMLElement[];
+    get(): Element[];
 
     /**
      * Search for a given element from among the matched elements.
@@ -3347,8 +3387,7 @@ interface JQuery {
      * @see {@link https://api.jquery.com/selector/}
      */
     selector: string;
-    [index: string]: any;
-    [index: number]: HTMLElement;
+    [index: number]: Element;
 
     /**
      * Add elements to the set of matched elements.
@@ -3774,6 +3813,14 @@ interface JQuery {
      * @see {@link https://api.jquery.com/queue/#queue-queueName-callback}
      */
     queue(queueName: string, callback: Function): JQuery;
+
+    /**
+     * Merge the contents of an object onto the jQuery prototype to provide new jQuery instance methods.
+     *
+     * @param object An object to merge onto the jQuery prototype.
+     * @see {@link https://api.jquery.com/jQuery.fn.extend/#jQuery-fn-extend-object}
+     */
+    extend(object: { [method: string]: (...args: any[]) => any; }): JQuery;
 }
 declare module "jquery" {
     export = $;
