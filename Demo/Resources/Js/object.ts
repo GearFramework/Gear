@@ -1,4 +1,4 @@
-abstract class ObjectClass {
+abstract class ObjectClass implements AnyObjectInterface {
     /* Private */
     /* Protected */
     protected _properties: ObjectPropertiesInterface;

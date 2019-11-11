@@ -11,9 +11,9 @@
 abstract class ApplicationClass extends ObjectClass implements ApplicationInterface {
     /* Private */
     /* Protected */
-    protected _controllers: any = {};
+    protected _controllers: ControllersCollectionInterface;
     protected _bootstrap: BootstrapFunction;
-    protected _request: RequestClass = undefined;
+    protected _request: RequestClass;
     /* Public */
 
     /**
@@ -27,7 +27,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
         return this._bootstrap;
     }
 
-    get controllers(): any {
+    get controllers(): ControllersCollectionInterface {
         return this._controllers;
     }
 
@@ -87,7 +87,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
         this._bootstrap = bs;
     }
 
-    set controllers(controllers: any) {
+    set controllers(controllers: ControllersCollectionInterface) {
         this._controllers = controllers;
     }
 
@@ -113,7 +113,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
      * @since 0.0.1
      * @version 0.0.1
      */
-    public changeContent(data: any, target: ObjectClass|undefined = undefined): void {
+    public changeContent(data: any, target?: ObjectClass): void {
         let bindName: string;
         let bind: any;
         let dataBindElement: any;
@@ -209,7 +209,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
     /**
      * Обработчик ошибок после запроса (HTTP вернул не 200 OK)
      *
-     * @param JQueryXHR xhr
+     * @param {JQueryXHR} xhr
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -223,24 +223,24 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
     /**
      * Обработчик удачно завершенного запроса
      *
-     * @param params
+     * @param {AnyObjectInterface} params
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public requestSuccess(params: any): void {
+    public requestSuccess(params: AnyObjectInterface): void {
         this.changeContent(undefined, params.binds !== undefined ? params.binds : {});
     }
 
     /**
      * Обработчик ошибок после запроса (Приложение на сервере вернуло не 200 OK)
      *
-     * @param number status
+     * @param {number} status
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public responseError(status: number) {
+    public responseError(status: number): void {
         if (this.properties.requestErrorHandlers[status] !== undefined) {
             this.properties.requestErrorHandlers[status]();
         }
@@ -249,7 +249,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
     /**
      * Обработчик события, вознкиающего при изменении окна браузера
      *
-     * @param Event event
+     * @param {Event} event
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -269,8 +269,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
      */
     public run(): void {
         this.bootstrap();
-        $(window).trigger('resize');
     }
 }
 
-declare let App: ApplicationClass;
+declare let App: ApplicationInterface;
