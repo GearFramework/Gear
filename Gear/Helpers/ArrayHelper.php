@@ -2,7 +2,7 @@
 
 namespace gear\helpers;
 
-use gear\library\GHelper;
+use Gear\Library\GHelper;
 
 /**
  * Хелпер для работы с массивами
