@@ -1,3 +1,7 @@
+interface AnyObjectInterface {
+    [key: string]: any
+}
+
 /**
  * Интерфейс приложения
  *
@@ -8,7 +12,7 @@
  * @since 0.0.1
  * @version 0.0.1
  */
-interface ApplicationInterface {}
+interface ApplicationInterface extends ObjectInterface {}
 
 /**
  * Интерфейс bootstrap-функции приложения
@@ -22,6 +26,23 @@ interface ApplicationInterface {}
  */
 interface BootstrapFunction {
     (): void;
+}
+
+interface ControllersCollectionInterface {
+    [key: string]: string
+}
+
+interface ObjectInterface {
+    /**
+     * Установка/получение свойств объекта
+     *
+     * @param {ObjectPropertiesInterface|string|undefined} name
+     * @param {any} value
+     * @returns {any}
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    props(name?: ObjectPropertiesInterface|string, value?: any): any;
 }
 
 /**

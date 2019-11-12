@@ -28,17 +28,17 @@ class GMySqlCollection extends GDbCollection implements DbCollectionInterface
     /* Private */
     /* Protected */
     protected $_cursorFactory = [
-        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
+        'class' => '\Gear\Components\Db\MySql\GMySqlCursor',
     ];
     protected static $_defaultProperties = [
         'name' => '',
         'type' => 'InnoDB',
     ];
     protected $_factoryProperties = [
-        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
+        'class' => '\Gear\Components\Db\MySql\GMySqlCursor',
     ];
     protected $_model = [
-        'class' => '\Gear\Components\Db\Mysql\GMySqlCursor',
+        'class' => '\Gear\Components\Db\MySql\GMySqlCursor',
     ];
     protected $_alias = '';
     /* Public */
