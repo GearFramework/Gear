@@ -142,7 +142,9 @@ trait DbStorageTrait
     public function find($criteria = [], $fields = [], bool $useDefaults = true): DbStorageComponentInterface
     {
         $this->reset();
-        $criteria = array_merge($this->getDefaultWhere(), $criteria);
+        if (is_array($criteria)) {
+            $criteria = array_merge($this->getDefaultWhere(), $criteria);
+        }
         $this->cursor->find($criteria, $fields);
         if ($useDefaults) {
             $this->sort($this->getDefaultSort());
