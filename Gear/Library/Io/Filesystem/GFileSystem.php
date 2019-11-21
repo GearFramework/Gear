@@ -1075,8 +1075,8 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      */
     public function afterCreate(GFileSystemOptions $options)
     {
-        if ($options->mode) {
-            $this->chmod($options->mode);
+        if ($options->permission) {
+            $this->chmod($options->permission);
         }
         if ($options->own) {
             $this->chown($options->own);
@@ -1196,7 +1196,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
     public function chmod($options = []): bool
     {
         if (!is_array($options) && !is_object($options)) {
-            $options = ['chmode' => $options];
+            $options = ['permission' => $options];
         }
         $options = $this->_prepareOptions($options);
         if (is_numeric($options->permission)) {

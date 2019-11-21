@@ -100,7 +100,7 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
     {
         $options = $this->_prepareOptions($options);
         $this->beforeCreate($options);
-        if (!touch($this)) {
+        if (touch($this) === false) {
             throw self::FileSystemException('Failed to create file <{file}>', ['file' => $this]);
         }
         $this->afterCreate($options);
