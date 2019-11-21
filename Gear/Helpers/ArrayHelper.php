@@ -16,6 +16,28 @@ use Gear\Library\GHelper;
  */
 class ArrayHelper extends GHelper
 {
+    public static function helpEndKey(array &$array)
+    {
+        end($array);
+        return key($array);
+    }
+
+    public static function helpEndValue(array &$array)
+    {
+        return end($array);
+    }
+
+    public static function helpFirstKey(array &$array)
+    {
+        reset($array);
+        return key($array);
+    }
+
+    public static function helpFirstValue(array &$array)
+    {
+        return reset($array);
+    }
+
     /**
      * Возвращает true, если указанный массив является ассоциативным
      *
