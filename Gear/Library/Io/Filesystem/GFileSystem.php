@@ -1146,8 +1146,9 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
     {
         if ($this->exists() && !$options->overwrite) {
             throw self::FileSystemException('Directory <{dir}> alreadey exists', ['dir' => $this]);
+        } elseif ($options->overwrite) {
+            $this->remove();
         }
-        $this->remove();
         return $this->trigger('onBeforeCreate', new GEvent($this, ['target' => $this, 'options' => $options]));
     }
 
