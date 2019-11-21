@@ -199,25 +199,25 @@ trait DbStorageTrait
          * @var DbCursorInterface $cursor
          */
         $cursor = $this->cursor;
-        if ($this->_defaultParams['where']) {
+        if (isset($this->_defaultParams['where'])) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }
-        if ($this->_defaultParams['fields']) {
+        if (isset($this->_defaultParams['fields'])) {
             $this->_prepareDefaultFields($cursor, $this->_defaultParams['fields']);
         }
-        if ($this->_defaultParams['join']) {
+        if (isset($this->_defaultParams['join'])) {
             $this->_prepareDefaultJoin($cursor, $this->_defaultParams['join']);
         }
-        if ($this->_defaultParams['left']) {
+        if (isset($this->_defaultParams['left'])) {
             $this->_prepareDefaultLeft($cursor, $this->_defaultParams['left']);
         }
-        if ($this->_defaultParams['right']) {
+        if (isset($this->_defaultParams['right'])) {
             $this->_prepareDefaultRight($cursor, $this->_defaultParams['right']);
         }
-        if ($this->_defaultParams['sort']) {
+        if (isset($this->_defaultParams['sort'])) {
             $cursor->sort($this->_defaultParams['sort']);
         }
-        if ($this->_defaultParams['limit']) {
+        if (isset($this->_defaultParams['limit'])) {
             $cursor->limit($this->_defaultParams['limit']);
         }
         return $cursor;

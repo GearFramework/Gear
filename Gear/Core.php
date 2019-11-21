@@ -427,17 +427,18 @@ final class Core
      * @param string $name
      * @param \Gear\Interfaces\ObjectInterface|null $owner
      * @param bool $clone
+     * @param array $properties
      * @return \Gear\Interfaces\ComponentInterface
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function c(string $name, ?\Gear\Interfaces\ObjectInterface $owner = null, bool $clone = false): \Gear\Interfaces\ComponentInterface
+    public static function c(string $name, ?\Gear\Interfaces\ObjectInterface $owner = null, bool $clone = false, array $properties = []): \Gear\Interfaces\ComponentInterface
     {
         /**
          * @var \Gear\Interfaces\ComponentInterface $component
          */
-        $component = self::service($name, 'component', $owner);
+        $component = self::service($name, 'component', $owner, $properties);
         return $clone ? clone $component : $component;
     }
 
@@ -697,14 +698,15 @@ final class Core
      * @param string $name
      * @param \Gear\Interfaces\ComponentInterface|array $component
      * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @param array $properties
      * @return \Gear\Interfaces\ComponentInterface
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function installComponent(string $name, $component, $owner = null): \Gear\Interfaces\ComponentInterface
+    public static function installComponent(string $name, $component, $owner = null, array $properties = []): \Gear\Interfaces\ComponentInterface
     {
-        return self::installService($name, $component, 'component', $owner);
+        return self::installService($name, $component, 'component', $owner, $properties);
     }
 
     /**
@@ -712,14 +714,15 @@ final class Core
      *
      * @param string $name
      * @param \Gear\Interfaces\ModuleInterface|array $module
+     * @param array $properties
      * @return \Gear\Interfaces\ModuleInterface
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function installModule(string $name, $module): \Gear\Interfaces\ModuleInterface
+    public static function installModule(string $name, $module, array $properties = []): \Gear\Interfaces\ModuleInterface
     {
-        return self::installService($name, $module, 'module');
+        return self::installService($name, $module, 'module', null, $properties);
     }
 
     /**
@@ -729,15 +732,19 @@ final class Core
      * @param \Gear\Interfaces\ServiceInterface|array $service
      * @param string|null $type
      * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @param array $defaultProperties
      * @return \Gear\Interfaces\ServiceInterface
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function installService(string $name, $service, $type = '', $owner = null): \Gear\Interfaces\ServiceInterface
+    public static function installService(string $name, $service, $type = '', $owner = null, array $defaultProperties = []): \Gear\Interfaces\ServiceInterface
     {
         if (is_array($service)) {
             list($class, $config, $properties) = self::configure($service);
+            if ($defaultProperties) {
+                $properties = array_replace_recursive($properties, $defaultProperties);
+            }
             if (!self::isServiceInstalled(self::props('loaderName'), 'component')) {
                 $file = self::resolvePath($class, true) . '.php';
                 if (!file_exists($file) || !is_readable($file)) {
@@ -881,14 +888,15 @@ final class Core
 
     /**
      * @param string $name
+     * @param array $properties
      * @return \Gear\Interfaces\ModuleInterface
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function m(string $name): \Gear\Interfaces\ModuleInterface
+    public static function m(string $name, array $properties = []): \Gear\Interfaces\ModuleInterface
     {
-        return self::service($name, 'module');
+        return self::service($name, 'module', null, $properties);
     }
 
     /**
@@ -1045,12 +1053,13 @@ final class Core
      * @param string $name
      * @param string|null $type
      * @param \Gear\Interfaces\ObjectInterface|null $owner
+     * @param array $properties
      * @return \Gear\Interfaces\ServiceInterface
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function service(string $name, string $type = null, \Gear\Interfaces\ObjectInterface $owner = null): \Gear\Interfaces\ServiceInterface
+    public static function service(string $name, string $type = null, \Gear\Interfaces\ObjectInterface $owner = null, array $properties = []): \Gear\Interfaces\ServiceInterface
     {
         if (!self::isServiceInstalled($name, $type)) {
             if (!self::isServiceRegistered($name, $type)) {
@@ -1058,7 +1067,7 @@ final class Core
             }
             $service = self::getRegisteredService($name, $type);
             if ($service)
-                $service = self::installService($name, $service, $type, $owner);
+                $service = self::installService($name, $service, $type, $owner, $properties);
             else
                 throw self::CoreException('Invalid configuration record for service <{service}>', ['service' => $name]);
         } else {
