@@ -16,13 +16,13 @@ use Gear\Library\GHelper;
  */
 class ArrayHelper extends GHelper
 {
-    public static function helpEndKey(array &$array)
+    public static function helpLastKey(array &$array)
     {
         end($array);
         return key($array);
     }
 
-    public static function helpEndValue(array &$array)
+    public static function helpLastValue(array &$array)
     {
         return end($array);
     }
