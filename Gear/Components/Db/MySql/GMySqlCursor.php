@@ -590,7 +590,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         }
         if (!($this->result = $this->handler->query($query))) {
             $handler = $this->handler;
-            throw self::DbCursorException('Invalid run query: {errorMessage}', ['query' => $query, 'errorMessage' => $handler->error]);
+            throw self::DbCursorException('Invalid run query: {errorMessage}' . "\n" . '{query}', ['query' => $query, 'errorMessage' => $handler->error]);
         }
         return $this;
     }
@@ -1009,7 +1009,7 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         } elseif (($operand = $this->_prepareOperand($value))) {
             $value = $operand;
         } else {
-            $value = "'" . $this->escape($value) . "'";
+            $value = is_numeric($value) ? (int)$value : "'" . $this->escape($value) . "'";
         }
         return $value;
     }
