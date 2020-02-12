@@ -13,9 +13,7 @@ interface EventInterface {
  * @version 0.0.1
  */
 interface EventHandlerInterface {
-    (sender: any, event?: any, params?: EventParamsInterface): void;
+    (sender: any, event?: Event|EventInterface, params?: EventParamsInterface): void;
 }
 
-interface EventParamsInterface {
-    [key: string]: any;
-}
+interface EventParamsInterface extends AnyObjectInterface {}

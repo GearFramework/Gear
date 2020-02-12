@@ -8,7 +8,7 @@
  * @since 0.0.1
  * @version 0.0.1
  */
-abstract class ApplicationClass extends ObjectClass implements ApplicationInterface {
+abstract class GApplication extends GObject implements ApplicationInterface {
     /* Private */
     /* Protected */
     protected _controllers: ControllersCollectionInterface;
@@ -156,27 +156,27 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
      * @since 0.0.1
      * @version 0.0.1
      */
-    public init(): ObjectClass {
-        let app: ApplicationClass = this;
+    public onAfterCostruct(): boolean {
+        let app: GApplication = this;
         $(window).on('resize', (event: Event) => {
             this.resize(event);
         });
-        this.on('requestError', (sender: any, xhr?: JQueryXHR, params: any = {}) => {
+        this.on('requestError', (sender: any, xhr?: JQueryXHR, params: AnyObjectInterface = {}) => {
             this.requestError(xhr);
         });
-        this.on('requestSuccess', (sender: any, xhr?: JQueryXHR, params: any = {}) => {
+        this.on('requestSuccess', (sender: any, xhr?: JQueryXHR, params: AnyObjectInterface = {}) => {
             this.requestSuccess(params);
         });
-        this.on('responseError', (sender: any, xhr?: JQueryXHR, params: any = {}) => {
+        this.on('responseError', (sender: any, xhr?: JQueryXHR, params: AnyObjectInterface = {}) => {
             this.responseError(params.data.status);
         });
-        this.on('beforeChangeContent', (sender: any, xhr?: JQueryXHR, params: any = {}) => {
+        this.on('beforeChangeContent', (sender: any, xhr?: JQueryXHR, params: AnyObjectInterface = {}) => {
             params.target.trigger('beforeChangeContent');
         });
-        this.on('afterChangeContent', (sender: any, xhr?: JQueryXHR, params: any = {}) => {
+        this.on('afterChangeContent', (sender: any, xhr?: JQueryXHR, params: AnyObjectInterface = {}) => {
             params.target.trigger('afterChangeContent');
         });
-        return this;
+        return true;
     }
 
     /**
@@ -186,7 +186,7 @@ abstract class ApplicationClass extends ObjectClass implements ApplicationInterf
      * @since 0.0.2
      * @version 0.0.2
      */
-    public initDefaultProperties(): ObjectClass {
+    public initDefaultProperties(): ObjectInterface {
         this.properties = {
             controllers: {
                 auth: 'user/auth',

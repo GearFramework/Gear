@@ -1,10 +1,31 @@
-abstract class ObjectClass implements AnyObjectInterface {
+/**
+ * Абстрактный класс объектов
+ *
+ * @package Gear Framework
+ *
+ * @property {JQuery} jq
+ * @property {ObjectPropertiesInterface} properties
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.2
+ */
+abstract class GObject implements ObjectInterface, AnyObjectInterface {
     /* Private */
     /* Protected */
     protected _properties: ObjectPropertiesInterface;
     protected _jq: JQuery;
     /* Public */
 
+    /**
+     * Возвразает jquery-элемент, к которому привязан объект
+     *
+     * @return {JQuery}
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     get jq(): JQuery {
         return this._jq;
     }
@@ -20,6 +41,13 @@ abstract class ObjectClass implements AnyObjectInterface {
         return this._properties;
     }
 
+    /**
+     * Установка jquery-элемента, к которому привязан объект
+     *
+     * @param {JQuery} jq
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     set jq(jq: JQuery) {
         this._jq = jq
     }
@@ -41,7 +69,7 @@ abstract class ObjectClass implements AnyObjectInterface {
      *
      * @param {ObjectPropertiesInterface} properties
      * @param {JQuery|undefined} jq
-     * @return {ObjectClass}
+     * @return {ObjectInterface}
      * @since 0.0.1
      * @version 0.0.1
      */
@@ -49,17 +77,19 @@ abstract class ObjectClass implements AnyObjectInterface {
         this.jq = jq;
         this.initDefaultProperties();
         this.properties = this.mergeProperties(properties);
-        this.init();
+        this.afterConstruct();
     }
 
     /**
-     * Инициализация объекта
+     * Триггер события, после создания объекта
      *
      * @return void
      * @since 0.0.2
      * @version 0.0.2
      */
-    public init(): void {};
+    public afterConstruct(): boolean {
+        return this.trigger('afterConstruct', new GEvent(this, this), {});
+    }
 
     /**
      * Инициализация значений по-умолчанию свойств объекта
@@ -68,11 +98,11 @@ abstract class ObjectClass implements AnyObjectInterface {
      * @since 0.0.2
      * @version 0.0.2
      */
-    public initDefaultProperties(): void {
+    public initDefaultProperties(): ObjectInterface {
         this.properties = {
-            onInit: [],
             onConstruct: [],
         };
+        return this;
     }
 
     /**
@@ -84,10 +114,9 @@ abstract class ObjectClass implements AnyObjectInterface {
      * @version 0.0.1
      */
     public mergeProperties(constructProperties: ObjectPropertiesInterface): ObjectPropertiesInterface {
-        let objectProperties: any = this.properties;
-        let name: string = '';
+        let objectProperties: ObjectPropertiesInterface = this.properties;
         let value: any = undefined;
-        for(name in constructProperties) {
+        for(let name in constructProperties) {
             value = constructProperties[name];
             if (name.match(/^on[A-Z]/)) {
                 if (typeof value === 'function') {
@@ -171,12 +200,12 @@ abstract class ObjectClass implements AnyObjectInterface {
      *
      * @param {ObjectPropertiesInterface|string|undefined} name
      * @param {any} value
-     * @returns {any}
+     * @returns {any|undefined}
      * @since 0.0.1
      * @version 0.0.1
      */
-    public props(name?: ObjectPropertiesInterface|string, value?: any): any {
-        let result: any = null;
+    public props(name?: ObjectPropertiesInterface|string, value?: any): any|undefined {
+        let result: any = undefined;
         if (name !== undefined) {
             if (typeof name === "object") {
                 let nameProp: string;
@@ -212,13 +241,13 @@ abstract class ObjectClass implements AnyObjectInterface {
      * Генерация указанного события
      *
      * @param {string} eventName
-     * @param {any|undefined} event
+     * @param {Event|EventInterface|undefined} event
      * @param {EventParamsInterface|undefined} params
-     * @return void
+     * @return boolean
      * @since 0.0.1
      * @version 0.0.1
      */
-    public trigger(eventName: string, event?: any, params?: EventParamsInterface): boolean {
+    public trigger(eventName: string, event?: Event|EventInterface, params?: EventParamsInterface): boolean {
         let result : boolean = true;
         let lastResult : boolean = result;
         eventName = this.prepareEventName(eventName);
@@ -233,4 +262,6 @@ abstract class ObjectClass implements AnyObjectInterface {
         }
         return lastResult;
     }
+
+    abstract onAfterConstruct(event?: Event|EventInterface, params?: EventParamsInterface): boolean;
 }
