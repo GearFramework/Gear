@@ -13,7 +13,7 @@ abstract class GApplication extends GObject implements ApplicationInterface {
     /* Protected */
     protected _controllers: ControllersCollectionInterface;
     protected _bootstrap: BootstrapFunction;
-    protected _request: RequestClass;
+    protected _request: RequestInterface;
     /* Public */
 
     /**
@@ -45,23 +45,23 @@ abstract class GApplication extends GObject implements ApplicationInterface {
     /**
      * Возвращает последний совершенный запрос
      *
-     * @returns {RequestClass | undefined}
+     * @returns {RequestInterface|undefined}
      * @since 0.0.1
      * @version 0.0.1
      */
-    get lastRequest(): RequestClass|undefined {
+    get lastRequest(): RequestInterface|undefined {
         return this.request;
     }
 
     /**
      * Возвращает объект запроса к серверу
      *
-     * @returns {RequestClass}
+     * @returns {RequestInterface}
      * @since 0.0.1
      * @version 0.0.1
      */
-    get request(): RequestClass {
-        this._request = new RequestClass({app: this});
+    get request(): RequestInterface {
+        this._request = new GRequest({app: this});
         return this._request;
     }
 
@@ -94,12 +94,12 @@ abstract class GApplication extends GObject implements ApplicationInterface {
     /**
      * Устанавлиает текущий запрос к серверу
      *
-     * @param {RequestClass} request
+     * @param {RequestInterface} request
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    set request(request: RequestClass) {
+    set request(request: RequestInterface) {
         this._request = request;
     }
 
@@ -108,12 +108,13 @@ abstract class GApplication extends GObject implements ApplicationInterface {
      * Вызывается после успешного запроса к серверу. Должен вызываться из подписанного объектом обработчика события
      * AppClass.onChangeContent
      *
-     * @param object data
+     * @param {ContentBindInterface} data
+     * @param {ObjectInterface|undefined} target
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public changeContent(data: any, target?: ObjectClass): void {
+    public changeContent(data: ContentBindInterface, target?: ObjectInterface): void {
         let bindName: string;
         let bind: any;
         let dataBindElement: any;
@@ -182,11 +183,12 @@ abstract class GApplication extends GObject implements ApplicationInterface {
     /**
      * Инициализация значений по-умолчанию свойств объекта
      *
-     * @return {ObjectClass}
+     * @return {ObjectInterface}
      * @since 0.0.2
      * @version 0.0.2
      */
     public initDefaultProperties(): ObjectInterface {
+        let app: this;
         this.properties = {
             controllers: {
                 auth: 'user/auth',
@@ -194,10 +196,10 @@ abstract class GApplication extends GObject implements ApplicationInterface {
             },
             requestErrorHandlers: {
                 401: function() {
-                    window.location.href = `?r=${App.props('controllers').auth}`;
+                    window.location.href = `?r=${app.props('controllers').auth}`;
                 },
                 403: function() {
-                    window.location.href = `?r=${App.props('controllers').denied}`;
+                    window.location.href = `?r=${app.props('controllers').denied}`;
                 }
             },
             onInit: [],
@@ -271,5 +273,3 @@ abstract class GApplication extends GObject implements ApplicationInterface {
         this.bootstrap();
     }
 }
-
-declare let App: ApplicationInterface;

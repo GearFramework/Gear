@@ -10,7 +10,7 @@
  * @since 0.0.1
  * @version 0.0.1
  */
-class RequestClass extends ObjectClass {
+class GRequest extends GObject implements RequestInterface {
     /* Private */
     /* Protected */
     protected _ajaxFields: Array<string> = [
@@ -34,8 +34,8 @@ class RequestClass extends ObjectClass {
         return this._ajaxFields;
     }
 
-    get app(): ApplicationClass {
-        return this.properties.app;
+    get app(): ApplicationInterface {
+        return Core.app();
     }
 
     /**
@@ -93,7 +93,7 @@ class RequestClass extends ObjectClass {
     /**
      * Отправка GET-запроса
      *
-     * @param object requestOptions
+     * @param {RequestOptionsInterface} requestOptions
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -113,16 +113,16 @@ class RequestClass extends ObjectClass {
      * @since 0.0.1
      * @version 0.0.1
      */
-    public init(): ObjectClass {
+    public init(): ObjectInterface {
         this.properties = {
             dataType: 'json',
             messenger: console,
             progress: undefined,
             requestOptions: {},
-            onRequestError: [(req: RequestClass, xhr: any, params: any) => {
+            onRequestError: [(req: RequestInterface, xhr: any, params: any) => {
                 this.app.trigger('requestError', xhr, params);
             }],
-            onRequestCompletes: [(req: RequestClass, xhr: any, params: any) => {
+            onRequestCompletes: [(req: RequestInterface, xhr: any, params: any) => {
                 this.app.trigger('requestComplete', xhr, params);
             }]
         };
@@ -130,14 +130,39 @@ class RequestClass extends ObjectClass {
     }
 
     /**
+     * Инициализация значений по-умолчанию свойств объекта
+     *
+     * @return {ObjectInterface}
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public initDefaultProperties(): ObjectInterface {
+        super.initDefaultProperties();
+        this.properties.dataType = 'json';
+        this.properties.messenger = console;
+        this.properties.progress = undefined;
+        this.properties.requestOptions = {};
+        this.properties.onRequestError = [(req: RequestInterface, xhr: any, response: any) => {
+            this.app.trigger('requestError', xhr, response);
+        }];
+        this.properties.onRequestCompletes = [(req: RequestInterface, xhr: any, response: RequestOptionsInterface) => {
+            this.app.trigger('requestComplete', xhr, response);
+        }];
+        return this;
+    }
+
+    public onAfterConstruct(event?: Event|EventInterface, params?: EventParamsInterface): boolean {
+    }
+
+    /**
      * Отправка POST-запроса
      *
-     * @param object requestOptions
+     * @param {RequestOptionsInterface} requestOptions
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public post(requestOptions: any = {method: "POST"}): void {
+    public post(requestOptions: RequestOptionsInterface = {method: "POST"}): void {
         if (requestOptions["method"] === undefined) {
             requestOptions["method"] = "POST";
         }
@@ -150,7 +175,7 @@ class RequestClass extends ObjectClass {
      * Генерирует событие App.onResponseError
      *
      * @param Object data
-     * @param JQueryXHR xhr
+     * @param {JQueryXHR} xhr
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -176,7 +201,7 @@ class RequestClass extends ObjectClass {
      * Генерирует событие App.onResponseSuccess
      *
      * @param Object data
-     * @param JQueryXHR xhr
+     * @param {JQueryXHR} xhr
      * @return void
      * @since 0.0.1
      * @version 0.0.1
@@ -188,12 +213,12 @@ class RequestClass extends ObjectClass {
     /**
      * Отправка запроса на сервер
      *
-     * @param object requestOptions
+     * @param {RequestOptionsInterface} requestOptions
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
-    public send(requestOptions: any): void {
+    public send(requestOptions: RequestOptionsInterface): void {
         let options: any = this.mergeProperties(requestOptions);
         this.properties = options;
         let ajax: any = this.ajaxFields;
@@ -221,15 +246,15 @@ class RequestClass extends ObjectClass {
      * Обработчик успешно выполненного запроса, когда сервер возвращает ответ 200 OK
      *
      * @param object data
-     * @param string textStatus
-     * @param JQueryXHR xhr
+     * @param {string} textStatus
+     * @param {JQueryXHR} xhr
      * @return void
      * @return void
      * @since 0.0.1
      * @version 0.0.1
      */
     public success(data: any, textStatus: string, xhr: JQueryXHR): void {
-        let request: RequestClass = this;
+        let request = this;
         this.trigger('beforeSuccess', xhr, {request: this, data: data, textStatus: textStatus});
         if (!this.properties.returnTransfer) {
             if (data.status != 200) {

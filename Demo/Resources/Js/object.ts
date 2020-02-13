@@ -80,10 +80,22 @@ abstract class GObject implements ObjectInterface, AnyObjectInterface {
         this.afterConstruct();
     }
 
+    public afterChangeBind(bindName: string, bind: AnyObjectInterface, dataBindElement: JQuery): boolean {
+        return this.trigger('afterChangeBind', new GEvent(this), {
+            bindName: bindName,
+            bind: bind,
+            bindElement: dataBindElement
+        });
+    }
+
+    public afterChangeContent(target: ObjectInterface): boolean {
+        return this.trigger('afterChangeContent', new GEvent(this, target), {});
+    }
+
     /**
      * Триггер события, после создания объекта
      *
-     * @return void
+     * @return {boolean}
      * @since 0.0.2
      * @version 0.0.2
      */
@@ -91,10 +103,22 @@ abstract class GObject implements ObjectInterface, AnyObjectInterface {
         return this.trigger('afterConstruct', new GEvent(this, this), {});
     }
 
+    public beforeChangeBind(bindName: string, bind: AnyObjectInterface, dataBindElement: JQuery): boolean {
+        return this.trigger('beforeChangeBind', new GEvent(this), {
+            bindName: bindName,
+            bind: bind,
+            bindElement: dataBindElement
+        });
+    }
+
+    public beforeChangeContent(target: ObjectInterface): boolean {
+        return this.trigger('beforeChangeContent', new GEvent(this, target), {});
+    }
+
     /**
      * Инициализация значений по-умолчанию свойств объекта
      *
-     * @return void
+     * @return {ObjectInterface}
      * @since 0.0.2
      * @version 0.0.2
      */

@@ -28,11 +28,38 @@ interface BootstrapFunction {
     (): void;
 }
 
+interface ContentBindInterface {
+    [key: string]: string
+}
+
 interface ControllersCollectionInterface {
     [key: string]: string
 }
 
+/**
+ * Интерфейс объектов
+ *
+ * @package Gear Framework
+ *
+ * @property {JQuery} jq
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.1
+ */
 interface ObjectInterface {
+    jq: JQuery;
+
+    afterChangeBind(bindName: string, bind: AnyObjectInterface, dataBindElement: JQuery): boolean;
+
+    afterChangeContent(target: ObjectInterface): boolean;
+
+    beforeChangeBind(bindName: string, bind: AnyObjectInterface, dataBindElement: JQuery): boolean;
+
+    beforeChangeContent(target: ObjectInterface): boolean;
+
     /**
      * Установка/получение свойств объекта
      *
@@ -43,6 +70,18 @@ interface ObjectInterface {
      * @version 0.0.1
      */
     props(name?: ObjectPropertiesInterface|string, value?: any): any;
+
+    /**
+     * Генерация указанного события
+     *
+     * @param {string} eventName
+     * @param {Event|EventInterface|undefined} event
+     * @param {EventParamsInterface|undefined} params
+     * @return {boolean}
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    trigger(eventName: string, event?: Event|EventInterface, params?: EventParamsInterface): boolean;
 }
 
 /**
@@ -56,6 +95,14 @@ interface ObjectInterface {
  * @version 0.0.1
  */
 interface ObjectPropertiesInterface {
+    [key: string]: any
+}
+
+interface RequestInterface {
+
+}
+
+interface RequestOptionsInterface {
     [key: string]: any
 }
 
