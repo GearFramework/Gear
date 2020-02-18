@@ -2,20 +2,19 @@
 
 namespace Gear\Library;
 
-use Gear\Components\Router\GRouterComponent;
 use Gear\Core;
 use Gear\Interfaces\ModuleInterface;
-use Gear\Plugins\Http\GRequest;
-use Gear\Plugins\Http\GResponse;
+use Gear\Interfaces\RequestInterface;
+use Gear\Interfaces\RouterInterface;
 
 /**
  * Класс приложений
  *
  * @package Gear Framework
  *
- * @property GRequest request
- * @property GResponse response
- * @property GRouterComponent router
+ * @property RequestInterface request
+ * @property RequestInterface response
+ * @property RouterInterface router
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
