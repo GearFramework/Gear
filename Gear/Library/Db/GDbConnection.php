@@ -38,7 +38,7 @@ abstract class GDbConnection extends GComponent implements \IteratorAggregate, D
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_defaultProperties = [
+    protected static array $_defaultProperties = [
         'host' => 'localhost',
         'user' => '',
         'password' => '',

@@ -12,7 +12,7 @@ use VideoRg\Components\Paginator\RgPaginatorComponent;
  *
  * @package Gear Framework
  *
- * @property array plugins
+ * @property array<PluginInterface> plugins
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -23,9 +23,9 @@ use VideoRg\Components\Paginator\RgPaginatorComponent;
 trait PluginContainedTrait
 {
     /**
-     * @var array $_plugins список установленных компонентов
+     * @var array<PluginInterface> $_plugins список установленных компонентов
      */
-    protected $_plugins = [];
+    protected array $_plugins = [];
 
     /**
      * Автозагрузка необходимых плагинов во время создания объекта-контейнера

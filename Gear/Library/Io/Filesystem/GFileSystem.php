@@ -660,7 +660,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
         'prf' => 'application/pics-rules',
         'ps' => 'application/postscript',
         'psb' => 'application/vnd.3gpp.pic-bw-small',
-        'psd' => 'image/vnd.adobe.photoshop',
+        'psd' => 'image/x-photoshop',
         'psf' => 'application/x-font-linux-psf',
         'pskcxml' => 'application/pskc+xml',
         'ptid' => 'application/vnd.pvi.ptid1',
@@ -1338,6 +1338,16 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
     public function exists(): bool
     {
         return file_exists($this);
+    }
+
+    public static function factoryDirectory(string $path): DirectoryInterface
+    {
+        return new GDirectory(['path' => $path]);
+    }
+
+    public static function factoryFile(string $path): FileInterface
+    {
+        return new GFile(['path' => $path]);
     }
 
     /**

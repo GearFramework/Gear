@@ -25,6 +25,7 @@ class GDirectory extends GFileSystem implements DirectoryInterface, \IteratorAgg
 {
     /* Traits */
     /* Const */
+    const DEFAULT_MODE = 0775;
     /* Private */
     /* Protected */
     /* Public */
@@ -104,6 +105,7 @@ class GDirectory extends GFileSystem implements DirectoryInterface, \IteratorAgg
         if (is_string($destination)) {
             $destination = $this->factory(['path' => Core::resolvePath($destination)]);
         }
+        /** @var FileSystemInterface $target */
         $target = $this->factory(['path' => $destination . '/' . $this->basename()]);
         $this->beforeCopy($destination, $target, $options);
         if (!$target->exists()) {
@@ -130,11 +132,9 @@ class GDirectory extends GFileSystem implements DirectoryInterface, \IteratorAgg
     public function create($options = []): FileSystemInterface
     {
         $options = $this->_prepareOptions($options);
-        $this->beforeCreate($options);
-        if (!mkdir($this)) {
+        if (!mkdir($this, $options->permission ?: self::DEFAULT_MODE, $options->recursive ?: false)) {
             throw self::FileSystemException('Failed to create directory <{dir}>', ['dir' => $this]);
         }
-        $this->afterCreate($options);
         return $this;
     }
 

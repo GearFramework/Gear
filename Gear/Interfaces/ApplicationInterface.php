@@ -7,6 +7,7 @@ namespace Gear\Interfaces;
  *
  * @package Gear Framework
  *
+ * @property DeviceDetectComponentInterface device
  * @property RequestInterface request
  * @property ResponseInterface response
  * @property RouterInterface router

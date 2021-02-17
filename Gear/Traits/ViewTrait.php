@@ -22,7 +22,7 @@ trait ViewTrait
     /**
      * @var string $_viewerName название плагина выступающего в качестве шаблонизатора
      */
-    protected $_viewerName = 'view';
+    protected string $_viewerName = 'view';
 
     /**
      * Получение названия шаблонизатора, записанного в конфигурации класса

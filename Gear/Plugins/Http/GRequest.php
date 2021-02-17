@@ -3,9 +3,12 @@
 namespace Gear\Plugins\Http;
 
 use Gear\Core;
+use Gear\Interfaces\ApplicationInterface;
+use Gear\Interfaces\RequestDataInterface;
 use Gear\Interfaces\RequestInterface;
 use Gear\Library\GModel;
 use Gear\Library\GPlugin;
+use Gear\Models\Http\GRequestData;
 use Gear\Traits\Http\ServerRequestTrait;
 
 /**
@@ -18,7 +21,9 @@ use Gear\Traits\Http\ServerRequestTrait;
  * @property array|null files
  * @property string method
  * @property array orders
+ * @property ApplicationInterface owner
  * @property string remoteAddress
+ * @property string remoteHost
  * @property array requestHandlers
  * @property array variablesOrders
  *
@@ -43,7 +48,6 @@ class GRequest extends GPlugin implements RequestInterface
     const FILES = 'FILES';
     /* Private */
     /* Protected */
-    protected static $_isInitialized = false;
     protected $_cli = null;
     protected $_defaultMethod = self::GET;
     protected $_files = null;
@@ -101,7 +105,9 @@ class GRequest extends GPlugin implements RequestInterface
         if ($name) {
             $value = $default;
             if (isset($cli[$name])) {
-                $value = $this->validate($name, $cli[$name], $default);
+                $value = $cli[$name];
+            } else {
+                $value = $default;
             }
         } else {
             $value = new GModel($cli);
@@ -149,7 +155,7 @@ class GRequest extends GPlugin implements RequestInterface
             $handler = $this->getRequestHandler(self::GET);
             return $handler($name);
         }
-        return $this->getData($_GET, $name, $default);
+        return $this->getData($_GET, $name, null, $default);
     }
 
     /**
@@ -188,14 +194,14 @@ class GRequest extends GPlugin implements RequestInterface
      * @param string $name
      * @param null $value
      * @param null $default
-     * @return GModel|mixed|null
+     * @return RequestDataInterface|mixed|null
      * @since 0.0.1
      * @version 0.0.1
      */
     public function getData(array &$data, string $name = '', $value = null, $default = null)
     {
         if (!$name) {
-            $value = new GModel($data, $this);
+            $value = new GRequestData($data);
         } elseif ($value === null) {
             $value = isset($data[$name]) ? $data[$name] : $default;
         } else {
@@ -266,6 +272,23 @@ class GRequest extends GPlugin implements RequestInterface
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         return $ip;
+    }
+
+    /**
+     * Возвращает имя удаленного хоста
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRemoteHost(): string
+    {
+        $ip = $this->getRemoteAddress();
+        $host = isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : '';
+        if (!$host || ($host === $ip )) {
+            $host = gethostbyaddr($ip);
+        }
+        return $host;
     }
 
     /**
@@ -412,6 +435,18 @@ class GRequest extends GPlugin implements RequestInterface
     }
 
     /**
+     * Возвращает true, если запрос пришёл с настольного компьютера
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isDesktop(): bool
+    {
+        return $this->owner->device->isDesktop();
+    }
+
+    /**
      * Возвращает true, если сделан GET-запрос
      *
      * @return bool
@@ -448,6 +483,18 @@ class GRequest extends GPlugin implements RequestInterface
     }
 
     /**
+     * Возвращает true, если запрос пришёл с мобильного телефона
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isMobile(): bool
+    {
+        return $this->owner->device->isMobile();
+    }
+
+    /**
      * Возвращает true, если сделан POST-запрос
      *
      * @return bool
@@ -470,6 +517,18 @@ class GRequest extends GPlugin implements RequestInterface
     public function isRequestHandler(string $methodName): bool
     {
         return isset($this->_requestHandlers[$methodName]);
+    }
+
+    /**
+     * Возвращает true, если запрос пришёл с планшета
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isTablet(): bool
+    {
+        return $this->owner->device->isTablet();
     }
 
     /**

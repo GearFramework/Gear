@@ -68,7 +68,7 @@ final class Core
     /**
      * @var array $_config конфигурация ядра и системы
      */
-    private static $_config = [
+    private static array $_config = [
         /* Дополнительные элементы, которые будут загружены при инициализации ядра фреймворка */
         'bootstrap' => [
             /* Список пользовательских загружаемых библиотек */
@@ -212,9 +212,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Сериализация закрыта
@@ -222,9 +220,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __sleep()
-    {
-    }
+    public function __sleep() {}
 
     /**
      * Десериализация закрыта
@@ -232,9 +228,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __wakeup()
-    {
-    }
+    public function __wakeup() {}
 
     /**
      * Начальная загрузка необходимых библиотек и сервисов для дальнейшей работы ядра и приложения
@@ -310,39 +304,13 @@ final class Core
     private static function _bootstrapLibraries(array $section)
     {
         foreach ($section as $key => $library) {
-            if (preg_match('#\*$#', basename($library))) {
-                /* Указана маска файлов библиотек, например, /usr/local/myproject/library/*.php */
-                $library = self::resolvePath($library, true);
-                foreach (glob($library) as $file) {
-                    if (is_file($file) && is_readable($file)) {
-                        require_once($file);
-                    }
-                }
+            if (!is_numeric($key)) {
+                $alias = $library;
+                $library = $key;
             } else {
-                if (!is_numeric($key)) {
-                    /* Указан алиас, под которым будет находится класс библиотеки */
-                    $alias = $library;
-                    $library = $key;
-                } else {
-                    $alias = null;
-                }
-                if (preg_match('/\.php$/i', $library)) {
-                    $file = $library;
-                    $class = pathinfo($file, PATHINFO_FILENAME);
-                } else {
-                    $class = $library;
-                    $file = $library . '.php';
-                }
-                /* @var string $file путь к файлу библиотеки */
-                $file = self::resolvePath($file, true);
-                if (!$file || !file_exists($file)) {
-                    throw self::CoreException('Bootstrap library <{lib}> not found', ['lib' => $file]);
-                }
-                require_once($file);
-                if ($alias !== null && $class !== null) {
-                    class_alias($class, $alias);
-                }
+                $alias = null;
             }
+            self::importLibraries($library, $alias);
         }
     }
 
@@ -804,6 +772,45 @@ final class Core
     public static function isInitialized(): bool
     {
         return self::$_initialized;
+    }
+
+    /**
+     * Импорт указанной библиотеки(класса), вторым параметром передается алиас подключенного класса
+     *
+     * @param string $library
+     * @param null|string $alias
+     * @throws \CoreException
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public static function importLibraries(string $library, $alias = null)
+    {
+        if (preg_match('#\*$#', basename($library))) {
+            /* Указана маска файлов библиотек, например, /usr/local/myproject/library/*.php */
+            $library = self::resolvePath($library, true);
+            foreach (glob($library) as $file) {
+                if (is_file($file) && is_readable($file)) {
+                    require_once($file);
+                }
+            }
+        } else {
+            if (preg_match('/\.php$/i', $library)) {
+                $file = $library;
+                $class = pathinfo($file, PATHINFO_FILENAME);
+            } else {
+                $class = $library;
+                $file = $library . '.php';
+            }
+            /* @var string $file путь к файлу библиотеки */
+            $file = self::resolvePath($file, true);
+            if (!$file || !file_exists($file)) {
+                throw self::CoreException('Bootstrap library <{lib}> not found', ['lib' => $file]);
+            }
+            require_once($file);
+            if ($alias !== null && $class !== null) {
+                class_alias($class, $alias);
+            }
+        }
     }
 
     /**

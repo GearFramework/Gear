@@ -40,7 +40,7 @@ class GFileSystemOptions
     /* Const */
     /* Private */
     /* Protected */
-    protected $_properties = [
+    protected array $_properties = [
         'append' => false,
         'force' => '',
         'format' => GFileSystem::DEFAULT_SIZEFORMAT,

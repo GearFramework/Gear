@@ -22,7 +22,7 @@ class GService extends GObject implements ServiceInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static array $_config = [];
     /* Public */
 
     /**

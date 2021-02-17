@@ -4,6 +4,7 @@ namespace Gear\Library\Db;
 
 use Gear\Core;
 use Gear\Interfaces\DbConnectionInterface;
+use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\FactoryInterface;
 use Gear\Library\GPlugin;
@@ -19,9 +20,10 @@ use Gear\Traits\Factory\FactoryTrait;
  * @property string collectionName
  * @property DbConnectionInterface $connection
  * @property string connectionName
+ * @property DbCursorInterface cursor
  * @property string dbName
  * @property array defaultParams
- * @property string primaryKey
+ * @property string primaryKeyName
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -49,7 +51,7 @@ abstract class GDbStoragePlugin extends GPlugin implements \IteratorAggregate, F
     protected $_model = [
         'class' => '\Gear\Library\GModel',
     ];
-    protected $_primaryKey = 'id';
+    protected $_primaryKeyName = 'id';
     /* Public */
 
     /**

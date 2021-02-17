@@ -22,8 +22,8 @@ trait PropertiesTrait
     /**
      * @var array $_defaultProperties значения по-умолчанию для объектов класса
      */
-    protected static $_defaultProperties = [];
-    protected static $_validators = [
+    protected static array $_defaultProperties = [];
+    protected static array $_validators = [
         'object' => '\Gear\Validators\GObjectValidator',
     ];
 

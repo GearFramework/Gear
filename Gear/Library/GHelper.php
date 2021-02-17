@@ -31,6 +31,6 @@ abstract class GHelper implements HelperInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected $_properties = [];
+    protected array $_properties = [];
     /* Public */
 }

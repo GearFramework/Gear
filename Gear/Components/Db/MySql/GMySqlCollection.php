@@ -30,7 +30,7 @@ class GMySqlCollection extends GDbCollection implements DbCollectionInterface
     protected $_cursorFactory = [
         'class' => '\Gear\Components\Db\MySql\GMySqlCursor',
     ];
-    protected static $_defaultProperties = [
+    protected static array $_defaultProperties = [
         'name' => '',
         'type' => 'InnoDB',
     ];

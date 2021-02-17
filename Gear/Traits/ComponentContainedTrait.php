@@ -11,7 +11,7 @@ use Gear\Interfaces\ObjectInterface;
  *
  * @package Gear Framework
  *
- * @property array components
+ * @property array<ComponentInterface> components
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -22,9 +22,9 @@ use Gear\Interfaces\ObjectInterface;
 trait ComponentContainedTrait
 {
     /**
-     * @var array $_components массив установленных компонентов у объекта
+     * @var array<ComponentInterface> $_components массив установленных компонентов у объекта
      */
-    protected $_components = [];
+    protected array $_components = [];
 
     /**
      * Автозагрузка необходимых компонентов во время создания объекта-контейнера

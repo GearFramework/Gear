@@ -28,7 +28,7 @@ class GResourcesModule extends GModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
+    protected static array $_config = [
         'plugins' => [
             'js' => [
                 'class' => '\Gear\Modules\Resources\Plugins\GJsResourcesPlugin',

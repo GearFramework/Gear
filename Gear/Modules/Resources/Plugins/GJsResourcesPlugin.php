@@ -20,12 +20,11 @@ class GJsResourcesPlugin extends GResourcePlugin
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
-    protected $_allowedExtensions = ['js'];
+    protected array $_allowedExtensions = ['js'];
+    protected string $_basePath = 'Resources/Js';
     protected $_mappingFolder = null;
-    protected $_typeResource = 'js';
-    protected $_mime = 'text/javascript';
-    protected $_basePath = 'Resources/Js';
+    protected ?string $_mime = 'text/javascript';
+    protected ?string $_typeResource = 'js';
     /* Public */
 
     /**
@@ -43,8 +42,8 @@ class GJsResourcesPlugin extends GResourcePlugin
         foreach ($options as $param => $value) {
             $opt[] = $param . "=\"$value\"";
         }
-        if ($this->forceNoCache === true) {
-            $url .= '?' . (time() + microtime(true));
+        if ($forceValue = $this->forceCache()) {
+            $url .= "?{$forceValue}";
         }
         return '<script src="' . $url . '" ' . implode(' ', $opt) . "></script>\n";
     }

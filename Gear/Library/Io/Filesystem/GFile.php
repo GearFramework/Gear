@@ -17,6 +17,7 @@ use Gear\Interfaces\FileSystemInterface;
  * @property string extension
  * @property string mime
  * @property string path
+ * @property int size
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -84,7 +85,7 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
             throw self::FileSystemException('Failed to copy from <{source}> to <{destination}>', ['source' => $this, 'destination' => $target]);
         }
         /** @var FileSystemInterface $target */
-        $target = $this->factory(['path' => $target]);
+        $target = new GFile(['path' => $target]);
         return $target;
     }
 

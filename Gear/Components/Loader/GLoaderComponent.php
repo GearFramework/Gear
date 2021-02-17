@@ -29,7 +29,7 @@ class GLoaderComponent extends GComponent implements AutoloaderInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
+    protected static array $_config = [
         'autoloadHandler' => 'loader'
     ];
     /** @var array $_aliases список классов и соответствующих им алиасов (ключ массива - алиас, значение - класс) */

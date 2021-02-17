@@ -27,7 +27,7 @@ class GMySqlDatabase extends GDbDatabase implements DbDatabaseInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_defaultProperties = [
+    protected static array $_defaultProperties = [
         'name' => '',
     ];
     protected $_cursorFactory = [
@@ -93,7 +93,7 @@ class GMySqlDatabase extends GDbDatabase implements DbDatabaseInterface
      */
     public function select(): DbDatabaseInterface
     {
-        $this->handler->select_db($this->name);
+        $res = $this->handler->select_db($this->name);
         return $this;
     }
 }

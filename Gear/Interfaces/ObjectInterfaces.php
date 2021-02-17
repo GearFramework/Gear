@@ -396,3 +396,67 @@ interface SchemaInterface
      */
     public function getSchemaValues(): array;
 }
+
+/**
+ * Интерфейс объектов, умеющих себе отображать
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.2
+ * @version 0.0.2
+ */
+interface ViewableInterface
+{
+    /**
+     * Получение названия шаблонизатора, записанного в конфигурации класса
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getViewerName(): string;
+
+    /**
+     * Возвращает путь, по которому лежат шаблоны отображения объекта
+     *
+     * @return string|DirectoryInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getViewPath();
+
+    /**
+     * Возвращает путь, по которому лежит основной макет
+     *
+     * @return string|DirectoryInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getViewLayout();
+
+    /**
+     * Отображение шаблона
+     *
+     * @param $template
+     * @param array $context
+     * @param bool $buffered
+     * @return bool|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function render($template, array $context = [], bool $buffered = false);
+
+    /**
+     * Подключение .phtml файла с шаблоном отображения
+     *
+     * @param string $filePath
+     * @param array $context
+     * @param bool $buffered
+     * @return bool|string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function renderFile(string $filePath, array $context = [], bool $buffered = false);
+}

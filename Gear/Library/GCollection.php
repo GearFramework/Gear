@@ -20,7 +20,7 @@ class GCollection implements CollectionInterface, \ArrayAccess, \Countable
     /* Const */
     /* Private */
     /* Protected */
-    protected $_items = [];
+    protected array $_items = [];
     /* Public */
 
     /**

@@ -19,7 +19,11 @@ use Gear\Modules\Resources\Interfaces\ResourcePluginInterface;
  * @property array allowedExtensions
  * @property string basePath
  * @property string controller
+ * @property bool forceResetCache
+ * @property string forceResetCacheType
+ * @property null|string forceResetCacheVariable
  * @property bool hashingName
+ * @property bool mapFile
  * @property string|DirectoryInterface mappingFolder
  * @property string mime
  * @property GResourcesModule owner
@@ -37,14 +41,16 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_isInitialized = false;
-    protected $_allowedExtensions = [];
-    protected $_basePath = 'Resources';
-    protected $_controller = '\Gear\Resources\Publicate';
-    protected $_hashingName = true;
+    protected array $_allowedExtensions = [];
+    protected string $_basePath = 'Resources';
+    protected string $_controller = '\Gear\Resources\Publicate';
+    protected bool $_forceResetCache = false;
+    protected string $_forceResetCacheType = self::RESET_CACHE_BY_TIME;
+    protected ?string $_forceResetCacheVariable = null;
+    protected bool $_hashingName = true;
     protected $_mappingFolder = null;
-    protected $_mime = null;
-    protected $_typeResource = null;
+    protected ?string $_mime = null;
+    protected ?string $_typeResource = null;
     /* Public */
 
     /**
@@ -71,6 +77,29 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
             $result = $cache->add($key, file_get_contents($resource));
         }
         return $result ? 'index.php?r=' . str_replace('\\', '_', $this->controller) . '/get&hash=' . $key . '&type=' . $this->typeResource : '';
+    }
+
+    /**
+     * Возвращает значение для сброса кэша браузера
+     *
+     * @since 0.0.2
+     * @version 0.0.2
+     * @return string|null
+     */
+    public function forceCache(): ?string
+    {
+        $forceValue = null;
+        if ($this->forceResetCache === true) {
+            if ($this->forceResetCacheType === self::RESET_CACHE_BY_TIME) {
+                $forceValue = (string)(time() + microtime(true));
+            } elseif (
+                $this->forceResetCacheType === self::RESET_CACHE_BY_ENV_VARIABLE
+                && $this->forceResetCacheVariable
+            ) {
+                $forceValue = getenv($this->forceResetCacheVariable);
+            }
+        }
+        return $forceValue;
     }
 
     /**
@@ -132,6 +161,21 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
         return $this->_controller;
     }
 
+    public function getForceResetCache(): bool
+    {
+        return $this->_forceResetCache;
+    }
+
+    public function getForceResetCacheType(): string
+    {
+        return $this->_forceResetCacheType;
+    }
+
+    public function getForceResetCacheVariable(): ?string
+    {
+        return $this->_forceResetCacheVariable;
+    }
+
     /**
      * Возвращает контент ресурса из кэша
      *
@@ -184,7 +228,7 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
     }
 
     /**
-     * Возвращает фременный файл
+     * Возвращает временный файл
      *
      * @return FileInterface
      * @since 0.0.1
@@ -284,6 +328,10 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
                 file_put_contents($mappingResource, $data);
             } else {
                 copy($resource, $mappingResource);
+            }
+            if ($this->mapFile && file_exists($resource->path . '.map')) {
+                $mappingResourceMap = $mappingFolder . '/' . $resource->basename . '.map';
+                copy($resource->path . '.map', $mappingResourceMap);
             }
         }
         return $this->urlMapped ? $this->urlMapped . '/' . $mappingFile : $this->mappingFolder . '/' . $mappingFile;
@@ -396,6 +444,21 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
     public function setController(string $controller)
     {
         $this->_controller = $controller;
+    }
+
+    public function setForceResetCache(bool $forceResetCache)
+    {
+        $this->_forceResetCache = $forceResetCache;
+    }
+
+    public function setForceResetCacheType(string $forceResetCacheType)
+    {
+        $this->_forceResetCacheType = $forceResetCacheType;
+    }
+
+    public function setForceResetCacheVariable(?string $forceResetCacheVariable)
+    {
+        $this->_forceResetCacheVariable = $forceResetCacheVariable;
     }
 
     /**

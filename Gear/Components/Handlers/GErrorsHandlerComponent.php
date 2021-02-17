@@ -9,11 +9,15 @@ use Gear\Library\GComponent;
  * Компонент-обработчик ошибок
  *
  * @package Gear Framework
+ *
+ * @property int mode
+ * @property string viewPath
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.1
+ * @version 0.0.2
  */
 class GErrorsHandlerComponent extends GComponent
 {
@@ -21,14 +25,15 @@ class GErrorsHandlerComponent extends GComponent
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = ['handler' => 'error'];
-    protected static $_configured = false;
+    protected static array $_config = [
+        'handler' => 'error',
+    ];
     protected $_viewPath = [
         'mode' => [
-            Core::AJAX => '\gear\views\errorAjax',
-            Core::HTTP => '\gear\views\errorHttp',
-            Core::HTTPS => '\gear\views\errorHttp',
-            Core::CLI => '\gear\views\errorConsole',
+            Core::AJAX => '\Gear\Views\ErrorAjax',
+            Core::HTTP => '\Gear\Views\ErrorHttp',
+            Core::HTTPS => '\Gear\Views\ErrorHttp',
+            Core::CLI => '\Gear\Views\ErrorConsole',
         ],
     ];
     /* Public */
@@ -47,25 +52,19 @@ class GErrorsHandlerComponent extends GComponent
     public function error(int $code, string $message, string $file = '', int $line = 0)
     {
         try {
-            if (php_sapi_name() !== 'cli' && !empty(ob_get_status())) {
+            if ($this->mode !== Core::CLI && !empty(ob_get_status())) {
                 ob_end_clean();
             }
             $args = ['message' => $message, 'code' => $code, 'file' => $file, 'line' => $line];
             $this->view->render($this->getViewPath(), $args);
-            die();
         } catch (\Throwable $e) {
-            die($e->getMessage() . "\n" . $e->getFile() . "[" . $e->getLine() . "]\n" . $e->getTraceAsString() . "\n");
+            $message = $e->getMessage() . "\n" . $e->getFile() . "[" . $e->getLine() . "]\n" . $e->getTraceAsString() . "\n";
+        } finally {
+            die();
         }
     }
 
-    /**
-     * Возвращает путь к шаблону отображения
-     *
-     * @return string
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function getViewPath(): string
+    public function getMode(): int
     {
         if (php_sapi_name() === 'cli') {
             $mode = Core::CLI;
@@ -76,7 +75,6 @@ class GErrorsHandlerComponent extends GComponent
         } else {
             $mode = Core::HTTP;
         }
-        return $this->_viewPath['mode'][$mode];
     }
 
     /**
@@ -109,6 +107,18 @@ class GErrorsHandlerComponent extends GComponent
     }
 
     /**
+     * Возвращает путь к шаблону отображения
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getViewPath(): string
+    {
+        return $this->_viewPath['mode'][$this->mode];
+    }
+
+    /**
      * Подсветка синтаксиса
      *
      * @param string $source
@@ -123,18 +133,18 @@ class GErrorsHandlerComponent extends GComponent
     }
 
     /**
-     * Генерация события onAfterInstallService после процедуры установки сервиса
+     * Обработчик события onAfterInstallService после процедуры установки сервиса
      *
-     * @return mixed
+     * @return bool
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 0.0.2
      */
-    public function afterInstallService()
+    public function onAfterInstallService(): bool
     {
         if (!($handlerName = static::i('handler'))) {
             throw self::ServiceException('Not specified <{handler}> property', ['handler' => 'handler']);
         }
         set_error_handler([$this, $handlerName], E_ALL);
-        return parent::afterInstallService();
+        return true;
     }
 }

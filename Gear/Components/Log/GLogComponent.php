@@ -28,7 +28,7 @@ class GLogComponent extends GComponent implements LoggerComponentInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
+    protected static array $_config = [
         'plugins' => [
             'file' => [
                 'class' => '\Gear\Plugins\Log\GFileLogger',

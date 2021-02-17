@@ -15,7 +15,7 @@ use Gear\Traits\SetterTrait;
  *
  * @property bool bubble
  * @property iterable properties
- * @property object|null sender
+ * @property object|null|string sender
  * @property object|null target
  *
  * @author Kukushkin Denis
@@ -33,10 +33,10 @@ class GEvent implements EventInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected $_bubble = true;
+    protected bool $_bubble = true;
     protected $_sender = null;
-    protected $_properties = [];
-    protected $_target = null;
+    protected array $_properties = [];
+    protected ?ObjectInterface $_target = null;
     /* Public */
 
     /**

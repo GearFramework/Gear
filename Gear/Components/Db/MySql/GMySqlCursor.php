@@ -138,7 +138,6 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
      */
     public function buildQuery(): string
     {
-        Core::syslog(LogLevel::INFO, 'Build MySQL query ', ['__func__' => __METHOD__, '__line__' => __LINE__], true);
         $this->_query = 'SELECT SQL_CALC_FOUND_ROWS ';
         $fields = $this->_queryBuild->fields;
         if ($fields) {
@@ -587,6 +586,8 @@ class GMySqlCursor extends GDbCursor implements DbCursorInterface
         }
         if (defined('DEBUG') && DEBUG === true) {
             Core::syslog(LogLevel::INFO, 'Run MySQL query {query}', ['query' => $query, '__func__' => __METHOD__, '__line__' => __LINE__], true);
+//            $debug = debug_backtrace();
+//            Core::syslog(LogLevel::INFO, \Debugger::parse($debug), [], true);
         }
         if (!($this->result = $this->handler->query($query))) {
             $handler = $this->handler;

@@ -3,8 +3,12 @@
 namespace Gear\Plugins\Http;
 
 use Gear\Core;
+use Gear\Interfaces\DirectoryInterface;
+use Gear\Interfaces\FileInterface;
 use Gear\Interfaces\ResponseInterface;
 use Gear\Library\GPlugin;
+use Gear\Library\Io\Filesystem\GDirectory;
+use Gear\Library\Io\Filesystem\GFile;
 use Gear\Traits\Http\MessageTrait;
 use Gear\Traits\Http\ResponseTrait;
 
@@ -17,6 +21,7 @@ use Gear\Traits\Http\ResponseTrait;
  * @property string protocolVersion
  * @property string reasonPhrase
  * @property int statusCode
+ * @property string|DirectoryInterface tempDirectory
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -35,37 +40,33 @@ class GResponse extends GPlugin implements ResponseInterface
     protected $_headers = [
         'Content-Type' => 'text/html',
     ];
-    protected static $_isInitialized = false;
+    protected $_tempDirectory = '/tmp';
     /* Public */
 
-    /**
-     * Отправка заголовка-ответа с указанным статусом
-     *
-     * @param $code
-     * @return GResponse
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function sendStatus($code): GResponse
+    public function getTempDirectory(): DirectoryInterface
     {
-        if (!isset(self::$_phrases[$code])) {
-            $code = 306;
+        if (!($this->_tempDirectory) instanceof DirectoryInterface) {
+            $this->_tempDirectory = new GDirectory(['path' => $this->_tempDirectory]);
         }
-        header("HTTP/" . $this->protocolVersion . " $code " . isset(self::$_phrases[$code]), true, $code);
-        return $this;
+        return $this->_tempDirectory;
     }
 
     /**
      * Отправляет клиенту данные
      *
      * @param mixed $data
+     * @param array $headers
      * @return mixed
      * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function send($data)
+    public function send($data, array $headers = [])
     {
+        if (is_numeric($data) && isset(self::$_phrases[(int)$data])) {
+            header("HTTP/1.0 $data");
+            return;
+        }
         if (is_string($data) && preg_match('#^HTTP/\d\.\d (\d+)#', $data, $math)) {
             if (Core::app()->request->isAjax()) {
                 $data = ['error' => $math[1]];
@@ -82,7 +83,11 @@ class GResponse extends GPlugin implements ResponseInterface
                 return;
             }
         } else {
-            if (is_array($data)) {
+            if ($data instanceof DirectoryInterface) {
+                return $this->sendDirectory($data, $headers);
+            } elseif ($data instanceof FileInterface) {
+                return $this->sendFile($data, $headers);
+            } elseif (is_array($data)) {
                 $data = json_encode($data);
             } else if (!is_string($data)) {
                 $this->sendStatus(200);
@@ -101,5 +106,55 @@ class GResponse extends GPlugin implements ResponseInterface
             }
         }
         echo $data;
+    }
+
+    public function sendDirectory(DirectoryInterface $dir, array $headers = [])
+    {
+        //TODO:Упаковка директории в архив и отправка со всеми заголовками
+        if ($dir->exists()) {
+            //TODO:Архивирование директории
+            $headers = array_merge([
+                'HTTP/1.1 200 OK',
+                'Content-Type' => 'application/zip',
+                'Content-Length' => 0
+            ], $headers);
+        }
+    }
+
+    public function sendFile(FileInterface $file, array $headers = [])
+    {
+        if ($file->exists()) {
+            $headers = array_merge([
+                'HTTP/1.1 200 OK',
+                'Content-Type' => $file->mime,
+                'Content-Length' => $file->size
+            ], $headers);
+            $this->setHeaders($headers);
+            echo $file->content;
+        } else {
+            $this->sendStatus(404);
+        }
+    }
+
+    /**
+     * Отправка заголовка-ответа с указанным статусом
+     *
+     * @param $code
+     * @return GResponse
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function sendStatus($code): GResponse
+    {
+        if (!isset(self::$_phrases[$code])) {
+            $code = 306;
+        }
+        header("HTTP/" . $this->protocolVersion . " $code " . isset(self::$_phrases[$code]), true, $code);
+        return $this;
+    }
+
+    public function setTempDirectory(string $dir)
+    {
+        $this->_tempDirectory = $dir;
     }
 }

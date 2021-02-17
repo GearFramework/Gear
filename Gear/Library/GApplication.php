@@ -3,8 +3,10 @@
 namespace Gear\Library;
 
 use Gear\Core;
-use Gear\Interfaces\ModuleInterface;
+use Gear\Components\DeviceDetect\Interfaces\DeviceDetectComponentInterface;
+use Gear\Interfaces\ApplicationInterface;
 use Gear\Interfaces\RequestInterface;
+use Gear\Interfaces\ResponseInterface;
 use Gear\Interfaces\RouterInterface;
 
 /**
@@ -12,8 +14,9 @@ use Gear\Interfaces\RouterInterface;
  *
  * @package Gear Framework
  *
+ * @property DeviceDetectComponentInterface device
  * @property RequestInterface request
- * @property RequestInterface response
+ * @property ResponseInterface response
  * @property RouterInterface router
  *
  * @author Kukushkin Denis
@@ -22,14 +25,17 @@ use Gear\Interfaces\RouterInterface;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GApplication extends GModule implements ModuleInterface
+class GApplication extends GModule implements ApplicationInterface
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
+    protected static array $_config = [
         'components' => [
+            'device' => [
+                'class' => '\Gear\Components\DeviceDetect\DeviceDetectComponent',
+            ],
             'router' => [
                 'class' => '\Gear\Components\Router\GRouterComponent',
             ],
@@ -82,12 +88,57 @@ class GApplication extends GModule implements ModuleInterface
         exit(0);
     }
 
-    public function redirect($path, $params = [])
+    /**
+     * Переход по укзанному роуту контроллера, экшена с указанными параметрами
+     *
+     * @param string|null $controller
+     * @param string|null $action
+     * @param array $params
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function routeTo(string $controller = null, string $action = null, array $params = []): void
+    {
+        $path = '';
+        $temp = [];
+        if ($controller) {
+            $temp[] = $controller;
+        }
+        if ($action) {
+            if (!$controller) {
+                $temp[] = $this->router->defaultController;
+            }
+            $temp[] = $action;
+        }
+        if ($this->router->isRewriteOn()) {
+            $path = implode('/a/', $temp);
+        } else {
+            $params['r'] = implode('/a/', $temp);
+        }
+        $this->redirect($path, $params);
+    }
+
+    /**
+     * Переход по укзанному роуту с указанными параметрами
+     *
+     * @param string $path
+     * @param array $params
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function redirect(string $path, array $params = []): void
     {
         $this->router->redirect($path, $params);
     }
 
-    public function redirectUri(string $uri)
+    /**
+     * Переход по укзанному uri
+     *
+     * @param string $uri
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function redirectUri(string $uri): void
     {
         $this->router->redirectUri($uri);
     }

@@ -41,8 +41,7 @@ class GBasicUserComponent extends GDbStorageComponent implements UserComponentIn
     const CONFIRM_SMS = 2;
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
-    protected static $_config = [
+    protected static array $_config = [
         'plugins' => [
             'session' => [
                 'class' => '\Gear\Modules\Users\Plugins\GSessionUserIdentity',

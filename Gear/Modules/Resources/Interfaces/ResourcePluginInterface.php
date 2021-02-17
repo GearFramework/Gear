@@ -2,12 +2,27 @@
 
 namespace Gear\Modules\Resources\Interfaces;
 
+use Gear\Interfaces\DirectoryInterface;
 use Gear\Interfaces\FileInterface;
+use Gear\Modules\Resources\GResourcesModule;
 
 /**
  * Интерфейс публикатора ресурсов
  *
  * @package Gear Framework
+ *
+ * @property array allowedExtensions
+ * @property string basePath
+ * @property string controller
+ * @property bool forceResetCache
+ * @property string forceResetCacheType
+ * @property null|string forceResetCacheVariable
+ * @property bool hashingName
+ * @property string|DirectoryInterface mappingFolder
+ * @property string mime
+ * @property GResourcesModule owner
+ * @property string typeResource
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -16,6 +31,18 @@ use Gear\Interfaces\FileInterface;
  */
 interface ResourcePluginInterface
 {
+    const RESET_CACHE_BY_TIME = 'time';
+    const RESET_CACHE_BY_ENV_VARIABLE = 'env';
+
+    /**
+     * Возвращает значение для сброса кэша браузера
+     *
+     * @since 0.0.2
+     * @version 0.0.2
+     * @return string|null
+     */
+    public function forceCache(): ?string;
+
     /**
      * Возвращает ресурс соответствующего указанному хэшу
      *

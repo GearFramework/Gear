@@ -24,9 +24,19 @@ class CalendarHelper extends GHelper
     /* Traits */
     use StaticFactoryTrait;
     /* Const */
+    const SECONDS_PER_MIN = 60;
+    const SECONDS_PER_HOUR = self::SECONDS_PER_MIN * 60;
+    const SECONDS_PER_DAY = self::SECONDS_PER_HOUR * 24;
+    const SECONDS_PER_WEEK = self::SECONDS_PER_DAY * 7;
+    const SECONDS_PER_ODD_MONTH = self::SECONDS_PER_DAY * 31;
+    const SECONDS_PER_EVEN_MONTH = self::SECONDS_PER_DAY * 30;
+    const SECONDS_PER_LEAP_MONTH = self::SECONDS_PER_DAY * 29;
+    const SECONDS_PER_NOT_LEAP_MONTH = self::SECONDS_PER_DAY * 28;
+    const SECONDS_PER_LEAP_YEAR = self::SECONDS_PER_LEAP_MONTH + (self::SECONDS_PER_ODD_MONTH * 7) + (self::SECONDS_PER_EVEN_MONTH * 4);
+    const SECONDS_PER_NOT_LEAP_YEAR = self::SECONDS_PER_NOT_LEAP_MONTH + (self::SECONDS_PER_ODD_MONTH * 7) + (self::SECONDS_PER_EVEN_MONTH * 4);
     /* Private */
     /* Protected */
-    protected static $_config = [
+    protected static array $_config = [
         'options' => [
             'format' => 'Y-m-d H:i:s',
             'asUT' => false,

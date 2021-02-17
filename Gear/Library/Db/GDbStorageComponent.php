@@ -23,7 +23,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @property DbCursorInterface cursor
  * @property string dbName
  * @property array defaultParams
- * @property string primaryKey
+ * @property string primaryKeyName
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis

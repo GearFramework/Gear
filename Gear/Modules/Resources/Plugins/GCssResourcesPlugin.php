@@ -8,6 +8,9 @@ use Gear\Modules\Resources\Library\GResourcePlugin;
  * Публикатор js-файлов
  *
  * @package Gear Framework
+ *
+ * @property bool mapFile
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -20,12 +23,11 @@ class GCssResourcesPlugin extends GResourcePlugin
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_initialized = false;
-    protected $_allowedExtensions = ['css'];
+    protected array $_allowedExtensions = ['css'];
+    protected string $_basePath = 'Resources/Css';
     protected $_mappingFolder = null;
-    protected $_typeResource = 'css';
-    protected $_mime = 'text/css';
-    protected $_basePath = 'Resources/Css';
+    protected ?string $_mime = 'text/css';
+    protected ?string $_typeResource = 'css';
     /* Public */
 
     /**
@@ -43,8 +45,8 @@ class GCssResourcesPlugin extends GResourcePlugin
         foreach ($options as $param => $value) {
             $opt[] = $param . "=\"$value\"";
         }
-        if ($this->forceNoCache === true) {
-            $url .= '?' . (time() + microtime(true));
+        if ($forceValue = $this->forceCache()) {
+            $url .= "?{$forceValue}";
         }
         return '<link href="' . $url . '" ' . implode(' ', $opt) . " rel=\"stylesheet\" />\n";
     }

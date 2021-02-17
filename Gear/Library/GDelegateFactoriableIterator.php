@@ -26,7 +26,7 @@ class GDelegateFactoriableIterator extends GModel implements \Iterator
     /* Const */
     /* Private */
     /* Protected */
-    protected $_source = null;
+    protected ?iterable $_source = null;
     /* Public */
 
     /**

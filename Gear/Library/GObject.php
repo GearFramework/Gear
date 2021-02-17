@@ -5,6 +5,7 @@ namespace Gear\Library;
 use Gear\Core;
 use Gear\Interfaces\ObjectInterface;
 use Gear\Interfaces\PluginContainedInterface;
+use Gear\Interfaces\ViewableInterface;
 use Gear\Traits\ObjectTrait;
 use Gear\Traits\PluginContainedTrait;
 use Gear\Traits\PropertiesTrait;
@@ -31,7 +32,7 @@ use Gear\Traits\ViewTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-class GObject implements ObjectInterface, PluginContainedInterface
+class GObject implements ObjectInterface, PluginContainedInterface, ViewableInterface
 {
     /* Traits */
     use EventTrait;
@@ -45,23 +46,23 @@ class GObject implements ObjectInterface, PluginContainedInterface
     /* Protected */
     /* Public */
     /** @var array $_config конфигурация класса */
-    protected static $_config = [
+    protected static array $_config = [
         'plugins' => [
             'view' => ['class' => '\Gear\Plugins\Templater\GViewerPlugin']
         ]
     ];
     /** @var array $_defaultProperties значения по-умолчанию для объектов класса */
-    protected static $_sleepProperties = ['access', 'owner'];
+    protected static array $_sleepProperties = ['access', 'owner'];
     /** @var int $_access режим доступа к объекту */
-    protected $_access = Core::ACCESS_PUBLIC;
+    protected int $_access = Core::ACCESS_PUBLIC;
     /** @var array $_events события класса и их обработчики */
-    protected $_events = [];
+    protected array $_events = [];
     /** @var null|string пространство имён класса объекта */
-    protected $_namespace = null;
+    protected ?string $_namespace = null;
     /** @var null|ObjectInterface владелец объекта */
-    protected $_owner = null;
+    protected ?ObjectInterface $_owner = null;
     /** @var array $_properties свойства объектов */
-    protected $_properties = [];
+    protected array $_properties = [];
     /* Public */
 
     /**

@@ -22,6 +22,7 @@ class GException extends \Exception
     /* Protected */
     protected static $_localeSection = 'Exceptions';
     /* Public */
+    public $context = [];
     public $defaultMessage = "Exception message";
 
     /**
@@ -36,6 +37,7 @@ class GException extends \Exception
      */
     public function __construct(string $message = "", int $code = 0, ?\Throwable $previous = null, array $context = [])
     {
+        $this->context = $context;
         if (empty($message)) {
             $message = $this->defaultMessage;
         }

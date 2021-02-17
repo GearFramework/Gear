@@ -29,7 +29,7 @@ class GModel extends GObject implements ModelInterface
     /* Private */
     /* Protected */
     /* Public */
-    public static $primaryKeyName = 'id';
+    public static string $primaryKeyName = 'id';
 
     /**
      * GModel constructor.

@@ -198,7 +198,7 @@ trait DbStorageTrait
         /**
          * @var DbCursorInterface $cursor
          */
-        $cursor = $this->cursor;
+        $cursor = $this->selectCollection($this->alias)->cursor;
         if (isset($this->_defaultParams['where'])) {
             $this->_prepareDefaultWhere($cursor, $this->_defaultParams['where']);
         }
@@ -450,6 +450,13 @@ trait DbStorageTrait
         } else {
             $this->cursor->update($model, $criteria);
         }
+        /** @var DbStorageComponentInterface $this */
+        return $this;
+    }
+
+    public function where(array $criteria): DbStorageComponentInterface
+    {
+        $this->cursor->where($criteria);
         /** @var DbStorageComponentInterface $this */
         return $this;
     }

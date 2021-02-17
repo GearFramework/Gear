@@ -30,7 +30,7 @@ class GCalendarOptions
     /* Const */
     /* Private */
     /* Protected */
-    protected $_properties = [
+    protected array $_properties = [
         'asUT' => false,
         'format' => 'Y-m-d H:i:s',
         'humanize' => false,

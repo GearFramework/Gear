@@ -32,7 +32,7 @@ class GUserModule extends GModule
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [
+    protected static array $_config = [
         'components' => [
             'basicUser' => [
                 'class' => [

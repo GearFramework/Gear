@@ -18,6 +18,19 @@ interface IoInterface {}
  * Базовый интерфейс уровня файловой системы
  *
  * @package Gear Framework
+ *
+ * @property int atime
+ * @property string basename
+ * @property mixed content
+ * @property int ctime
+ * @property string dirname
+ * @property int|string mode
+ * @property int mtime
+ * @property string name
+ * @property IoInterface owner
+ * @property string path
+ * @property int size
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -94,9 +107,6 @@ interface FileSystemInterface extends IoInterface
 /**
  * Интерфейс директорий
  *
- * @property mixed content
- * @property string path
- *
  * @package Gear Framework
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -104,18 +114,27 @@ interface FileSystemInterface extends IoInterface
  * @since 0.0.1
  * @version 0.0.2
  */
-interface DirectoryInterface extends FileSystemInterface {}
+interface DirectoryInterface extends FileSystemInterface
+{
+    /**
+     * Создание директории
+     *
+     * @param array|\Gear\Library\Io\Filesystem\GFileSystemOptions $options
+     * @return FileSystemInterface
+     * @since 0.0.1
+     * @version 0.0.2
+     */
+    public function create($options = []): FileSystemInterface;
+}
 
 /**
  * Базовый интерфейс файлов
  *
  * @package Gear Framework
  *
- * @property mixed content
  * @property string ext
  * @property string extension
  * @property string mime
- * @property string path
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis

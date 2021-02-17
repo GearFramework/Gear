@@ -5,9 +5,62 @@ namespace Gear\Interfaces;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
+ * Интерфейс плагина-обёртки для обработки и подготовки данных запросов для контроллеров
+ *
+ * @package Gear Framework
+ *
+ * @property ControllerInterface controller
+ * @property ControllerInterface owner
+ * @property RequestInterface request
+ *
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.2
+ * @version 0.0.2
+ */
+interface ControllerRequestInterface {}
+
+/**
+ * Интерфейс модели с данными запроса
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.1
+ * @version 0.0.2
+ */
+interface RequestDataInterface
+{
+    /**
+     * Валидация значения
+     *
+     * @param string $name
+     * @param string|null $value
+     * @return mixed|string|null
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function validate(string $name, $value);
+}
+
+/**
  * Интерфейс плагина для работы с запросами
  *
  * @package Gear Framework
+ *
+ * @property array|null cli
+ * @property string defaultMethod
+ * @property array|null files
+ * @property string method
+ * @property array orders
+ * @property ApplicationInterface owner
+ * @property string remoteAddress
+ * @property string remoteHost
+ * @property array requestHandlers
+ * @property array variablesOrders
+ *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
@@ -96,6 +149,75 @@ interface RequestInterface extends ServerRequestInterface
     public function getRemoteAddress(): string;
 
     /**
+     * Возвращает имя удаленного хоста
+     *
+     * @return string
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function getRemoteHost(): string;
+
+    /**
+     * Возвращает true, если искомый параметр передан в коммандной строке
+     *
+     * @param string $name
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inCli(string $name): bool;
+
+    /**
+     * Возвращает true, если искомый параметр находится в cookie
+     *
+     * @param string $name
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inCookie(string $name): bool;
+
+    /**
+     * Возвращает true, если искомый параметр передан в GET запросе
+     *
+     * @param string $name
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inGet(string $name): bool;
+
+    /**
+     * Возвращает true, если искомый параметр находится среди загруженных файлов
+     *
+     * @param string $name
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inFiles(string $name): bool;
+
+    /**
+     * Возвращает true, если искомый параметр передан в POST запросе
+     *
+     * @param string $name
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inPost(string $name): bool;
+
+    /**
+     * Возвращает true, если искомый параметр сохранен в PHP-сессии
+     *
+     * @param string $name
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function inSession(string $name): bool;
+
+    /**
      * Возвращает true, если был сделан ajax-запрос
      *
      * @return bool
@@ -103,6 +225,78 @@ interface RequestInterface extends ServerRequestInterface
      * @version 0.0.1
      */
     public function isAjax(): bool;
+
+    /**
+     * Возвращает true, если запрос сделан из консоли
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isCli(): bool;
+
+    /**
+     * Возвращает true, если запрос пришёл с настольного компьютера
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isDesktop(): bool;
+
+    /**
+     * Возвращает true, если сделан GET-запрос
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isGet(): bool;
+
+    /**
+     * Возвращает true, если используется обычный http-протокол
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isHttp(): bool;
+
+    /**
+     * Возвращает true, если используется https
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isHttps(): bool;
+
+    /**
+     * Возвращает true, если запрос пришёл с мобильного телефона
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isMobile(): bool;
+
+    /**
+     * Возвращает true, если сделан POST-запрос
+     *
+     * @return bool
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function isPost(): bool;
+
+    /**
+     * Возвращает true, если запрос пришёл с планшета
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isTablet(): bool;
 
     /**
      * Возвращает значение указанного параметра, независимо от метода запроса

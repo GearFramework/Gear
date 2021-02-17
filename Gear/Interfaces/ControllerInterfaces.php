@@ -38,11 +38,17 @@ interface ApiInterface
  *
  * @package Gear Framework
  *
+ * @property string apiRequest
  * @property iterable apis
  * @property string defaultApi
  * @property string layout
+ * @property string name
+ * @property RouterInterface owner
  * @property RequestInterface|null request
+ * @property array requestModels
+ * @property ResponseInterface|null response
  * @property string title
+ * @property array|object viewSchema
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -117,6 +123,7 @@ interface ControllerInterface
  * @property RequestInterface request
  * @property string requestRoute
  * @property ResponseInterface response
+ * @property bool rewrite
  * @property array routes
  *
  * @author Kukushkin Denis
@@ -255,7 +262,33 @@ interface RouterInterface
      */
     public function getRoutes(): array;
 
-    public function redirect($path, $params = []);
+    /**
+     * Возвращает true, если включен mod_rewrite/nginx rewrite module
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isRewriteOn(): bool;
 
+    /**
+     * Переход по укзанному роуту с указанными параметрами
+     *
+     * @param string $path
+     * @param array $params
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function redirect(string $path, array $params = []);
+
+    /**
+     * Переход по укзанному uri
+     *
+     * @param string $uri
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
     public function redirectUri(string $uri);
 }

@@ -34,7 +34,7 @@ class GFileLogger extends GPlugin implements LoggerInterface
     const OVERWRITE = 'overwrite';
     /* Private */
     /* Protected */
-    protected static $_defaultProperties = [
+    protected static array $_defaultProperties = [
         'levels' => [LogLevel::ERROR, LogLevel::WARNING, LogLevel::NOTICE, LogLevel::INFO],
         'location' => 'Logs\application.log',
         'modeLocation' => 0700,

@@ -5,22 +5,29 @@ namespace Gear\Library;
 use Gear\Core;
 use Gear\Interfaces\ApiInterface;
 use Gear\Interfaces\ControllerInterface;
+use Gear\Interfaces\ControllerRequestInterface;
 use Gear\Interfaces\RequestInterface;
 use Gear\Interfaces\ResponseInterface;
 use Gear\Interfaces\RouterInterface;
+use Gear\Plugins\Http\GControllerRequest;
+use Pub\Pub;
 
 /**
  * Контроллер
  *
  * @package Gear Framework
  *
+ * @property string apiRequest
  * @property iterable apis
  * @property string defaultApi
  * @property string layout
+ * @property string name
  * @property RouterInterface owner
  * @property RequestInterface|null request
+ * @property array requestModels
  * @property ResponseInterface|null response
  * @property string title
+ * @property array|object viewSchema
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -34,12 +41,15 @@ class GController extends GModel implements ControllerInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected $_apis = [];
-    protected $_defaultApi = 'index';
-    protected $_layout = '';
-    protected $_request = null;
-    protected $_response = null;
-    protected $_title = 'Title';
+    protected string $_apiRequest = '';
+    protected array $_apis = [];
+    protected string $_defaultApi = 'index';
+    protected string $_layout = '';
+    protected ?RequestInterface $_request = null;
+    protected array $_requestModels = [];
+    protected ?ResponseInterface $_response = null;
+    protected string $_title = 'Title';
+    protected $_viewSchema = [];
     /* Public */
 
     /**
@@ -99,7 +109,16 @@ class GController extends GModel implements ControllerInterface
      */
     public function beforeExecApi(string $api, string $apiMethod, array $params)
     {
-        return Core::trigger('onBeforeExecApi', new GEvent($this, ['r' => $api, 'api' => $apiMethod, 'params' => $params]));
+        $event = new GEvent($this, ['r' => $api, 'api' => $apiMethod, 'params' => $params]);
+        if ($result = $this->trigger('onBeforeExecApi', $event)) {
+            $result = Core::trigger('onBeforeExecApi', $event);
+        }
+        return $result;
+    }
+
+    public function getApiRequest(): string
+    {
+        return $this->_apiRequest;
     }
 
     /**
@@ -186,10 +205,15 @@ class GController extends GModel implements ControllerInterface
         return $this->_request;
     }
 
+    public function getRequestModels(): array
+    {
+        return $this->_requestModels;
+    }
+
     /**
      * Возвращает экземпляр ответа
      *
-     * @return ResponseInterface
+     * @return ResponseInterface|ControllerRequestInterface
      * @since 0.0.1
      * @version 0.0.2
      */
@@ -208,6 +232,14 @@ class GController extends GModel implements ControllerInterface
     public function getTitle(): string
     {
         return $this->_title;
+    }
+
+    public function getViewSchema(): object
+    {
+        if (!is_object($this->_viewSchema)) {
+            $this->_viewSchema = (object)$this->_viewSchema;
+        }
+        return $this->_viewSchema;
     }
 
     /**
@@ -261,9 +293,7 @@ class GController extends GModel implements ControllerInterface
             if ($match) {
                 $api = trim($match[1], "/");
             }
-            if (!$api) {
-                $api = $this->_defaultApi;
-            }
+            $this->_apiRequest = $api = $api ?: $this->_defaultApi;
             $apis = $this->apis;
             if (isset($apis[$api])) {
                 $apiMethod = $apis[$api];
@@ -329,12 +359,17 @@ class GController extends GModel implements ControllerInterface
      *
      * @param RequestInterface $request
      * @return void
+     * @throws \PluginNotFoundException
      * @since 0.0.1
      * @version 0.0.2
      */
     public function setRequest(RequestInterface $request)
     {
-        $this->_request = $request;
+        if ($this->isPluginRegistered('controllerRequest')) {
+            $this->_request = $this->p('controllerRequest');
+        } else {
+            $this->_request = $request;
+        }
     }
 
     /**

@@ -18,8 +18,7 @@ class ArrayHelper extends GHelper
 {
     public static function helpLastKey(array &$array)
     {
-        end($array);
-        return key($array);
+        return array_key_last($array);
     }
 
     public static function helpLastValue(array &$array)
@@ -29,8 +28,7 @@ class ArrayHelper extends GHelper
 
     public static function helpFirstKey(array &$array)
     {
-        reset($array);
-        return key($array);
+        return array_key_first($array);
     }
 
     public static function helpFirstValue(array &$array)
@@ -52,7 +50,7 @@ class ArrayHelper extends GHelper
         return array_keys($keys) !== $keys;
     }
 
-    public static function helpToString(iterable $array): string
+    public static function helpToString(iterable $array, bool $escape = false): string
     {
         $string = '';
         foreach ($array as $key => $value) {
@@ -61,11 +59,11 @@ class ArrayHelper extends GHelper
             } elseif (is_object($value)) {
                 $value = get_class($value);
             } elseif (is_bool($value)) {
-                $value = $value ? 'TRUE' : 'FALSE';
+                $value = $value ? 'true' : 'false';
             } elseif (is_null($value)) {
                 $value = 'NULL';
             } elseif (!is_numeric($value)) {
-                $value = '"' . addslashes($value) . '"';
+                $value = '"' . ($escape ? addslashes($value) : $value) . '"';
             }
             $string .= "$key: $value, ";
         }

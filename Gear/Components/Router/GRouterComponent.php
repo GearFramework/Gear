@@ -10,6 +10,7 @@ use Gear\Interfaces\ResponseInterface;
 use Gear\Interfaces\RouterInterface;
 use Gear\Library\GComponent;
 use Gear\Traits\Factory\FactoryTrait;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Роутер
@@ -23,6 +24,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @property RequestInterface request
  * @property string requestRoute
  * @property ResponseInterface response
+ * @property bool rewrite
  * @property array routes
  *
  * @author Kukushkin Denis
@@ -277,12 +279,33 @@ class GRouterComponent extends GComponent implements FactoryInterface, RouterInt
         return $this->_routes;
     }
 
-    public function redirect($path, $params = [])
+    /**
+     * Возвращает true, если включен mod_rewrite/nginx rewrite module
+     *
+     * @return bool
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function isRewriteOn(): bool
+    {
+        return $this->props('rewrite');
+    }
+
+    /**
+     * Переход по укзанному роуту с указанными параметрами
+     *
+     * @param string $path
+     * @param array $params
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function redirect(string $path, array $params = []): void
     {
         if (is_array($params) && $params) {
             $p = [];
             foreach($params as $name => $value) {
-                $p[] = "$name=$value";
+                $p[] = "$name=" . urlencode($value);
             }
             $path .= '?' . implode('&', $p);
         } else if (is_string($params) && trim($params)) {
@@ -291,7 +314,15 @@ class GRouterComponent extends GComponent implements FactoryInterface, RouterInt
         $this->redirectUri("/$path");
     }
 
-    public function redirectUri(string $uri)
+    /**
+     * Переход по укзанному uri
+     *
+     * @param string $uri
+     * @return void
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function redirectUri(string $uri): void
     {
         header("Location: $uri");
         die();

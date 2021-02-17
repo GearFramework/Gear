@@ -37,7 +37,7 @@ class GMySqlConnectionComponent extends GDbConnection implements DbConnectionInt
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_defaultProperties = [
+    protected static array $_defaultProperties = [
         'host' => 'localhost',
         'user' => '',
         'password' => '',
@@ -110,9 +110,7 @@ class GMySqlConnectionComponent extends GDbConnection implements DbConnectionInt
      */
     public function onAfterConnect(GEvent $event): bool
     {
-        if ($this->isConnected()) {
-            $this->handler->set_charset($this->charset);
-        }
+        $this->handler->set_charset($this->charset);
         return true;
     }
 
@@ -146,6 +144,7 @@ class GMySqlConnectionComponent extends GDbConnection implements DbConnectionInt
             if ($this->handler->connect_error) {
                 throw self::DatabaseConnectionException('Error connecting to database server <{user}@{host}>', ['user' => $this->user, 'host' => $this->host]);
             }
+            $this->trigger('onAfterConnect', new GEvent($this));
         }
         return $this;
     }

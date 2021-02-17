@@ -20,6 +20,6 @@ class GPlugin extends GService implements PluginInterface
     /* Const */
     /* Private */
     /* Protected */
-    protected static $_config = [];
+    protected static array $_config = [];
     /* Public */
 }

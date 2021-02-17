@@ -51,7 +51,7 @@ abstract class GCache extends GPlugin implements CacheInterface
                 if ($serializer) {
                     $v = $serializer($v);
                 }
-                $result[] = $this->_add($k, $v, 0, $expire ? time() + $expire : 0);
+                $result[] = $this->_add($k, $v, $expire ? time() + $expire : 0);
             }
         } else {
             if ($serializer === true) {
@@ -59,7 +59,7 @@ abstract class GCache extends GPlugin implements CacheInterface
             } elseif (is_callable($serializer)) {
                 $value = $serializer($value);
             }
-            $result = $this->_add($key, $value, 0, $expire ? time() + $expire : 0);
+            $result = $this->_add($key, $value, $expire ? time() + $expire : 0);
         }
         return $result;
     }
@@ -244,7 +244,7 @@ abstract class GCache extends GPlugin implements CacheInterface
                 if ($serializer) {
                     $v = $serializer($v);
                 }
-                $result[$k] = $this->_set($k, $v, 0, $expire ? time() + $expire : 0);
+                $result[$k] = $this->_set($k, $v, $expire ? time() + $expire : 0);
             }
         } else {
             if ($serializer === true) {
@@ -252,7 +252,7 @@ abstract class GCache extends GPlugin implements CacheInterface
             } elseif (is_callable($serializer)) {
                 $value = $serializer($value);
             }
-            $result = $this->_set($key, $value, 0, $expire ? time() + $expire : 0);
+            $result = $this->_set($key, $value, $expire ? time() + $expire : 0);
         }
         return $result;
     }
