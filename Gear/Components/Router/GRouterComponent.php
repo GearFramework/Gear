@@ -48,6 +48,9 @@ class GRouterComponent extends GComponent implements FactoryInterface, RouterInt
     private $_response = null;
     private $_routes = [];
     /* Protected */
+    protected static array $_defaultProperties = [
+        'rewrite' => false,
+    ];
     /* Public */
 
     /**

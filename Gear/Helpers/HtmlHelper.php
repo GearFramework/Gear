@@ -78,26 +78,30 @@ class HtmlHelper extends GHelper implements StaticFactoryInterface
      * @param string $controller
      * @param string $api
      * @param array $params
+     * @param bool $rewriteOn
      * @return string
-     * @throws \CoreException
      * @since 0.0.1
      * @version 0.0.1
      */
-    public static function helpUrl(string $controller = '', string $api = '', array $params = []): string
-    {
+    public static function helpUrl(
+        string $controller = '',
+        string $api = '',
+        array $params = [],
+        bool $rewriteOn = false
+    ): string {
         foreach ($params as $name => &$value) {
             $value = "$name=" . urlencode($value);
         }
         unset($value);
-        if (Core::app()->{Core::props('routerName')}->rewrite) {
+        if ($rewriteOn) {
             $params = implode('&', $params);
-            $url = '/' . ($controller ? $controller . '/' : '') . ($api ? "a/$api/" : '') . ($params ? "?$params" : '');
+            $url = '/' . ($controller ? "{$controller}/" : '') . ($api ? "a/{$api}" : '') . ($params ? "?{$params}" : '');
         } else {
             if ($controller) {
-                array_unshift($params, "r=$controller" . ($api ? "/a/$api" : ''));
+                array_unshift($params, "r={$controller}" . ($api ? "/a/{$api}" : ''));
             }
             $params = implode('&', $params);
-            $url = 'index.php' . ($params ? "?$params" : '');
+            $url = '/' . ($params ? "?{$params}" : '');
         }
         return $url;
     }
