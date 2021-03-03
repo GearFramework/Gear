@@ -109,6 +109,38 @@ interface ComponentContainedInterface
 }
 
 /**
+ * Интерфейс модели, принадлежащей коллекции моделей, загруженных
+ * каким-либо образом из какого-либо источника
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.2
+ * @version 0.0.2
+ */
+interface CollectionModelInterface
+{
+    /**
+     * Возвращает контейнер, который загрузил данную модель
+     *
+     * @return ModelsCollectorInterface|null
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getCollector(): ?ModelsCollectorInterface;
+
+    /**
+     * Установка контейнера, который загрузил контейнер
+     *
+     * @param ModelsCollectorInterface $collector
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function setCollector(ModelsCollectorInterface $collector): void;
+}
+
+/**
  * Интерфейс объектов, которые зависят от других объектов
  *
  * @package Gear Framework
@@ -174,6 +206,19 @@ interface ModelInterface extends ObjectInterface
      */
     public function setPrimaryKeyName(string $pkName);
 }
+
+/**
+ * Интерфейс контейнера, который загружает
+ * каким-либо образом коллекцию моделей из какого-либо источника
+ *
+ * @package Gear Framework
+ * @author Kukushkin Denis
+ * @copyright 2016 Kukushkin Denis
+ * @license http://www.spdx.org/licenses/MIT MIT License
+ * @since 0.0.2
+ * @version 0.0.2
+ */
+interface ModelsCollectorInterface {}
 
 /**
  * Интерфейс базовых объектов приложения

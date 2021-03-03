@@ -7,6 +7,7 @@ use Gear\Interfaces\DbConnectionInterface;
 use Gear\Interfaces\DbCursorInterface;
 use Gear\Interfaces\DbStorageComponentInterface;
 use Gear\Interfaces\FactoryInterface;
+use Gear\Interfaces\ModelsCollectorInterface;
 use Gear\Library\GComponent;
 use Gear\Traits\Factory\DelegateFactoryTrait;
 use Gear\Traits\Factory\FactoryTrait;
@@ -31,7 +32,7 @@ use Gear\Traits\Factory\FactoryTrait;
  * @since 0.0.1
  * @version 0.0.2
  */
-abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate, FactoryInterface, DbStorageComponentInterface
+abstract class GDbStorageComponent extends GComponent implements \IteratorAggregate, FactoryInterface, DbStorageComponentInterface, ModelsCollectorInterface
 {
     /* Traits */
     use DelegateFactoryTrait;

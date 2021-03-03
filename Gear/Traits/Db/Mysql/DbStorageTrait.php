@@ -243,7 +243,8 @@ trait DbStorageTrait
      */
     public function getIterator($cursor = null): iterable
     {
-        if (is_iterable($cursor)) {
+        if (is_object($cursor) && is_iterable($cursor)) {
+            /** @var object|iterable $cursor */
             $cursor = $this->delegate(clone $cursor);
         } elseif (is_string($cursor)) {
             $cursor = $this->delegate($this->cursor->runQuery($cursor));
