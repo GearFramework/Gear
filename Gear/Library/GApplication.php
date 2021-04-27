@@ -126,7 +126,7 @@ class GApplication extends GModule implements ApplicationInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function redirect(string $path, array $params = []): void
+    public function redirect(string $path = '/', array $params = []): void
     {
         $this->router->redirect($path, $params);
     }

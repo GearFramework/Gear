@@ -388,6 +388,7 @@ abstract class GResourcePlugin extends GPlugin implements ResourcePluginInterfac
                     $records = [$hash => (string)$tempFile];
                     $hashExists = false;
                 } else {
+                    /** @var array $records */
                     $records = $tempFile->content(function($data) { return json_decode($data, true); });
                     if (!isset($records[$hash])) {
                         $records[$hash] = (string)$tempFile;
