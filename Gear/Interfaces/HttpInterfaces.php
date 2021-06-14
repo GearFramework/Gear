@@ -363,6 +363,37 @@ interface ResponseInterface extends \Psr\Http\Message\ResponseInterface
      * @version 0.0.1
      */
     public function send($data);
+
+    /**
+     * Отправка файла
+     *
+     * @param FileInterface $file
+     * @param array $headers
+     * @param int $speed
+     * @return void
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function sendFile(FileInterface $file, array $headers = [], $speed = 0);
+
+    /**
+     * Отправка установленных заголовков
+     *
+     * @return ResponseInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function sendHeaders(): ResponseInterface;
+
+    /**
+     * Отправка заголовка-ответа с указанным статусом
+     *
+     * @param $code
+     * @return ResponseInterface
+     * @since 0.0.1
+     * @version 0.0.1
+     */
+    public function sendStatus($code): ResponseInterface;
 }
 
 interface UriInterface extends \Psr\Http\Message\UriInterface

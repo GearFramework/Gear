@@ -61,6 +61,18 @@ trait ViewTrait
     }
 
     /**
+     * Возвращает карту расположения шаблонов
+     *
+     * @return array
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function getViewsMap(): array
+    {
+        return $this->_viewsMap;
+    }
+
+    /**
      * Отображение шаблона
      *
      * @param $template
@@ -126,5 +138,18 @@ trait ViewTrait
     public function setViewPath($viewPath)
     {
         $this->_viewPath = $viewPath;
+    }
+
+    /**
+     * Установка карты расположения шаблонов
+     *
+     * @param array $viewsMap
+     * @return void
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function setViewsMap(array $viewsMap): void
+    {
+        $this->_viewsMap = $viewsMap;
     }
 }

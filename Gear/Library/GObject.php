@@ -25,6 +25,7 @@ use Gear\Traits\ViewTrait;
  * @property array properties
  * @property string viewerName
  * @property string viewPath
+ * @property array viewsMap
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -63,6 +64,8 @@ class GObject implements ObjectInterface, PluginContainedInterface, ViewableInte
     protected ?ObjectInterface $_owner = null;
     /** @var array $_properties свойства объектов */
     protected array $_properties = [];
+    /** @var array $_viewsMap карта шаблонов для шалонизатора */
+    protected array $_viewsMap = [];
     /* Public */
 
     /**

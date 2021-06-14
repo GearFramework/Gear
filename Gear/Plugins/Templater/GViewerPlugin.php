@@ -43,6 +43,9 @@ class GViewerPlugin extends GPlugin
         } elseif (!is_string($template)) {
             throw self::InvalidTemplateException(['template' => $template]);
         } else {
+            if (isset($this->owner->viewsMap[$template])) {
+                $template = $this->owner->viewsMap[$template];
+            }
             if (!preg_match('/(\\\\|\/)/', $template)) {
                 $template = $this->owner->viewPath . '/' . $template;
             }

@@ -133,7 +133,11 @@ class GRequest extends GPlugin implements RequestInterface
         if (!$name) {
             return $this->getData($_COOKIE);
         } else {
-            return $_COOKIE[$name];
+            if (count($params) > 0) {
+                setcookie($name, ...$params);
+            } else {
+                return $_COOKIE[$name];
+            }
         }
     }
 

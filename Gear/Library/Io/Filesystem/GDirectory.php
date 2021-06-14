@@ -31,6 +31,18 @@ class GDirectory extends GFileSystem implements DirectoryInterface, \IteratorAgg
     /* Public */
 
     /**
+     * Смена директории на текущую
+     *
+     * @return DirectoryInterface
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function chdir(): DirectoryInterface
+    {
+        chdir($this->path);
+    }
+
+    /**
      * Меняет владельца (пользователя/группу) элемента файловой системы
      *
      * @param int|string|array|GFileSystemOptions $options
@@ -232,8 +244,16 @@ class GDirectory extends GFileSystem implements DirectoryInterface, \IteratorAgg
                 if ($item === '.' || $item === '..') {
                     continue;
                 }
-                $item = $this->factory(['path' => $this . '/' . $item]);
-                $item->remove();
+                $itemPath = $this . '/' . $item;
+                if (is_file($itemPath)) {
+                    $item = static::factoryFile($itemPath);
+                } elseif (is_dir($itemPath)) {
+                    $item = static::factoryDirectory($itemPath);
+                }
+                if (isset($item)) {
+                    $item->remove($options);
+                }
+                unset($item);
             }
             if (!rmdir($this)) {
                 throw self::FileSystemException('Failed to delete directory <{dir}>', ['dir' => $this]);

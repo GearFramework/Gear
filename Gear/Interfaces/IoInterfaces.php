@@ -116,6 +116,8 @@ interface FileSystemInterface extends IoInterface
  */
 interface DirectoryInterface extends FileSystemInterface
 {
+    public function chdir();
+
     /**
      * Создание директории
      *

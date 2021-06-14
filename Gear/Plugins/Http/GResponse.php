@@ -95,16 +95,7 @@ class GResponse extends GPlugin implements ResponseInterface
             }
         }
         $this->sendStatus(200);
-        foreach ($this->headers as $header => $value) {
-            if (is_numeric($header)) {
-                header($value);
-            } else {
-                if (is_array($value)) {
-                    $value = implode(', ', $value);
-                }
-                header("$header: $value");
-            }
-        }
+        $this->sendHeaders();
         echo $data;
     }
 
@@ -121,30 +112,74 @@ class GResponse extends GPlugin implements ResponseInterface
         }
     }
 
-    public function sendFile(FileInterface $file, array $headers = [])
+    /**
+     * Отправка файла
+     *
+     * @param FileInterface $file
+     * @param array $headers
+     * @param int $speed
+     * @return void
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function sendFile(FileInterface $file, array $headers = [], $speed = 0)
     {
         if ($file->exists()) {
             $headers = array_merge([
-                'HTTP/1.1 200 OK',
                 'Content-Type' => $file->mime,
                 'Content-Length' => $file->size
             ], $headers);
             $this->setHeaders($headers);
-            echo $file->content;
+            $this->sendHeaders();
+            if (!$speed) {
+                echo $file->content;
+            } else {
+                set_time_limit(0);
+                if (ob_get_status()) {
+                    ob_end_clean();
+                }
+                $file->open(['mode' => 'r']);
+                foreach ($file->read($speed) as $data) {
+                    echo $data;
+                }
+                $file->close();
+            }
         } else {
             $this->sendStatus(404);
         }
     }
 
     /**
+     * Отправка установленных заголовков
+     *
+     * @return ResponseInterface
+     * @since 0.0.2
+     * @version 0.0.2
+     */
+    public function sendHeaders(): ResponseInterface
+    {
+        foreach ($this->headers as $header => $value) {
+            if (is_numeric($header)) {
+                header($value);
+            } else {
+                if (is_array($value)) {
+                    $value = implode(', ', $value);
+                }
+                header("$header: $value");
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Отправка заголовка-ответа с указанным статусом
      *
      * @param $code
-     * @return GResponse
+     * @return ResponseInterface
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function sendStatus($code): GResponse
+    public function sendStatus($code): ResponseInterface
     {
         if (!isset(self::$_phrases[$code])) {
             $code = 306;

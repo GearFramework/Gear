@@ -411,6 +411,11 @@ interface PluginContainedInterface
  */
 interface SchemaInterface
 {
+    const TYPE_BOOL = 'boolean';
+    const TYPE_INT = 'number';
+    const TYPE_STRING = 'string';
+    const TYPE_ARRAY = 'array';
+
     /**
      * Взвращает схему модели
      *

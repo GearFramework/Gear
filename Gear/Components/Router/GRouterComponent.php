@@ -10,7 +10,6 @@ use Gear\Interfaces\ResponseInterface;
 use Gear\Interfaces\RouterInterface;
 use Gear\Library\GComponent;
 use Gear\Traits\Factory\FactoryTrait;
-use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Роутер
@@ -25,7 +24,7 @@ use JetBrains\PhpStorm\NoReturn;
  * @property string requestRoute
  * @property ResponseInterface response
  * @property bool rewrite
- * @property array routes
+ * @property array<string> routes
  *
  * @author Kukushkin Denis
  * @copyright 2016 Kukushkin Denis
@@ -39,14 +38,14 @@ class GRouterComponent extends GComponent implements FactoryInterface, RouterInt
     use FactoryTrait;
     /* Const */
     /* Private */
-    private $_currentController = null;
-    private $_defaultController = 'index';
-    private $_defaultControllersPath = 'Controllers';
-    private $_factoryProperties = [];
-    private $_model = [];
-    private $_request = null;
-    private $_response = null;
-    private $_routes = [];
+    private ?ControllerInterface $_currentController = null;
+    private string $_defaultController = 'index';
+    private string $_defaultControllersPath = 'Controllers';
+    private array $_factoryProperties = [];
+    private array $_model = [];
+    private RequestInterface|null $_request = null;
+    private ResponseInterface|null $_response = null;
+    private array $_routes = [];
     /* Protected */
     protected static array $_defaultProperties = [
         'rewrite' => false,
@@ -314,7 +313,9 @@ class GRouterComponent extends GComponent implements FactoryInterface, RouterInt
         } else if (is_string($params) && trim($params)) {
             $path .= "?$params";
         }
-        $this->redirectUri("/$path");
+        $this->redirectUri(strpos($path, '/') !== false ? $path : "/$path");
+        // TODO:PHP 8.x
+        // $this->redirectUri(str_starts_with($path, '/') ? $path : "/$path");
     }
 
     /**

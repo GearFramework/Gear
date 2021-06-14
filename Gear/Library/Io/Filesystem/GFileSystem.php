@@ -1027,7 +1027,7 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
         'zirz' => 'application/vnd.zul',
         'zmm' => 'application/vnd.handheld-entertainment+xml',
     ];
-    protected static $_factoryProperties = [
+    protected static $_model = [
         'dir' => [
             'class' => '\gear\library\io\filesystem\GDirectory'
         ],
@@ -1062,7 +1062,11 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      */
     protected function _prepareOptions($options): GFileSystemOptions
     {
-        return new GFileSystemOptions(is_array($options) ? $options : []);
+        if ($options instanceof GFileSystemOptions) {
+            return $options;
+        } else {
+            return new GFileSystemOptions(is_array($options) ? $options : []);
+        }
     }
 
     /**
@@ -1443,16 +1447,17 @@ abstract class GFileSystem extends GIo implements FileSystemInterface
      */
     public static function getFactoryProperties(array $record = [], ?ObjectInterface $owner = null): array
     {
+        $model = static::getModel();
         $factory = null;
         if ($record && isset($record['path'])) {
             if (file_exists($record['path'])) {
                 $type = filetype($record['path']);
-                if (isset(static::$_factoryProperties[$type])) {
-                    $factory = static::$_factoryProperties[$type];
+                if (isset($model[$type])) {
+                    $factory = $model[$type];
                 }
             } elseif (isset($record['type'])) {
-                if (isset(static::$_factoryProperties[$record['type']])) {
-                    $factory = static::$_factoryProperties[$record['type']];
+                if (isset($model[$record['type']])) {
+                    $factory = $model[$record['type']];
                 }
             }
         }

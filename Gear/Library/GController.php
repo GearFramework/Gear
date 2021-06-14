@@ -9,8 +9,6 @@ use Gear\Interfaces\ControllerRequestInterface;
 use Gear\Interfaces\RequestInterface;
 use Gear\Interfaces\ResponseInterface;
 use Gear\Interfaces\RouterInterface;
-use Gear\Plugins\Http\GControllerRequest;
-use Pub\Pub;
 
 /**
  * Контроллер

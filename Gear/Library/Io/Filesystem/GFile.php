@@ -247,12 +247,14 @@ class GFile extends GFileSystem implements FileInterface, \IteratorAggregate
      * @since 0.0.1
      * @version 0.0.1
      */
-    public function read($length = 0)
+    public function read($length = 4096)
     {
         if (!$this->isOpened()) {
             $this->open();
         }
-        return fread($this->_handler, $length);
+        while (!feof($this->_handler)) {
+            yield fread($this->_handler, $length);
+        }
     }
 
     public function readArray(int $flags = FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)

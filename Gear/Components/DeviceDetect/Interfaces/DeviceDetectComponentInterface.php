@@ -2,6 +2,8 @@
 
 namespace Gear\Components\DeviceDetect\Interfaces;
 
+use Gear\Interfaces\ComponentInterface;
+
 /**
  * Интерфейс компонента для определения на каком устройстве открыт сайт
  * - мобильный

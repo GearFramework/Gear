@@ -26,7 +26,8 @@ class GRequestData extends GModel implements RequestDataInterface
 
     public function __get(string $name)
     {
-        $value =  $this->props($name);
+        $method = 'get' . ucfirst($name);
+        $value = method_exists($this, $method) ? $this->{$method}() : $this->props($name);
         return $this->validate($name, $value);
     }
 
