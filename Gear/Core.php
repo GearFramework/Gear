@@ -9,12 +9,12 @@ defined('ROOT') or define('ROOT', dirname(GEAR));
  * Ядро фреймворка
  *
  * @final
- * @package Gear Framework
+ * @package Gear Framework 2
  * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
+ * @copyright 2022 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.2
+ * @version 2.0.0
  */
 final class Core
 {
