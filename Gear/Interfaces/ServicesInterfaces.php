@@ -15,55 +15,59 @@ namespace Gear\Interfaces;
 interface ServiceInterface
 {
     /**
-     * Генерация события onAfterInstallService после процедуры установки сервиса
-     *
-     * @return mixed
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function afterInstallService();
-
-    /**
      * Генерация события onBeforeInstallService перед установкой сервиса
      *
      * @param array $config
      * @param array $properties
      * @return mixed
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    public static function beforeInstallService($config, $properties);
+    public static function beforeInstallService(array $config, array $properties): mixed;
+
+    /**
+     * Генерация события onAfterInstallService после процедуры установки сервиса
+     *
+     * @return mixed
+     * @since 0.0.1
+     * @version 2.0.0
+     */
+    public function afterInstallService(): mixed;
 
     /**
      * Инициализация сервиса
      *
      * @param array|string $config
-     * @return bool
+     * @return vold
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    public static function init($config = []): bool;
+    public static function init(array|string $config = []): void;
 
     /**
      * Установка сервиса
      *
-     * @param array|string $config
-     * @param array|string $properties
+     * @param array $config
+     * @param array $properties
      * @param ObjectInterface|null $owner
      * @return ServiceInterface
      * @since 0.0.1
-     * @version 0.0.2
+     * @version 2.0.0
      */
-    public static function install($config = [], $properties = [], ?ObjectInterface $owner = null): ServiceInterface;
+    public static function install(
+        array $config = [],
+        array $properties = [],
+        ?ObjectInterface $owner = null
+    ): ServiceInterface;
 
     /**
      * Получение экземпляра сервиса
      *
-     * @param array|string $properties
+     * @param array $properties
      * @param ObjectInterface|null $owner
      * @return ServiceInterface
      * @since 0.0.1
-     * @version 0.0.2
+     * @version 2.0.0
      */
     public static function it($properties = [], ?ObjectInterface $owner = null): ServiceInterface;
 
@@ -116,12 +120,12 @@ interface PluginInterface extends ServiceInterface {}
 /**
  * Интерфейс хелперов
  *
- * @package Gear Framework
+ * @package Gear Framework 2
  * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
+ * @copyright 2022 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
  * @since 0.0.1
- * @version 0.0.2
+ * @version 2.0.0
  */
 interface HelperInterface
 {
@@ -132,7 +136,7 @@ interface HelperInterface
      * @param array $arguments
      * @return mixed
      * @since 0.0.2
-     * @version 0.0.1
+     * @version 2.0.0
      */
     public static function __callStatic(string $name, array $arguments);
 
@@ -143,7 +147,7 @@ interface HelperInterface
      * @param array $arguments
      * @return mixed
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
     public function __call(string $name, array $arguments);
 }

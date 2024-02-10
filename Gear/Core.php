@@ -24,32 +24,22 @@ final class Core
     const HTTP = 2;
     const HTTPS = 3;
     const AJAX = 4;
-    /**
-     * @var int Режим запуска приложения - в разработке
-     */
+    /** @var int Режим запуска приложения - в разработке */
     const DEVELOPMENT = 1;
-    /**
-     * @var int Режим запуска приложения - в продакшене
-     */
+    /** @var int Режим запуска приложения - в продакшене */
     const PRODUCTION = 2;
-    /**
-     * @var int доступ к объекту, у которого свойство $object->_access имеет данное значение, закрыт для всех
-     */
+    /** @var int доступ к объекту, у которого свойство $object->_access имеет данное значение, закрыт для всех */
     const ACCESS_PRIVATE = 0;
     /**
      * @var int защищённый доступ к объекту, у которого свойство $object->_access имеет данное значение,
      * требуется проверка прав доступа
      */
     const ACCESS_PROTECTED = 1;
-    /**
-     * @var int публичный доступ к объекту, у которого свойство $object->_access имеет данное значение
-     */
+    /** @var int публичный доступ к объекту, у которого свойство $object->_access имеет данное значение */
     const ACCESS_PUBLIC = 2;
     /* Private */
-    /**
-     * @var array $_bootstrapLibraries обязательные библиотеки для начальной загрузки
-     */
-    private static $_coreLibraries = [
+    /** @var array $bootstrapLibraries обязательные библиотеки для начальной загрузки */
+    private static $coreLibraries = [
         '\Psr\Http\Message\*',
         '\Gear\Interfaces\*',
         '\Gear\Traits\*',
@@ -64,11 +54,8 @@ final class Core
         '\Gear\Library\GPlugin',
         '\Gear\Plugins\Templater\GViewerPlugin',
     ];
-
-    /**
-     * @var array $_config конфигурация ядра и системы
-     */
-    private static array $_config = [
+    /** @var array $config конфигурация ядра и системы */
+    private static array $config = [
         /* Дополнительные элементы, которые будут загружены при инициализации ядра фреймворка */
         'bootstrap' => [
             /* Список пользовательских загружаемых библиотек */
@@ -129,26 +116,18 @@ final class Core
             'routerName' => 'router',
         ],
     ];
-    private static $_configSections = ['libraries', 'components', 'modules', 'helpers'];
-    /**
-     * @var array of strings Строковые значения режимов запуска
-     */
-    private static $_modes = [
-        self::DEVELOPMENT => 'Development',
-        self::PRODUCTION => 'Production',
+    private static $configSections = ['libraries', 'components', 'modules', 'helpers'];
+    /** @var array of strings Строковые значения режимов запуска */
+    private static $modes = [
+        self::DEVELOPMENT   => 'Development',
+        self::PRODUCTION    => 'Production',
     ];
-    /**
-     * @var array of \gear\interfaces\IService Массив установленных сервисов (модули, компоненты)
-     */
-    private static $_services = [];
-    /**
-     * @var array Массив обработчиков событий
-     */
-    private static $_events = [];
-    /**
-     * @var bool по-умолчанию false, принимает true когда заканчивается инициализация ядра
-     */
-    private static $_initialized = false;
+    /** @var array of \gear\interfaces\IService Массив установленных сервисов (модули, компоненты) */
+    private static $services = [];
+    /** @var array Массив обработчиков событий */
+    private static $events = [];
+    /** @var bool по-умолчанию false, принимает true когда заканчивается инициализация ядра */
+    private static $initialized = false;
     /* Protected */
     /* Public */
 
@@ -156,15 +135,14 @@ final class Core
      * В зависимости от указанных параметров метод может возвращать
      *  - Генерация исключения, если $name заканчивается на 'Exception'
      *  - Вызов события если $name начинается с 'on' с последующей заглавной буквой
-     *  - Зарегестрированный сервис (модуль, компонент)
+     *  - Зарегистрированный сервис (модуль, компонент)
      *  - Значение свойства ядра
      *
      * @param string $name
      * @param array $arguments
      * @return \Exception|mixed
-     * @throws \CoreException
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
     public static function __callStatic(string $name, array $arguments)
     {
@@ -202,9 +180,7 @@ final class Core
      * @since 0.0.1
      * @version 0.0.1
      */
-    private function __clone()
-    {
-    }
+    private function __clone() {}
 
     /**
      * Конструктор класса, закрыт
@@ -234,21 +210,20 @@ final class Core
      * Начальная загрузка необходимых библиотек и сервисов для дальнейшей работы ядра и приложения
      *
      * @return void
-     * @throws \CoreException
-     * @uses self::_bootstrapLibraries()
-     * @uses self::_bootstrapModules()
-     * @uses self::_bootstrapComponents()
-     * @uses self::_bootstrapHelpers()
+     * @uses self::bootstrapLibraries()
+     * @uses self::bootstrapModules()
+     * @uses self::bootstrapComponents()
+     * @uses self::bootstrapHelpers()
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    private static function _bootstrap()
+    private static function bootstrap(): void
     {
-        self::_bootstrapLibraries(self::$_coreLibraries);
-        foreach (self::$_configSections as $sectionName) {
-            if (isset(self::$_config['bootstrap'][$sectionName])) {
-                $section = self::$_config['bootstrap'][$sectionName];
-                $method = '_bootstrap' . ucfirst($sectionName);
+        self::bootstrapLibraries(self::$coreLibraries);
+        foreach (self::$configSections as $sectionName) {
+            if (isset(self::$config['bootstrap'][$sectionName])) {
+                $section = self::$config['bootstrap'][$sectionName];
+                $method = 'bootstrap' . ucfirst($sectionName);
                 if (method_exists(self::class, $method)) {
                     self::$method($section);
                 }
@@ -261,12 +236,10 @@ final class Core
      *
      * @param array $section
      * @return void
-     * @throws \CoreException
-     * @used-by self::_bootstrap()
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    private static function _bootstrapComponents(array $section)
+    private static function bootstrapComponents(array $section): void
     {
         foreach ($section as $name => $service) {
             self::installService($name, $service, 'component');
@@ -278,12 +251,10 @@ final class Core
      *
      * @param array $section
      * @return void
-     * @throws \CoreException
-     * @used-by self::_bootstrap()
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    private static function _bootstrapHelpers(array $section)
+    private static function bootstrapHelpers(array $section): void
     {
         foreach ($section as $helperAlias => $helper) {
             list($helperClass, ,) = self::configure($helper);
@@ -296,12 +267,10 @@ final class Core
      *
      * @param array $section
      * @return void
-     * @throws \CoreException
-     * @used-by self::_bootstrap()
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    private static function _bootstrapLibraries(array $section)
+    private static function bootstrapLibraries(array $section): void
     {
         foreach ($section as $key => $library) {
             if (!is_numeric($key)) {
@@ -319,12 +288,10 @@ final class Core
      *
      * @param array $section
      * @return void
-     * @throws \CoreException
-     * @used-by self::_bootstrap()
      * @since 0.0.1
-     * @version 0.0.1
+     * @version 2.0.0
      */
-    private static function _bootstrapModules(array $section)
+    private static function bootstrapModules(array $section): void
     {
         foreach ($section as $name => $service) {
             self::installService($name, $service, 'module');
@@ -334,12 +301,12 @@ final class Core
     /**
      * Возвращает текущий (выполняемый в данный момент) модуль приложения
      *
-     * @return \Gear\Library\GApplication
-     * @throws \CoreException
+     * @return \Gear\Library\Application
+     * @throws CoreException
      * @since 0.0.1
      * @version 0.0.2
      */
-    public static function app(): \Gear\Library\GApplication
+    public static function app(): \Gear\Library\Application
     {
         /** @var \Gear\Library\GApplication $app */
         $app = self::m('app');
