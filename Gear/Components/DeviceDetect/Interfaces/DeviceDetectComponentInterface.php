@@ -2,7 +2,7 @@
 
 namespace Gear\Components\DeviceDetect\Interfaces;
 
-use Gear\Interfaces\ComponentInterface;
+use Gear\Interfaces\Services\ComponentInterface;
 
 /**
  * Интерфейс компонента для определения на каком устройстве открыт сайт
@@ -12,17 +12,17 @@ use Gear\Interfaces\ComponentInterface;
  *
  * @package Gear Framework
  *
- * @property string|null detectType
- * @property array httpHeaders
- * @property array|null mobileDetectionRules
- * @property array|null mobileDetectionRulesExtended
- * @property string|null userAgent
+ * @property string|null    $detectType
+ * @property array          $httpHeaders
+ * @property array|null     $mobileDetectionRules
+ * @property array|null     $mobileDetectionRulesExtended
+ * @property string|null    $userAgent
  *
  * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
+ * @copyright 2023 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
- * @since 0.0.2
- * @version 0.0.2
+ * @since 3.0.0
+ * @version 3.0.0
  */
 interface DeviceDetectComponentInterface extends ComponentInterface
 {
@@ -247,25 +247,20 @@ interface DeviceDetectComponentInterface extends ComponentInterface
      * Возвращает true, если зашли с десктопа
      *
      * @return bool
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function isDesktop(): bool;
 
     /**
      * Возвращает true, если зашли с мобильного телефона
+     *
      * @return bool
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function isMobile(): bool;
 
     /**
      * Возвращает true, если зашли с планшета
      *
-     * @return bool|null
-     * @since 0.0.2
-     * @version 0.0.2
+     * @return bool
      */
     public function isTablet(): bool;
 }

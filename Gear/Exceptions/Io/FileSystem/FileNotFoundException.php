@@ -1,11 +1,12 @@
 <?php
 
-namespace Gear\Exceptions;
+namespace Gear\Exceptions\Io\FileSystem;
 
+use Gear\Interfaces\Io\IoExceptionInterface;
 use Gear\Library\GearException;
 
 /**
- * Класс исключений ядра
+ * Исключение - файл не найден
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -14,12 +15,12 @@ use Gear\Library\GearException;
  * @since 3.0.0
  * @version 3.0.0
  */
-class CoreException extends GearException
+class FileNotFoundException extends GearException implements IoExceptionInterface
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected string $defaultMessage = 'Исключение ядра';
+    protected string $defaultMessage = 'File <{filename}> not found';
     /* Public */
 }

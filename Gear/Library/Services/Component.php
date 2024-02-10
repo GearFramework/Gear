@@ -1,11 +1,13 @@
 <?php
 
-namespace Gear\Exceptions;
+namespace Gear\Library\Services;
 
-use Gear\Library\GearException;
+use Gear\Interfaces\Services\ComponentInterface;
+use Gear\Interfaces\Services\PluginContainedInterface;
+use Gear\Traits\Services\PluginContainedTrait;
 
 /**
- * Класс исключений ядра
+ * Класс компонентов
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -14,12 +16,11 @@ use Gear\Library\GearException;
  * @since 3.0.0
  * @version 3.0.0
  */
-class CoreException extends GearException
+abstract class Component extends Service implements ComponentInterface
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected string $defaultMessage = 'Исключение ядра';
     /* Public */
 }

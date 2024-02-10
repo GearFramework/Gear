@@ -2,42 +2,37 @@
 
 namespace Gear\Interfaces;
 
+use Gear\Components\DeviceDetect\Interfaces\DeviceDetectComponentInterface;
+use Gear\Interfaces\Http\RequestInterface;
+use Gear\Interfaces\Http\ResponseInterface;
+use Gear\Interfaces\Http\ServerInterface;
+use Gear\Interfaces\Services\ModuleInterface;
+
 /**
  * Интерфейс приложений
  *
+ * @property DeviceDetectComponentInterface $device
+ * @property ResponseInterface              $response
+ * @property RequestInterface               $request
+ * @property RouterInterface                $router
+ * @property ServerInterface                $server
+ *
  * @package Gear Framework
- *
- * @property Gear\Components\DeviceDetect\Interfaces\DeviceDetectComponentInterface device
- * @property RequestInterface request
- * @property ResponseInterface response
- * @property RouterInterface router
- *
  * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
+ * @copyright 2023 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
- * @since 0.0.1
- * @version 0.0.2
+ * @since 3.0.0
+ * @version 3.0.0
+ *
+ * @property string $namespace
  */
-interface ApplicationInterface
+interface ApplicationInterface extends ModuleInterface
 {
     /**
-     * Завершение работы приложения
-     *
-     * @param mixed $result
-     * @return void
-     * @throws \CoreException
-     * @since 0.0.1
-     * @version 0.0.1
-     */
-    public function end($result);
-
-    /**
      * Запуск приложения
+     * Возвращает код ошибки или 0 если ошибок нет
      *
-     * @return void
-     * @throws \CoreException
-     * @since 0.0.1
-     * @version 0.0.1
+     * @return int
      */
-    public function run();
+    public function run(): int;
 }

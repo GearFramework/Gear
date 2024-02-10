@@ -3,7 +3,7 @@
 namespace Gear\Components\DeviceDetect;
 
 use Gear\Components\DeviceDetect\Interfaces\DeviceDetectComponentInterface;
-use Gear\Library\GComponent;
+use Gear\Library\Services\Component;
 
 /**
  * Компонент для определения на каком устройстве открыт сайт
@@ -13,33 +13,33 @@ use Gear\Library\GComponent;
  *
  * @package Gear Framework
  *
- * @property string|null detectType
- * @property array httpHeaders
- * @property array|null mobileDetectionRules
- * @property array|null mobileDetectionRulesExtended
- * @property string|null userAgent
+ * @property string|null    detectType
+ * @property array          httpHeaders
+ * @property array|null     mobileDetectionRules
+ * @property array|null     mobileDetectionRulesExtended
+ * @property string|null    userAgent
  *
  * @author Kukushkin Denis
- * @copyright 2016 Kukushkin Denis
+ * @copyright 2023 Kukushkin Denis
  * @license http://www.spdx.org/licenses/MIT MIT License
- * @since 0.0.2
- * @version 0.0.2
+ * @since 3.0.0
+ * @version 3.0.0
  */
-class DeviceDetectComponent extends GComponent implements DeviceDetectComponentInterface
+class DeviceDetectComponent extends Component implements DeviceDetectComponentInterface
 {
     /* Traits */
     /* Const */
     /* Private */
-    private ?string $_detectionType = null;
-    private array $_httpHeaders = [];
-    private ?bool $_isDesktop = null;
-    private ?bool $_isMobile = null;
-    private ?bool $_isTablet = null;
-    private ?array $_matchesArray = null;
-    private ?string $_matchingRegex = null;
-    private ?array $_mobileDetectionRules = null;
-    private ?array $_mobileDetectionRulesExtended = null;
-    private ?string $_userAgent = null;
+    private ?string $detectionType = null;
+    private array $httpHeaders = [];
+    private bool $isDesktop = false;
+    private bool $isMobile = false;
+    private bool $isTablet = false;
+    private ?array $matchesArray = null;
+    private ?string $matchingRegex = null;
+    private ?array $mobileDetectionRules = null;
+    private ?array $mobileDetectionRulesExtended = null;
+    private ?string $userAgent = null;
     /* Protected */
     /* Public */
 
@@ -47,24 +47,22 @@ class DeviceDetectComponent extends GComponent implements DeviceDetectComponentI
      * Проверка мобильных заголовков
      *
      * @return bool
-     * @since 0.0.2
-     * @version 0.0.2
      */
-    public function checkHttpHeadersForMobile()
+    public function checkHttpHeadersForMobile(): bool
     {
         foreach (self::MOBILE_HEADERS as $mobileHeader => $matchType) {
-            if (isset($this->httpHeaders[$mobileHeader]) ) {
-                if (is_array($matchType['matches']) ) {
-                    foreach ($matchType['matches'] as $_match) {
-                        if (strpos($this->httpHeaders[$mobileHeader], $_match) !== false) {
-                            return true;
-                        }
-                    }
-                    return false;
-                } else {
+            if (isset($this->httpHeaders[$mobileHeader]) === false) {
+                continue;
+            }
+            if (is_array($matchType['matches']) === false) {
+                return true;
+            }
+            foreach ($matchType['matches'] as $match) {
+                if (str_contains($this->httpHeaders[$mobileHeader], $match)) {
                     return true;
                 }
             }
+            return false;
         }
         return false;
     }
@@ -73,73 +71,62 @@ class DeviceDetectComponent extends GComponent implements DeviceDetectComponentI
      * Тип детектируемого в данный момент устройства
      *
      * @return string|null
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function getDetectionType(): ?string
     {
-        return $this->_detectionType;
+        return $this->detectionType;
     }
 
     /**
      * Возвращает текущие клиентские заголовки
      *
      * @return array
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function getHttpHeaders(): array
     {
-        return $this->_httpHeaders;
+        return $this->httpHeaders;
     }
 
     /**
      * Возвращает правила для детектирования устройства
      *
      * @return array|null
-     * @since 0.0.2
-     * @version 0.0.2
      */
-    public function getRules()
+    public function getRules(): ?array
     {
-        if ($this->detectionType == self::DETECTION_TYPE_EXTENDED) {
+        if ($this->detectionType === self::DETECTION_TYPE_EXTENDED) {
             return $this->mobileDetectionRulesExtended;
-        } else {
-            return $this->mobileDetectionRules;
         }
+        return $this->mobileDetectionRules;
     }
 
     /**
      * Возвращает правила для детектирования мобильных устройств
      *
      * @return array
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function getMobileDetectionRules(): array
     {
-        if (!$this->_mobileDetectionRules) {
-            $this->_mobileDetectionRules = array_merge(
+        if (empty($this->mobileDetectionRules)) {
+            $this->mobileDetectionRules = array_merge(
                 self::PHONE_DEVICES,
                 self::TABLET_DEVICES,
                 self::OPERATING_SYSTEM,
                 self::BROWSERS,
             );
         }
-        return $this->_mobileDetectionRules;
+        return $this->mobileDetectionRules;
     }
 
     /**
      * Возвращает расширенные правила для детектирования мобильных устройств
      *
      * @return array
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function getMobileDetectionRulesExtended(): array
     {
-        if ($this->_mobileDetectionRulesExtended === null) {
-            $this->_mobileDetectionRulesExtended = array_merge(
+        if ($this->mobileDetectionRulesExtended === null) {
+            $this->mobileDetectionRulesExtended = array_merge(
                 self::PHONE_DEVICES,
                 self::TABLET_DEVICES,
                 self::OPERATING_SYSTEM,
@@ -147,21 +134,20 @@ class DeviceDetectComponent extends GComponent implements DeviceDetectComponentI
                 self::UTILITIES,
             );
         }
-        return $this->_mobileDetectionRulesExtended;
+        return $this->mobileDetectionRulesExtended;
     }
 
     /**
      * Возвращает пользовательский USER-AGENT
+     *
      * @return string
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function getUserAgent(): string
     {
-        if ($this->_userAgent === null) {
+        if ($this->userAgent === null) {
             foreach (self::UA_HTTP_HEADERS as $altHeader) {
-                if (!empty($this->_httpHeaders[$altHeader])) {
-                    $this->_userAgent .= $this->httpHeaders[$altHeader] . " ";
+                if (empty($this->httpHeaders[$altHeader]) === false) {
+                    $this->userAgent .= $this->httpHeaders[$altHeader] . " ";
                 }
             }
         }
@@ -172,74 +158,62 @@ class DeviceDetectComponent extends GComponent implements DeviceDetectComponentI
      * Возвращает true, если зашли с десктопа
      *
      * @return bool
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function isDesktop(): bool
     {
-        if ($this->_isDesktop === null) {
-            $this->_isDesktop = $this->isMobile() === false && !$this->isTablet() === false;
+        if ($this->isDesktop === null) {
+            $this->isDesktop = $this->isMobile() === false && $this->isTablet() === false;
         }
-        return $this->_isDesktop;
+        return $this->isDesktop;
     }
 
     /**
      * Возвращает true, если зашли с мобильного телефона
      * @return bool
-     * @since 0.0.2
-     * @version 0.0.2
      */
     public function isMobile(): bool
     {
-        if ($this->_isMobile === null) {
+        if ($this->isMobile === null) {
             $this->detectType = self::DETECTION_TYPE_MOBILE;
-            if ($this->checkHttpHeadersForMobile()) {
-                $this->_isMobile = true;
-            } else {
-                $this->_isMobile = $this->matchDetectionRulesAgainstUA();
-            }
+            $this->isMobile = $this->checkHttpHeadersForMobile() || $this->matchDetectionRulesAgainstUA();
         }
-        return $this->_isMobile;
+        return $this->isMobile;
     }
 
     /**
      * Возвращает true, если зашли с планшета
      *
-     * @return bool|null
-     * @since 0.0.2
-     * @version 0.0.2
+     * @return bool
      */
     public function isTablet(): bool
     {
-        if ($this->_isTablet === null) {
-            $this->_isTablet = false;
+        if ($this->isTablet === null) {
+            $this->isTablet = false;
             $this->detectType = self::DETECTION_TYPE_MOBILE;
-            foreach (self::TABLET_DEVICES as $_regex) {
-                if ($this->match($_regex, $this->userAgent)) {
-                    $this->_isTablet = true;
+            foreach (self::TABLET_DEVICES as $regex) {
+                if ($this->match($regex, $this->userAgent)) {
+                    $this->isTablet = true;
                     break;
                 }
             }
         }
-        return $this->_isTablet;
+        return $this->isTablet;
     }
 
     /**
      * Возвращает true если шаблон совпал с USER-AGENT
      *
-     * @param string|null $regex
-     * @param string|null $userAgent
-     * @return bool
-     * @since 0.0.2
-     * @version 0.0.2
+     * @param   string|null $regex
+     * @param   string|null $userAgent
+     * @return  bool
      */
     public function match(?string $regex, ?string $userAgent = null): bool
     {
         $regex = str_replace('/', '\/', $regex);
-        $match = (bool)preg_match('/'.$regex.'/is', (!empty($userAgent) ? $userAgent : $this->userAgent), $matches);
+        $match = (bool)preg_match("/{$regex}/is", ($userAgent ?: $this->userAgent), $matches);
         if ($match) {
-            $this->_matchingRegex = $regex;
-            $this->_matchesArray = $matches;
+            $this->matchingRegex = $regex;
+            $this->matchesArray = $matches;
         }
         return $match;
     }
@@ -247,8 +221,8 @@ class DeviceDetectComponent extends GComponent implements DeviceDetectComponentI
     public function matchDetectionRulesAgainstUA(?string $userAgent = null): bool
     {
         $match = false;
-        foreach ($this->getRules() as $_regex) {
-            if (!empty($_regex) && $this->match($_regex, $userAgent)) {
+        foreach ($this->getRules() as $regex) {
+            if ($regex && $this->match($regex, $userAgent)) {
                 $match = true;
                 break;
             }
@@ -256,28 +230,28 @@ class DeviceDetectComponent extends GComponent implements DeviceDetectComponentI
         return $match;
     }
 
-    public function onAfterInstallService()
+    public function onAfterInstallService(): void
     {
         $this->httpHeaders = $_SERVER;
     }
 
-    public function setDetectionType(string $type)
+    public function setDetectionType(string $type): void
     {
-        $this->_detectionType = $type;
+        $this->detectionType = $type;
     }
 
-    public function setHttpHeaders(array $headers)
+    public function setHttpHeaders(array $headers): void
     {
-        $this->_httpHeaders = [];
+        $this->httpHeaders = [];
         foreach ($headers as $key => $value) {
-            if (substr($key,0,5) == 'HTTP_') {
-                $this->_httpHeaders[$key] = $value;
+            if (str_starts_with($key, 'HTTP_')) {
+                $this->httpHeaders[$key] = $value;
             }
         }
     }
 
-    public function setUserAgent(string $userAgent)
+    public function setUserAgent(string $userAgent): void
     {
-        $this->_userAgent = $userAgent;
+        $this->userAgent = $userAgent;
     }
 }

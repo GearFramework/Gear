@@ -1,11 +1,9 @@
 <?php
 
-namespace Gear\Exceptions;
-
-use Gear\Library\GearException;
+namespace Gear\Traits\Objects;
 
 /**
- * Класс исключений ядра
+ * Трейт базовых сущностей
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -14,12 +12,11 @@ use Gear\Library\GearException;
  * @since 3.0.0
  * @version 3.0.0
  */
-class CoreException extends GearException
+trait EntityTrait
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected string $defaultMessage = 'Исключение ядра';
     /* Public */
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace Gear\Exceptions;
+namespace Gear\Library\Io;
 
-use Gear\Library\GearException;
+use Gear\Interfaces\Io\IoInterface;
+use Gear\Library\Objects\Entity;
 
 /**
- * Класс исключений ядра
+ * Класс ввода/вывода
  *
  * @package Gear Framework
  * @author Kukushkin Denis
@@ -14,12 +15,11 @@ use Gear\Library\GearException;
  * @since 3.0.0
  * @version 3.0.0
  */
-class CoreException extends GearException
+abstract class Io extends Entity implements IoInterface
 {
     /* Traits */
     /* Const */
     /* Private */
     /* Protected */
-    protected string $defaultMessage = 'Исключение ядра';
     /* Public */
 }
